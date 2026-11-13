@@ -78,11 +78,14 @@ test: all tools
 	build/tools/clap_latency_check $(wildcard bin/*.clap)
 	build/tools/clap_remote_check $(wildcard bin/*.clap)
 
+# Each file is copied to a temp name and renamed over the old one: a running
+# host (Bitwig) keeps the old inode it has mapped. Copying over a loaded .so in
+# place (plain cp) crashes the host's plugin process.
 install: all
-	mkdir -p ~/.lv2 ~/.clap ~/.vst3
-	cp -r bin/*.lv2 ~/.lv2/
-	cp -r bin/*.clap ~/.clap/
-	cp -r bin/*.vst3 ~/.vst3/
+	@cd bin && for f in $$(find *.lv2 *.clap *.vst3 -type f); do \
+		case $$f in *.lv2/*) d=~/.lv2;; *.clap) d=~/.clap;; *) d=~/.vst3;; esac; \
+		mkdir -p "$$d/$$(dirname $$f)" && cp "$$f" "$$d/$$f.tmp$$$$" && mv -f "$$d/$$f.tmp$$$$" "$$d/$$f" || exit 1; \
+	done; echo "installed to ~/.lv2 ~/.clap ~/.vst3"
 
 # ---------------------------------------------------------------------------
 # Raspberry Pi (aarch64) cross build
