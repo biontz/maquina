@@ -595,7 +595,7 @@ protected:
         fontSize(10);
         textAlign(ALIGN_RIGHT | ALIGN_MIDDLE);
         fillColor(col(kDim));
-        text(kZoomX - 14, kHeaderH / 2 + 2, "LXR-02 firmware engine  \xc2\xb7  unofficial", nullptr);
+        text(kZoomX - 14, kHeaderH / 2 + 2, "based on Erica Synths LXR-02 firmware  \xc2\xb7  unofficial", nullptr);
 
         // zoom control: [-] 150% [+]
         beginPath();
