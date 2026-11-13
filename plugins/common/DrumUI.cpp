@@ -1,8 +1,9 @@
 // DrumUI.cpp - NanoVG editor shared by all voice plugins.
 //
 // Flat, compact, knob-first (the K4REdit style): one panel per voice, sections
-// follow the LXR-02's menu pages, envelopes are drawn from the firmware's own
-// time/slope curves and can be edited by dragging the contour.
+// follow the LXR-02's menu pages (Maquina Dredrum: its 3 oscillators),
+// envelopes are drawn from the firmware's own time/slope curves and can be
+// edited by dragging the contour.
 //
 // Controls: drag up/down (Shift = fine), mouse wheel steps, double-click
 // resets to the default. Selectors: click the arrows to step, click the value
@@ -12,6 +13,8 @@
 // returns to the sound before the first roll. Per group (OSC, ENV, ...): click
 // the title to lock/unlock it, drag the range bar's handles to set the window
 // (min..max % of each control's range) the random values are picked from.
+// Maquina Dredrum: each OSC section's title bar has ROLL (randomize only that
+// oscillator) and RND ON/OFF (whether RANDOM includes it); BACK undoes both.
 //
 // SPDX-License-Identifier: GPL-3.0-only
 #include "DistrhoUI.hpp"
@@ -126,7 +129,7 @@ struct ItemSpec { const char* symbol; const char* label; };
 struct SectionSpec {
     const char* title;
     GraphKind graph;
-    ItemSpec items[8];
+    ItemSpec items[10];
 };
 
 const SectionSpec kSections[] = {
@@ -157,6 +160,23 @@ const SectionSpec kSections[] = {
       { { "volume", "Volume" }, { "pan", "Pan" }, { "drive", "Drive" }, { "decimation", "Rate" } } },
     { "TRIGGER", GraphKind::None,
       { { "trigger_note", "Note" }, { "hat_mode", "Hat" }, { "note_pitch", "Pitch" } } },
+    // Maquina Dredrum
+    { "OSC 1", GraphKind::None,
+      { { "osc1_wave", "Wave" }, { "osc1_pitch", "Pitch" }, { "osc1_drop", "Drop" }, { "osc1_decay", "Decay" },
+        { "osc1_level", "Level" }, { "osc1_track", "Track" }, { "osc1_mute", "Mute" },
+        { "osc1_octave", "Octave" },
+        { "osc1_semi", "Semi" } } },
+    { "OSC 2", GraphKind::None,
+      { { "osc2_wave", "Wave" }, { "osc2_pitch", "Pitch" }, { "osc2_drop", "Drop" }, { "osc2_decay", "Decay" },
+        { "osc2_level", "Level" }, { "osc2_track", "Track" }, { "osc2_mute", "Mute" },
+        { "osc2_octave", "Octave" },
+        { "osc2_semi", "Semi" } } },
+    { "OSC 3", GraphKind::None,
+      { { "osc3_wave", "Wave" }, { "osc3_pitch", "Pitch" }, { "osc3_drop", "Drop" }, { "osc3_decay", "Decay" },
+        { "osc3_level", "Level" }, { "click", "Click" }, { "osc3_track", "Track" }, { "osc3_mute", "Mute" },
+        { "osc3_octave", "Octave" },
+        { "osc3_semi", "Semi" } } },
+    { "MODE", GraphKind::None, { { "trig_mode", "Trigger" } } },
 };
 
 enum class CtlType { Knob, Select, Toggle };
@@ -172,11 +192,15 @@ struct Graph {
     float x, y, w, h;
     int attack = -1, decay = -1, slope = -1, amount = -1;
 };
+struct Box { float x, y, w, h; bool hit(float px, float py) const { return px >= x && px < x + w && py >= y && py < y + h; } };
 struct Section {
     const char* title;
     float x, y, w, h;
+    // Maquina Dredrum OSC sections: oscillator 0..2 (else -1), with a ROLL
+    // button and the "main RANDOM includes it" switch in the title bar
+    int osc = -1;
+    Box roll {}, randOn {};
 };
-struct Box { float x, y, w, h; bool hit(float px, float py) const { return px >= x && px < x + w && py >= y && py < y + h; } };
 // the RANDOM panel: two buttons and one level selector per Randomizer group
 struct RandPanel {
     Box random, back;
@@ -259,8 +283,15 @@ Layout makeLayout()
         { "OSCILLATOR", "AMP EG", "TRIGGER" },
         { "MOD OSCILLATORS", "TRANSIENT", "FILTER" },
         { "LFO", "VELOCITY", "MIX" } };
+    static const char* const kDredrumRows[3][5] = {
+        { "OSC 1" },
+        { "OSC 2" },
+        { "OSC 3", "MODE" } };
     const uint8_t v = voiceDef().voice;
-    const char* const (*plan)[5] = v <= 2 ? kDrumRows : v == 3 ? kSnareRows : kMetalRows;
+    const char* const (*plan)[5] = v == maquina::kDredrumVoice ? kDredrumRows
+                                   : v <= 2                    ? kDrumRows
+                                   : v == 3                    ? kSnareRows
+                                                               : kMetalRows;
 
     const float avail = kWidth - 2 * kMargin;
     std::vector<std::vector<Pending*>> rows;
@@ -299,6 +330,12 @@ Layout makeLayout()
         for (auto* s : row) {
             const float w = s->natural + spare * (s->natural / natural);
             L.sections.push_back({ s->spec->title, x, y, w, rowH });
+            if (voiceDef().voice == maquina::kDredrumVoice && !std::strncmp(s->spec->title, "OSC ", 4)) {
+                Section& sec = L.sections.back();
+                sec.osc = s->spec->title[4] - '1';
+                sec.roll = { x + w - kSectionPad - 40.f, y + 3, 40.f, kTitleH - 5 };
+                sec.randOn = { sec.roll.x - kGap - 58.f, y + 3, 58.f, kTitleH - 5 };
+            }
             // graph first; the stretch is shared by the graph and the items
             const float extra = w - s->natural;
             float cx = x + kSectionPad;
@@ -595,7 +632,11 @@ protected:
         fontSize(10);
         textAlign(ALIGN_RIGHT | ALIGN_MIDDLE);
         fillColor(col(kDim));
-        text(kZoomX - 14, kHeaderH / 2 + 2, "based on Erica Synths LXR-02 firmware  \xc2\xb7  unofficial", nullptr);
+        text(kZoomX - 14, kHeaderH / 2 + 2,
+             voiceDef().voice == maquina::kDredrumVoice
+                 ? "based on Dredrum firmware  \xc2\xb7  unofficial"
+                 : "based on Erica Synths LXR-02 firmware  \xc2\xb7  unofficial",
+             nullptr);
 
         // zoom control: [-] 150% [+]
         beginPath();
@@ -628,6 +669,7 @@ protected:
             textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
             fillColor(col(kLabel));
             text(sec.x + kSectionPad, sec.y + kTitleH / 2 + 1, sec.title, nullptr);
+            if (sec.osc >= 0) drawOscRandom(sec);
         }
 
         drawRandPanel();
@@ -650,6 +692,35 @@ protected:
     }
 
     // ------------------------------------------------------------- randomize
+    // Maquina Dredrum OSC title bar: [RND ON|OFF] [ROLL]
+    void drawOscRandom(const Section& sec)
+    {
+        const bool on = fRand.oscOn[sec.osc];
+        const Box& t = sec.randOn;
+        beginPath();
+        rect(t.x + 0.5f, t.y + 0.5f, t.w - 1, t.h - 1);
+        fillColor(col(kWell));
+        fill();
+        strokeColor(col(on ? kAccent : kBorder));
+        strokeWidth(1);
+        stroke();
+        fontSize(9);
+        textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+        fillColor(on ? col(kAccent) : col(kDim));
+        text(t.x + t.w / 2, t.y + t.h / 2 + 1, on ? "RND ON" : "RND OFF", nullptr);
+
+        const Box& r = sec.roll;
+        beginPath();
+        rect(r.x + 0.5f, r.y + 0.5f, r.w - 1, r.h - 1);
+        fillColor(col(kWell));
+        fill();
+        strokeColor(col(kBorder));
+        strokeWidth(1);
+        stroke();
+        fillColor(col(kText));
+        text(r.x + r.w / 2, r.y + r.h / 2 + 1, "ROLL", nullptr);
+    }
+
     void drawButton(const Box& b, const char* label, bool enabled, bool accent)
     {
         beginPath();
@@ -759,7 +830,8 @@ protected:
         fApplying = false;
         repaint();
     }
-    void doRandom()
+    // onlyOsc >= 0: Maquina Dredrum's per-oscillator ROLL
+    void doRandom(int onlyOsc = -1)
     {
         if (!fRunActive) {
             fSnapshot = fValues;
@@ -767,7 +839,7 @@ protected:
             fRunActive = true;
         }
         std::vector<float> v = fValues;
-        maquina::randomize(voiceDef(), fRand, v.data(), fRng);
+        maquina::randomize(voiceDef(), fRand, v.data(), fRng, onlyOsc);
         applyValues(v);
         fPresetDirty = true;
     }
@@ -1759,6 +1831,16 @@ protected:
         }
 
         if (layout().rand.random.hit(x, y)) { doRandom(); return true; }
+        for (const Section& sec : fSections) {
+            if (sec.osc < 0) continue;
+            if (sec.roll.hit(x, y)) { doRandom(sec.osc); return true; }
+            if (sec.randOn.hit(x, y)) {
+                fRand.oscOn[sec.osc] = !fRand.oscOn[sec.osc];
+                saveRand();
+                repaint();
+                return true;
+            }
+        }
         if (layout().rand.back.hit(x, y)) { doBack(); return true; }
         if (y >= kZoomY && y < kZoomY + kZoomH && x >= kZoomX && x < kZoomX + kZoomW) {
             const int z = x < kZoomX + kZoomW / 2 ? std::max(0, fZoom - 1) : std::min(kNumZooms - 1, fZoom + 1);

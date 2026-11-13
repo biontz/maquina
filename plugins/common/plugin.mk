@@ -1,5 +1,6 @@
 # plugin.mk - shared Makefile part for the voice plugins.
-# Set NAME and MAQUINA_VOICE_INDEX, then include this file.
+# Set NAME and MAQUINA_VOICE_INDEX (and MAQUINA_DREDRUM = 1 for Maquina
+# Dredrum), then include this file.
 
 MAQUINA_ROOT := $(abspath ../..)
 
@@ -28,6 +29,10 @@ include $(MAQUINA_ROOT)/dpf/Makefile.plugins.mk
 FW_INC := $(MAQUINA_ROOT)/third_party/lxr-firmware/Core/Inc
 ifeq ($(MAQUINA_NO_UI),true)
 BUILD_CXX_FLAGS += -DMAQUINA_NO_UI
+endif
+# MAQUINA_DREDRUM=1: the Dredrum engine (DredrumHost) instead of the LXR one
+ifeq ($(MAQUINA_DREDRUM),1)
+BUILD_CXX_FLAGS += -DMAQUINA_DREDRUM=1
 endif
 BUILD_CXX_FLAGS += -std=gnu++17 -DMAQUINA_VOICE_INDEX=$(MAQUINA_VOICE_INDEX) \
 	-I$(MAQUINA_ROOT)/plugins/common -I$(MAQUINA_ROOT)/engine \

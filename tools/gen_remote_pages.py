@@ -22,9 +22,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TABLES = os.path.join(ROOT, "plugins", "common", "VoiceTables.generated.hpp")
 EXTRA = os.path.join(ROOT, "plugins", "common", "ExtraParams.hpp")
 OUT_HPP = os.path.join(ROOT, "plugins", "common", "RemotePages.generated.hpp")
-VOICES = ["kick", "tom", "snare", "cymbal", "hihat"]  # order of k_voices / MAQUINA_VOICE_INDEX
+VOICES = ["kick", "tom", "snare", "cymbal", "hihat", "dredrum"]  # order of k_voices / MAQUINA_VOICE_INDEX
 EXTRA_SYMBOLS = {v: {"note_pitch"} for v in VOICES}
 EXTRA_SYMBOLS["hihat"].add("hat_mode")
+EXTRA_SYMBOLS["dredrum"] = set()  # numExtraParams() == 0
 
 
 def voice_symbols():

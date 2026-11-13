@@ -9,6 +9,11 @@
 // filter is never switched Off and modulation targets are kept. Trigger
 // parameters (Trigger Note, Hat, Note > Pitch) are never randomized.
 //
+// Maquina Dredrum also randomizes per oscillator: each OSC section has a ROLL
+// button (only that oscillator) and an on/off switch for whether the main
+// RANDOM button includes it (RandSettings::oscOn). Groups' locks and ranges
+// apply either way.
+//
 // Header-only and independent of DPF so tools/check_random can test it.
 // SPDX-License-Identifier: GPL-3.0-only
 #pragma once
@@ -47,6 +52,16 @@ static const RandGroup kRandGroups[] = {
     { "mix", "PAN/RATE", true, 0, 100, { "pan", "decimation" } },
     { "drive", "DRIVE", true, 0, 100, { "drive" } },
     { "volume", "VOLUME", true, 60, 100, { "volume" } },
+    // Maquina Dredrum: by function across its 3 oscillators. Decay stops
+    // short of 248..255, where the firmware's decay never ends (drone).
+    { "dwave", "WAVE", false, 0, 100, { "osc1_wave", "osc2_wave", "osc3_wave", "click" } },
+    { "dpitch", "PITCH", false, 0, 100,
+      { "osc1_pitch", "osc2_pitch", "osc3_pitch", "osc1_drop", "osc2_drop", "osc3_drop" } },
+    { "ddecay", "DECAY", false, 0, 90, { "osc1_decay", "osc2_decay", "osc3_decay" } },
+    { "dlevel", "LEVEL", false, 0, 100, { "osc1_level", "osc2_level", "osc3_level" } },
+    { "dtune", "TUNE", true, 0, 100,
+      { "osc1_track", "osc2_track", "osc3_track", "osc1_octave", "osc2_octave", "osc3_octave", "osc1_semi",
+        "osc2_semi", "osc3_semi" } },
 };
 constexpr int kNumRandGroups = int(sizeof(kRandGroups) / sizeof(kRandGroups[0]));
 
@@ -59,6 +74,15 @@ inline bool randGroupUsed(const VoiceDef& d, int g)
     return false;
 }
 
+// Maquina Dredrum: the oscillator (0..2) a parameter belongs to, -1 for none
+inline int oscOfSymbol(const char* symbol)
+{
+    if (!std::strcmp(symbol, "click")) return 2; // oscillator 3's CLICK
+    if (!std::strncmp(symbol, "osc", 3) && symbol[3] >= '1' && symbol[3] <= '3' && symbol[4] == '_')
+        return symbol[3] - '1';
+    return -1;
+}
+
 inline int randGroupOf(const char* symbol)
 {
     for (int g = 0; g < kNumRandGroups; ++g)
@@ -67,9 +91,12 @@ inline int randGroupOf(const char* symbol)
     return -1;
 }
 
+constexpr int kNumRandOsc = 3; // Maquina Dredrum oscillators
+
 struct RandSettings {
     bool lock[kNumRandGroups];
     uint8_t min[kNumRandGroups], max[kNumRandGroups]; // %, min <= max
+    bool oscOn[kNumRandOsc] = { true, true, true };  // main RANDOM includes the oscillator
 
     RandSettings()
     {
@@ -81,7 +108,8 @@ struct RandSettings {
     }
 
     // state string: "osc=0:0:100 env=0:0:60 ..." (lock:min:max); unknown keys
-    // are ignored, missing ones keep their default
+    // are ignored, missing ones keep their default. "dosc=1:1:0" holds
+    // oscOn[0..2] (same three-number shape).
     std::string toString() const
     {
         std::string out;
@@ -91,7 +119,9 @@ struct RandSettings {
                           int(min[g]), int(max[g]));
             out += buf;
         }
-        return out;
+        char buf[32];
+        std::snprintf(buf, sizeof buf, " dosc=%d:%d:%d", int(oscOn[0]), int(oscOn[1]), int(oscOn[2]));
+        return out + buf;
     }
     void fromString(const char* str)
     {
@@ -101,6 +131,12 @@ struct RandSettings {
         int l, lo, hi, n;
         while (std::sscanf(str, " %31[^= ]=%d:%d:%d%n", key, &l, &lo, &hi, &n) == 4) {
             str += n;
+            if (!std::strcmp(key, "dosc")) {
+                oscOn[0] = l != 0;
+                oscOn[1] = lo != 0;
+                oscOn[2] = hi != 0;
+                continue;
+            }
             for (int g = 0; g < kNumRandGroups; ++g)
                 if (!std::strcmp(kRandGroups[g].key, key)) {
                     lo = std::clamp(lo, 0, 100);
@@ -158,13 +194,18 @@ inline int randomValue(const VoiceParam& p, int minPct, int maxPct, int current,
 }
 
 // Randomize values[0 .. numAllParams(d)) in place (plugin units). Locked
-// groups and parameters outside every group are left alone.
-inline void randomize(const VoiceDef& d, const RandSettings& rs, float* values, std::mt19937& rng)
+// groups and parameters outside every group are left alone. onlyOsc >= 0
+// (Maquina Dredrum's per-oscillator ROLL): only that oscillator's parameters;
+// otherwise oscillators switched off in rs.oscOn are left alone.
+inline void randomize(const VoiceDef& d, const RandSettings& rs, float* values, std::mt19937& rng,
+                      int onlyOsc = -1)
 {
     for (uint32_t i = 0; i < numAllParams(d); ++i) {
         const VoiceParam& p = paramAt(d, i);
         const int g = randGroupOf(p.symbol);
         if (g < 0 || rs.lock[g]) continue;
+        const int osc = d.voice == kDredrumVoice ? oscOfSymbol(p.symbol) : -1;
+        if (onlyOsc >= 0 ? osc != onlyOsc : (osc >= 0 && !rs.oscOn[osc])) continue;
         const int cur = int(values[i] + (values[i] < 0 ? -0.5f : 0.5f));
         values[i] = float(randomValue(p, rs.min[g], rs.max[g], cur, rng));
     }

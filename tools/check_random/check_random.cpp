@@ -75,17 +75,53 @@ int main()
         // a parameter in no group must be a trigger/extra one
         for (uint32_t i = 0; i < n; ++i) {
             const VoiceParam& p = paramAt(d, i);
-            if (randGroupOf(p.symbol) < 0 && p.page != 7) {
+            const bool trigger = d.voice == maquina::kDredrumVoice
+                                     ? !std::strcmp(p.symbol, "trig_mode") || std::strstr(p.symbol, "_mute") != nullptr
+                                     : p.page == 7;
+            if (randGroupOf(p.symbol) < 0 && !trigger) {
                 std::printf("%s.%s is in no randomize group\n", d.id, p.symbol); ++bad;
             }
         }
     }
 
+    // Maquina Dredrum: ROLL touches only its oscillator; RANDOM skips oscillators switched off
+    for (const VoiceDef& d : k_voices) {
+        if (d.voice != kDredrumVoice) continue;
+        const uint32_t n = numAllParams(d);
+        RandSettings rs;
+        for (int g = 0; g < kNumRandGroups; ++g) { rs.lock[g] = false; rs.min[g] = 0; rs.max[g] = 100; }
+        std::mt19937 rng(5);
+        for (int osc = -1; osc < 3; ++osc) {
+            bool movedOwn = false;
+            for (int round = 0; round < 20; ++round) {
+                std::vector<float> v(n), init(n);
+                for (uint32_t i = 0; i < n; ++i) init[i] = v[i] = float(paramAt(d, i).def);
+                RandSettings r2 = rs;
+                if (osc < 0) r2.oscOn[1] = false; // main RANDOM with OSC 2 off
+                randomize(d, r2, v.data(), rng, osc);
+                for (uint32_t i = 0; i < n; ++i) {
+                    const int o = oscOfSymbol(paramAt(d, i).symbol);
+                    const bool allowed = osc >= 0 ? o == osc : o != 1;
+                    if (v[i] != init[i] && !allowed) {
+                        std::printf("dredrum: %s changed (roll %d)\n", paramAt(d, i).symbol, osc); ++bad;
+                    }
+                    if (v[i] != init[i] && allowed) movedOwn = true;
+                }
+            }
+            if (!movedOwn) { std::printf("dredrum: roll %d changed nothing\n", osc); ++bad; }
+        }
+        RandSettings on;
+        on.oscOn[0] = false; on.oscOn[2] = false;
+        RandSettings back;
+        back.fromString(on.toString().c_str());
+        if (back.oscOn[0] || !back.oscOn[1] || back.oscOn[2]) { std::printf("dredrum: oscOn state round trip\n"); ++bad; }
+    }
+
     RandSettings a;
     for (int g = 0; g < kNumRandGroups; ++g) {
         a.lock[g] = g % 2;
-        a.min[g] = uint8_t(g * 7);
-        a.max[g] = uint8_t(60 + g * 4);
+        a.min[g] = uint8_t((g * 7) % 55);       // < 55
+        a.max[g] = uint8_t(60 + (g * 3) % 40); // 60..99, >= min
     }
     RandSettings b;
     b.fromString(a.toString().c_str());

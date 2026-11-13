@@ -41,6 +41,13 @@ static const ClapRemotePage k_hihat_remote_pages[] = {
     { "FILTER / VELOCITY", { "filter_freq", "filter_reso", "filter_type", "filter_drive", "velo_dest", "velo_amount", "velo_volume", "hat_mode" } },
     { "LFO", { "lfo_rate", "lfo_sync", "lfo_amount", "lfo_wave", "lfo_retrigger", "lfo_offset", "lfo_target", "trigger_note" } },
 };
+static const ClapRemotePage k_dredrum_remote_pages[] = {
+    { "MIX", { "osc1_level", "osc2_level", "osc3_level", "osc1_decay", "osc2_decay", "osc3_decay", "trig_mode", "click" } },
+    { "OSC 1", { "osc1_wave", "osc1_pitch", "osc1_drop", "osc1_decay", "osc1_level", "osc1_track", "osc1_octave", "osc1_semi" } },
+    { "OSC 2", { "osc2_wave", "osc2_pitch", "osc2_drop", "osc2_decay", "osc2_level", "osc2_track", "osc2_octave", "osc2_semi" } },
+    { "OSC 3", { "osc3_wave", "osc3_pitch", "osc3_drop", "osc3_decay", "osc3_level", "osc3_track", "osc3_octave", "osc3_semi" } },
+    { "SWITCHES", { "trig_mode", "click", "osc1_track", "osc2_track", "osc3_track", "osc1_mute", "osc2_mute", "osc3_mute" } },
+};
 
 static const ClapRemotePages k_remote_pages[] = {
     { k_kick_remote_pages, sizeof(k_kick_remote_pages) / sizeof(k_kick_remote_pages[0]) },
@@ -48,4 +55,5 @@ static const ClapRemotePages k_remote_pages[] = {
     { k_snare_remote_pages, sizeof(k_snare_remote_pages) / sizeof(k_snare_remote_pages[0]) },
     { k_cymbal_remote_pages, sizeof(k_cymbal_remote_pages) / sizeof(k_cymbal_remote_pages[0]) },
     { k_hihat_remote_pages, sizeof(k_hihat_remote_pages) / sizeof(k_hihat_remote_pages[0]) },
+    { k_dredrum_remote_pages, sizeof(k_dredrum_remote_pages) / sizeof(k_dredrum_remote_pages[0]) },
 };

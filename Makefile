@@ -10,7 +10,7 @@
 
 include dpf/Makefile.base.mk
 
-PLUGINS := kick tom snare cymbal hihat
+PLUGINS := kick tom snare cymbal hihat dredrum
 
 all: plugins gen
 
@@ -77,6 +77,22 @@ test: all tools
 	tools/test_plugins.sh
 	build/tools/clap_latency_check $(wildcard bin/*.clap)
 	build/tools/clap_remote_check $(wildcard bin/*.clap)
+	@if command -v avr-gcc >/dev/null && [ -e /usr/include/simavr/sim_avr.h ]; then \
+		$(MAKE) --no-print-directory dredrum-check; \
+	else echo "dredrum-check: SKIPPED (needs avr-gcc + simavr)"; fi
+
+# Maquina Dredrum: the noise wave's program-memory bytes (needs avr-gcc;
+# output checked in) and the bit-exact check against the firmware on simavr
+dredrum-flash:
+	python3 tools/dredrum_flash/gen_dredrum_flash.py
+
+SIMAVR_LIBS ?= $(shell pkg-config --libs simavr 2>/dev/null || echo -lsimavr -lelf)
+dredrum-check:
+	python3 tools/dredrum_flash/gen_dredrum_flash.py --check
+	@mkdir -p build/tools
+	$(CC) -O2 -std=gnu11 -Iengine tools/dredrum_ref/dredrum_ref.c engine/dredrum/dredrum_core.c \
+		$(SIMAVR_LIBS) -o build/tools/dredrum_ref
+	build/tools/dredrum_ref build/dredrum
 
 # Each file is copied to a temp name and renamed over the old one: a running
 # host (Bitwig) keeps the old inode it has mapped. Copying over a loaded .so in
@@ -120,4 +136,4 @@ clean:
 	$(MAKE) clean -C dpf/utils/lv2-ttl-generator
 	rm -rf bin build
 
-.PHONY: presets all engine dpf-patches plugins gen tools test install clean aarch64 test-aarch64
+.PHONY: presets all engine dpf-patches plugins gen tools test install clean aarch64 test-aarch64 dredrum-flash dredrum-check

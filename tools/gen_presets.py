@@ -27,7 +27,7 @@ TABLES = os.path.join(ROOT, "plugins", "common", "VoiceTables.generated.hpp")
 PRESETS_HPP = os.path.join(ROOT, "plugins", "common", "Presets.hpp")
 RANDOM_HPP = os.path.join(ROOT, "plugins", "common", "Randomizer.hpp")
 OUT_HPP = os.path.join(ROOT, "plugins", "common", "FactoryPresets.generated.hpp")
-VOICES = ["kick", "tom", "snare", "cymbal", "hihat"]
+VOICES = ["kick", "tom", "snare", "cymbal", "hihat", "dredrum"]
 
 
 def c_str(s):
@@ -54,8 +54,9 @@ def load_tables():
             else:
                 p["min"], p["max"] = 0, int(n) - 1
             params.append(p)
-        # extras (ExtraParams.hpp): note_pitch, and hat_mode on the hihat
-        params.append(dict(symbol="note_pitch", kind="Toggle", default=0, labels=["Off", "On"], min=0, max=1))
+        # extras (ExtraParams.hpp): note_pitch, and hat_mode on the hihat; none on dredrum
+        if v != "dredrum":
+            params.append(dict(symbol="note_pitch", kind="Toggle", default=0, labels=["Off", "On"], min=0, max=1))
         if v == "hihat":
             params.append(dict(symbol="hat_mode", kind="Enum", default=0, labels=["Closed", "Open"], min=0, max=1))
         voices[v] = params

@@ -4,6 +4,8 @@
 //   note_pitch  all voices   "Key Track" (transpose by the played note)
 //   hat_mode    HiHat only   Closed / Open: which hat this instance plays
 //
+// Maquina Dredrum has none (its table holds everything, see gen_params.py).
+//
 // SPDX-License-Identifier: GPL-3.0-only
 #pragma once
 
@@ -24,7 +26,10 @@ static const VoiceParam kExtraParams[] = {
 
 constexpr uint8_t kHiHatVoice = 5; // LXR_VOICE_HIHAT
 
-inline uint32_t numExtraParams(const VoiceDef& d) { return d.voice == kHiHatVoice ? 2u : 1u; }
+inline uint32_t numExtraParams(const VoiceDef& d)
+{
+    return d.voice == kDredrumVoice ? 0u : d.voice == kHiHatVoice ? 2u : 1u;
+}
 inline uint32_t numAllParams(const VoiceDef& d) { return d.numParams + numExtraParams(d); }
 inline bool isExtraParam(const VoiceDef& d, uint32_t i) { return i >= d.numParams; }
 

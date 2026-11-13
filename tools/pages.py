@@ -62,6 +62,18 @@ PAGES = {
         ("LFO", ["lfo_rate", "lfo_sync", "lfo_amount", "lfo_wave", "lfo_retrigger", "lfo_offset", "lfo_target",
                  "trigger_note"]),
     ],
+    # Maquina Dredrum: levels/decays first, then one page per oscillator
+    # (its 8 controls; mute only on SWITCHES), then the switches
+    "dredrum": [
+        ("MIX", ["@bank", "@patch", "osc1_level", "osc2_level", "osc3_level", "osc1_decay", "osc2_decay",
+                 "osc3_decay"]),
+    ] + [
+        (f"OSC {n}", [f"osc{n}_wave", f"osc{n}_pitch", f"osc{n}_drop", f"osc{n}_decay", f"osc{n}_level",
+                      f"osc{n}_track", f"osc{n}_octave", f"osc{n}_semi"]) for n in (1, 2, 3)
+    ] + [
+        ("SWITCHES", ["trig_mode", "click", "osc1_track", "osc2_track", "osc3_track", "osc1_mute",
+                      "osc2_mute", "osc3_mute"]),
+    ],
 }
 
 # parameters taking the "@bank"/"@patch" slots on CLAP pages (hosts browse presets themselves)
@@ -71,6 +83,7 @@ CLAP_FILL = {
     "snare": ["volume", "pan"],
     "cymbal": ["drive", "decimation"],
     "hihat": ["drive", "decimation"],
+    "dredrum": ["trig_mode", "click"],
 }
 
 

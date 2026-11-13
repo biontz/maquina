@@ -46,6 +46,7 @@ static const VoiceCategories kPresetCategories[] = {
     { "snare", { "808", "909", "Acoustic", "Rim", "Clap", "Noise", "Lo-Fi", "FX" } },
     { "cymbal", { "Analog", "Metallic", "Noise", "Acoustic", "Lo-Fi", "FX" } },
     { "hihat", { "Analog", "Metallic", "Noise", "Acoustic", "Lo-Fi", "FX" } },
+    { "dredrum", { "Kick", "Snare", "Hat", "Perc", "Zap", "Drone", "FX" } },
 };
 static const char* const kPresetTags[] = { "short", "long", "punchy", "boomy", "soft", "bright", "dark",
                                            "clean", "dirty", "metallic", "noisy", "pitched", "lo-fi",

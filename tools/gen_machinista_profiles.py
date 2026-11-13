@@ -30,6 +30,7 @@ BUNDLES = {
     "snare": "MaquinaSnare",
     "cymbal": "MaquinaCymbal",
     "hihat": "MaquinaHiHat",
+    "dredrum": "MaquinaDredrum",
 }
 
 PORT_RE = re.compile(

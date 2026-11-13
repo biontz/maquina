@@ -43,4 +43,61 @@ for p in kick:0 tom:1 snare:3 cymbal:4 hihat:5; do
         $QEMU "$TOOLS/lv2_render" "urn:maquina:$n" $rate 3 "$OUT/$n-$rate.wav" | sed 's/^/  /' || fail=1
     done
 done
+
+# Maquina Dredrum: engine bit-exactness is tools/dredrum_ref (simavr); here the
+# plugin: isolation, sample rates, and Gate mode holding the decay while the
+# note is down (lv2_render releases every note after 0.15 s)
+echo "== dredrum"
+$QEMU "$TOOLS/lv2_render" urn:maquina:dredrum 48000 3 "$OUT/dredrum-twin.wav" --twin \
+    twin:osc1_pitch=200 twin:osc2_level=255 twin:trig_mode=1 | sed -n 's/^  twin/  twin/p' || fail=1
+for rate in 44100 48000 96000; do
+    $QEMU "$TOOLS/lv2_render" urn:maquina:dredrum $rate 3 "$OUT/dredrum-$rate.wav" | sed 's/^/  /' || fail=1
+done
+$QEMU "$TOOLS/lv2_render" urn:maquina:dredrum 48000 3 "$OUT/dredrum-trig.wav" osc1_decay=0 >/dev/null
+$QEMU "$TOOLS/lv2_render" urn:maquina:dredrum 48000 3 "$OUT/dredrum-gate.wav" osc1_decay=0 trig_mode=1 >/dev/null
+python3 - "$OUT/dredrum-trig.wav" "$OUT/dredrum-gate.wav" <<'PY' || fail=1
+import array, sys
+def energy(path):
+    a = array.array("f"); a.frombytes(open(path, "rb").read()[44:])
+    return sum(x * x for x in a)
+t, g = energy(sys.argv[1]), energy(sys.argv[2])
+ok = g > 1.5 * t
+print(f"  gate mode holds: energy gate/trig {g / t:.2f}  {'ok' if ok else 'FAIL'}")
+sys.exit(0 if ok else 1)
+PY
+
+# Mute: Init only sounds on oscillator 1, so muting it must give silence
+# (lv2_render fails on silence by design; here silence is the expected result)
+$QEMU "$TOOLS/lv2_render" urn:maquina:dredrum 48000 2 "$OUT/dredrum-mute.wav" osc1_mute=1 >/dev/null || true
+python3 - "$OUT/dredrum-mute.wav" <<'PY' || fail=1
+import array, sys
+a = array.array("f"); a.frombytes(open(sys.argv[1], "rb").read()[44:])
+peak = max(abs(x) for x in a)
+print(f"  mute: peak {peak:g}  {'ok' if peak == 0 else 'FAIL'}")
+sys.exit(0 if peak == 0 else 1)
+PY
+
+# per-oscillator tuning: Octave +1 doubles the frequency (zero crossings),
+# Key Track follows the pattern's notes 60 / 46 (60 = the set pitch)
+tone="osc1_drop=0 osc1_decay=247 osc1_pitch=40"
+$QEMU "$TOOLS/lv2_render" urn:maquina:dredrum 48000 3 "$OUT/dredrum-oct0.wav" $tone >/dev/null
+$QEMU "$TOOLS/lv2_render" urn:maquina:dredrum 48000 3 "$OUT/dredrum-oct1.wav" $tone osc1_octave=1 >/dev/null
+$QEMU "$TOOLS/lv2_render" urn:maquina:dredrum 48000 3 "$OUT/dredrum-semi7.wav" $tone osc1_semi=7 >/dev/null
+$QEMU "$TOOLS/lv2_render" urn:maquina:dredrum 48000 3 "$OUT/dredrum-track.wav" $tone osc1_track=1 >/dev/null
+python3 - "$OUT" <<'PY' || fail=1
+import array, sys
+def crossings(name):
+    a = array.array("f"); a.frombytes(open(f"{sys.argv[1]}/dredrum-{name}.wav", "rb").read()[44:])
+    l = a[0::2]
+    return sum(1 for i in range(1, len(l)) if (l[i - 1] < 0) != (l[i] < 0))
+c0, c1, c7, ct = (crossings(n) for n in ("oct0", "oct1", "semi7", "track"))
+checks = [("octave +1", c1 / c0, 2.0), ("semi +7", c7 / c0, 2 ** (7 / 12)),
+          ("key track (notes 60/46)", ct / c0, (1 + 2 ** (-14 / 12)) / 2)]
+bad = 0
+for name, got, want in checks:
+    ok = abs(got / want - 1) < 0.03
+    bad += not ok
+    print(f"  tuning {name}: x{got:.3f} (want x{want:.3f})  {'ok' if ok else 'FAIL'}")
+sys.exit(1 if bad else 0)
+PY
 [ $fail -eq 0 ] && echo "test_plugins: PASSED" || { echo "test_plugins: FAILED"; exit 1; }

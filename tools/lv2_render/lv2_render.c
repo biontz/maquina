@@ -14,6 +14,8 @@
  *
  * Notes: a fixed pattern (velocity varies), note 60, plus note 46 for every
  * other hit (with Trigger Note = Any both play the voice at its set pitch).
+ * Each note is released 0.15 s later (the LXR voices ignore note-off;
+ * Maquina Dredrum's Gate mode holds its decay until then).
  *
  * SPDX-License-Identifier: GPL-3.0-only
  */
@@ -143,8 +145,8 @@ static Instance* make_instance(double rate, uint32_t block)
 }
 
 /* note pattern in host frames */
-typedef struct { uint64_t frame; uint8_t note, vel; } Note;
-static Note notes[64];
+typedef struct { uint64_t frame; uint8_t note, vel; } Note; /* vel 0: note-off */
+static Note notes[128];
 static int nnotes;
 
 static void make_pattern(double rate, double seconds, int aligned)
@@ -152,13 +154,17 @@ static void make_pattern(double rate, double seconds, int aligned)
     static const uint8_t vels[] = { 127, 64, 100, 127, 30, 90, 110, 50 };
     double t = 0.0;
     nnotes = 0;
-    for (int i = 0; t < seconds - 0.4 && nnotes < 64; i++, t += 0.37) {
+    for (int i = 0; t < seconds - 0.4 && nnotes < 126; i++, t += 0.37) {
         uint64_t f = (uint64_t)(t * rate) + (uint64_t)(0.05 * rate);
         if (aligned) /* engine block start = H + MAQUINA_EVENT_DELAY */
             f = ((f + MAQUINA_EVENT_DELAY + 63) / 64) * 64 - MAQUINA_EVENT_DELAY;
         notes[nnotes].frame = f;
         notes[nnotes].note = (i % 2) ? 46 : 60;
         notes[nnotes].vel = vels[i % 8];
+        nnotes++;
+        notes[nnotes] = notes[nnotes - 1];
+        notes[nnotes].frame = f + (uint64_t)(0.15 * rate);
+        notes[nnotes].vel = 0;
         nnotes++;
     }
 }
@@ -177,7 +183,7 @@ static void fill_events(Instance* in, uint64_t start, uint32_t frames)
         e.ev.time.frames = (int64_t)(notes[i].frame - start);
         e.ev.body.type = urid_midi;
         e.ev.body.size = 3;
-        e.msg[0] = 0x90; e.msg[1] = notes[i].note; e.msg[2] = notes[i].vel;
+        e.msg[0] = notes[i].vel ? 0x90 : 0x80; e.msg[1] = notes[i].note; e.msg[2] = notes[i].vel;
         LV2_Atom_Event* dst = lv2_atom_sequence_end(&seq->body, seq->atom.size);
         memcpy(dst, &e, sizeof(LV2_Atom_Event) + 3);
         seq->atom.size += lv2_atom_pad_size(sizeof(LV2_Atom_Event) + 3);

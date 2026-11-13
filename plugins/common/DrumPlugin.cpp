@@ -9,7 +9,11 @@
 #include <cstring>
 #include <vector>
 
+#if MAQUINA_DREDRUM
+#include "DredrumHost.hpp"
+#else
 #include "EngineHost.hpp"
+#endif
 #include "ExtraParams.hpp"
 #include "Randomizer.hpp"
 #include "FactoryPresets.generated.hpp"
@@ -21,7 +25,11 @@
 
 START_NAMESPACE_DISTRHO
 
-using maquina::EngineHost;
+#if MAQUINA_DREDRUM
+using Engine = maquina::DredrumHost; // Maquina Dredrum: the Dredrum firmware engine
+#else
+using Engine = maquina::EngineHost;  // the LXR-02 firmware engine
+#endif
 using maquina::ParamKind;
 using maquina::VoiceDef;
 using maquina::VoiceParam;
@@ -40,7 +48,8 @@ struct PageGroups {
         bool used[8] = {};
         for (uint32_t i = 0; i < voiceDef().numParams; ++i)
             used[voiceDef().params[i].page] = true;
-        used[7] = true; // the extra parameters live on the mix page
+        if (maquina::numExtraParams(voiceDef()) > 0)
+            used[7] = true; // the extra parameters live on the mix page
         for (uint8_t pg = 0; pg < 8; ++pg) {
             groupOfPage[pg] = used[pg] ? int8_t(count) : -1;
             if (used[pg])
@@ -58,6 +67,10 @@ static const char* const kPageNames[8] = { "Oscillator", "Amp EG", "Modulation",
                                            "Transient", "Filter", "LFO", "Mix" };
 static const char* const kPageSymbols[8] = { "osc", "amp", "mod", "fm",
                                              "transient", "filter", "lfo", "mix" };
+// Maquina Dredrum pages (tools/gen_params.py DREDRUM_PAGE_TITLES)
+static const char* const kDredrumPageNames[4] = { "Osc 1", "Osc 2", "Osc 3", "Mode" };
+static const char* const kDredrumPageSymbols[4] = { "osc1", "osc2", "osc3", "mode" };
+static bool isDredrum() { return voiceDef().voice == maquina::kDredrumVoice; }
 
 // Noise seed: differs per instance (like the hardware RNG) unless
 // MAQUINA_RNG_SEED is set, which makes renders reproducible for tests.
@@ -85,17 +98,29 @@ protected:
     const char* getLabel() const override { return DISTRHO_PLUGIN_LABEL; }
     const char* getDescription() const override
     {
+        if (isDredrum())
+            return "8-bit 3-oscillator percussion/drone voice from the Dredrum Eurorack firmware "
+                   "(unofficial; not affiliated with its authors).";
         return "Drum voice from the LXR-02 firmware sound engine "
                "(unofficial; not affiliated with Erica Synths).";
     }
     const char* getMaker() const override { return DISTRHO_PLUGIN_BRAND; }
-    const char* getHomePage() const override { return "https://github.com/erica-synths/lxr-desktop-app"; }
+    const char* getHomePage() const override
+    {
+        return isDredrum() ? "https://github.com/buranelectrix/dredrum"
+                           : "https://github.com/erica-synths/lxr-desktop-app";
+    }
     const char* getLicense() const override { return "GPL-3.0-only"; }
     uint32_t getVersion() const override { return d_version(0, 1, 0); }
 
     void initPortGroup(uint32_t groupId, PortGroup& group) override
     {
         const uint8_t page = pageGroups().pageOfGroup[groupId];
+        if (isDredrum()) {
+            group.name = kDredrumPageNames[page & 3];
+            group.symbol = kDredrumPageSymbols[page & 3];
+            return;
+        }
         const bool metal = voiceDef().voice >= 4;
         group.name = (page == 3 && metal) ? "Mod Oscillators" : kPageNames[page];
         group.symbol = (page == 3 && metal) ? "modosc" : kPageSymbols[page];
@@ -233,6 +258,8 @@ protected:
             const uint8_t status = ev.data[0] & 0xF0;
             if (status == 0x90 && ev.data[2] != 0)
                 fEngine.noteOn(ev.frame, ev.data[1], ev.data[2]);
+            else if (status == 0x80 || status == 0x90)
+                fEngine.noteOff(ev.frame, ev.data[1]);
         }
 
         fEngine.process(outputs[0], outputs[1], frames);
@@ -245,7 +272,7 @@ private:
         return maquina::isExtraParam(voiceDef(), index) ? index - voiceDef().numParams : UINT32_MAX;
     }
 
-    EngineHost fEngine;
+    Engine fEngine;
     String fRandLevels { maquina::RandSettings().toString().c_str() };
     String fPresetName { "Init" };
 

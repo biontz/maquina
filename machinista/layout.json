@@ -396,5 +396,59 @@
         ]
       }
     ]
+  },
+  "dredrum": {
+    "name": "Dredrum",
+    "pages": [
+      {
+        "title": "OSC 1",
+        "controls": [
+          "osc1_wave",
+          "osc1_pitch",
+          "osc1_drop",
+          "osc1_decay",
+          "osc1_level",
+          "osc1_track",
+          "osc1_mute",
+          "osc1_octave",
+          "osc1_semi"
+        ]
+      },
+      {
+        "title": "OSC 2",
+        "controls": [
+          "osc2_wave",
+          "osc2_pitch",
+          "osc2_drop",
+          "osc2_decay",
+          "osc2_level",
+          "osc2_track",
+          "osc2_mute",
+          "osc2_octave",
+          "osc2_semi"
+        ]
+      },
+      {
+        "title": "OSC 3",
+        "controls": [
+          "osc3_wave",
+          "osc3_pitch",
+          "osc3_drop",
+          "osc3_decay",
+          "osc3_level",
+          "osc3_track",
+          "osc3_mute",
+          "osc3_octave",
+          "osc3_semi",
+          "click"
+        ]
+      },
+      {
+        "title": "MODE",
+        "controls": [
+          "trig_mode"
+        ]
+      }
+    ]
   }
 }

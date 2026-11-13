@@ -144,6 +144,10 @@ static const FactoryPreset k_hihat_presets[] = {
     { "Hat Sweep", "FX", "modulated", k_hihat_pv9, 12 },
 };
 
+static const FactoryPreset k_dredrum_presets[] = {
+    { "", "", "", nullptr, 0 },
+};
+
 struct VoicePresets { const FactoryPreset* presets; uint32_t count; };
 // in k_voices order
 static const VoicePresets k_factory_presets[] = {
@@ -152,6 +156,7 @@ static const VoicePresets k_factory_presets[] = {
     { k_snare_presets, 14 },
     { k_cymbal_presets, 10 },
     { k_hihat_presets, 10 },
+    { k_dredrum_presets, 0 },
 };
 
 } // namespace maquina

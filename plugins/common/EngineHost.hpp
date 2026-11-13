@@ -58,6 +58,7 @@ public:
     // Audio thread. Queue events for the coming process() call (frame offsets
     // within that call, in order), then call process().
     void noteOn(uint32_t frameOffset, uint8_t note, uint8_t velocity);
+    void noteOff(uint32_t, uint8_t) {} // the LXR voices ignore note-off
     void setTempo(double bpm) { fBpm = bpm; }
     void process(float* outL, float* outR, uint32_t frames);
 

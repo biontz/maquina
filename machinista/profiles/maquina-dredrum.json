@@ -1,0 +1,472 @@
+{
+  "schema": 1,
+  "id": "maquina-dredrum",
+  "uri": "urn:maquina:dredrum",
+  "title": "Maquina Dredrum",
+  "provider": "parameter-bank",
+  "bank_format": "json",
+  "extensions": [
+    ".json"
+  ],
+  "parameters": [
+    {
+      "index": 5,
+      "symbol": "osc1_wave",
+      "name": "1 WAVE",
+      "default": 0,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "SINE"
+        ],
+        [
+          1,
+          "SQUARE"
+        ],
+        [
+          2,
+          "SAW"
+        ],
+        [
+          3,
+          "NOISE"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 6,
+      "symbol": "osc1_pitch",
+      "name": "1 PITCH",
+      "default": 20,
+      "min": 0,
+      "max": 255,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 7,
+      "symbol": "osc1_drop",
+      "name": "1 DROP",
+      "default": 110,
+      "min": 0,
+      "max": 255,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 8,
+      "symbol": "osc1_decay",
+      "name": "1 DECAY",
+      "default": 190,
+      "min": 0,
+      "max": 255,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 9,
+      "symbol": "osc1_level",
+      "name": "1 LEVEL",
+      "default": 255,
+      "min": 0,
+      "max": 255,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 10,
+      "symbol": "osc1_track",
+      "name": "1 TRACK",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    },
+    {
+      "index": 11,
+      "symbol": "osc1_mute",
+      "name": "1 MUTE",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    },
+    {
+      "index": 12,
+      "symbol": "osc1_octave",
+      "name": "1 OCTAVE",
+      "default": 0,
+      "min": -4,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 13,
+      "symbol": "osc1_semi",
+      "name": "1 SEMI",
+      "default": 0,
+      "min": -12,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 14,
+      "symbol": "osc2_wave",
+      "name": "2 WAVE",
+      "default": 3,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "SINE"
+        ],
+        [
+          1,
+          "SQUARE"
+        ],
+        [
+          2,
+          "SAW"
+        ],
+        [
+          3,
+          "NOISE"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 15,
+      "symbol": "osc2_pitch",
+      "name": "2 PITCH",
+      "default": 128,
+      "min": 0,
+      "max": 255,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 16,
+      "symbol": "osc2_drop",
+      "name": "2 DROP",
+      "default": 0,
+      "min": 0,
+      "max": 255,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 17,
+      "symbol": "osc2_decay",
+      "name": "2 DECAY",
+      "default": 0,
+      "min": 0,
+      "max": 255,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 18,
+      "symbol": "osc2_level",
+      "name": "2 LEVEL",
+      "default": 0,
+      "min": 0,
+      "max": 255,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 19,
+      "symbol": "osc2_track",
+      "name": "2 TRACK",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    },
+    {
+      "index": 20,
+      "symbol": "osc2_mute",
+      "name": "2 MUTE",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    },
+    {
+      "index": 21,
+      "symbol": "osc2_octave",
+      "name": "2 OCTAVE",
+      "default": 0,
+      "min": -4,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 22,
+      "symbol": "osc2_semi",
+      "name": "2 SEMI",
+      "default": 0,
+      "min": -12,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 23,
+      "symbol": "osc3_wave",
+      "name": "3 WAVE",
+      "default": 1,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "SINE"
+        ],
+        [
+          1,
+          "SQUARE"
+        ],
+        [
+          2,
+          "SAW"
+        ],
+        [
+          3,
+          "NOISE"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 24,
+      "symbol": "osc3_pitch",
+      "name": "3 PITCH",
+      "default": 160,
+      "min": 0,
+      "max": 255,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 25,
+      "symbol": "osc3_drop",
+      "name": "3 DROP",
+      "default": 0,
+      "min": 0,
+      "max": 255,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 26,
+      "symbol": "osc3_decay",
+      "name": "3 DECAY",
+      "default": 0,
+      "min": 0,
+      "max": 255,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 27,
+      "symbol": "osc3_level",
+      "name": "3 LEVEL",
+      "default": 0,
+      "min": 0,
+      "max": 255,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 28,
+      "symbol": "osc3_track",
+      "name": "3 TRACK",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    },
+    {
+      "index": 29,
+      "symbol": "osc3_mute",
+      "name": "3 MUTE",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    },
+    {
+      "index": 30,
+      "symbol": "osc3_octave",
+      "name": "3 OCTAVE",
+      "default": 0,
+      "min": -4,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 31,
+      "symbol": "osc3_semi",
+      "name": "3 SEMI",
+      "default": 0,
+      "min": -12,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 32,
+      "symbol": "click",
+      "name": "CLICK",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    },
+    {
+      "index": 33,
+      "symbol": "trig_mode",
+      "name": "MODE",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "TRIG"
+        ],
+        [
+          1,
+          "GATE"
+        ]
+      ],
+      "choice": true
+    }
+  ],
+  "pages": [
+    {
+      "title": "MIX",
+      "controls": [
+        "@bank",
+        "@patch",
+        "osc1_level",
+        "osc2_level",
+        "osc3_level",
+        "osc1_decay",
+        "osc2_decay",
+        "osc3_decay"
+      ]
+    },
+    {
+      "title": "OSC 1",
+      "controls": [
+        "osc1_wave",
+        "osc1_pitch",
+        "osc1_drop",
+        "osc1_decay",
+        "osc1_level",
+        "osc1_track",
+        "osc1_octave",
+        "osc1_semi"
+      ]
+    },
+    {
+      "title": "OSC 2",
+      "controls": [
+        "osc2_wave",
+        "osc2_pitch",
+        "osc2_drop",
+        "osc2_decay",
+        "osc2_level",
+        "osc2_track",
+        "osc2_octave",
+        "osc2_semi"
+      ]
+    },
+    {
+      "title": "OSC 3",
+      "controls": [
+        "osc3_wave",
+        "osc3_pitch",
+        "osc3_drop",
+        "osc3_decay",
+        "osc3_level",
+        "osc3_track",
+        "osc3_octave",
+        "osc3_semi"
+      ]
+    },
+    {
+      "title": "SWITCHES",
+      "controls": [
+        "trig_mode",
+        "click",
+        "osc1_track",
+        "osc2_track",
+        "osc3_track",
+        "osc1_mute",
+        "osc2_mute",
+        "osc3_mute"
+      ]
+    }
+  ],
+  "quirks": [
+    "Drum voice from the LXR-02 firmware sound engine; parameters use the hardware's 0-127 scales.",
+    "No graphical UI. Pages group the voice's firmware menu pages onto the eight encoders.",
+    "TRIG NOTE 'ANY' plays every note at the set pitch; enable KEY TRACK to transpose."
+  ]
+}

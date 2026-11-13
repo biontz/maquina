@@ -30,10 +30,13 @@ struct VoiceParam {
     int16_t def;            // default in plugin units (firmware Initkit)
 };
 
+// VoiceDef::voice of Maquina Dredrum: not an LXR engine voice (engine/dredrum)
+constexpr uint8_t kDredrumVoice = 16;
+
 struct VoiceDef {
     const char* id;
     const char* name;
-    uint8_t voice;        // engine voice slot (LxrVoice)
+    uint8_t voice;        // engine voice slot (LxrVoice), or kDredrumVoice
     const VoiceParam* params;
     uint32_t numParams;
 };
