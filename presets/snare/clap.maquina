@@ -1,0 +1,14 @@
+# Maquina factory preset
+voice = snare
+name = Clap
+category = Clap
+tags = noisy
+noise_mix = 127
+noise_freq = 100
+amp_decay = 18
+amp_repeat = 35
+trans_wave = Clap
+trans_volume = 100
+filter_type = Bandpass
+filter_freq = 95
+filter_reso = 20

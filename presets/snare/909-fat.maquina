@@ -1,0 +1,14 @@
+# Maquina factory preset
+voice = snare
+name = 909 Fat
+category = 909
+tags = long, punchy
+osc_coarse = -5
+osc_wave = Triangle
+noise_mix = 80
+noise_freq = 115
+amp_decay = 20
+pitch_amount = 55
+pitch_decay = 10
+filter_freq = 105
+drive = 80

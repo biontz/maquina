@@ -1,0 +1,16 @@
+# Maquina factory preset
+voice = snare
+name = Acoustic Snare
+category = Acoustic
+tags = punchy
+osc_coarse = -8
+osc_wave = Triangle
+noise_mix = 75
+noise_freq = 100
+amp_decay = 18
+pitch_amount = 40
+pitch_decay = 8
+trans_wave = Snare
+trans_volume = 100
+trans_freq = 100
+filter_freq = 110

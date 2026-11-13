@@ -1,0 +1,12 @@
+# Maquina factory preset
+voice = kick
+name = 808 Long Boom
+category = 808
+tags = long, boomy, clean
+osc_coarse = -31
+osc_wave = Sine
+amp_decay = 58
+amp_slope = 55
+pitch_amount = 40
+pitch_decay = 22
+pitch_slope = 30

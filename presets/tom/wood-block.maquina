@@ -1,0 +1,10 @@
+# Maquina factory preset
+voice = tom
+name = Wood Block
+category = Perc
+tags = short, bright, pitched
+osc_coarse = 12
+osc_wave = Triangle
+amp_decay = 6
+trans_wave = Tick
+trans_volume = 60

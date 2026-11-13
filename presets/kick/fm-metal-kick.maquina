@@ -1,0 +1,12 @@
+# Maquina factory preset
+voice = kick
+name = FM Metal Kick
+category = FM
+tags = metallic, bright
+osc_coarse = -26
+fm_amount = 80
+fm_freq = 7
+fm_wave = Square
+amp_decay = 25
+pitch_amount = 55
+pitch_decay = 15

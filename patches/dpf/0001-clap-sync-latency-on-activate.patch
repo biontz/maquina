@@ -1,0 +1,19 @@
+diff --git a/distrho/src/DistrhoPluginCLAP.cpp b/distrho/src/DistrhoPluginCLAP.cpp
+index 59390921..ed310e4b 100644
+--- a/distrho/src/DistrhoPluginCLAP.cpp
++++ b/distrho/src/DistrhoPluginCLAP.cpp
+@@ -826,6 +826,14 @@ public:
+         fPlugin.setSampleRate(sampleRate, true);
+         fPlugin.setBufferSize(maxFramesCount, true);
+         fPlugin.activate();
++       #if DISTRHO_PLUGIN_WANT_LATENCY
++        // CLAP allows the latency to change during activate, and the host reads it
++        // afterwards, so this value is already known to the host. Without this,
++        // the first process() sees a "change" from the initial 0 and requests a
++        // restart and reports a latency change while active.
++        fLastKnownLatency = fPlugin.getLatency();
++        fLatencyChanged = false;
++       #endif
+     }
+ 
+     void deactivate()

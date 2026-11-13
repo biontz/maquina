@@ -1,0 +1,49 @@
+{
+ "schema": 1,
+ "uri": "urn:maquina:tom",
+ "name": "FX",
+ "patches": [
+  {
+   "name": "Siren Drop",
+   "controls": {
+    "osc_coarse": -8,
+    "osc_fine": 0,
+    "osc_wave": 0,
+    "osc_pwm": 0,
+    "amp_attack": 0,
+    "amp_decay": 50,
+    "amp_slope": 11,
+    "pitch_decay": 60,
+    "pitch_slope": 10,
+    "pitch_amount": 127,
+    "velo_dest": 0,
+    "velo_amount": 0,
+    "velo_volume": 0,
+    "fm_amount": 0,
+    "fm_freq": -60,
+    "fm_wave": 0,
+    "fm_mode": 0,
+    "trans_wave": 0,
+    "trans_volume": 0,
+    "trans_freq": 0,
+    "filter_freq": 127,
+    "filter_reso": 0,
+    "filter_type": 0,
+    "filter_drive": 0,
+    "lfo_rate": 100,
+    "lfo_sync": 0,
+    "lfo_amount": 30,
+    "lfo_wave": 0,
+    "lfo_retrigger": 0,
+    "lfo_offset": 0,
+    "lfo_target": 2,
+    "volume": 127,
+    "pan": 0,
+    "decimation": 127,
+    "drive": 63,
+    "trigger_note": 0,
+    "note_pitch": 0
+   }
+  }
+ ]
+}

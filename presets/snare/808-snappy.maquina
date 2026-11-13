@@ -1,0 +1,11 @@
+# Maquina factory preset
+voice = snare
+name = 808 Snappy
+category = 808
+tags = bright, short
+osc_coarse = -6
+noise_mix = 95
+noise_freq = 127
+amp_decay = 16
+filter_type = Highpass
+filter_freq = 40

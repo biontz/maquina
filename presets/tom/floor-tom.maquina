@@ -1,0 +1,17 @@
+# Maquina factory preset
+voice = tom
+name = Floor Tom
+category = Acoustic
+tags = long, dark
+osc_coarse = -20
+osc_wave = Triangle
+amp_decay = 42
+pitch_amount = 20
+pitch_decay = 30
+trans_wave = Tom
+trans_volume = 90
+trans_freq = 100
+fm_amount = 12
+fm_wave = Noise
+fm_mode = Mix
+filter_freq = 85

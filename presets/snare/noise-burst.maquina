@@ -1,0 +1,9 @@
+# Maquina factory preset
+voice = snare
+name = Noise Burst
+category = Noise
+tags = noisy, bright, short
+noise_mix = 127
+amp_decay = 15
+filter_type = Highpass
+filter_freq = 60

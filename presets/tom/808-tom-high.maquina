@@ -1,0 +1,9 @@
+# Maquina factory preset
+voice = tom
+name = 808 Tom High
+category = 808
+tags = pitched, clean, short
+osc_coarse = -10
+amp_decay = 30
+pitch_amount = 35
+pitch_decay = 20

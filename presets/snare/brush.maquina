@@ -1,0 +1,11 @@
+# Maquina factory preset
+voice = snare
+name = Brush
+category = Acoustic
+tags = soft, noisy, dark
+noise_mix = 120
+noise_freq = 80
+amp_attack = 8
+amp_decay = 20
+filter_freq = 85
+volume = 110

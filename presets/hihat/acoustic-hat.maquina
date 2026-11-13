@@ -1,0 +1,15 @@
+# Maquina factory preset
+voice = hihat
+name = Acoustic Hat
+category = Acoustic
+tags = bright
+osc_wave = Noise
+osc_coarse = 67
+mod1_wave = Square
+mod1_freq = 50
+mod1_gain = 80
+mod2_gain = 0
+trans_wave = Hat
+trans_volume = 80
+amp_decay = 6
+filter_freq = 100

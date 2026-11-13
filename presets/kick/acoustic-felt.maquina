@@ -1,0 +1,15 @@
+# Maquina factory preset
+voice = kick
+name = Acoustic Felt
+category = Acoustic
+tags = short, soft, dark
+osc_coarse = -24
+amp_decay = 20
+amp_slope = 35
+pitch_amount = 25
+pitch_decay = 12
+trans_wave = Kick
+trans_volume = 80
+trans_freq = 100
+filter_freq = 70
+filter_reso = 10

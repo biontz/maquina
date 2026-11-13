@@ -1,0 +1,14 @@
+# Maquina factory preset
+voice = snare
+name = Clap Tight
+category = Clap
+tags = noisy, short
+noise_mix = 127
+noise_freq = 105
+amp_decay = 10
+amp_repeat = 25
+trans_wave = Clap
+trans_volume = 90
+filter_type = Bandpass
+filter_freq = 100
+filter_reso = 15

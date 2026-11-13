@@ -1,0 +1,13 @@
+# Maquina factory preset
+voice = snare
+name = 808 Snare
+category = 808
+tags = short, clean
+osc_coarse = -6
+osc_wave = Sine
+noise_mix = 70
+noise_freq = 110
+amp_decay = 14
+amp_slope = 20
+pitch_amount = 50
+pitch_decay = 10

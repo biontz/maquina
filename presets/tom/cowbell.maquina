@@ -1,0 +1,15 @@
+# Maquina factory preset
+voice = tom
+name = Cowbell
+category = Perc
+tags = metallic, pitched
+osc_coarse = 5
+osc_wave = Square
+fm_amount = 64
+fm_freq = 13
+fm_wave = Square
+fm_mode = Mix
+amp_decay = 22
+filter_type = Bandpass
+filter_freq = 95
+filter_reso = 40

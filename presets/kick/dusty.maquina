@@ -1,0 +1,11 @@
+# Maquina factory preset
+voice = kick
+name = Dusty
+category = Lo-Fi
+tags = lo-fi, dark, soft
+osc_coarse = -28
+amp_decay = 30
+pitch_amount = 35
+pitch_decay = 15
+decimation = 95
+filter_freq = 60

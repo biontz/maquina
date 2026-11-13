@@ -1,0 +1,10 @@
+# Maquina factory preset
+voice = snare
+name = Zap Snare
+category = FX
+tags = pitched, bright
+osc_coarse = 0
+noise_mix = 50
+amp_decay = 16
+pitch_amount = 127
+pitch_decay = 30

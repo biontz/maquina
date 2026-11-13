@@ -1,0 +1,14 @@
+# Maquina factory preset
+voice = kick
+name = Driven 808
+category = Distorted
+tags = long, dirty, boomy
+osc_coarse = -31
+amp_decay = 55
+amp_slope = 55
+pitch_amount = 40
+pitch_decay = 22
+drive = 120
+filter_drive = 70
+filter_freq = 90
+volume = 110

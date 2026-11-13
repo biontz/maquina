@@ -1,0 +1,13 @@
+# Maquina factory preset
+voice = hihat
+name = Shaker
+category = Noise
+tags = soft, noisy
+osc_wave = Noise
+osc_coarse = 60
+mod1_gain = 0
+mod2_gain = 0
+amp_attack = 10
+amp_decay = 8
+filter_type = Bandpass
+filter_freq = 105

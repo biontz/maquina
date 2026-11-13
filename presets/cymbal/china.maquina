@@ -1,0 +1,19 @@
+# Maquina factory preset
+voice = cymbal
+name = China
+category = Acoustic
+tags = dirty, metallic
+osc_wave = Square
+osc_coarse = 40
+mod1_wave = Square
+mod1_freq = 47
+mod1_gain = 110
+mod2_wave = Square
+mod2_freq = 23
+mod2_gain = 90
+filter_type = Peak
+filter_freq = 95
+filter_reso = 40
+drive = 110
+amp_decay = 50
+amp_slope = 30

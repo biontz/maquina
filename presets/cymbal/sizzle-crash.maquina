@@ -1,0 +1,16 @@
+# Maquina factory preset
+voice = cymbal
+name = Sizzle Crash
+category = Noise
+tags = bright, noisy, metallic
+osc_wave = Square
+osc_coarse = 40
+mod1_wave = Square
+mod1_freq = 10
+mod1_gain = 100
+mod2_wave = Noise
+mod2_freq = 23
+mod2_gain = 40
+filter_freq = 75
+amp_decay = 60
+amp_slope = 30

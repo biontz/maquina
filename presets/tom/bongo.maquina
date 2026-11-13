@@ -1,0 +1,11 @@
+# Maquina factory preset
+voice = tom
+name = Bongo
+category = Perc
+tags = short, bright
+osc_coarse = 0
+amp_decay = 12
+pitch_amount = 25
+pitch_decay = 6
+trans_wave = Click 2
+trans_volume = 60

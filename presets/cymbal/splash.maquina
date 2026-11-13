@@ -1,0 +1,16 @@
+# Maquina factory preset
+voice = cymbal
+name = Splash
+category = Acoustic
+tags = short, bright, metallic
+osc_wave = Square
+osc_coarse = 40
+mod1_wave = Square
+mod1_freq = 17
+mod1_gain = 100
+mod2_wave = Square
+mod2_freq = 31
+mod2_gain = 100
+filter_freq = 80
+amp_decay = 30
+amp_slope = 30

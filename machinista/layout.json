@@ -1,0 +1,400 @@
+{
+  "kick": {
+    "name": "Kick",
+    "pages": [
+      {
+        "title": "OSC",
+        "controls": [
+          "osc_coarse",
+          "osc_fine",
+          "osc_wave",
+          "osc_pwm"
+        ]
+      },
+      {
+        "title": "AMP EG",
+        "controls": [
+          "amp_attack",
+          "amp_decay",
+          "amp_slope"
+        ]
+      },
+      {
+        "title": "MOD",
+        "controls": [
+          "pitch_decay",
+          "pitch_slope",
+          "pitch_amount",
+          "velo_dest",
+          "velo_amount",
+          "velo_volume"
+        ]
+      },
+      {
+        "title": "FM",
+        "controls": [
+          "fm_amount",
+          "fm_freq",
+          "fm_wave",
+          "fm_mode"
+        ]
+      },
+      {
+        "title": "TRANSIENT",
+        "controls": [
+          "trans_wave",
+          "trans_volume",
+          "trans_freq"
+        ]
+      },
+      {
+        "title": "FILTER",
+        "controls": [
+          "filter_freq",
+          "filter_reso",
+          "filter_type",
+          "filter_drive"
+        ]
+      },
+      {
+        "title": "LFO",
+        "controls": [
+          "lfo_rate",
+          "lfo_sync",
+          "lfo_amount",
+          "lfo_wave",
+          "lfo_retrigger",
+          "lfo_offset",
+          "lfo_target"
+        ]
+      },
+      {
+        "title": "MIX",
+        "controls": [
+          "volume",
+          "pan",
+          "decimation",
+          "drive",
+          "trigger_note"
+        ]
+      }
+    ]
+  },
+  "tom": {
+    "name": "Tom",
+    "pages": [
+      {
+        "title": "OSC",
+        "controls": [
+          "osc_coarse",
+          "osc_fine",
+          "osc_wave",
+          "osc_pwm"
+        ]
+      },
+      {
+        "title": "AMP EG",
+        "controls": [
+          "amp_attack",
+          "amp_decay",
+          "amp_slope"
+        ]
+      },
+      {
+        "title": "MOD",
+        "controls": [
+          "pitch_decay",
+          "pitch_slope",
+          "pitch_amount",
+          "velo_dest",
+          "velo_amount",
+          "velo_volume"
+        ]
+      },
+      {
+        "title": "FM",
+        "controls": [
+          "fm_amount",
+          "fm_freq",
+          "fm_wave",
+          "fm_mode"
+        ]
+      },
+      {
+        "title": "TRANSIENT",
+        "controls": [
+          "trans_wave",
+          "trans_volume",
+          "trans_freq"
+        ]
+      },
+      {
+        "title": "FILTER",
+        "controls": [
+          "filter_freq",
+          "filter_reso",
+          "filter_type",
+          "filter_drive"
+        ]
+      },
+      {
+        "title": "LFO",
+        "controls": [
+          "lfo_rate",
+          "lfo_sync",
+          "lfo_amount",
+          "lfo_wave",
+          "lfo_retrigger",
+          "lfo_offset",
+          "lfo_target"
+        ]
+      },
+      {
+        "title": "MIX",
+        "controls": [
+          "volume",
+          "pan",
+          "decimation",
+          "drive",
+          "trigger_note"
+        ]
+      }
+    ]
+  },
+  "snare": {
+    "name": "Snare",
+    "pages": [
+      {
+        "title": "OSC",
+        "controls": [
+          "osc_coarse",
+          "osc_fine",
+          "noise_freq",
+          "noise_mix",
+          "osc_wave",
+          "osc_pwm"
+        ]
+      },
+      {
+        "title": "AMP EG",
+        "controls": [
+          "amp_attack",
+          "amp_decay",
+          "amp_repeat",
+          "amp_slope"
+        ]
+      },
+      {
+        "title": "MOD",
+        "controls": [
+          "pitch_decay",
+          "pitch_slope",
+          "pitch_amount",
+          "velo_dest",
+          "velo_amount",
+          "velo_volume"
+        ]
+      },
+      {
+        "title": "TRANSIENT",
+        "controls": [
+          "trans_wave",
+          "trans_volume",
+          "trans_freq"
+        ]
+      },
+      {
+        "title": "FILTER",
+        "controls": [
+          "filter_freq",
+          "filter_reso",
+          "filter_type",
+          "filter_drive"
+        ]
+      },
+      {
+        "title": "LFO",
+        "controls": [
+          "lfo_rate",
+          "lfo_sync",
+          "lfo_amount",
+          "lfo_wave",
+          "lfo_retrigger",
+          "lfo_offset",
+          "lfo_target"
+        ]
+      },
+      {
+        "title": "MIX",
+        "controls": [
+          "volume",
+          "pan",
+          "decimation",
+          "drive",
+          "trigger_note"
+        ]
+      }
+    ]
+  },
+  "cymbal": {
+    "name": "Cymbal",
+    "pages": [
+      {
+        "title": "OSC",
+        "controls": [
+          "osc_coarse",
+          "osc_fine",
+          "osc_wave",
+          "osc_pwm"
+        ]
+      },
+      {
+        "title": "AMP EG",
+        "controls": [
+          "amp_attack",
+          "amp_decay",
+          "amp_repeat",
+          "amp_slope"
+        ]
+      },
+      {
+        "title": "MOD",
+        "controls": [
+          "velo_dest",
+          "velo_amount",
+          "velo_volume"
+        ]
+      },
+      {
+        "title": "MOD OSC",
+        "controls": [
+          "mod1_freq",
+          "mod2_freq",
+          "mod1_gain",
+          "mod2_gain",
+          "mod1_wave",
+          "mod2_wave"
+        ]
+      },
+      {
+        "title": "TRANSIENT",
+        "controls": [
+          "trans_wave",
+          "trans_volume",
+          "trans_freq"
+        ]
+      },
+      {
+        "title": "FILTER",
+        "controls": [
+          "filter_freq",
+          "filter_reso",
+          "filter_type",
+          "filter_drive"
+        ]
+      },
+      {
+        "title": "LFO",
+        "controls": [
+          "lfo_rate",
+          "lfo_sync",
+          "lfo_amount",
+          "lfo_wave",
+          "lfo_retrigger",
+          "lfo_offset",
+          "lfo_target"
+        ]
+      },
+      {
+        "title": "MIX",
+        "controls": [
+          "volume",
+          "pan",
+          "decimation",
+          "drive",
+          "trigger_note"
+        ]
+      }
+    ]
+  },
+  "hihat": {
+    "name": "HiHat",
+    "pages": [
+      {
+        "title": "OSC",
+        "controls": [
+          "osc_coarse",
+          "osc_fine",
+          "osc_wave",
+          "osc_pwm"
+        ]
+      },
+      {
+        "title": "AMP EG",
+        "controls": [
+          "amp_attack",
+          "amp_decay",
+          "amp_slope"
+        ]
+      },
+      {
+        "title": "MOD",
+        "controls": [
+          "velo_dest",
+          "velo_amount",
+          "velo_volume"
+        ]
+      },
+      {
+        "title": "MOD OSC",
+        "controls": [
+          "mod1_freq",
+          "mod2_freq",
+          "mod1_gain",
+          "mod2_gain",
+          "mod1_wave",
+          "mod2_wave"
+        ]
+      },
+      {
+        "title": "TRANSIENT",
+        "controls": [
+          "trans_wave",
+          "trans_volume",
+          "trans_freq"
+        ]
+      },
+      {
+        "title": "FILTER",
+        "controls": [
+          "filter_freq",
+          "filter_reso",
+          "filter_type",
+          "filter_drive"
+        ]
+      },
+      {
+        "title": "LFO",
+        "controls": [
+          "lfo_rate",
+          "lfo_sync",
+          "lfo_amount",
+          "lfo_wave",
+          "lfo_retrigger",
+          "lfo_offset",
+          "lfo_target"
+        ]
+      },
+      {
+        "title": "MIX",
+        "controls": [
+          "volume",
+          "pan",
+          "decimation",
+          "drive",
+          "trigger_note"
+        ]
+      }
+    ]
+  }
+}

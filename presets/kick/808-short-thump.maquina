@@ -1,0 +1,13 @@
+# Maquina factory preset
+voice = kick
+name = 808 Short Thump
+category = 808
+tags = short, punchy, clean
+osc_coarse = -29
+amp_decay = 30
+amp_slope = 46
+pitch_amount = 45
+pitch_decay = 18
+trans_wave = Click
+trans_volume = 40
+trans_freq = 90

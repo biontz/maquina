@@ -1,0 +1,16 @@
+# Maquina factory preset
+voice = kick
+name = Acoustic Room
+category = Acoustic
+tags = long, soft
+osc_coarse = -25
+amp_decay = 38
+pitch_amount = 30
+pitch_decay = 14
+trans_wave = Kick 2
+trans_volume = 70
+trans_freq = 90
+fm_amount = 15
+fm_wave = Noise
+fm_mode = Mix
+filter_freq = 95

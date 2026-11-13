@@ -1,0 +1,1554 @@
+{
+  "schema": 1,
+  "id": "maquina-cymbal",
+  "uri": "urn:maquina:cymbal",
+  "title": "Maquina Cymbal",
+  "provider": "parameter-bank",
+  "bank_format": "json",
+  "extensions": [
+    ".json"
+  ],
+  "parameters": [
+    {
+      "index": 5,
+      "symbol": "osc_coarse",
+      "name": "COARSE",
+      "default": 67,
+      "min": -60,
+      "max": 67,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 6,
+      "symbol": "osc_fine",
+      "name": "FINE",
+      "default": 0,
+      "min": -63,
+      "max": 64,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 7,
+      "symbol": "osc_wave",
+      "name": "WAVE",
+      "default": 4,
+      "min": 0,
+      "max": 5,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "SINE"
+        ],
+        [
+          1,
+          "TRIANGLE"
+        ],
+        [
+          2,
+          "SAW"
+        ],
+        [
+          3,
+          "SQUARE"
+        ],
+        [
+          4,
+          "NOISE"
+        ],
+        [
+          5,
+          "PWM"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 8,
+      "symbol": "osc_pwm",
+      "name": "PWM",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 9,
+      "symbol": "amp_attack",
+      "name": "ATTACK",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 10,
+      "symbol": "amp_decay",
+      "name": "DECAY",
+      "default": 107,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 11,
+      "symbol": "amp_repeat",
+      "name": "REPEAT",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 12,
+      "symbol": "amp_slope",
+      "name": "SLOPE",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 13,
+      "symbol": "velo_dest",
+      "name": "VELO DEST",
+      "default": 0,
+      "min": 0,
+      "max": 34,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "OSC COARSE"
+        ],
+        [
+          2,
+          "OSC FINE"
+        ],
+        [
+          3,
+          "OSC WAVE"
+        ],
+        [
+          4,
+          "OSC PWM"
+        ],
+        [
+          5,
+          "AMP ATTACK"
+        ],
+        [
+          6,
+          "AMP DECAY"
+        ],
+        [
+          7,
+          "AMP REPEAT"
+        ],
+        [
+          8,
+          "AMP SLOPE"
+        ],
+        [
+          9,
+          "VELOCITY DEST"
+        ],
+        [
+          10,
+          "VELOCITY AMOUNT"
+        ],
+        [
+          11,
+          "VELOCITY > VOL"
+        ],
+        [
+          12,
+          "MOD1 FREQ"
+        ],
+        [
+          13,
+          "MOD2 FREQ"
+        ],
+        [
+          14,
+          "MOD1 GAIN"
+        ],
+        [
+          15,
+          "MOD2 GAIN"
+        ],
+        [
+          16,
+          "MOD1 WAVE"
+        ],
+        [
+          17,
+          "MOD2 WAVE"
+        ],
+        [
+          18,
+          "TRANSIENT WAVE"
+        ],
+        [
+          19,
+          "TRANSIENT VOL"
+        ],
+        [
+          20,
+          "TRANSIENT FREQ"
+        ],
+        [
+          21,
+          "FILTER FREQ"
+        ],
+        [
+          22,
+          "FILTER RESO"
+        ],
+        [
+          23,
+          "FILTER TYPE"
+        ],
+        [
+          24,
+          "FILTER DRIVE"
+        ],
+        [
+          25,
+          "LFO RATE"
+        ],
+        [
+          26,
+          "LFO SYNC"
+        ],
+        [
+          27,
+          "LFO AMOUNT"
+        ],
+        [
+          28,
+          "LFO WAVE"
+        ],
+        [
+          29,
+          "LFO RETRIGGER"
+        ],
+        [
+          30,
+          "LFO PHASE"
+        ],
+        [
+          31,
+          "VOLUME"
+        ],
+        [
+          32,
+          "PAN"
+        ],
+        [
+          33,
+          "SAMPLE RATE"
+        ],
+        [
+          34,
+          "DRIVE"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 14,
+      "symbol": "velo_amount",
+      "name": "VELO AMT",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 15,
+      "symbol": "velo_volume",
+      "name": "VELO>VOL",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    },
+    {
+      "index": 16,
+      "symbol": "mod1_freq",
+      "name": "1 FREQ",
+      "default": -60,
+      "min": -60,
+      "max": 67,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 17,
+      "symbol": "mod2_freq",
+      "name": "2 FREQ",
+      "default": -60,
+      "min": -60,
+      "max": 67,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 18,
+      "symbol": "mod1_gain",
+      "name": "1 GAIN",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 19,
+      "symbol": "mod2_gain",
+      "name": "2 GAIN",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 20,
+      "symbol": "mod1_wave",
+      "name": "1 WAVE",
+      "default": 0,
+      "min": 0,
+      "max": 5,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "SINE"
+        ],
+        [
+          1,
+          "TRIANGLE"
+        ],
+        [
+          2,
+          "SAW"
+        ],
+        [
+          3,
+          "SQUARE"
+        ],
+        [
+          4,
+          "NOISE"
+        ],
+        [
+          5,
+          "PWM"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 21,
+      "symbol": "mod2_wave",
+      "name": "2 WAVE",
+      "default": 0,
+      "min": 0,
+      "max": 5,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "SINE"
+        ],
+        [
+          1,
+          "TRIANGLE"
+        ],
+        [
+          2,
+          "SAW"
+        ],
+        [
+          3,
+          "SQUARE"
+        ],
+        [
+          4,
+          "NOISE"
+        ],
+        [
+          5,
+          "PWM"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 22,
+      "symbol": "trans_wave",
+      "name": "T WAVE",
+      "default": 0,
+      "min": 0,
+      "max": 13,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "SNAP"
+        ],
+        [
+          1,
+          "OFFSET"
+        ],
+        [
+          2,
+          "CLICK"
+        ],
+        [
+          3,
+          "CLICK 2"
+        ],
+        [
+          4,
+          "TICK"
+        ],
+        [
+          5,
+          "KICK"
+        ],
+        [
+          6,
+          "RIM"
+        ],
+        [
+          7,
+          "DROP"
+        ],
+        [
+          8,
+          "HAT"
+        ],
+        [
+          9,
+          "CLAP"
+        ],
+        [
+          10,
+          "KICK 2"
+        ],
+        [
+          11,
+          "SNARE"
+        ],
+        [
+          12,
+          "TOM"
+        ],
+        [
+          13,
+          "SNAP 2"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 23,
+      "symbol": "trans_volume",
+      "name": "T VOL",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 24,
+      "symbol": "trans_freq",
+      "name": "T FREQ",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 25,
+      "symbol": "filter_freq",
+      "name": "CUTOFF",
+      "default": 68,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 26,
+      "symbol": "filter_reso",
+      "name": "RESO",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 27,
+      "symbol": "filter_type",
+      "name": "FLT TYPE",
+      "default": 1,
+      "min": 0,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "LOWPASS"
+        ],
+        [
+          1,
+          "HIGHPASS"
+        ],
+        [
+          2,
+          "BANDPASS"
+        ],
+        [
+          3,
+          "UNITY BP"
+        ],
+        [
+          4,
+          "NOTCH"
+        ],
+        [
+          5,
+          "PEAK"
+        ],
+        [
+          6,
+          "LOWPASS 2"
+        ],
+        [
+          7,
+          "OFF"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 28,
+      "symbol": "filter_drive",
+      "name": "FLT DRIVE",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 29,
+      "symbol": "lfo_rate",
+      "name": "LFO RATE",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 30,
+      "symbol": "lfo_sync",
+      "name": "LFO SYNC",
+      "default": 0,
+      "min": 0,
+      "max": 11,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "4/1"
+        ],
+        [
+          2,
+          "2/1"
+        ],
+        [
+          3,
+          "1/1"
+        ],
+        [
+          4,
+          "1/2"
+        ],
+        [
+          5,
+          "1/3"
+        ],
+        [
+          6,
+          "1/4"
+        ],
+        [
+          7,
+          "1/6"
+        ],
+        [
+          8,
+          "1/8"
+        ],
+        [
+          9,
+          "1/12"
+        ],
+        [
+          10,
+          "1/16"
+        ],
+        [
+          11,
+          "1/32"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 31,
+      "symbol": "lfo_amount",
+      "name": "LFO AMT",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 32,
+      "symbol": "lfo_wave",
+      "name": "LFO WAVE",
+      "default": 0,
+      "min": 0,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "SINE"
+        ],
+        [
+          1,
+          "TRIANGLE"
+        ],
+        [
+          2,
+          "SAW UP"
+        ],
+        [
+          3,
+          "SAW DOWN"
+        ],
+        [
+          4,
+          "SQUARE"
+        ],
+        [
+          5,
+          "RANDOM"
+        ],
+        [
+          6,
+          "EXP UP"
+        ],
+        [
+          7,
+          "EXP DOWN"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 33,
+      "symbol": "lfo_retrigger",
+      "name": "LFO RETRG",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    },
+    {
+      "index": 34,
+      "symbol": "lfo_offset",
+      "name": "LFO PHASE",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 35,
+      "symbol": "lfo_target",
+      "name": "LFO DEST",
+      "default": 0,
+      "min": 0,
+      "max": 34,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "OSC COARSE"
+        ],
+        [
+          2,
+          "OSC FINE"
+        ],
+        [
+          3,
+          "OSC WAVE"
+        ],
+        [
+          4,
+          "OSC PWM"
+        ],
+        [
+          5,
+          "AMP ATTACK"
+        ],
+        [
+          6,
+          "AMP DECAY"
+        ],
+        [
+          7,
+          "AMP REPEAT"
+        ],
+        [
+          8,
+          "AMP SLOPE"
+        ],
+        [
+          9,
+          "VELOCITY DEST"
+        ],
+        [
+          10,
+          "VELOCITY AMOUNT"
+        ],
+        [
+          11,
+          "VELOCITY > VOL"
+        ],
+        [
+          12,
+          "MOD1 FREQ"
+        ],
+        [
+          13,
+          "MOD2 FREQ"
+        ],
+        [
+          14,
+          "MOD1 GAIN"
+        ],
+        [
+          15,
+          "MOD2 GAIN"
+        ],
+        [
+          16,
+          "MOD1 WAVE"
+        ],
+        [
+          17,
+          "MOD2 WAVE"
+        ],
+        [
+          18,
+          "TRANSIENT WAVE"
+        ],
+        [
+          19,
+          "TRANSIENT VOL"
+        ],
+        [
+          20,
+          "TRANSIENT FREQ"
+        ],
+        [
+          21,
+          "FILTER FREQ"
+        ],
+        [
+          22,
+          "FILTER RESO"
+        ],
+        [
+          23,
+          "FILTER TYPE"
+        ],
+        [
+          24,
+          "FILTER DRIVE"
+        ],
+        [
+          25,
+          "LFO RATE"
+        ],
+        [
+          26,
+          "LFO SYNC"
+        ],
+        [
+          27,
+          "LFO AMOUNT"
+        ],
+        [
+          28,
+          "LFO WAVE"
+        ],
+        [
+          29,
+          "LFO RETRIGGER"
+        ],
+        [
+          30,
+          "LFO PHASE"
+        ],
+        [
+          31,
+          "VOLUME"
+        ],
+        [
+          32,
+          "PAN"
+        ],
+        [
+          33,
+          "SAMPLE RATE"
+        ],
+        [
+          34,
+          "DRIVE"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 36,
+      "symbol": "volume",
+      "name": "VOLUME",
+      "default": 127,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 37,
+      "symbol": "pan",
+      "name": "PAN",
+      "default": 0,
+      "min": -63,
+      "max": 64,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 38,
+      "symbol": "decimation",
+      "name": "DECIMATE",
+      "default": 127,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 39,
+      "symbol": "drive",
+      "name": "DRIVE",
+      "default": 63,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 40,
+      "symbol": "trigger_note",
+      "name": "TRIG NOTE",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "ANY"
+        ],
+        [
+          1,
+          "C#-1"
+        ],
+        [
+          2,
+          "D-1"
+        ],
+        [
+          3,
+          "D#-1"
+        ],
+        [
+          4,
+          "E-1"
+        ],
+        [
+          5,
+          "F-1"
+        ],
+        [
+          6,
+          "F#-1"
+        ],
+        [
+          7,
+          "G-1"
+        ],
+        [
+          8,
+          "G#-1"
+        ],
+        [
+          9,
+          "A-1"
+        ],
+        [
+          10,
+          "A#-1"
+        ],
+        [
+          11,
+          "B-1"
+        ],
+        [
+          12,
+          "C0"
+        ],
+        [
+          13,
+          "C#0"
+        ],
+        [
+          14,
+          "D0"
+        ],
+        [
+          15,
+          "D#0"
+        ],
+        [
+          16,
+          "E0"
+        ],
+        [
+          17,
+          "F0"
+        ],
+        [
+          18,
+          "F#0"
+        ],
+        [
+          19,
+          "G0"
+        ],
+        [
+          20,
+          "G#0"
+        ],
+        [
+          21,
+          "A0"
+        ],
+        [
+          22,
+          "A#0"
+        ],
+        [
+          23,
+          "B0"
+        ],
+        [
+          24,
+          "C1"
+        ],
+        [
+          25,
+          "C#1"
+        ],
+        [
+          26,
+          "D1"
+        ],
+        [
+          27,
+          "D#1"
+        ],
+        [
+          28,
+          "E1"
+        ],
+        [
+          29,
+          "F1"
+        ],
+        [
+          30,
+          "F#1"
+        ],
+        [
+          31,
+          "G1"
+        ],
+        [
+          32,
+          "G#1"
+        ],
+        [
+          33,
+          "A1"
+        ],
+        [
+          34,
+          "A#1"
+        ],
+        [
+          35,
+          "B1"
+        ],
+        [
+          36,
+          "C2"
+        ],
+        [
+          37,
+          "C#2"
+        ],
+        [
+          38,
+          "D2"
+        ],
+        [
+          39,
+          "D#2"
+        ],
+        [
+          40,
+          "E2"
+        ],
+        [
+          41,
+          "F2"
+        ],
+        [
+          42,
+          "F#2"
+        ],
+        [
+          43,
+          "G2"
+        ],
+        [
+          44,
+          "G#2"
+        ],
+        [
+          45,
+          "A2"
+        ],
+        [
+          46,
+          "A#2"
+        ],
+        [
+          47,
+          "B2"
+        ],
+        [
+          48,
+          "C3"
+        ],
+        [
+          49,
+          "C#3"
+        ],
+        [
+          50,
+          "D3"
+        ],
+        [
+          51,
+          "D#3"
+        ],
+        [
+          52,
+          "E3"
+        ],
+        [
+          53,
+          "F3"
+        ],
+        [
+          54,
+          "F#3"
+        ],
+        [
+          55,
+          "G3"
+        ],
+        [
+          56,
+          "G#3"
+        ],
+        [
+          57,
+          "A3"
+        ],
+        [
+          58,
+          "A#3"
+        ],
+        [
+          59,
+          "B3"
+        ],
+        [
+          60,
+          "C4"
+        ],
+        [
+          61,
+          "C#4"
+        ],
+        [
+          62,
+          "D4"
+        ],
+        [
+          63,
+          "D#4"
+        ],
+        [
+          64,
+          "E4"
+        ],
+        [
+          65,
+          "F4"
+        ],
+        [
+          66,
+          "F#4"
+        ],
+        [
+          67,
+          "G4"
+        ],
+        [
+          68,
+          "G#4"
+        ],
+        [
+          69,
+          "A4"
+        ],
+        [
+          70,
+          "A#4"
+        ],
+        [
+          71,
+          "B4"
+        ],
+        [
+          72,
+          "C5"
+        ],
+        [
+          73,
+          "C#5"
+        ],
+        [
+          74,
+          "D5"
+        ],
+        [
+          75,
+          "D#5"
+        ],
+        [
+          76,
+          "E5"
+        ],
+        [
+          77,
+          "F5"
+        ],
+        [
+          78,
+          "F#5"
+        ],
+        [
+          79,
+          "G5"
+        ],
+        [
+          80,
+          "G#5"
+        ],
+        [
+          81,
+          "A5"
+        ],
+        [
+          82,
+          "A#5"
+        ],
+        [
+          83,
+          "B5"
+        ],
+        [
+          84,
+          "C6"
+        ],
+        [
+          85,
+          "C#6"
+        ],
+        [
+          86,
+          "D6"
+        ],
+        [
+          87,
+          "D#6"
+        ],
+        [
+          88,
+          "E6"
+        ],
+        [
+          89,
+          "F6"
+        ],
+        [
+          90,
+          "F#6"
+        ],
+        [
+          91,
+          "G6"
+        ],
+        [
+          92,
+          "G#6"
+        ],
+        [
+          93,
+          "A6"
+        ],
+        [
+          94,
+          "A#6"
+        ],
+        [
+          95,
+          "B6"
+        ],
+        [
+          96,
+          "C7"
+        ],
+        [
+          97,
+          "C#7"
+        ],
+        [
+          98,
+          "D7"
+        ],
+        [
+          99,
+          "D#7"
+        ],
+        [
+          100,
+          "E7"
+        ],
+        [
+          101,
+          "F7"
+        ],
+        [
+          102,
+          "F#7"
+        ],
+        [
+          103,
+          "G7"
+        ],
+        [
+          104,
+          "G#7"
+        ],
+        [
+          105,
+          "A7"
+        ],
+        [
+          106,
+          "A#7"
+        ],
+        [
+          107,
+          "B7"
+        ],
+        [
+          108,
+          "C8"
+        ],
+        [
+          109,
+          "C#8"
+        ],
+        [
+          110,
+          "D8"
+        ],
+        [
+          111,
+          "D#8"
+        ],
+        [
+          112,
+          "E8"
+        ],
+        [
+          113,
+          "F8"
+        ],
+        [
+          114,
+          "F#8"
+        ],
+        [
+          115,
+          "G8"
+        ],
+        [
+          116,
+          "G#8"
+        ],
+        [
+          117,
+          "A8"
+        ],
+        [
+          118,
+          "A#8"
+        ],
+        [
+          119,
+          "B8"
+        ],
+        [
+          120,
+          "C9"
+        ],
+        [
+          121,
+          "C#9"
+        ],
+        [
+          122,
+          "D9"
+        ],
+        [
+          123,
+          "D#9"
+        ],
+        [
+          124,
+          "E9"
+        ],
+        [
+          125,
+          "F9"
+        ],
+        [
+          126,
+          "F#9"
+        ],
+        [
+          127,
+          "G9"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 41,
+      "symbol": "note_pitch",
+      "name": "KEY TRACK",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    }
+  ],
+  "pages": [
+    {
+      "title": "OSCILLATOR",
+      "controls": [
+        "@bank",
+        "@patch",
+        "osc_coarse",
+        "osc_fine",
+        "osc_wave",
+        "osc_pwm",
+        "volume",
+        "pan"
+      ]
+    },
+    {
+      "title": "MOD OSC",
+      "controls": [
+        "mod1_freq",
+        "mod2_freq",
+        "mod1_gain",
+        "mod2_gain",
+        "mod1_wave",
+        "mod2_wave",
+        "drive",
+        "decimation"
+      ]
+    },
+    {
+      "title": "ENVELOPE / TRANSIENT",
+      "controls": [
+        "amp_attack",
+        "amp_decay",
+        "amp_repeat",
+        "amp_slope",
+        "trans_wave",
+        "trans_volume",
+        "trans_freq",
+        "trigger_note"
+      ]
+    },
+    {
+      "title": "FILTER / VELOCITY",
+      "controls": [
+        "filter_freq",
+        "filter_reso",
+        "filter_type",
+        "filter_drive",
+        "velo_dest",
+        "velo_amount",
+        "velo_volume",
+        "note_pitch"
+      ]
+    },
+    {
+      "title": "LFO",
+      "controls": [
+        "lfo_rate",
+        "lfo_sync",
+        "lfo_amount",
+        "lfo_wave",
+        "lfo_retrigger",
+        "lfo_offset",
+        "lfo_target",
+        "volume"
+      ]
+    }
+  ],
+  "quirks": [
+    "Drum voice from the LXR-02 firmware sound engine; parameters use the hardware's 0-127 scales.",
+    "No graphical UI. Pages group the voice's firmware menu pages onto the eight encoders.",
+    "TRIG NOTE 'ANY' plays every note at the set pitch; enable KEY TRACK to transpose."
+  ]
+}

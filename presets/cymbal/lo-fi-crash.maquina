@@ -1,0 +1,17 @@
+# Maquina factory preset
+voice = cymbal
+name = Lo-Fi Crash
+category = Lo-Fi
+tags = lo-fi, metallic
+osc_wave = Square
+osc_coarse = 40
+mod1_wave = Square
+mod1_freq = 10
+mod1_gain = 100
+mod2_wave = Square
+mod2_freq = 23
+mod2_gain = 100
+filter_freq = 70
+decimation = 70
+amp_decay = 55
+amp_slope = 30

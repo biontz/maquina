@@ -1,0 +1,16 @@
+# Maquina factory preset
+voice = tom
+name = 909 Tom
+category = 909
+tags = punchy
+osc_coarse = -15
+osc_wave = Triangle
+amp_decay = 30
+pitch_amount = 60
+pitch_decay = 18
+trans_wave = Click
+trans_volume = 60
+trans_freq = 60
+fm_amount = 15
+fm_wave = Noise
+fm_mode = Mix

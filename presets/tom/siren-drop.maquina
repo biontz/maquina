@@ -1,0 +1,12 @@
+# Maquina factory preset
+voice = tom
+name = Siren Drop
+category = FX
+tags = modulated, long
+osc_coarse = -8
+amp_decay = 50
+pitch_amount = 127
+pitch_decay = 60
+lfo_target = Osc Fine
+lfo_rate = 100
+lfo_amount = 30

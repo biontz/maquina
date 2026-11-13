@@ -1,0 +1,10 @@
+# Maquina factory preset
+voice = kick
+name = Sub Drop
+category = Sub
+tags = long, boomy, clean
+osc_coarse = -35
+amp_decay = 66
+amp_slope = 65
+pitch_amount = 20
+pitch_decay = 35

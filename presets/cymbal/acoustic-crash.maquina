@@ -1,0 +1,18 @@
+# Maquina factory preset
+voice = cymbal
+name = Acoustic Crash
+category = Acoustic
+tags = bright, metallic
+osc_wave = Square
+osc_coarse = 30
+mod1_wave = Square
+mod1_freq = 10
+mod1_gain = 100
+mod2_wave = Square
+mod2_freq = 23
+mod2_gain = 100
+trans_wave = Hat
+trans_volume = 70
+filter_freq = 70
+amp_decay = 62
+amp_slope = 30

@@ -1,0 +1,12 @@
+# Maquina factory preset
+voice = snare
+name = Lo-Fi Snare
+category = Lo-Fi
+tags = lo-fi, dirty
+osc_coarse = -6
+noise_mix = 80
+amp_decay = 15
+pitch_amount = 50
+pitch_decay = 10
+decimation = 80
+drive = 100

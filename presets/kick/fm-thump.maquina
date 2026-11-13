@@ -1,0 +1,11 @@
+# Maquina factory preset
+voice = kick
+name = FM Thump
+category = FM
+tags = punchy, pitched
+osc_coarse = -27
+fm_amount = 45
+fm_freq = -10
+amp_decay = 28
+pitch_amount = 50
+pitch_decay = 18

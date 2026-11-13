@@ -1,0 +1,11 @@
+# Maquina factory preset
+voice = kick
+name = Crunch
+category = Lo-Fi
+tags = lo-fi, dirty, short
+osc_coarse = -27
+amp_decay = 25
+pitch_amount = 60
+pitch_decay = 16
+decimation = 75
+drive = 90

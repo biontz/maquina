@@ -1,0 +1,11 @@
+# Maquina factory preset
+voice = hihat
+name = Noise Hat
+category = Noise
+tags = noisy, bright
+osc_wave = Noise
+osc_coarse = 67
+mod1_gain = 0
+mod2_gain = 0
+filter_freq = 105
+amp_decay = 4

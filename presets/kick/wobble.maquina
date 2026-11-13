@@ -1,0 +1,13 @@
+# Maquina factory preset
+voice = kick
+name = Wobble
+category = FX
+tags = modulated, long
+osc_coarse = -29
+amp_decay = 55
+amp_slope = 55
+lfo_target = Osc Coarse
+lfo_rate = 90
+lfo_amount = 40
+lfo_wave = Sine
+lfo_retrigger = 1

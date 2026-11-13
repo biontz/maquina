@@ -1,0 +1,16 @@
+# Maquina factory preset
+voice = kick
+name = 909 Punch
+category = 909
+tags = punchy, short
+osc_coarse = -27
+osc_wave = Triangle
+amp_decay = 26
+amp_slope = 40
+pitch_amount = 75
+pitch_decay = 16
+pitch_slope = 20
+trans_wave = Click
+trans_volume = 90
+trans_freq = 70
+drive = 85

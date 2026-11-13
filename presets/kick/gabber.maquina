@@ -1,0 +1,14 @@
+# Maquina factory preset
+voice = kick
+name = Gabber
+category = Distorted
+tags = dirty, punchy
+osc_coarse = -24
+osc_wave = Square
+filter_freq = 75
+filter_drive = 110
+drive = 127
+pitch_amount = 90
+pitch_decay = 22
+amp_decay = 35
+volume = 105

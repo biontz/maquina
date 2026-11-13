@@ -1,0 +1,10 @@
+# Maquina factory preset
+voice = snare
+name = Noise Tail
+category = Noise
+tags = noisy, long
+noise_mix = 127
+noise_freq = 110
+amp_decay = 30
+amp_slope = 40
+filter_freq = 100

@@ -1,0 +1,16 @@
+# Maquina factory preset
+voice = snare
+name = Rim Shot
+category = Rim
+tags = short, bright
+osc_coarse = 5
+osc_wave = Triangle
+noise_mix = 20
+amp_decay = 5
+pitch_amount = 40
+pitch_decay = 4
+trans_wave = Rim
+trans_volume = 100
+filter_type = Bandpass
+filter_freq = 100
+filter_reso = 30

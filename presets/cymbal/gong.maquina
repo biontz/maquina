@@ -1,0 +1,17 @@
+# Maquina factory preset
+voice = cymbal
+name = Gong
+category = Metallic
+tags = dark, long, metallic
+osc_wave = Sine
+osc_coarse = -5
+mod1_wave = Sine
+mod1_freq = 2
+mod1_gain = 80
+mod2_wave = Sine
+mod2_freq = 9
+mod2_gain = 60
+filter_type = Lowpass
+filter_freq = 90
+amp_decay = 65
+amp_slope = 30

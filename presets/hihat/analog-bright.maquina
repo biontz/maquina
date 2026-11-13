@@ -1,0 +1,14 @@
+# Maquina factory preset
+voice = hihat
+name = Analog Bright
+category = Analog
+tags = bright, short
+osc_wave = Square
+osc_coarse = 30
+mod1_wave = Square
+mod1_freq = 40
+mod2_wave = Square
+mod2_freq = 55
+filter_freq = 110
+filter_reso = 20
+amp_decay = 4

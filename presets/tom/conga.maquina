@@ -1,0 +1,11 @@
+# Maquina factory preset
+voice = tom
+name = Conga
+category = Perc
+tags = short, pitched
+osc_coarse = -7
+amp_decay = 18
+pitch_amount = 30
+pitch_decay = 8
+trans_wave = Snap
+trans_volume = 70

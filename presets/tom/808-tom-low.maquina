@@ -1,0 +1,9 @@
+# Maquina factory preset
+voice = tom
+name = 808 Tom Low
+category = 808
+tags = long, boomy, clean
+osc_coarse = -22
+amp_decay = 40
+pitch_amount = 35
+pitch_decay = 25

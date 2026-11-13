@@ -1,0 +1,15 @@
+# Maquina factory preset
+voice = hihat
+name = Metallic Hat
+category = Metallic
+tags = metallic
+osc_wave = Square
+osc_coarse = 33
+mod1_wave = Square
+mod1_freq = 45
+mod2_wave = Square
+mod2_freq = 26
+filter_type = Bandpass
+filter_freq = 110
+filter_reso = 50
+amp_decay = 6

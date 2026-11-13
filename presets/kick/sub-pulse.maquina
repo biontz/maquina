@@ -1,0 +1,10 @@
+# Maquina factory preset
+voice = kick
+name = Sub Pulse
+category = Sub
+tags = short, boomy
+osc_coarse = -32
+amp_decay = 40
+pitch_amount = 30
+pitch_decay = 15
+filter_freq = 60

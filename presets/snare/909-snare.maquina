@@ -1,0 +1,15 @@
+# Maquina factory preset
+voice = snare
+name = 909 Snare
+category = 909
+tags = punchy, bright
+osc_coarse = -4
+osc_wave = Triangle
+noise_mix = 85
+noise_freq = 120
+amp_decay = 13
+pitch_amount = 60
+pitch_decay = 9
+trans_wave = Snap
+trans_volume = 80
+drive = 85

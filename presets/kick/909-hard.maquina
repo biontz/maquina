@@ -1,0 +1,15 @@
+# Maquina factory preset
+voice = kick
+name = 909 Hard
+category = 909
+tags = punchy, bright, dirty
+osc_coarse = -26
+osc_wave = Triangle
+amp_decay = 30
+pitch_amount = 85
+pitch_decay = 20
+trans_wave = Click 2
+trans_volume = 110
+trans_freq = 60
+filter_drive = 50
+drive = 100

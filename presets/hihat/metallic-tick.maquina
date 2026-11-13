@@ -1,0 +1,11 @@
+# Maquina factory preset
+voice = hihat
+name = Metallic Tick
+category = Metallic
+tags = short, metallic
+osc_wave = Square
+osc_coarse = 38
+mod1_wave = Square
+mod1_freq = 50
+filter_freq = 105
+amp_decay = 2

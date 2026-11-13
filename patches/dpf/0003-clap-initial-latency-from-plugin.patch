@@ -1,0 +1,18 @@
+diff --git a/distrho/src/DistrhoPluginCLAP.cpp b/distrho/src/DistrhoPluginCLAP.cpp
+index e64bfcb6..3b7861a1 100644
+--- a/distrho/src/DistrhoPluginCLAP.cpp
++++ b/distrho/src/DistrhoPluginCLAP.cpp
+@@ -790,6 +790,13 @@ public:
+             }
+         }
+ 
++       #if DISTRHO_PLUGIN_WANT_LATENCY
++        // Start from the plugin's real latency, which is what the host reads
++        // first. With 0 here, a state load before activate (a host restoring a
++        // project) sees a "change" and reports it during initialization.
++        fLastKnownLatency = fPlugin.getLatency();
++       #endif
++
+        #if DISTRHO_PLUGIN_HAS_UI && DISTRHO_PLUGIN_WANT_MIDI_INPUT
+         fNotesRingBuffer.setRingBuffer(&fNotesBuffer, true);
+        #endif

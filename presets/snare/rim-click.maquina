@@ -1,0 +1,10 @@
+# Maquina factory preset
+voice = snare
+name = Rim Click
+category = Rim
+tags = short, clean
+osc_coarse = 12
+noise_mix = 10
+amp_decay = 3
+trans_wave = Tick
+trans_volume = 90

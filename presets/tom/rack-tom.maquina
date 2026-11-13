@@ -1,0 +1,16 @@
+# Maquina factory preset
+voice = tom
+name = Rack Tom
+category = Acoustic
+tags = punchy
+osc_coarse = -13
+osc_wave = Triangle
+amp_decay = 32
+pitch_amount = 25
+pitch_decay = 22
+trans_wave = Tom
+trans_volume = 80
+trans_freq = 80
+fm_amount = 10
+fm_wave = Noise
+fm_mode = Mix

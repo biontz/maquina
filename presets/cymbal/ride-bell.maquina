@@ -1,0 +1,18 @@
+# Maquina factory preset
+voice = cymbal
+name = Ride Bell
+category = Metallic
+tags = metallic, pitched
+osc_wave = Square
+osc_coarse = 24
+mod1_wave = Sine
+mod1_freq = 31
+mod1_gain = 50
+mod2_wave = Sine
+mod2_freq = 17
+mod2_gain = 30
+filter_type = Bandpass
+filter_freq = 100
+filter_reso = 30
+amp_decay = 40
+amp_slope = 30

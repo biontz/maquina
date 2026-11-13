@@ -1,0 +1,17 @@
+# Maquina factory preset
+voice = hihat
+name = Hat Sweep
+category = FX
+tags = modulated
+osc_wave = Noise
+osc_coarse = 67
+mod1_gain = 0
+mod2_gain = 0
+amp_decay = 10
+filter_type = Unity BP
+filter_freq = 90
+filter_reso = 50
+lfo_target = Filter Freq
+lfo_rate = 60
+lfo_amount = 50
+lfo_retrigger = 1

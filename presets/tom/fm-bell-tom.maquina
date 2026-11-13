@@ -1,0 +1,10 @@
+# Maquina factory preset
+voice = tom
+name = FM Bell Tom
+category = FM
+tags = metallic, pitched, long
+osc_coarse = -5
+fm_amount = 60
+fm_freq = 7
+amp_decay = 45
+amp_slope = 55

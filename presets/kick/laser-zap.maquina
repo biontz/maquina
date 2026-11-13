@@ -1,0 +1,10 @@
+# Maquina factory preset
+voice = kick
+name = Laser Zap
+category = FX
+tags = pitched, bright
+osc_coarse = -12
+amp_decay = 40
+pitch_amount = 127
+pitch_decay = 45
+pitch_slope = 60
