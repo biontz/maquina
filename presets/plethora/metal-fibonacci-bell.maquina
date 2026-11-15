@@ -1,0 +1,11 @@
+# Maquina factory preset
+# design: FibonacciCluster through a resonant bandpass: bell-like partials
+voice = plethora
+name = Fibonacci Bell
+category = Metallic
+tags = long, pitched, metallic
+a_algo = 2-08 FibonacciCluster
+a_ftype = Bandpass
+a_cutoff = 100
+a_reso = 85
+a_decay = 95

@@ -41,7 +41,6 @@
     "pan": 0,
     "decimation": 75,
     "drive": 90,
-    "trigger_note": 0,
     "note_pitch": 0
    }
   },
@@ -83,7 +82,6 @@
     "pan": 0,
     "decimation": 95,
     "drive": 63,
-    "trigger_note": 0,
     "note_pitch": 0
    }
   }

@@ -55,8 +55,6 @@ public:
     // LXR-only controls (no parameters for them on this voice)
     void setNoteFollowsPitch(bool) {}
     bool noteFollowsPitch() const { return false; }
-    void setHatOpen(bool) {}
-    bool hatOpen() const { return false; }
     void setTempo(double) {}
 
     void noteOn(uint32_t frameOffset, uint8_t note, uint8_t velocity);

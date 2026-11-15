@@ -20,7 +20,7 @@ import os
 import re
 import sys
 
-from pages import PAGES  # page layouts, shared with gen_remote_pages.py
+from pages import MACHINISTA_PAGES, PAGES  # page layouts, shared with gen_remote_pages.py
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -31,6 +31,7 @@ BUNDLES = {
     "cymbal": "MaquinaCymbal",
     "hihat": "MaquinaHiHat",
     "dredrum": "MaquinaDredrum",
+    "plethora": "MaquinaPlethora",
 }
 
 PORT_RE = re.compile(
@@ -65,6 +66,25 @@ def parse_ttl(path):
     return params
 
 
+QUIRKS_LXR = [
+    "Drum voice from the LXR-02 firmware sound engine; parameters use the hardware's 0-127 scales.",
+    "No graphical UI. Pages group the voice's firmware menu pages onto the eight encoders.",
+    "Every note plays the sound at its set pitch; turn KEY TRACK on to play it chromatically.",
+]
+QUIRKS = {
+    "dredrum": [
+        "8-bit 3-oscillator voice from the Dredrum Eurorack firmware; knobs use the module's 0-255 scales.",
+        "No graphical UI. One page per oscillator; any note triggers, TRACK makes an oscillator follow it.",
+        "DECAY 248-255 never ends (drone). MODE GATE holds the decay while the note is down.",
+    ],
+    "plethora": [
+        "Channel A of the Befaco Noise Plethora (VCV port): 60 algorithms with X/Y, filter, envelope.",
+        "Channels B and C of the desktop plugin are not on this profile; they stay off (level 0).",
+        "DECAY at max holds while playing. MODE GATE holds the sound while the note is down.",
+    ],
+}
+
+
 def main():
     out_dir = os.path.join(ROOT, "machinista", "profiles")
     os.makedirs(out_dir, exist_ok=True)
@@ -75,9 +95,15 @@ def main():
             sys.exit(f"{ttl} missing - build first (make)")
         params = parse_ttl(ttl)
         symbols = {p["symbol"] for p in params}
+        layout = MACHINISTA_PAGES.get(pid, PAGES[pid])
+        if pid in MACHINISTA_PAGES:
+            # reduced profile: only what is on its pages
+            on_pages = {c for _, controls in layout for c in controls}
+            params = [p for p in params if p["symbol"] in on_pages]
+            symbols = {p["symbol"] for p in params}
         pages = []
         placed = set()
-        for title, controls in PAGES[pid]:
+        for title, controls in layout:
             if len(controls) != 8:
                 print(f"{pid}: page {title} has {len(controls)} controls, needs 8")
                 errors += 1
@@ -101,17 +127,13 @@ def main():
             "extensions": [".json"],
             "parameters": params,
             "pages": pages,
-            "quirks": [
-                "Drum voice from the LXR-02 firmware sound engine; parameters use the hardware's 0-127 scales.",
-                "No graphical UI. Pages group the voice's firmware menu pages onto the eight encoders.",
-                "TRIG NOTE 'ANY' plays every note at the set pitch; enable KEY TRACK to transpose.",
-            ],
+            "quirks": QUIRKS.get(pid, QUIRKS_LXR),
         }
         path = os.path.join(out_dir, f"maquina-{pid}.json")
         with open(path, "w") as f:
             json.dump(profile, f, indent=2)
             f.write("\n")
-        print(f"{pid:7s} {len(params)} parameters, {len(pages)} pages -> {os.path.relpath(path, ROOT)}")
+        print(f"{pid:8s} {len(params)} parameters, {len(pages)} pages -> {os.path.relpath(path, ROOT)}")
     return 1 if errors else 0
 
 

@@ -72,10 +72,11 @@ int main()
                 if (!moved) { std::printf("%s: nothing changed\n", d.id); ++bad; }
             }
         }
-        // a parameter in no group must be a trigger/extra one
+        // a parameter in no group must be a trigger/extra one (gain: a mix control)
         for (uint32_t i = 0; i < n; ++i) {
             const VoiceParam& p = paramAt(d, i);
-            const bool trigger = d.voice == maquina::kDredrumVoice
+            const bool trigger = !std::strcmp(p.symbol, "gain") ? true
+                                 : maquina::hasChannels(d.voice)
                                      ? !std::strcmp(p.symbol, "trig_mode") || std::strstr(p.symbol, "_mute") != nullptr
                                      : p.page == 7;
             if (randGroupOf(p.symbol) < 0 && !trigger) {
@@ -84,9 +85,9 @@ int main()
         }
     }
 
-    // Maquina Dredrum: ROLL touches only its oscillator; RANDOM skips oscillators switched off
+    // Maquina Dredrum / Plethora: ROLL touches only its oscillator/channel; RANDOM skips ones switched off
     for (const VoiceDef& d : k_voices) {
-        if (d.voice != kDredrumVoice) continue;
+        if (!hasChannels(d.voice)) continue;
         const uint32_t n = numAllParams(d);
         RandSettings rs;
         for (int g = 0; g < kNumRandGroups; ++g) { rs.lock[g] = false; rs.min[g] = 0; rs.max[g] = 100; }
@@ -100,15 +101,15 @@ int main()
                 if (osc < 0) r2.oscOn[1] = false; // main RANDOM with OSC 2 off
                 randomize(d, r2, v.data(), rng, osc);
                 for (uint32_t i = 0; i < n; ++i) {
-                    const int o = oscOfSymbol(paramAt(d, i).symbol);
+                    const int o = channelOf(d, paramAt(d, i).symbol);
                     const bool allowed = osc >= 0 ? o == osc : o != 1;
                     if (v[i] != init[i] && !allowed) {
-                        std::printf("dredrum: %s changed (roll %d)\n", paramAt(d, i).symbol, osc); ++bad;
+                        std::printf("%s: %s changed (roll %d)\n", d.id, paramAt(d, i).symbol, osc); ++bad;
                     }
                     if (v[i] != init[i] && allowed) movedOwn = true;
                 }
             }
-            if (!movedOwn) { std::printf("dredrum: roll %d changed nothing\n", osc); ++bad; }
+            if (!movedOwn) { std::printf("%s: roll %d changed nothing\n", d.id, osc); ++bad; }
         }
         RandSettings on;
         on.oscOn[0] = false; on.oscOn[2] = false;

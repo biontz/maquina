@@ -9,7 +9,7 @@ int main()
 {
     int bad = 0;
     for (const auto& v : maquina::k_voices) {
-        if (v.voice == maquina::kDredrumVoice) continue; // not an LXR voice: defaults are the table's
+        if (maquina::hasChannels(v.voice)) continue; // not an LXR voice: defaults are the table's
         maquina::EngineHost host(v, 1);
         for (uint32_t i = 0; i < v.numParams; ++i)
             if (host.defaultParam(i) != float(v.params[i].def)) {

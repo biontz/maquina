@@ -1,0 +1,16 @@
+# Maquina factory preset
+# recipe: LXR owner's manual, "Introduction to drum synthesis" (Kicks: higher decay for booming 808s)
+voice = kick
+name = Recipe 808 Boom
+category = 808
+tags = long, boomy, clean
+osc_wave = Sine
+osc_coarse = -30
+amp_attack = 0
+amp_decay = 58
+amp_slope = 25
+pitch_decay = 25
+pitch_slope = 25
+pitch_amount = 35
+trans_wave = Click
+trans_volume = 25

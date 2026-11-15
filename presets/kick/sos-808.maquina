@@ -1,0 +1,19 @@
+# Maquina factory preset
+# inspired by: Sound On Sound, Synth Secrets (Practical Bass Drum Synthesis: bridged-T sine, long decay, drifts slightly flat, accent -> more punch)
+voice = kick
+name = SOS 808
+category = 808
+tags = long, boomy
+osc_wave = Sine
+osc_coarse = -31
+amp_attack = 0
+amp_decay = 65
+amp_slope = 20
+pitch_decay = 70
+pitch_slope = 40
+pitch_amount = 3
+trans_wave = Click
+trans_volume = 20
+velo_dest = Pitch Amount
+velo_amount = 10
+velo_volume = 1

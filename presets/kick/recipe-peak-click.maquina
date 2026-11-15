@@ -1,0 +1,19 @@
+# Maquina factory preset
+# recipe: LXR owner's manual, "Introduction to drum synthesis" (Kicks, tips: enhance the click with a peak filter)
+voice = kick
+name = Recipe Peak Click
+category = 909
+tags = punchy, bright
+osc_wave = Sine
+osc_coarse = -28
+amp_attack = 0
+amp_decay = 25
+amp_slope = 25
+pitch_decay = 25
+pitch_slope = 25
+pitch_amount = 45
+trans_wave = Click
+trans_volume = 80
+filter_type = Peak
+filter_freq = 100
+filter_reso = 70

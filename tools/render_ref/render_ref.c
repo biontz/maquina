@@ -119,11 +119,11 @@ static void write_wav(const char* path, const int16_t* lr, size_t frames)
     fclose(f);
 }
 
-/* --plugin-ref VOICE SECONDS OUT.wav [open]: what the plugin must output at
- * 44140 Hz for lv2_render's --aligned note pattern (defaults, note pitch off,
- * seed 7). Every note plays the voice at its set pitch; "open" = the HiHat
- * plugin with Hat = Open (trigger slot 6), using the closed hat's decay. */
-static int plugin_reference(uint8_t voice, double seconds, const char* path, int open)
+/* --plugin-ref VOICE SECONDS OUT.wav: what the plugin must output at
+ * 44140 Hz for lv2_render's --aligned note pattern (defaults, Key Track off,
+ * seed 7). Every note (60 and 46) plays the voice at its set pitch; the
+ * HiHat plays the closed-hat trigger. */
+static int plugin_reference(uint8_t voice, double seconds, const char* path)
 {
     static const uint8_t vels[] = { 127, 64, 100, 127, 30, 90, 110, 50 };
     const double rate = 44140.0;
@@ -145,15 +145,11 @@ static int plugin_reference(uint8_t voice, double seconds, const char* path, int
 
     lxr_state_reset();
     lxr_load_init_kit();
-    /* the HiHat plugin has one Amp Decay for both hats (EngineHost writes
-     * PAR_VELOD6_CLOSED to PAR_VELOD6_OPEN too) */
-    if (voice == LXR_VOICE_HIHAT)
-        lxr_set_param(PAR_VELOD6_OPEN, lxr_get_param(PAR_VELOD6_CLOSED));
     lxr_seed_rng(7);
     for (size_t b = 0; b < blocks; b++) {
         for (int h = 0; h < nhits; h++) {
             if (hit_block[h] != b) continue;
-            lxr_note_on(open ? LXR_TRIGGER_HIHAT_OPEN : voice, 60, hit_vel[h]);
+            lxr_note_on(voice, 60, hit_vel[h]);
         }
         lxr_render_voice(voice, out + b * LXR_BLOCK_SIZE * 2);
     }
@@ -167,10 +163,9 @@ static int plugin_reference(uint8_t voice, double seconds, const char* path, int
 
 int main(int argc, char** argv)
 {
-    if ((argc == 5 || argc == 6) && !strcmp(argv[1], "--plugin-ref")) {
+    if (argc == 5 && !strcmp(argv[1], "--plugin-ref")) {
         lxr_global_init();
-        return plugin_reference((uint8_t)atoi(argv[2]), atof(argv[3]), argv[4],
-                                argc == 6 && !strcmp(argv[5], "open"));
+        return plugin_reference((uint8_t)atoi(argv[2]), atof(argv[3]), argv[4]);
     }
     const char* wavdir = (argc > 2 && !strcmp(argv[1], "-w")) ? argv[2] : NULL;
     lxr_global_init();

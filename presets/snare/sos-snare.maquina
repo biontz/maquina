@@ -1,0 +1,22 @@
+# Maquina factory preset
+# inspired by: Sound On Sound, Synth Secrets (Snare Drum: ~180 Hz body with little pitch decay, narrow-band noise, harder hits brighter (velocity -> cutoff))
+voice = snare
+name = SOS Snare
+category = Acoustic
+tags = punchy, clean
+osc_wave = Triangle
+osc_coarse = -7
+osc_fine = 10
+pitch_amount = 8
+pitch_decay = 10
+pitch_slope = 20
+noise_mix = 95
+noise_freq = 127
+filter_type = Bandpass
+filter_freq = 95
+filter_reso = 45
+amp_attack = 0
+amp_decay = 35
+amp_slope = 15
+velo_dest = Filter Freq
+velo_amount = 40

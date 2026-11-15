@@ -31,18 +31,52 @@ for p in kick:0 tom:1 snare:3 cymbal:4 hihat:5; do
     $QEMU "$TOOLS/lv2_render" "urn:maquina:$n" 44140 4 "$OUT/$n-44140.wav" --aligned --block 100 >/dev/null
     $QEMU "$TOOLS/render_ref" --plugin-ref "$v" 4 "$OUT/$n-44140.raw"
     python3 tools/compare_ref.py "$OUT/$n-44140.wav" "$OUT/$n-44140.raw" || fail=1
-    if [ "$n" = hihat ]; then
-        echo "  hat_mode=Open"
-        $QEMU "$TOOLS/lv2_render" "urn:maquina:$n" 44140 4 "$OUT/$n-open-44140.wav" --aligned --block 100 hat_mode=1 >/dev/null
-        $QEMU "$TOOLS/render_ref" --plugin-ref "$v" 4 "$OUT/$n-open-44140.raw" open
-        python3 tools/compare_ref.py "$OUT/$n-open-44140.wav" "$OUT/$n-open-44140.raw" || fail=1
-    fi
     $QEMU "$TOOLS/lv2_render" "urn:maquina:$n" 48000 3 "$OUT/$n-twin.wav" --twin \
         twin:filter_freq=20 twin:volume=60 twin:osc_coarse=10 | sed -n 's/^  twin/  twin/p' || fail=1
     for rate in 44100 48000 96000; do
         $QEMU "$TOOLS/lv2_render" "urn:maquina:$n" $rate 3 "$OUT/$n-$rate.wav" | sed 's/^/  /' || fail=1
     done
 done
+
+# Key Track: every note triggers (the bit-exact runs above play notes 60 and 46
+# at the set pitch with it off); on, note 46 sounds 14 semitones lower
+echo "== key track (tom)"
+tone="osc_wave=0 pitch_amount=0 fm_amount=0 trans_volume=0 amp_decay=127 filter_freq=127 lfo_amount=0"
+$QEMU "$TOOLS/lv2_render" urn:maquina:tom 48000 3 "$OUT/tom-kt-off.wav" $tone >/dev/null
+$QEMU "$TOOLS/lv2_render" urn:maquina:tom 48000 3 "$OUT/tom-kt-on.wav" $tone note_pitch=1 >/dev/null
+python3 - "$OUT" <<'PY' || fail=1
+import array, sys
+def crossings(name):
+    a = array.array("f"); a.frombytes(open(f"{sys.argv[1]}/tom-kt-{name}.wav", "rb").read()[44:])
+    l = a[0::2]
+    return sum(1 for i in range(1, len(l)) if (l[i - 1] < 0) != (l[i] < 0))
+got, want = crossings("on") / crossings("off"), (1 + 2 ** (-14 / 12)) / 2
+ok = abs(got / want - 1) < 0.06
+print(f"  notes 60/46 with Key Track on: x{got:.3f} (want ~x{want:.3f})  {'ok' if ok else 'FAIL'}")
+sys.exit(0 if ok else 1)
+PY
+
+# Output gain (ExtraParams.hpp, every plugin): +6 / -12 dB scale the whole
+# output (the parameter is set before the first block, so no ramp)
+echo "== gain"
+for n in kick tom snare cymbal hihat dredrum plethora; do
+    for g in 0 6 -12; do
+        $QEMU "$TOOLS/lv2_render" urn:maquina:$n 48000 2 "$OUT/$n-gain$g.wav" gain=$g >/dev/null
+    done
+done
+python3 - "$OUT" <<'PY' || fail=1
+import array, math, sys
+def rms(n, g):
+    a = array.array("f"); a.frombytes(open(f"{sys.argv[1]}/{n}-gain{g}.wav", "rb").read()[44:])
+    return math.sqrt(sum(x * x for x in a) / len(a))
+ok = True
+for n in ("kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora"):
+    dbs = [20 * math.log10(rms(n, g) / rms(n, 0)) for g in (6, -12)]
+    good = abs(dbs[0] - 6) < 0.05 and abs(dbs[1] + 12) < 0.05
+    ok &= good
+    print(f"  {n:8s} gain=+6: {dbs[0]:+.2f} dB, gain=-12: {dbs[1]:+.2f} dB  {'ok' if good else 'FAIL'}")
+sys.exit(0 if ok else 1)
+PY
 
 # Maquina Dredrum: engine bit-exactness is tools/dredrum_ref (simavr); here the
 # plugin: isolation, sample rates, and Gate mode holding the decay while the
@@ -100,4 +134,40 @@ for name, got, want in checks:
     print(f"  tuning {name}: x{got:.3f} (want x{want:.3f})  {'ok' if ok else 'FAIL'}")
 sys.exit(1 if bad else 0)
 PY
+# Maquina Plethora: isolation (per-instance random streams), sample rates,
+# every algorithm on A and B audible and finite, Gate hold, Env Sync, Mute
+echo "== plethora"
+$QEMU "$TOOLS/lv2_render" urn:maquina:plethora 48000 3 "$OUT/plethora-twin.wav" --twin \
+    twin:a_algo=20 twin:b_level=100 twin:c_level=90 | sed -n 's/^  twin/  twin/p' || fail=1
+for rate in 44100 48000 96000; do
+    $QEMU "$TOOLS/lv2_render" urn:maquina:plethora $rate 3 "$OUT/plethora-$rate.wav" b_level=100 c_level=100 \
+        | sed 's/^/  /' || fail=1
+done
+bad=0
+for i in $(seq 0 59); do
+    $QEMU "$TOOLS/lv2_render" urn:maquina:plethora 44100 1 "$OUT/plethora-algo.wav" a_algo=$i a_decay=100 \
+        >/dev/null || { echo "  A algorithm $i: silent or non-finite  FAIL"; bad=1; }
+    $QEMU "$TOOLS/lv2_render" urn:maquina:plethora 44100 1 "$OUT/plethora-algo.wav" a_level=0 b_level=127 \
+        b_algo=$i b_decay=100 >/dev/null || { echo "  B algorithm $i: silent or non-finite  FAIL"; bad=1; }
+done
+[ $bad -eq 0 ] && echo "  60 algorithms on A and B: audible, finite  ok" || fail=1
+for v in "trig:" "gate:trig_mode=1" "sync:env_sync=1 a_decay=20 b_decay=110 b_level=127 a_level=0" \
+         "nosync:a_decay=20 b_decay=110 b_level=127 a_level=0" "mute:a_mute=1"; do
+    n=${v%%:*}
+    $QEMU "$TOOLS/lv2_render" urn:maquina:plethora 48000 3 "$OUT/plethora-$n.wav" a_decay=20 ${v#*:} \
+        >/dev/null || true
+done
+python3 - "$OUT" <<'PY' || fail=1
+import array, sys
+def energy(n):
+    a = array.array("f"); a.frombytes(open(f"{sys.argv[1]}/plethora-{n}.wav", "rb").read()[44:])
+    return sum(x * x for x in a)
+t, g, s, ns, m = (energy(n) for n in ("trig", "gate", "sync", "nosync", "mute"))
+checks = [("gate mode holds", g > 1.5 * t), ("env sync: B takes A's short decay", s < 0.5 * ns),
+          ("mute", m == 0)]
+for name, ok in checks:
+    print(f"  {name}: {'ok' if ok else 'FAIL'}")
+sys.exit(0 if all(ok for _, ok in checks) else 1)
+PY
+
 [ $fail -eq 0 ] && echo "test_plugins: PASSED" || { echo "test_plugins: FAILED"; exit 1; }

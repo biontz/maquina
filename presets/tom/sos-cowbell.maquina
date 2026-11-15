@@ -1,0 +1,20 @@
+# Maquina factory preset
+# inspired by: Sound On Sound, Synth Secrets (Synthesizing Cowbells & Claves: 587 + 845 Hz pulse waves (its Nord version), bandpass 2.64 kHz, slight resonance, impact + tail)
+voice = tom
+name = SOS Cowbell
+category = Perc
+tags = metallic, pitched
+osc_wave = Square
+osc_coarse = 13
+osc_fine = 60
+fm_mode = Mix
+fm_amount = 70
+fm_wave = Square
+fm_freq = 20
+pitch_amount = 0
+amp_attack = 0
+amp_slope = 3
+amp_decay = 45
+filter_type = Bandpass
+filter_freq = 80
+filter_reso = 30

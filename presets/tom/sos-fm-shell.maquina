@@ -1,0 +1,17 @@
+# Maquina factory preset
+# inspired by: Sound On Sound, Synth Secrets (Practical Snare Drum Synthesis: shell tone by FM, ~200 Hz pulse carrier, 30 Hz modulator, middling depth)
+voice = tom
+name = SOS FM Shell
+category = FM
+tags = short, dirty
+osc_wave = PWM
+osc_pwm = 32
+osc_coarse = -5
+fm_mode = FM
+fm_wave = Sine
+fm_freq = -38
+fm_amount = 55
+pitch_amount = 0
+amp_attack = 0
+amp_decay = 22
+amp_slope = 15

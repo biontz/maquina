@@ -27,7 +27,7 @@ TABLES = os.path.join(ROOT, "plugins", "common", "VoiceTables.generated.hpp")
 PRESETS_HPP = os.path.join(ROOT, "plugins", "common", "Presets.hpp")
 RANDOM_HPP = os.path.join(ROOT, "plugins", "common", "Randomizer.hpp")
 OUT_HPP = os.path.join(ROOT, "plugins", "common", "FactoryPresets.generated.hpp")
-VOICES = ["kick", "tom", "snare", "cymbal", "hihat", "dredrum"]
+VOICES = ["kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora"]
 
 
 def c_str(s):
@@ -54,11 +54,11 @@ def load_tables():
             else:
                 p["min"], p["max"] = 0, int(n) - 1
             params.append(p)
-        # extras (ExtraParams.hpp): note_pitch, and hat_mode on the hihat; none on dredrum
-        if v != "dredrum":
+        # extras (ExtraParams.hpp): note_pitch on the LXR voices; gain (a mix
+        # control, not a sound param) on all
+        if v not in ("dredrum", "plethora"):
             params.append(dict(symbol="note_pitch", kind="Toggle", default=0, labels=["Off", "On"], min=0, max=1))
-        if v == "hihat":
-            params.append(dict(symbol="hat_mode", kind="Enum", default=0, labels=["Closed", "Open"], min=0, max=1))
+        params.append(dict(symbol="gain", kind="Int", default=0, labels=[], min=-24, max=12))
         voices[v] = params
     return voices
 
@@ -193,6 +193,10 @@ def main():
             patches = []
             for p in all_presets[v]:
                 if p["category"] != cat:
+                    continue
+                # a reduced profile (MACHINISTA_PAGES, e.g. Plethora = channel A
+                # only) cannot play presets that need parameters it does not have
+                if any(s not in {q["symbol"] for q in prof["parameters"]} for s in p["values"]):
                     continue
                 controls = {q["symbol"]: q["default"] for q in prof["parameters"]}
                 for s, x in p["values"].items():

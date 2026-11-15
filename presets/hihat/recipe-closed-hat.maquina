@@ -1,0 +1,20 @@
+# Maquina factory preset
+# recipe: LXR owner's manual, "Introduction to drum synthesis" (Hihat (closed: short decay))
+voice = hihat
+name = Recipe Closed Hat
+category = Metallic
+tags = short, metallic, bright
+osc_wave = Square
+osc_coarse = 50
+mod1_wave = Square
+mod1_freq = 40
+mod1_gain = 120
+mod2_wave = Square
+mod2_freq = 58
+mod2_gain = 120
+amp_attack = 0
+amp_decay = 8
+amp_slope = 5
+filter_type = Highpass
+filter_freq = 120
+filter_reso = 10

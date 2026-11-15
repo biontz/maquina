@@ -1,6 +1,6 @@
 # plugin.mk - shared Makefile part for the voice plugins.
 # Set NAME and MAQUINA_VOICE_INDEX (and MAQUINA_DREDRUM = 1 for Maquina
-# Dredrum), then include this file.
+# Dredrum, MAQUINA_PLETHORA = 1 for Maquina Plethora), then include this file.
 
 MAQUINA_ROOT := $(abspath ../..)
 
@@ -17,6 +17,10 @@ DPF_TARGET_DIR ?= $(MAQUINA_ROOT)/bin-$(MAQUINA_ARCH)
 endif
 
 FILES_DSP = Plugin.cpp
+# Maquina Plethora: the Noise Plethora port in its own translation unit
+ifeq ($(MAQUINA_PLETHORA),1)
+FILES_DSP += Engine.cpp
+endif
 
 # MAQUINA_NO_UI=true: DSP-only build (Raspberry Pi / Machinista)
 ifneq ($(MAQUINA_NO_UI),true)
@@ -33,6 +37,11 @@ endif
 # MAQUINA_DREDRUM=1: the Dredrum engine (DredrumHost) instead of the LXR one
 ifeq ($(MAQUINA_DREDRUM),1)
 BUILD_CXX_FLAGS += -DMAQUINA_DREDRUM=1
+endif
+# MAQUINA_PLETHORA=1: the Noise Plethora port (PlethoraHost)
+ifeq ($(MAQUINA_PLETHORA),1)
+BUILD_CXX_FLAGS += -DMAQUINA_PLETHORA=1 -I$(MAQUINA_ROOT)/engine/plethora/compat \
+	-I$(MAQUINA_ROOT)/third_party/noise-plethora/src
 endif
 BUILD_CXX_FLAGS += -std=gnu++17 -DMAQUINA_VOICE_INDEX=$(MAQUINA_VOICE_INDEX) \
 	-I$(MAQUINA_ROOT)/plugins/common -I$(MAQUINA_ROOT)/engine \

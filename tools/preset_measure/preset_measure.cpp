@@ -1,5 +1,6 @@
 // preset_measure - render one hit of a voice with given settings through the
-// plugin's EngineHost (44140 Hz, velocity 127, note = set pitch) and report
+// plugin's engine host (EngineHost for the LXR voices, DredrumHost,
+// PlethoraHost; 44140 Hz output, velocity 127, note 60) and report
 // what it sounds like in numbers, since presets are designed without ears:
 //   peak / RMS, length to -40 dB, pitch at the start and after 150 ms
 //   (autocorrelation), brightness (zero-crossing rate, spectral centroid).
@@ -15,7 +16,9 @@
 #include <string>
 #include <vector>
 
+#include "DredrumHost.hpp"
 #include "EngineHost.hpp"
+#include "PlethoraHost.hpp"
 #include "ExtraParams.hpp"
 #include "VoiceTables.generated.hpp"
 
@@ -90,6 +93,10 @@ static double flatness(const std::vector<float>& x, size_t start, size_t n)
     return cnt ? std::exp(logSum / cnt) / (sum / cnt) : 0;
 }
 
+template <class Host>
+static int measure(Host& host, const VoiceDef& d, const std::vector<std::pair<std::string, std::string>>& settings,
+                   const char* wav);
+
 int main(int argc, char** argv)
 {
     if (argc < 2) { std::fprintf(stderr, "usage: %s VOICE [sym=val..] [-f file] [-w out.wav]\n", argv[0]); return 2; }
@@ -117,7 +124,22 @@ int main(int argc, char** argv)
         if (eq) settings.push_back({ std::string(argv[a], size_t(eq - argv[a])), std::string(eq + 1) });
     }
 
+    if (d.voice == kDredrumVoice) {
+        DredrumHost host(d, 7);
+        return measure(host, d, settings, wav);
+    }
+    if (d.voice == kPlethoraVoice) {
+        PlethoraHost host(d, 7);
+        return measure(host, d, settings, wav);
+    }
     EngineHost host(d, 7);
+    return measure(host, d, settings, wav);
+}
+
+template <class Host>
+static int measure(Host& host, const VoiceDef& d, const std::vector<std::pair<std::string, std::string>>& settings,
+                   const char* wav)
+{
     host.setSampleRate(kRate);
     for (auto& [k, v] : settings) {
         if (k == "name" || k == "category" || k == "tags" || k == "voice") continue;
@@ -129,7 +151,6 @@ int main(int argc, char** argv)
             for (int l = 0; l < p.numLabels; ++l)
                 if (v == p.labels[l]) val = float(l);
         if (k == "note_pitch") host.setNoteFollowsPitch(val >= 0.5f);
-        else if (k == "hat_mode") host.setHatOpen(val >= 0.5f);
         else host.setParam(uint32_t(i), val);
     }
 

@@ -5,12 +5,15 @@
 // SPDX-License-Identifier: GPL-3.0-only
 #include "DistrhoPlugin.hpp"
 
+#include <cmath>
 #include <cstdlib>
 #include <cstring>
 #include <vector>
 
 #if MAQUINA_DREDRUM
 #include "DredrumHost.hpp"
+#elif MAQUINA_PLETHORA
+#include "PlethoraHost.hpp"
 #else
 #include "EngineHost.hpp"
 #endif
@@ -27,6 +30,8 @@ START_NAMESPACE_DISTRHO
 
 #if MAQUINA_DREDRUM
 using Engine = maquina::DredrumHost; // Maquina Dredrum: the Dredrum firmware engine
+#elif MAQUINA_PLETHORA
+using Engine = maquina::PlethoraHost; // Maquina Plethora: the Noise Plethora (VCV port)
 #else
 using Engine = maquina::EngineHost;  // the LXR-02 firmware engine
 #endif
@@ -38,6 +43,11 @@ using maquina::paramAt;
 static const VoiceDef& voiceDef() { return maquina::k_voices[MAQUINA_VOICE_INDEX]; }
 static const maquina::VoicePresets& factory() { return maquina::k_factory_presets[MAQUINA_VOICE_INDEX]; }
 
+static bool hasChannelsVoice() { return maquina::hasChannels(voiceDef().voice); }
+// port group of the extra parameters: the LXR mix page, Dredrum's Mode /
+// Plethora's Global page
+static uint8_t extraPage() { return hasChannelsVoice() ? 3 : 7; }
+
 // DPF wants port group ids 0..N-1 without gaps; the snare has no FM page.
 struct PageGroups {
     int8_t groupOfPage[8];
@@ -48,8 +58,7 @@ struct PageGroups {
         bool used[8] = {};
         for (uint32_t i = 0; i < voiceDef().numParams; ++i)
             used[voiceDef().params[i].page] = true;
-        if (maquina::numExtraParams(voiceDef()) > 0)
-            used[7] = true; // the extra parameters live on the mix page
+        used[extraPage()] = true; // the extra parameters (ExtraParams.hpp)
         for (uint8_t pg = 0; pg < 8; ++pg) {
             groupOfPage[pg] = used[pg] ? int8_t(count) : -1;
             if (used[pg])
@@ -67,10 +76,13 @@ static const char* const kPageNames[8] = { "Oscillator", "Amp EG", "Modulation",
                                            "Transient", "Filter", "LFO", "Mix" };
 static const char* const kPageSymbols[8] = { "osc", "amp", "mod", "fm",
                                              "transient", "filter", "lfo", "mix" };
-// Maquina Dredrum pages (tools/gen_params.py DREDRUM_PAGE_TITLES)
+// Maquina Dredrum / Plethora pages (tools/gen_params.py *_PAGE_TITLES)
 static const char* const kDredrumPageNames[4] = { "Osc 1", "Osc 2", "Osc 3", "Mode" };
 static const char* const kDredrumPageSymbols[4] = { "osc1", "osc2", "osc3", "mode" };
+static const char* const kPlethoraPageNames[4] = { "Channel A", "Channel B", "Channel C", "Global" };
+static const char* const kPlethoraPageSymbols[4] = { "chan_a", "chan_b", "chan_c", "global" };
 static bool isDredrum() { return voiceDef().voice == maquina::kDredrumVoice; }
+static bool isPlethora() { return voiceDef().voice == maquina::kPlethoraVoice; }
 
 // Noise seed: differs per instance (like the hardware RNG) unless
 // MAQUINA_RNG_SEED is set, which makes renders reproducible for tests.
@@ -101,14 +113,18 @@ protected:
         if (isDredrum())
             return "8-bit 3-oscillator percussion/drone voice from the Dredrum Eurorack firmware "
                    "(unofficial; not affiliated with its authors).";
+        if (isPlethora())
+            return "Noise voice after the Befaco Noise Plethora (its VCV Rack port): 2 x 60 algorithms "
+                   "+ noise, filters, envelopes (unofficial; not affiliated with Befaco).";
         return "Drum voice from the LXR-02 firmware sound engine "
                "(unofficial; not affiliated with Erica Synths).";
     }
     const char* getMaker() const override { return DISTRHO_PLUGIN_BRAND; }
     const char* getHomePage() const override
     {
-        return isDredrum() ? "https://github.com/buranelectrix/dredrum"
-                           : "https://github.com/erica-synths/lxr-desktop-app";
+        return isDredrum()     ? "https://github.com/buranelectrix/dredrum"
+               : isPlethora() ? "https://github.com/VCVRack/Befaco"
+                              : "https://github.com/erica-synths/lxr-desktop-app";
     }
     const char* getLicense() const override { return "GPL-3.0-only"; }
     uint32_t getVersion() const override { return d_version(0, 1, 0); }
@@ -116,9 +132,9 @@ protected:
     void initPortGroup(uint32_t groupId, PortGroup& group) override
     {
         const uint8_t page = pageGroups().pageOfGroup[groupId];
-        if (isDredrum()) {
-            group.name = kDredrumPageNames[page & 3];
-            group.symbol = kDredrumPageSymbols[page & 3];
+        if (isDredrum() || isPlethora()) {
+            group.name = (isDredrum() ? kDredrumPageNames : kPlethoraPageNames)[page & 3];
+            group.symbol = (isDredrum() ? kDredrumPageSymbols : kPlethoraPageSymbols)[page & 3];
             return;
         }
         const bool metal = voiceDef().voice >= 4;
@@ -133,7 +149,7 @@ protected:
         p.name = vp.name;      // short display names (tools/gen_params.py SHORT_NAMES), max 9 chars
         p.shortName = vp.name;
         p.symbol = vp.symbol;
-        p.groupId = uint32_t(pageGroups().groupOfPage[vp.page]);
+        p.groupId = uint32_t(pageGroups().groupOfPage[extraId(index) != UINT32_MAX ? extraPage() : vp.page]);
         p.ranges.def = extraId(index) != UINT32_MAX ? float(vp.def) : fEngine.defaultParam(index);
 
         switch (vp.kind) {
@@ -222,7 +238,7 @@ protected:
     {
         switch (extraId(index)) {
         case maquina::kExtraNotePitch: return fEngine.noteFollowsPitch() ? 1.f : 0.f;
-        case maquina::kExtraHatMode: return fEngine.hatOpen() ? 1.f : 0.f;
+        case maquina::kExtraGain: return fGainDb;
         default: return fEngine.getParam(index);
         }
     }
@@ -231,12 +247,19 @@ protected:
     {
         switch (extraId(index)) {
         case maquina::kExtraNotePitch: fEngine.setNoteFollowsPitch(value >= 0.5f); break;
-        case maquina::kExtraHatMode: fEngine.setHatOpen(value >= 0.5f); break;
+        case maquina::kExtraGain:
+            fGainDb = std::fmin(std::fmax(std::round(value), -24.f), 12.f);
+            fGainTarget = std::pow(10.f, fGainDb / 20.f);
+            break;
         default: fEngine.setParam(index, value); break;
         }
     }
 
-    void activate() override { fEngine.resetTiming(); }
+    void activate() override
+    {
+        fEngine.resetTiming();
+        fGain = fGainTarget;
+    }
 
     void sampleRateChanged(double newSampleRate) override
     {
@@ -263,18 +286,37 @@ protected:
         }
 
         fEngine.process(outputs[0], outputs[1], frames);
+        applyGain(outputs[0], outputs[1], frames);
     }
 
 private:
+    // output gain (ExtraParams.hpp "gain"), ~5 ms smoothing; 0 dB = untouched
+    void applyGain(float* l, float* r, uint32_t frames)
+    {
+        if (fGain == fGainTarget && fGain == 1.f)
+            return;
+        const float k = 1.f - std::exp(-1.f / (0.005f * float(getSampleRate())));
+        for (uint32_t i = 0; i < frames; ++i) {
+            fGain += (fGainTarget - fGain) * k;
+            l[i] *= fGain;
+            r[i] *= fGain;
+        }
+        if (std::fabs(fGain - fGainTarget) < 1e-6f)
+            fGain = fGainTarget;
+    }
+
     // ExtraParamId of an extra parameter, UINT32_MAX for a firmware one
     static uint32_t extraId(uint32_t index)
     {
-        return maquina::isExtraParam(voiceDef(), index) ? index - voiceDef().numParams : UINT32_MAX;
+        return maquina::isExtraParam(voiceDef(), index)
+                   ? uint32_t(maquina::extraIdOf(voiceDef(), index - voiceDef().numParams))
+                   : UINT32_MAX;
     }
 
     Engine fEngine;
     String fRandLevels { maquina::RandSettings().toString().c_str() };
     String fPresetName { "Init" };
+    float fGainDb = 0.f, fGainTarget = 1.f, fGain = 1.f;
 
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DrumPlugin)
 };

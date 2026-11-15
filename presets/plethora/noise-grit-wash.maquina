@@ -1,0 +1,13 @@
+# Maquina factory preset
+# design: channel C's gritty noise, low-passed, long fade
+voice = plethora
+name = Grit Wash
+category = Noise
+tags = long, noisy, soft
+a_level = 0
+c_source = Gritty
+c_grit = 110
+c_ftype = Lowpass
+c_cutoff = 100
+c_decay = 104
+c_level = 127

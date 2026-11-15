@@ -18,17 +18,17 @@ DRUM_PAGES = [
     ("ENVELOPES", ["amp_attack", "amp_decay", "amp_slope", "pitch_decay", "pitch_slope", "pitch_amount",
                    "drive", "decimation"]),
     ("FM / TRANSIENT", ["fm_amount", "fm_freq", "fm_wave", "fm_mode", "trans_wave", "trans_volume",
-                        "trans_freq", "trigger_note"]),
+                        "trans_freq", "volume"]),
     ("FILTER / VELOCITY", ["filter_freq", "filter_reso", "filter_type", "filter_drive", "velo_dest",
                            "velo_amount", "velo_volume", "note_pitch"]),
     ("LFO", ["lfo_rate", "lfo_sync", "lfo_amount", "lfo_wave", "lfo_retrigger", "lfo_offset", "lfo_target",
-             "volume"]),
+             "gain"]),
 ]
 METAL_TAIL = [
     ("FILTER / VELOCITY", ["filter_freq", "filter_reso", "filter_type", "filter_drive", "velo_dest",
                            "velo_amount", "velo_volume", "note_pitch"]),
     ("LFO", ["lfo_rate", "lfo_sync", "lfo_amount", "lfo_wave", "lfo_retrigger", "lfo_offset", "lfo_target",
-             "volume"]),
+             "gain"]),
 ]
 PAGES = {
     "kick": DRUM_PAGES,
@@ -38,29 +38,29 @@ PAGES = {
         ("ENVELOPES", ["amp_attack", "amp_decay", "amp_slope", "amp_repeat", "pitch_decay", "pitch_slope",
                        "pitch_amount", "volume"]),
         ("TRANSIENT / MIX", ["trans_wave", "trans_volume", "trans_freq", "pan", "drive", "decimation",
-                             "trigger_note", "note_pitch"]),
+                             "volume", "note_pitch"]),
         ("FILTER / VELOCITY", ["filter_freq", "filter_reso", "filter_type", "filter_drive", "velo_dest",
                                "velo_amount", "velo_volume", "volume"]),
         ("LFO", ["lfo_rate", "lfo_sync", "lfo_amount", "lfo_wave", "lfo_retrigger", "lfo_offset", "lfo_target",
-                 "volume"]),
+                 "gain"]),
     ],
     "cymbal": [
         ("OSCILLATOR", ["@bank", "@patch", "osc_coarse", "osc_fine", "osc_wave", "osc_pwm", "volume", "pan"]),
         ("MOD OSC", ["mod1_freq", "mod2_freq", "mod1_gain", "mod2_gain", "mod1_wave", "mod2_wave", "drive",
                      "decimation"]),
         ("ENVELOPE / TRANSIENT", ["amp_attack", "amp_decay", "amp_repeat", "amp_slope", "trans_wave",
-                                  "trans_volume", "trans_freq", "trigger_note"]),
+                                  "trans_volume", "trans_freq", "volume"]),
     ] + METAL_TAIL,
     "hihat": [
         ("OSCILLATOR", ["@bank", "@patch", "osc_coarse", "osc_fine", "osc_wave", "osc_pwm", "volume", "pan"]),
         ("MOD OSC", ["mod1_freq", "mod2_freq", "mod1_gain", "mod2_gain", "mod1_wave", "mod2_wave", "drive",
                      "decimation"]),
-        ("ENVELOPE / TRANSIENT", ["amp_attack", "amp_decay", "amp_slope", "hat_mode", "trans_wave",
-                                  "trans_volume", "trans_freq", "note_pitch"]),
+        ("ENVELOPE / TRANSIENT", ["amp_attack", "amp_decay", "amp_slope", "trans_wave", "trans_volume",
+                                  "trans_freq", "volume", "pan"]),
         ("FILTER / VELOCITY", ["filter_freq", "filter_reso", "filter_type", "filter_drive", "velo_dest",
-                               "velo_amount", "velo_volume", "hat_mode"]),
+                               "velo_amount", "velo_volume", "note_pitch"]),
         ("LFO", ["lfo_rate", "lfo_sync", "lfo_amount", "lfo_wave", "lfo_retrigger", "lfo_offset", "lfo_target",
-                 "trigger_note"]),
+                 "gain"]),
     ],
     # Maquina Dredrum: levels/decays first, then one page per oscillator
     # (its 8 controls; mute only on SWITCHES), then the switches
@@ -73,6 +73,28 @@ PAGES = {
     ] + [
         ("SWITCHES", ["trig_mode", "click", "osc1_track", "osc2_track", "osc3_track", "osc1_mute",
                       "osc2_mute", "osc3_mute"]),
+        ("MIX / OUT", ["gain", "osc1_level", "osc2_level", "osc3_level", "osc1_mute", "osc2_mute", "osc3_mute",
+                       "trig_mode"]),
+    ],
+}
+
+# Maquina Plethora on CLAP hosts (Bitwig): the whole module, one page per channel
+PAGES["plethora"] = [
+    ("A", ["@bank", "@patch", "a_algo", "a_x", "a_y", "a_ftype", "a_cutoff", "a_reso"]),
+    ("A ENV / MIX", ["a_attack", "a_decay", "a_level", "a_mute", "b_level", "c_level", "env_sync", "trig_mode"]),
+    ("B", ["b_algo", "b_x", "b_y", "b_ftype", "b_cutoff", "b_reso", "b_attack", "b_decay"]),
+    ("C", ["c_source", "c_grit", "c_ftype", "c_cutoff", "c_reso", "c_attack", "c_decay", "c_level"]),
+    ("MUTES", ["a_mute", "b_mute", "c_mute", "gain", "trig_mode", "a_level", "b_level", "c_level"]),
+]
+
+# Machinista profiles that differ from PAGES: only these pages, and the
+# profile (and its preset banks) only holds the parameters on them; the rest
+# keep their defaults. Maquina Plethora on Machinista = channel A only (B and
+# C default to Level 0, so they are silent and not computed).
+MACHINISTA_PAGES = {
+    "plethora": [
+        ("A", ["@bank", "@patch", "a_algo", "a_x", "a_y", "a_ftype", "a_cutoff", "a_reso"]),
+        ("A ENV", ["a_attack", "a_decay", "a_level", "a_mute", "trig_mode", "a_x", "a_y", "gain"]),
     ],
 }
 
@@ -84,6 +106,7 @@ CLAP_FILL = {
     "cymbal": ["drive", "decimation"],
     "hihat": ["drive", "decimation"],
     "dredrum": ["trig_mode", "click"],
+    "plethora": ["a_level", "a_decay"],
 }
 
 

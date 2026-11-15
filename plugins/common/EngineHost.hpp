@@ -44,16 +44,11 @@ public:
     float defaultParam(uint32_t index) const;
     void resetToDefaults();
 
-    // "Note > Pitch": with Trigger Note = Any, transpose by the played note
-    // (the firmware's Any mode) instead of always playing the set pitch.
+    // Key Track: every note triggers the voice; off = at its set pitch,
+    // on = transposed by the played note around C4 (the firmware's "Any"
+    // trigger-note mode).
     void setNoteFollowsPitch(bool on) { fNotePitch.store(on, std::memory_order_relaxed); }
     bool noteFollowsPitch() const { return fNotePitch.load(std::memory_order_relaxed); }
-
-    // HiHat only: this instance plays the open hat (trigger slot 6) instead
-    // of the closed one. Closed/open on separate tracks; choke is the DAW's.
-    // The one Amp Decay parameter sets both hats' decay.
-    void setHatOpen(bool on);
-    bool hatOpen() const { return fHatOpen.load(std::memory_order_relaxed); }
 
     // Audio thread. Queue events for the coming process() call (frame offsets
     // within that call, in order), then call process().
@@ -66,8 +61,6 @@ public:
     void resetTiming();
 
 private:
-    static uint8_t hatOpenDecayTarget(uint8_t closedTarget);
-
     struct Event {
         double engineFrame;
         uint8_t trigger, note, velocity;
@@ -91,7 +84,6 @@ private:
     std::vector<std::atomic<float>> fValues;
     std::vector<std::atomic<uint32_t>> fDirty; // bitmask words
     std::atomic<bool> fNotePitch { false };
-    std::atomic<bool> fHatOpen { false };
 
     Resampler fResampler;
     double fHostRate = 48000.0;

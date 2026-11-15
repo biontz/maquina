@@ -1,0 +1,8 @@
+# Maquina factory preset
+# design: Atari, medium decay
+voice = plethora
+name = Atari Arcade
+category = FX
+tags = pitched, lo-fi
+a_algo = 3-02 Atari
+a_decay = 73

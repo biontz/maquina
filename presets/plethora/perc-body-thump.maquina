@@ -1,0 +1,11 @@
+# Maquina factory preset
+# design: DroneBody low-passed with resonance into a short decay: a kick-like thud
+voice = plethora
+name = Body Thump
+category = Perc
+tags = short, boomy, dark
+a_algo = 4-10 DroneBody
+a_ftype = Lowpass
+a_cutoff = 62
+a_reso = 80
+a_decay = 75

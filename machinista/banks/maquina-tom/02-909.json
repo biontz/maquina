@@ -41,7 +41,6 @@
     "pan": 0,
     "decimation": 127,
     "drive": 63,
-    "trigger_note": 0,
     "note_pitch": 0
    }
   }

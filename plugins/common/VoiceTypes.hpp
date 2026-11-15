@@ -30,13 +30,17 @@ struct VoiceParam {
     int16_t def;            // default in plugin units (firmware Initkit)
 };
 
-// VoiceDef::voice of Maquina Dredrum: not an LXR engine voice (engine/dredrum)
-constexpr uint8_t kDredrumVoice = 16;
+// VoiceDef::voice of the non-LXR voices
+constexpr uint8_t kDredrumVoice = 16;  // Maquina Dredrum (engine/dredrum)
+constexpr uint8_t kPlethoraVoice = 17; // Maquina Plethora (engine/plethora)
+// voices built from 3 channels/oscillators with their own random ROLL/RND
+// switches; no extra (LXR) parameters
+inline bool hasChannels(uint8_t voice) { return voice == kDredrumVoice || voice == kPlethoraVoice; }
 
 struct VoiceDef {
     const char* id;
     const char* name;
-    uint8_t voice;        // engine voice slot (LxrVoice), or kDredrumVoice
+    uint8_t voice;        // engine voice slot (LxrVoice), or kDredrumVoice / kPlethoraVoice
     const VoiceParam* params;
     uint32_t numParams;
 };

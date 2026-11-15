@@ -1,0 +1,23 @@
+{
+ "schema": 1,
+ "uri": "urn:maquina:plethora",
+ "name": "Drone",
+ "patches": [
+  {
+   "name": "Drone Body",
+   "controls": {
+    "a_algo": 39,
+    "a_x": 64,
+    "a_y": 64,
+    "a_ftype": 0,
+    "a_cutoff": 95,
+    "a_reso": 0,
+    "a_attack": 0,
+    "a_decay": 127,
+    "a_level": 127,
+    "a_mute": 0,
+    "trig_mode": 0
+   }
+  }
+ ]
+}

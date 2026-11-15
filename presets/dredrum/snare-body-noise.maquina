@@ -1,0 +1,15 @@
+# Maquina factory preset
+# design: ~180 Hz sine body with a small drop, program-memory noise louder than the body
+voice = dredrum
+name = Body + Noise
+category = Snare
+tags = punchy
+osc1_wave = Sine
+osc1_pitch = 77
+osc1_drop = 25
+osc1_decay = 120
+osc1_level = 160
+osc2_wave = Noise
+osc2_pitch = 255
+osc2_decay = 140
+osc2_level = 255

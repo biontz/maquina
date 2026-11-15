@@ -1,0 +1,11 @@
+# Maquina factory preset
+# design: slow-scanning program-memory noise: audible as stepped data
+voice = dredrum
+name = Data Rain
+category = FX
+tags = noisy, lo-fi
+osc1_level = 0
+osc2_wave = Noise
+osc2_pitch = 4
+osc2_decay = 200
+osc2_level = 255

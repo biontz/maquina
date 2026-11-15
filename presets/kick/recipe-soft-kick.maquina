@@ -1,0 +1,14 @@
+# Maquina factory preset
+# recipe: LXR owner's manual, "Introduction to drum synthesis" (Kicks: slightly increased attack for softer bass drums)
+voice = kick
+name = Recipe Soft Kick
+category = Acoustic
+tags = soft
+osc_wave = Sine
+osc_coarse = -27
+amp_attack = 7
+amp_decay = 28
+amp_slope = 25
+pitch_decay = 22
+pitch_slope = 25
+pitch_amount = 30

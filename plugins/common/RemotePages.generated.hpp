@@ -9,37 +9,37 @@
 static const ClapRemotePage k_kick_remote_pages[] = {
     { "OSCILLATOR", { "osc_coarse", "osc_fine", "osc_wave", "osc_pwm", "volume", "pan", "drive", "decimation" } },
     { "ENVELOPES", { "amp_attack", "amp_decay", "amp_slope", "pitch_decay", "pitch_slope", "pitch_amount", "drive", "decimation" } },
-    { "FM / TRANSIENT", { "fm_amount", "fm_freq", "fm_wave", "fm_mode", "trans_wave", "trans_volume", "trans_freq", "trigger_note" } },
+    { "FM / TRANSIENT", { "fm_amount", "fm_freq", "fm_wave", "fm_mode", "trans_wave", "trans_volume", "trans_freq", "volume" } },
     { "FILTER / VELOCITY", { "filter_freq", "filter_reso", "filter_type", "filter_drive", "velo_dest", "velo_amount", "velo_volume", "note_pitch" } },
-    { "LFO", { "lfo_rate", "lfo_sync", "lfo_amount", "lfo_wave", "lfo_retrigger", "lfo_offset", "lfo_target", "volume" } },
+    { "LFO", { "lfo_rate", "lfo_sync", "lfo_amount", "lfo_wave", "lfo_retrigger", "lfo_offset", "lfo_target", "gain" } },
 };
 static const ClapRemotePage k_tom_remote_pages[] = {
     { "OSCILLATOR", { "osc_coarse", "osc_fine", "osc_wave", "osc_pwm", "volume", "pan", "drive", "decimation" } },
     { "ENVELOPES", { "amp_attack", "amp_decay", "amp_slope", "pitch_decay", "pitch_slope", "pitch_amount", "drive", "decimation" } },
-    { "FM / TRANSIENT", { "fm_amount", "fm_freq", "fm_wave", "fm_mode", "trans_wave", "trans_volume", "trans_freq", "trigger_note" } },
+    { "FM / TRANSIENT", { "fm_amount", "fm_freq", "fm_wave", "fm_mode", "trans_wave", "trans_volume", "trans_freq", "volume" } },
     { "FILTER / VELOCITY", { "filter_freq", "filter_reso", "filter_type", "filter_drive", "velo_dest", "velo_amount", "velo_volume", "note_pitch" } },
-    { "LFO", { "lfo_rate", "lfo_sync", "lfo_amount", "lfo_wave", "lfo_retrigger", "lfo_offset", "lfo_target", "volume" } },
+    { "LFO", { "lfo_rate", "lfo_sync", "lfo_amount", "lfo_wave", "lfo_retrigger", "lfo_offset", "lfo_target", "gain" } },
 };
 static const ClapRemotePage k_snare_remote_pages[] = {
     { "OSCILLATOR", { "osc_coarse", "osc_fine", "osc_wave", "osc_pwm", "noise_freq", "noise_mix", "volume", "pan" } },
     { "ENVELOPES", { "amp_attack", "amp_decay", "amp_slope", "amp_repeat", "pitch_decay", "pitch_slope", "pitch_amount", "volume" } },
-    { "TRANSIENT / MIX", { "trans_wave", "trans_volume", "trans_freq", "pan", "drive", "decimation", "trigger_note", "note_pitch" } },
+    { "TRANSIENT / MIX", { "trans_wave", "trans_volume", "trans_freq", "pan", "drive", "decimation", "volume", "note_pitch" } },
     { "FILTER / VELOCITY", { "filter_freq", "filter_reso", "filter_type", "filter_drive", "velo_dest", "velo_amount", "velo_volume", "volume" } },
-    { "LFO", { "lfo_rate", "lfo_sync", "lfo_amount", "lfo_wave", "lfo_retrigger", "lfo_offset", "lfo_target", "volume" } },
+    { "LFO", { "lfo_rate", "lfo_sync", "lfo_amount", "lfo_wave", "lfo_retrigger", "lfo_offset", "lfo_target", "gain" } },
 };
 static const ClapRemotePage k_cymbal_remote_pages[] = {
     { "OSCILLATOR", { "osc_coarse", "osc_fine", "osc_wave", "osc_pwm", "volume", "pan", "drive", "decimation" } },
     { "MOD OSC", { "mod1_freq", "mod2_freq", "mod1_gain", "mod2_gain", "mod1_wave", "mod2_wave", "drive", "decimation" } },
-    { "ENVELOPE / TRANSIENT", { "amp_attack", "amp_decay", "amp_repeat", "amp_slope", "trans_wave", "trans_volume", "trans_freq", "trigger_note" } },
+    { "ENVELOPE / TRANSIENT", { "amp_attack", "amp_decay", "amp_repeat", "amp_slope", "trans_wave", "trans_volume", "trans_freq", "volume" } },
     { "FILTER / VELOCITY", { "filter_freq", "filter_reso", "filter_type", "filter_drive", "velo_dest", "velo_amount", "velo_volume", "note_pitch" } },
-    { "LFO", { "lfo_rate", "lfo_sync", "lfo_amount", "lfo_wave", "lfo_retrigger", "lfo_offset", "lfo_target", "volume" } },
+    { "LFO", { "lfo_rate", "lfo_sync", "lfo_amount", "lfo_wave", "lfo_retrigger", "lfo_offset", "lfo_target", "gain" } },
 };
 static const ClapRemotePage k_hihat_remote_pages[] = {
     { "OSCILLATOR", { "osc_coarse", "osc_fine", "osc_wave", "osc_pwm", "volume", "pan", "drive", "decimation" } },
     { "MOD OSC", { "mod1_freq", "mod2_freq", "mod1_gain", "mod2_gain", "mod1_wave", "mod2_wave", "drive", "decimation" } },
-    { "ENVELOPE / TRANSIENT", { "amp_attack", "amp_decay", "amp_slope", "hat_mode", "trans_wave", "trans_volume", "trans_freq", "note_pitch" } },
-    { "FILTER / VELOCITY", { "filter_freq", "filter_reso", "filter_type", "filter_drive", "velo_dest", "velo_amount", "velo_volume", "hat_mode" } },
-    { "LFO", { "lfo_rate", "lfo_sync", "lfo_amount", "lfo_wave", "lfo_retrigger", "lfo_offset", "lfo_target", "trigger_note" } },
+    { "ENVELOPE / TRANSIENT", { "amp_attack", "amp_decay", "amp_slope", "trans_wave", "trans_volume", "trans_freq", "volume", "pan" } },
+    { "FILTER / VELOCITY", { "filter_freq", "filter_reso", "filter_type", "filter_drive", "velo_dest", "velo_amount", "velo_volume", "note_pitch" } },
+    { "LFO", { "lfo_rate", "lfo_sync", "lfo_amount", "lfo_wave", "lfo_retrigger", "lfo_offset", "lfo_target", "gain" } },
 };
 static const ClapRemotePage k_dredrum_remote_pages[] = {
     { "MIX", { "osc1_level", "osc2_level", "osc3_level", "osc1_decay", "osc2_decay", "osc3_decay", "trig_mode", "click" } },
@@ -47,6 +47,14 @@ static const ClapRemotePage k_dredrum_remote_pages[] = {
     { "OSC 2", { "osc2_wave", "osc2_pitch", "osc2_drop", "osc2_decay", "osc2_level", "osc2_track", "osc2_octave", "osc2_semi" } },
     { "OSC 3", { "osc3_wave", "osc3_pitch", "osc3_drop", "osc3_decay", "osc3_level", "osc3_track", "osc3_octave", "osc3_semi" } },
     { "SWITCHES", { "trig_mode", "click", "osc1_track", "osc2_track", "osc3_track", "osc1_mute", "osc2_mute", "osc3_mute" } },
+    { "MIX / OUT", { "gain", "osc1_level", "osc2_level", "osc3_level", "osc1_mute", "osc2_mute", "osc3_mute", "trig_mode" } },
+};
+static const ClapRemotePage k_plethora_remote_pages[] = {
+    { "A", { "a_algo", "a_x", "a_y", "a_ftype", "a_cutoff", "a_reso", "a_level", "a_decay" } },
+    { "A ENV / MIX", { "a_attack", "a_decay", "a_level", "a_mute", "b_level", "c_level", "env_sync", "trig_mode" } },
+    { "B", { "b_algo", "b_x", "b_y", "b_ftype", "b_cutoff", "b_reso", "b_attack", "b_decay" } },
+    { "C", { "c_source", "c_grit", "c_ftype", "c_cutoff", "c_reso", "c_attack", "c_decay", "c_level" } },
+    { "MUTES", { "a_mute", "b_mute", "c_mute", "gain", "trig_mode", "a_level", "b_level", "c_level" } },
 };
 
 static const ClapRemotePages k_remote_pages[] = {
@@ -56,4 +64,5 @@ static const ClapRemotePages k_remote_pages[] = {
     { k_cymbal_remote_pages, sizeof(k_cymbal_remote_pages) / sizeof(k_cymbal_remote_pages[0]) },
     { k_hihat_remote_pages, sizeof(k_hihat_remote_pages) / sizeof(k_hihat_remote_pages[0]) },
     { k_dredrum_remote_pages, sizeof(k_dredrum_remote_pages) / sizeof(k_dredrum_remote_pages[0]) },
+    { k_plethora_remote_pages, sizeof(k_plethora_remote_pages) / sizeof(k_plethora_remote_pages[0]) },
 };

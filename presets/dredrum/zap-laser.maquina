@@ -1,0 +1,11 @@
+# Maquina factory preset
+# design: sine with the largest drop: a falling zap
+voice = dredrum
+name = Laser
+category = Zap
+tags = pitched, bright
+osc1_wave = Sine
+osc1_pitch = 30
+osc1_drop = 255
+osc1_decay = 150
+osc1_level = 255

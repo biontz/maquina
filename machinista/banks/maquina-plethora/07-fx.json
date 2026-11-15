@@ -1,0 +1,55 @@
+{
+ "schema": 1,
+ "uri": "urn:maquina:plethora",
+ "name": "FX",
+ "patches": [
+  {
+   "name": "Atari Arcade",
+   "controls": {
+    "a_algo": 21,
+    "a_x": 64,
+    "a_y": 64,
+    "a_ftype": 0,
+    "a_cutoff": 127,
+    "a_reso": 0,
+    "a_attack": 0,
+    "a_decay": 73,
+    "a_level": 127,
+    "a_mute": 0,
+    "trig_mode": 0
+   }
+  },
+  {
+   "name": "Henon Dust",
+   "controls": {
+    "a_algo": 41,
+    "a_x": 64,
+    "a_y": 64,
+    "a_ftype": 1,
+    "a_cutoff": 110,
+    "a_reso": 50,
+    "a_attack": 0,
+    "a_decay": 92,
+    "a_level": 127,
+    "a_mute": 0,
+    "trig_mode": 0
+   }
+  },
+  {
+   "name": "Runaway Filter",
+   "controls": {
+    "a_algo": 46,
+    "a_x": 64,
+    "a_y": 64,
+    "a_ftype": 0,
+    "a_cutoff": 127,
+    "a_reso": 0,
+    "a_attack": 0,
+    "a_decay": 85,
+    "a_level": 127,
+    "a_mute": 0,
+    "trig_mode": 0
+   }
+  }
+ ]
+}

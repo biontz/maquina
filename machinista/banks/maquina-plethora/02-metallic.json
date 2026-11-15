@@ -1,0 +1,71 @@
+{
+ "schema": 1,
+ "uri": "urn:maquina:plethora",
+ "name": "Metallic",
+ "patches": [
+  {
+   "name": "Cluster Hat",
+   "controls": {
+    "a_algo": 10,
+    "a_x": 64,
+    "a_y": 64,
+    "a_ftype": 2,
+    "a_cutoff": 115,
+    "a_reso": 0,
+    "a_attack": 0,
+    "a_decay": 48,
+    "a_level": 127,
+    "a_mute": 0,
+    "trig_mode": 0
+   }
+  },
+  {
+   "name": "Cluster Open Hat",
+   "controls": {
+    "a_algo": 10,
+    "a_x": 64,
+    "a_y": 64,
+    "a_ftype": 2,
+    "a_cutoff": 115,
+    "a_reso": 0,
+    "a_attack": 0,
+    "a_decay": 80,
+    "a_level": 127,
+    "a_mute": 0,
+    "trig_mode": 0
+   }
+  },
+  {
+   "name": "Fibonacci Bell",
+   "controls": {
+    "a_algo": 17,
+    "a_x": 64,
+    "a_y": 64,
+    "a_ftype": 1,
+    "a_cutoff": 100,
+    "a_reso": 85,
+    "a_attack": 0,
+    "a_decay": 95,
+    "a_level": 127,
+    "a_mute": 0,
+    "trig_mode": 0
+   }
+  },
+  {
+   "name": "Prime Ride",
+   "controls": {
+    "a_algo": 15,
+    "a_x": 64,
+    "a_y": 64,
+    "a_ftype": 1,
+    "a_cutoff": 108,
+    "a_reso": 40,
+    "a_attack": 0,
+    "a_decay": 103,
+    "a_level": 127,
+    "a_mute": 0,
+    "trig_mode": 0
+   }
+  }
+ ]
+}

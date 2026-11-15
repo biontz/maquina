@@ -1,0 +1,15 @@
+# Maquina factory preset
+# inspired by: Sound On Sound, Synth Secrets (Synthesizing Cowbells & Claves: triangle, bandpass without resonance, decay shorter than the cowbell)
+voice = tom
+name = SOS Claves
+category = Perc
+tags = short, pitched, clean
+osc_wave = Triangle
+osc_coarse = 40
+pitch_amount = 0
+amp_attack = 0
+amp_decay = 9
+amp_slope = 12
+filter_type = Bandpass
+filter_freq = 100
+filter_reso = 0

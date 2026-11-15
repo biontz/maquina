@@ -1,0 +1,11 @@
+# Maquina factory preset
+# design: square body for the gritty 8-bit kick
+voice = dredrum
+name = 8-Bit Kick
+category = Kick
+tags = short, lo-fi, dirty
+osc1_wave = Square
+osc1_pitch = 5
+osc1_drop = 80
+osc1_decay = 120
+osc1_level = 200

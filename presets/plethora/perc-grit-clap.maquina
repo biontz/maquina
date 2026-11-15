@@ -1,0 +1,18 @@
+# Maquina factory preset
+# design: sparse gritty noise bandpassed (C) + NoiseBurst highpassed (A)
+voice = plethora
+name = Grit Clap
+category = Perc
+tags = short, noisy
+a_algo = 6-08 NoiseBurst
+a_ftype = Highpass
+a_cutoff = 95
+a_decay = 53
+a_level = 100
+c_source = Gritty
+c_grit = 100
+c_ftype = Bandpass
+c_cutoff = 85
+c_reso = 60
+c_decay = 68
+c_level = 127

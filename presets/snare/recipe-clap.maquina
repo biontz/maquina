@@ -1,0 +1,17 @@
+# Maquina factory preset
+# recipe: LXR owner's manual, "Introduction to drum synthesis" (Clap)
+voice = snare
+name = Recipe Clap
+category = Clap
+tags = noisy
+noise_mix = 127
+noise_freq = 127
+osc_wave = Noise
+pitch_amount = 0
+amp_repeat = 4
+amp_attack = 6
+amp_decay = 22
+amp_slope = 6
+filter_type = Bandpass
+filter_freq = 70
+filter_reso = 100

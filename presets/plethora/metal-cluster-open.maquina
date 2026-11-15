@@ -1,0 +1,10 @@
+# Maquina factory preset
+# design: the same cluster with a longer decay
+voice = plethora
+name = Cluster Open Hat
+category = Metallic
+tags = long, metallic, bright
+a_algo = 2-01 clusterSaw
+a_ftype = Highpass
+a_cutoff = 115
+a_decay = 80

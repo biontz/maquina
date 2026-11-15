@@ -74,8 +74,7 @@
           "volume",
           "pan",
           "decimation",
-          "drive",
-          "trigger_note"
+          "drive"
         ]
       }
     ]
@@ -155,8 +154,7 @@
           "volume",
           "pan",
           "decimation",
-          "drive",
-          "trigger_note"
+          "drive"
         ]
       }
     ]
@@ -230,8 +228,7 @@
           "volume",
           "pan",
           "decimation",
-          "drive",
-          "trigger_note"
+          "drive"
         ]
       }
     ]
@@ -311,8 +308,7 @@
           "volume",
           "pan",
           "decimation",
-          "drive",
-          "trigger_note"
+          "drive"
         ]
       }
     ]
@@ -391,8 +387,7 @@
           "volume",
           "pan",
           "decimation",
-          "drive",
-          "trigger_note"
+          "drive"
         ]
       }
     ]
@@ -446,6 +441,62 @@
       {
         "title": "MODE",
         "controls": [
+          "trig_mode"
+        ]
+      }
+    ]
+  },
+  "plethora": {
+    "name": "Plethora",
+    "pages": [
+      {
+        "title": "A",
+        "controls": [
+          "a_algo",
+          "a_x",
+          "a_y",
+          "a_ftype",
+          "a_cutoff",
+          "a_reso",
+          "a_attack",
+          "a_decay",
+          "a_level",
+          "a_mute"
+        ]
+      },
+      {
+        "title": "B",
+        "controls": [
+          "b_algo",
+          "b_x",
+          "b_y",
+          "b_ftype",
+          "b_cutoff",
+          "b_reso",
+          "b_attack",
+          "b_decay",
+          "b_level",
+          "b_mute"
+        ]
+      },
+      {
+        "title": "C",
+        "controls": [
+          "c_source",
+          "c_grit",
+          "c_ftype",
+          "c_cutoff",
+          "c_reso",
+          "c_attack",
+          "c_decay",
+          "c_level",
+          "c_mute"
+        ]
+      },
+      {
+        "title": "GLOBAL",
+        "controls": [
+          "env_sync",
           "trig_mode"
         ]
       }

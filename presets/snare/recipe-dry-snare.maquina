@@ -1,0 +1,19 @@
+# Maquina factory preset
+# recipe: LXR owner's manual, "Introduction to drum synthesis" (Snare: shorter decay, linear-ish slope = dry, direct snare)
+voice = snare
+name = Recipe Dry Snare
+category = 909
+tags = short, punchy
+noise_mix = 100
+noise_freq = 127
+osc_wave = Sine
+osc_coarse = -7
+pitch_amount = 25
+pitch_decay = 15
+pitch_slope = 20
+filter_type = Highpass
+filter_freq = 72
+filter_reso = 40
+amp_attack = 0
+amp_decay = 24
+amp_slope = 40

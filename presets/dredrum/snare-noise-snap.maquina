@@ -1,0 +1,15 @@
+# Maquina factory preset
+# design: noise only with a square click for the snap
+voice = dredrum
+name = Noise Snap
+category = Snare
+tags = short, noisy
+osc1_level = 0
+osc2_wave = Noise
+osc2_pitch = 200
+osc2_decay = 60
+osc2_level = 255
+osc3_wave = Square
+osc3_pitch = 200
+osc3_level = 200
+click = On

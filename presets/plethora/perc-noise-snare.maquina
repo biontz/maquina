@@ -1,0 +1,17 @@
+# Maquina factory preset
+# design: tonal Rwalk_SineFMFlange body on A + highpassed white noise on C, like a snare's body and wires
+voice = plethora
+name = Noise Snare
+category = Perc
+tags = punchy, noisy
+a_algo = 1-02 Rwalk_SineFMFlange
+a_ftype = Lowpass
+a_cutoff = 85
+a_decay = 65
+a_level = 95
+c_source = White
+c_ftype = Highpass
+c_cutoff = 90
+c_reso = 20
+c_decay = 71
+c_level = 100

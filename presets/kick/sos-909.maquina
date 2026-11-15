@@ -1,0 +1,19 @@
+# Maquina factory preset
+# inspired by: Sound On Sound, Synth Secrets (Practical Bass Drum Synthesis: near-sine with a slow pitch decay, a click pulse, accent -> more punch)
+voice = kick
+name = SOS 909
+category = 909
+tags = punchy
+osc_wave = Sine
+osc_coarse = -28
+amp_attack = 0
+amp_decay = 30
+amp_slope = 30
+pitch_decay = 35
+pitch_slope = 30
+pitch_amount = 50
+trans_wave = Click
+trans_volume = 70
+velo_dest = Pitch Amount
+velo_amount = 40
+velo_volume = 1

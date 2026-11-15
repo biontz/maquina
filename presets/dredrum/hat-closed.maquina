@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: one-cycle noise burst on oscillator 3 (Click): shorter than any decay
+voice = dredrum
+name = Closed Hat
+category = Hat
+tags = short, noisy
+osc1_level = 0
+osc3_wave = Noise
+osc3_pitch = 30
+osc3_decay = 0
+osc3_level = 255
+click = On

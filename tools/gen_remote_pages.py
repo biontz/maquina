@@ -22,10 +22,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TABLES = os.path.join(ROOT, "plugins", "common", "VoiceTables.generated.hpp")
 EXTRA = os.path.join(ROOT, "plugins", "common", "ExtraParams.hpp")
 OUT_HPP = os.path.join(ROOT, "plugins", "common", "RemotePages.generated.hpp")
-VOICES = ["kick", "tom", "snare", "cymbal", "hihat", "dredrum"]  # order of k_voices / MAQUINA_VOICE_INDEX
-EXTRA_SYMBOLS = {v: {"note_pitch"} for v in VOICES}
-EXTRA_SYMBOLS["hihat"].add("hat_mode")
-EXTRA_SYMBOLS["dredrum"] = set()  # numExtraParams() == 0
+VOICES = ["kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora"]  # order of k_voices / MAQUINA_VOICE_INDEX
+EXTRA_SYMBOLS = {v: {"note_pitch", "gain"} for v in VOICES}
+EXTRA_SYMBOLS["dredrum"] = {"gain"}  # numExtraParams() == 1
+EXTRA_SYMBOLS["plethora"] = {"gain"}
 
 
 def voice_symbols():
@@ -37,7 +37,7 @@ def voice_symbols():
             sys.exit(f"{TABLES}: no parameter table for {voice}")
         out[voice] = set(re.findall(r'^\s*\{ "(\w+)"', m.group(1), re.M)) | EXTRA_SYMBOLS[voice]
     extra = set(re.findall(r'^\s*\{ "(\w+)"', open(EXTRA).read(), re.M))
-    if extra != {"note_pitch", "hat_mode"}:
+    if extra != {"note_pitch", "gain"}:
         sys.exit(f"{EXTRA}: extra parameters changed ({sorted(extra)}), update EXTRA_SYMBOLS")
     return out
 

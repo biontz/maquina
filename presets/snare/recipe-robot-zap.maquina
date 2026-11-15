@@ -1,0 +1,15 @@
+# Maquina factory preset
+# recipe: LXR owner's manual, "Introduction to drum synthesis" (Snare, tips: tonal part only with a high pitch modulation = the classic electro zap)
+voice = snare
+name = Recipe Robot Zap
+category = FX
+tags = pitched
+noise_mix = 0
+osc_wave = Sine
+osc_coarse = 0
+pitch_amount = 110
+pitch_decay = 30
+pitch_slope = 20
+amp_attack = 0
+amp_decay = 30
+amp_slope = 20

@@ -1,0 +1,21 @@
+# Maquina factory preset
+# recipe: LXR owner's manual, "Introduction to drum synthesis" (Bells: metallic spectrum + exponential decay + bandpass + sample rate reducer)
+voice = cymbal
+name = Recipe Bell
+category = FX
+tags = long, metallic, pitched
+osc_wave = Sine
+osc_coarse = 20
+mod1_wave = Sine
+mod1_freq = 27
+mod1_gain = 70
+mod2_wave = Sine
+mod2_freq = 41
+mod2_gain = 40
+amp_attack = 0
+amp_decay = 70
+amp_slope = 10
+filter_type = Bandpass
+filter_freq = 95
+filter_reso = 60
+decimation = 90

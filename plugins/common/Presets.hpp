@@ -12,8 +12,8 @@
 //   osc_wave = Sine           (selectors may use the label)
 //
 // Parameters not listed take their default. A preset holds the sound only:
-// the trigger settings (Trigger Note, Hat, Note > Pitch; the parameters in no
-// Randomizer group) are never changed by loading a preset.
+// performance settings (Key Track, Dredrum/Plethora Mode and Mutes; the
+// parameters in no Randomizer group) are never changed by loading a preset.
 //
 // SPDX-License-Identifier: GPL-3.0-only
 #pragma once
@@ -47,6 +47,7 @@ static const VoiceCategories kPresetCategories[] = {
     { "cymbal", { "Analog", "Metallic", "Noise", "Acoustic", "Lo-Fi", "FX" } },
     { "hihat", { "Analog", "Metallic", "Noise", "Acoustic", "Lo-Fi", "FX" } },
     { "dredrum", { "Kick", "Snare", "Hat", "Perc", "Zap", "Drone", "FX" } },
+    { "plethora", { "Noise", "Metallic", "Glitch", "Tonal", "Perc", "Drone", "FX" } },
 };
 static const char* const kPresetTags[] = { "short", "long", "punchy", "boomy", "soft", "bright", "dark",
                                            "clean", "dirty", "metallic", "noisy", "pitched", "lo-fi",
@@ -151,6 +152,8 @@ inline PresetFile parsePreset(const VoiceDef& d, const std::string& text)
         // HiHat presets from before the single Amp Decay: the closed decay is it
         if (key == "amp_decay_open") continue;
         if (key == "amp_decay_closed") key = "amp_decay";
+        // removed trigger settings (every note triggers; no Closed/Open hat)
+        if (key == "trigger_note" || key == "hat_mode") continue;
         int idx = -1;
         for (uint32_t i = 0; i < numAllParams(d); ++i)
             if (key == paramAt(d, i).symbol) { idx = int(i); break; }

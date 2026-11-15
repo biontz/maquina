@@ -10,7 +10,7 @@
 
 include dpf/Makefile.base.mk
 
-PLUGINS := kick tom snare cymbal hihat dredrum
+PLUGINS := kick tom snare cymbal hihat dredrum plethora
 
 all: plugins gen
 
@@ -56,7 +56,9 @@ tools: engine
 	$(CXX) -O2 -std=gnu++17 -Iplugins/common -Iengine/fw_shim -Ithird_party/lxr-firmware/Core/Inc \
 		tools/check_presets/check_presets.cpp -o build/tools/check_presets
 	$(CXX) -O2 -std=gnu++17 -Iplugins/common -Iengine -Iengine/fw_shim -Ithird_party/lxr-firmware/Core/Inc \
+		-Iengine/plethora/compat -Ithird_party/noise-plethora/src \
 		tools/preset_measure/preset_measure.cpp plugins/common/EngineHost.cpp build/engine/libmaquinaengine.a \
+		plugins/common/DredrumHost.cpp -x c++ engine/dredrum/dredrum_core.c -x none plugins/plethora/Engine.cpp \
 		-lm -o build/tools/preset_measure
 	$(CC) -O1 -std=gnu11 -Idpf/distrho/src tools/clap_latency_check/clap_latency_check.c \
 		-ldl -o build/tools/clap_latency_check

@@ -1,0 +1,10 @@
+# Maquina factory preset
+# design: DroneBody, decay at maximum = holds
+voice = plethora
+name = Drone Body
+category = Drone
+tags = long, dark
+a_algo = 4-10 DroneBody
+a_ftype = Lowpass
+a_cutoff = 95
+a_decay = 127

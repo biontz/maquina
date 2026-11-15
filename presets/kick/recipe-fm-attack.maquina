@@ -1,0 +1,18 @@
+# Maquina factory preset
+# recipe: LXR owner's manual, "Introduction to drum synthesis" (Kicks, tips: shape the attack with the FM oscillator)
+voice = kick
+name = Recipe FM Attack
+category = FM
+tags = punchy, bright
+osc_wave = Sine
+osc_coarse = -28
+amp_attack = 0
+amp_decay = 25
+amp_slope = 25
+pitch_decay = 25
+pitch_slope = 25
+pitch_amount = 45
+fm_amount = 45
+fm_freq = 10
+fm_wave = Sine
+fm_mode = FM

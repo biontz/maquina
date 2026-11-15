@@ -1,0 +1,10 @@
+# Maquina factory preset
+# design: radioOhNo, the module's first algorithm, highpassed
+voice = plethora
+name = Radio Static
+category = Noise
+tags = noisy
+a_algo = 1-01 radioOhNo
+a_ftype = Highpass
+a_cutoff = 75
+a_decay = 77

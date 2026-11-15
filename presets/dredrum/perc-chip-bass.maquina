@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: square that follows the keyboard (Track), short decay
+voice = dredrum
+name = Chip Bass
+category = Perc
+tags = pitched, lo-fi
+osc1_wave = Square
+osc1_pitch = 30
+osc1_drop = 10
+osc1_decay = 170
+osc1_level = 220
+osc1_track = On

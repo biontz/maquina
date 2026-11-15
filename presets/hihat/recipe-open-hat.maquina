@@ -1,0 +1,20 @@
+# Maquina factory preset
+# recipe: LXR owner's manual, "Introduction to drum synthesis" (Hihat (open: longer decay than closed))
+voice = hihat
+name = Recipe Open Hat
+category = Metallic
+tags = long, metallic, bright
+osc_wave = Square
+osc_coarse = 50
+mod1_wave = Square
+mod1_freq = 40
+mod1_gain = 120
+mod2_wave = Square
+mod2_freq = 58
+mod2_gain = 120
+amp_attack = 0
+amp_decay = 40
+amp_slope = 6
+filter_type = Highpass
+filter_freq = 120
+filter_reso = 10

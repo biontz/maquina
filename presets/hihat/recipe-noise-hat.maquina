@@ -1,0 +1,16 @@
+# Maquina factory preset
+# recipe: LXR owner's manual, "Introduction to drum synthesis" (Hihat: sometimes a simple white noise oscillator gives nice hats)
+voice = hihat
+name = Recipe Noise Hat
+category = Noise
+tags = short, noisy
+osc_wave = Noise
+osc_coarse = 67
+mod1_gain = 0
+mod2_gain = 0
+amp_attack = 0
+amp_decay = 10
+amp_slope = 5
+filter_type = Highpass
+filter_freq = 120
+filter_reso = 10

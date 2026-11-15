@@ -1,0 +1,11 @@
+# Maquina factory preset
+# design: sine from ~70 Hz sliding to ~35 Hz over the decay (Dredrum's drop always ends at the base pitch)
+voice = dredrum
+name = 808 Sweep
+category = Kick
+tags = boomy, clean
+osc1_wave = Sine
+osc1_pitch = 13
+osc1_drop = 35
+osc1_decay = 200
+osc1_level = 255

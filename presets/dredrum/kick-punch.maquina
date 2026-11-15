@@ -1,0 +1,16 @@
+# Maquina factory preset
+# design: short sine drop + one-cycle square click on oscillator 3
+voice = dredrum
+name = Punch Kick
+category = Kick
+tags = short, punchy
+osc1_wave = Sine
+osc1_pitch = 8
+osc1_drop = 90
+osc1_decay = 110
+osc1_level = 255
+osc3_wave = Square
+osc3_pitch = 120
+osc3_decay = 0
+osc3_level = 170
+click = On

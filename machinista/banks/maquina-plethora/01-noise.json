@@ -1,0 +1,23 @@
+{
+ "schema": 1,
+ "uri": "urn:maquina:plethora",
+ "name": "Noise",
+ "patches": [
+  {
+   "name": "Radio Static",
+   "controls": {
+    "a_algo": 0,
+    "a_x": 64,
+    "a_y": 64,
+    "a_ftype": 2,
+    "a_cutoff": 75,
+    "a_reso": 0,
+    "a_attack": 0,
+    "a_decay": 77,
+    "a_level": 127,
+    "a_mute": 0,
+    "trig_mode": 0
+   }
+  }
+ ]
+}

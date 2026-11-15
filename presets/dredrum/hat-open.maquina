@@ -1,0 +1,11 @@
+# Maquina factory preset
+# design: fast-scanning noise with a medium decay
+voice = dredrum
+name = Open Hat
+category = Hat
+tags = long, noisy
+osc1_level = 0
+osc2_wave = Noise
+osc2_pitch = 255
+osc2_decay = 150
+osc2_level = 220

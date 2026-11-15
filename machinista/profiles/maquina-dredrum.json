@@ -465,8 +465,8 @@
     }
   ],
   "quirks": [
-    "Drum voice from the LXR-02 firmware sound engine; parameters use the hardware's 0-127 scales.",
-    "No graphical UI. Pages group the voice's firmware menu pages onto the eight encoders.",
-    "TRIG NOTE 'ANY' plays every note at the set pitch; enable KEY TRACK to transpose."
+    "8-bit 3-oscillator voice from the Dredrum Eurorack firmware; knobs use the module's 0-255 scales.",
+    "No graphical UI. One page per oscillator; any note triggers, TRACK makes an oscillator follow it.",
+    "DECAY 248-255 never ends (drone). MODE GATE holds the decay while the note is down."
   ]
 }

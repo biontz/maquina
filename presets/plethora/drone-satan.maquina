@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: satanWorkout held, DualAttractor underneath on B
+voice = plethora
+name = Satan Drone
+category = Drone
+tags = long, dirty, modulated
+a_algo = 3-08 satanWorkout
+a_decay = 127
+b_algo = 5-10 DualAttractor
+b_decay = 127
+b_level = 60
+a_level = 105

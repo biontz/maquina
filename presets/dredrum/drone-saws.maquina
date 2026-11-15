@@ -1,0 +1,15 @@
+# Maquina factory preset
+# design: two saws one step apart beat slowly; decay 247 = the longest finite decay (~3.4 s)
+voice = dredrum
+name = Saw Drone
+category = Drone
+tags = long, modulated
+osc1_wave = Saw
+osc1_pitch = 30
+osc1_drop = 0
+osc1_decay = 247
+osc1_level = 180
+osc2_wave = Saw
+osc2_pitch = 31
+osc2_decay = 247
+osc2_level = 180

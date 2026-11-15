@@ -1,0 +1,25 @@
+# Maquina factory preset
+# recipe: LXR owner's manual, "Introduction to drum synthesis" (Cymbal Ride)
+voice = cymbal
+name = Recipe Ride
+category = Metallic
+tags = long, metallic, modulated
+osc_wave = Square
+osc_coarse = 50
+mod1_wave = Square
+mod1_freq = 40
+mod1_gain = 120
+mod2_wave = Square
+mod2_freq = 58
+mod2_gain = 120
+amp_attack = 0
+amp_decay = 80
+amp_slope = 5
+filter_type = Bandpass
+filter_freq = 115
+filter_reso = 100
+lfo_wave = Sine
+lfo_rate = 12
+lfo_amount = 20
+lfo_target = Filter Freq
+volume = 90

@@ -1,0 +1,15 @@
+# Maquina factory preset
+# design: saw with a big drop and a noise grain
+voice = dredrum
+name = Saw Zap
+category = Zap
+tags = bright, dirty
+osc1_wave = Saw
+osc1_pitch = 40
+osc1_drop = 220
+osc1_decay = 130
+osc1_level = 230
+osc2_wave = Noise
+osc2_pitch = 255
+osc2_decay = 0
+osc2_level = 120

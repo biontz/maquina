@@ -1,0 +1,10 @@
+# Maquina factory preset
+# design: clusterSaw highpassed at ~6 kHz, short decay
+voice = plethora
+name = Cluster Hat
+category = Metallic
+tags = short, metallic, bright
+a_algo = 2-01 clusterSaw
+a_ftype = Highpass
+a_cutoff = 115
+a_decay = 48

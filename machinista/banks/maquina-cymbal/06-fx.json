@@ -4,6 +4,47 @@
  "name": "FX",
  "patches": [
   {
+   "name": "Recipe Bell",
+   "controls": {
+    "osc_coarse": 20,
+    "osc_fine": 0,
+    "osc_wave": 0,
+    "osc_pwm": 0,
+    "amp_attack": 0,
+    "amp_decay": 70,
+    "amp_repeat": 0,
+    "amp_slope": 10,
+    "velo_dest": 0,
+    "velo_amount": 0,
+    "velo_volume": 0,
+    "mod1_freq": 27,
+    "mod2_freq": 41,
+    "mod1_gain": 70,
+    "mod2_gain": 40,
+    "mod1_wave": 0,
+    "mod2_wave": 0,
+    "trans_wave": 0,
+    "trans_volume": 0,
+    "trans_freq": 0,
+    "filter_freq": 95,
+    "filter_reso": 60,
+    "filter_type": 2,
+    "filter_drive": 0,
+    "lfo_rate": 0,
+    "lfo_sync": 0,
+    "lfo_amount": 0,
+    "lfo_wave": 0,
+    "lfo_retrigger": 0,
+    "lfo_offset": 0,
+    "lfo_target": 0,
+    "volume": 127,
+    "pan": 0,
+    "decimation": 90,
+    "drive": 63,
+    "note_pitch": 0
+   }
+  },
+  {
    "name": "Reverse Swell",
    "controls": {
     "osc_coarse": 40,
@@ -41,7 +82,6 @@
     "pan": 0,
     "decimation": 127,
     "drive": 63,
-    "trigger_note": 0,
     "note_pitch": 0
    }
   }

@@ -1,0 +1,15 @@
+# Maquina factory preset
+# design: square up high with a little drop, saw a fifth up
+voice = dredrum
+name = Alarm
+category = FX
+tags = pitched, bright
+osc1_wave = Square
+osc1_pitch = 120
+osc1_drop = 40
+osc1_decay = 210
+osc1_level = 180
+osc3_wave = Saw
+osc3_pitch = 180
+osc3_decay = 210
+osc3_level = 120

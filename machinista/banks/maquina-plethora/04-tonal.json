@@ -1,0 +1,39 @@
+{
+ "schema": 1,
+ "uri": "urn:maquina:plethora",
+ "name": "Tonal",
+ "patches": [
+  {
+   "name": "Feedback FM",
+   "controls": {
+    "a_algo": 45,
+    "a_x": 64,
+    "a_y": 64,
+    "a_ftype": 0,
+    "a_cutoff": 105,
+    "a_reso": 0,
+    "a_attack": 0,
+    "a_decay": 77,
+    "a_level": 127,
+    "a_mute": 0,
+    "trig_mode": 0
+   }
+  },
+  {
+   "name": "Sub Harmonic",
+   "controls": {
+    "a_algo": 48,
+    "a_x": 64,
+    "a_y": 64,
+    "a_ftype": 0,
+    "a_cutoff": 85,
+    "a_reso": 0,
+    "a_attack": 0,
+    "a_decay": 87,
+    "a_level": 127,
+    "a_mute": 0,
+    "trig_mode": 0
+   }
+  }
+ ]
+}

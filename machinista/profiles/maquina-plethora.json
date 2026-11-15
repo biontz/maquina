@@ -1,0 +1,436 @@
+{
+  "schema": 1,
+  "id": "maquina-plethora",
+  "uri": "urn:maquina:plethora",
+  "title": "Maquina Plethora",
+  "provider": "parameter-bank",
+  "bank_format": "json",
+  "extensions": [
+    ".json"
+  ],
+  "parameters": [
+    {
+      "index": 5,
+      "symbol": "a_algo",
+      "name": "A ALGO",
+      "default": 0,
+      "min": 0,
+      "max": 59,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "1-01 RADIOOHNO"
+        ],
+        [
+          1,
+          "1-02 RWALK_SINEFMFLANGE"
+        ],
+        [
+          2,
+          "1-03 XMODRINGSQR"
+        ],
+        [
+          3,
+          "1-04 XMODRINGSINE"
+        ],
+        [
+          4,
+          "1-05 CROSSMODRING"
+        ],
+        [
+          5,
+          "1-06 RESONOISE"
+        ],
+        [
+          6,
+          "1-07 GRAINGLITCH"
+        ],
+        [
+          7,
+          "1-08 GRAINGLITCHII"
+        ],
+        [
+          8,
+          "1-09 GRAINGLITCHIII"
+        ],
+        [
+          9,
+          "1-10 BASURILLA"
+        ],
+        [
+          10,
+          "2-01 CLUSTERSAW"
+        ],
+        [
+          11,
+          "2-02 PWCLUSTER"
+        ],
+        [
+          12,
+          "2-03 CRCLUSTER2"
+        ],
+        [
+          13,
+          "2-04 SINEFMCLUSTER"
+        ],
+        [
+          14,
+          "2-05 TRIFMCLUSTER"
+        ],
+        [
+          15,
+          "2-06 PRIMECLUSTER"
+        ],
+        [
+          16,
+          "2-07 PRIMECNOISE"
+        ],
+        [
+          17,
+          "2-08 FIBONACCICLUSTER"
+        ],
+        [
+          18,
+          "2-09 PARTIALCLUSTER"
+        ],
+        [
+          19,
+          "2-10 PHASINGCLUSTER"
+        ],
+        [
+          20,
+          "3-01 BASURATOTAL"
+        ],
+        [
+          21,
+          "3-02 ATARI"
+        ],
+        [
+          22,
+          "3-03 WALKINGFILOMENA"
+        ],
+        [
+          23,
+          "3-04 S_H"
+        ],
+        [
+          24,
+          "3-05 ARRAYONTHEROCKS"
+        ],
+        [
+          25,
+          "3-06 EXISTENCELSPAIN"
+        ],
+        [
+          26,
+          "3-07 WHOKNOWS"
+        ],
+        [
+          27,
+          "3-08 SATANWORKOUT"
+        ],
+        [
+          28,
+          "3-09 RWALK_BITCRUSHPW"
+        ],
+        [
+          29,
+          "3-10 RWALK_LFREE"
+        ],
+        [
+          30,
+          "4-01 COMBNOISE"
+        ],
+        [
+          31,
+          "4-02 PLUCKCLOUD"
+        ],
+        [
+          32,
+          "4-03 TUBERESONANCE"
+        ],
+        [
+          33,
+          "4-04 FORMANTNOISE"
+        ],
+        [
+          34,
+          "4-05 BOWEDMETAL"
+        ],
+        [
+          35,
+          "4-06 FLANGENOISE"
+        ],
+        [
+          36,
+          "4-07 NOISEBELLS"
+        ],
+        [
+          37,
+          "4-08 NOISEHARMONICS"
+        ],
+        [
+          38,
+          "4-09 ICERAIN"
+        ],
+        [
+          39,
+          "4-10 DRONEBODY"
+        ],
+        [
+          40,
+          "5-01 LOGISTICNOISE"
+        ],
+        [
+          41,
+          "5-02 HENONDUST"
+        ],
+        [
+          42,
+          "5-03 CELLULARSYNTH"
+        ],
+        [
+          43,
+          "5-04 STOCHASTICPULSE"
+        ],
+        [
+          44,
+          "5-05 BITSHIFT"
+        ],
+        [
+          45,
+          "5-06 FEEDBACKFM"
+        ],
+        [
+          46,
+          "5-07 RUNAWAYFILTER"
+        ],
+        [
+          47,
+          "5-08 GLITCHLOOP"
+        ],
+        [
+          48,
+          "5-09 SUBHARMONIC"
+        ],
+        [
+          49,
+          "5-10 DUALATTRACTOR"
+        ],
+        [
+          50,
+          "6-01 PULSEWANDER"
+        ],
+        [
+          51,
+          "6-02 TWINPULSE"
+        ],
+        [
+          52,
+          "6-03 QUANTPULSE"
+        ],
+        [
+          53,
+          "6-04 SHAPEDPULSE"
+        ],
+        [
+          54,
+          "6-05 SHIFTPULSE"
+        ],
+        [
+          55,
+          "6-06 METALLICNOISE"
+        ],
+        [
+          56,
+          "6-07 NOISESLEW"
+        ],
+        [
+          57,
+          "6-08 NOISEBURST"
+        ],
+        [
+          58,
+          "6-09 LFSRNOISE"
+        ],
+        [
+          59,
+          "6-10 DUALPULSE"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 6,
+      "symbol": "a_x",
+      "name": "A X",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 7,
+      "symbol": "a_y",
+      "name": "A Y",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 8,
+      "symbol": "a_ftype",
+      "name": "A FILTER",
+      "default": 0,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "LOWPASS"
+        ],
+        [
+          1,
+          "BANDPASS"
+        ],
+        [
+          2,
+          "HIGHPASS"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 9,
+      "symbol": "a_cutoff",
+      "name": "A CUTOFF",
+      "default": 127,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 10,
+      "symbol": "a_reso",
+      "name": "A RESO",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 11,
+      "symbol": "a_attack",
+      "name": "A ATTACK",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 12,
+      "symbol": "a_decay",
+      "name": "A DECAY",
+      "default": 70,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 13,
+      "symbol": "a_level",
+      "name": "A LEVEL",
+      "default": 127,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 14,
+      "symbol": "a_mute",
+      "name": "A MUTE",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    },
+    {
+      "index": 35,
+      "symbol": "trig_mode",
+      "name": "MODE",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "TRIG"
+        ],
+        [
+          1,
+          "GATE"
+        ]
+      ],
+      "choice": true
+    }
+  ],
+  "pages": [
+    {
+      "title": "A",
+      "controls": [
+        "@bank",
+        "@patch",
+        "a_algo",
+        "a_x",
+        "a_y",
+        "a_ftype",
+        "a_cutoff",
+        "a_reso"
+      ]
+    },
+    {
+      "title": "A ENV",
+      "controls": [
+        "a_attack",
+        "a_decay",
+        "a_level",
+        "a_mute",
+        "trig_mode",
+        "a_x",
+        "a_y",
+        "a_cutoff"
+      ]
+    }
+  ],
+  "quirks": [
+    "Channel A of the Befaco Noise Plethora (VCV port): 60 algorithms with X/Y, filter, envelope.",
+    "Channels B and C of the desktop plugin are not on this profile; they stay off (level 0).",
+    "DECAY at max holds while playing. MODE GATE holds the sound while the note is down."
+  ]
+}

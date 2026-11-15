@@ -1,0 +1,10 @@
+# Maquina factory preset
+# design: grainGlitch with a short decay
+voice = plethora
+name = Grain Stutter
+category = Glitch
+tags = short, dirty
+a_algo = 1-07 grainGlitch
+a_x = 100
+a_y = 30
+a_decay = 62

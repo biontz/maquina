@@ -1,0 +1,15 @@
+# Maquina factory preset
+# design: sine + square an octave apart, slow fade
+voice = dredrum
+name = Sub Drone
+category = Drone
+tags = long, dark
+osc1_wave = Sine
+osc1_pitch = 20
+osc1_drop = 0
+osc1_decay = 247
+osc1_level = 255
+osc3_wave = Square
+osc3_pitch = 41
+osc3_decay = 247
+osc3_level = 70

@@ -1,0 +1,10 @@
+# Maquina factory preset
+# design: SubHarmonic low-passed, medium-long decay
+voice = plethora
+name = Sub Harmonic
+category = Tonal
+tags = pitched, dark
+a_algo = 5-09 SubHarmonic
+a_ftype = Lowpass
+a_cutoff = 85
+a_decay = 87

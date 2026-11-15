@@ -1,0 +1,11 @@
+# Maquina factory preset
+# design: BasuraTotal on A, Atari layered on B with a shorter decay
+voice = plethora
+name = Basura Bits
+category = Glitch
+tags = dirty, lo-fi
+a_algo = 3-01 BasuraTotal
+a_decay = 68
+b_algo = 3-02 Atari
+b_decay = 57
+b_level = 90

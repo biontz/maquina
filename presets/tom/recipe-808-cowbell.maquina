@@ -1,0 +1,19 @@
+# Maquina factory preset
+# recipe: LXR owner's manual, "Introduction to drum synthesis" (808 style cowbell)
+voice = tom
+name = Recipe 808 Cowbell
+category = Perc
+tags = metallic, pitched
+fm_mode = Mix
+fm_amount = 63
+fm_wave = Square
+fm_freq = 18
+osc_wave = Square
+osc_coarse = 11
+amp_attack = 0
+amp_slope = 3
+amp_decay = 35
+pitch_amount = 0
+filter_type = Bandpass
+filter_reso = 70
+filter_freq = 92

@@ -40,7 +40,6 @@
     "pan": 0,
     "decimation": 80,
     "drive": 100,
-    "trigger_note": 0,
     "note_pitch": 0
    }
   }

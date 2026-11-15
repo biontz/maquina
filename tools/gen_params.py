@@ -20,7 +20,8 @@ pins them; never rename an existing one.
 
 Maquina Dredrum is not an LXR voice: its table is DREDRUM below (the
 Dredrum firmware has no UI tables, only 3 x 5 pot/button values plus the
-CLICK switch). It is appended after the LXR voices.
+CLICK switch). It is appended after the LXR voices, then Maquina Plethora
+(PLETHORA below; algorithm list from third_party/noise-plethora Banks_Def.hpp).
 """
 import json
 import os
@@ -55,7 +56,7 @@ SYMBOLS = {
     (0, "MIX", 0): ("noise_mix", "Noise Mix"),
     (1, "ATTACK", 0): ("amp_attack", "Amp Attack"),
     (1, "DECAY", 0): ("amp_decay", "Amp Decay"),
-    # HiHat: one decay for both hats (EngineHost writes it to PAR_VELOD6_OPEN too)
+    # HiHat: one decay (the plugin plays the closed-hat trigger; no Closed/Open)
     (1, "DECAY_CLOSED", 0): ("amp_decay", "Amp Decay"),
     (1, "REPEAT", 0): ("amp_repeat", "Amp Repeat"),
     (1, "EG_SLOPE", 0): ("amp_slope", "Amp Slope"),
@@ -92,7 +93,6 @@ SYMBOLS = {
     (7, "PAN", 0): ("pan", "Pan"),
     (7, "SAMPLE_RATE", 0): ("decimation", "Sample Rate"),
     (7, "DRIVE", 0): ("drive", "Drive"),
-    (7, "NOTE", 0): ("trigger_note", "Trigger Note"),
 }
 # Names shown by hosts (Bitwig remote knobs cut at ~9 characters, Machinista
 # displays are small). The long names above stay the modulation-target labels,
@@ -110,19 +110,21 @@ SHORT_NAMES = {
     "filter_freq": "Cutoff", "filter_reso": "Reso", "filter_type": "Flt Type", "filter_drive": "Flt Drive",
     "lfo_rate": "LFO Rate", "lfo_sync": "LFO Sync", "lfo_amount": "LFO Amt", "lfo_wave": "LFO Wave",
     "lfo_retrigger": "LFO Retrg", "lfo_offset": "LFO Phase", "lfo_target": "LFO Dest",
-    "volume": "Volume", "pan": "Pan", "decimation": "Decimate", "drive": "Drive", "trigger_note": "Trig Note",
+    "volume": "Volume", "pan": "Pan", "decimation": "Decimate", "drive": "Drive",
 }
 MAX_SHORT_NAME = 9
 
 # Mod-osc page of cymbal/hihat: its first WAVEFORM is mod osc 1.
 SYMBOLS_METAL = {(3, "WAVEFORM", 0): ("mod1_wave", "Mod1 Wave")}
 
-# Hardware-only entries left out of a single-voice plugin.
-EXCLUDE_TEXT = {"AUDIO_OUT", "PAT_LENGTH", "MIDI_CHANNEL", "TARGET_VOICE_LFO"}
+# Hardware-only entries left out of a single-voice plugin. NOTE is the
+# hardware's per-voice MIDI trigger note: in a DAW every note triggers
+# (PAR_MIDI_NOTE stays 0 = Any); Key Track (ExtraParams.hpp) sets the pitch.
+EXCLUDE_TEXT = {"AUDIO_OUT", "PAT_LENGTH", "MIDI_CHANNEL", "TARGET_VOICE_LFO", "NOTE"}
 
 # Parameters a voice has but its menu pages do not show:
 # pid -> [(page, PAR_, (symbol, name), DTYPE_)]. The hihat's PAR_VELOD6_OPEN is
-# not one: each instance plays one hat, so a single Amp Decay drives both.
+# not one: the plugin only plays the closed-hat trigger, with its Amp Decay.
 EXTRA = {}
 
 LONG_LABELS = {
@@ -160,6 +162,71 @@ DREDRUM_INIT = {
     2: dict(wave=3, pitch=128, drop=0, decay=0, level=0),
     3: dict(wave=1, pitch=160, drop=0, decay=0, level=0),
 }
+
+
+# ---------------------------------------------------------------------------
+# Maquina Plethora (Befaco Noise Plethora, VCV port in third_party/noise-plethora).
+# Engine voice number kPlethoraVoice in VoiceTypes.hpp. Pages: 0..2 = channel
+# A, B, C, 3 = global. Knobs 0..127 map onto the module's 0..1 controls.
+PLETHORA_VOICE = 17
+PLETHORA_PAGE_TITLES = ["A", "B", "C", "GLOBAL"]
+PLETHORA_BANKS_DEF = os.path.join(ROOT, "third_party", "noise-plethora", "src", "noise-plethora", "plugins",
+                                  "Banks_Def.hpp")
+
+
+def plethora_algorithms():
+    """["1-01 radioOhNo", ...] in bank/program order (the module's 3 banks + the VCV port's)."""
+    s = open(PLETHORA_BANKS_DEF).read()
+    out = []
+    for bank, body in re.findall(r"#define BANKS_DEF_(\d+) \{(.*?)\n\s*\}", s, re.S):
+        names = re.findall(r'\{ "(\w+)", [0-9.]+ \}', body)
+        out += [f"{bank}-{i + 1:02d} {n}" for i, n in enumerate(names)]
+    if len(out) != 60:
+        sys.exit(f"{PLETHORA_BANKS_DEF}: expected 60 algorithms, found {len(out)}")
+    return out
+
+
+def plethora_params():
+    algos = plethora_algorithms()
+    params = []
+
+    def p(symbol, name, short, page, kind, default, fwmax=127, labels=None):
+        params.append(dict(symbol=symbol, name=name, short=short, page=page, kind=kind, fwmax=fwmax,
+                           labels=labels, default=default))
+
+    for ch, page in (("a", 0), ("b", 1)):
+        C = ch.upper()
+        p(f"{ch}_algo", f"{C} Algorithm", f"{C} Algo", page, "Enum", 0 if ch == "a" else 10, len(algos) - 1, algos)
+        p(f"{ch}_x", f"{C} X", f"{C} X", page, "Int", 64)
+        p(f"{ch}_y", f"{C} Y", f"{C} Y", page, "Int", 64)
+    p("c_source", "C Source", "C Source", 2, "Enum", 0, 1, ["Gritty", "White"])
+    p("c_grit", "C Grit", "C Grit", 2, "Int", 64)
+    for ch, page in (("a", 0), ("b", 1), ("c", 2)):
+        C = ch.upper()
+        p(f"{ch}_ftype", f"{C} Filter Type", f"{C} Filter", page, "Enum", 0, 2, ["Lowpass", "Bandpass", "Highpass"])
+        p(f"{ch}_cutoff", f"{C} Cutoff", f"{C} Cutoff", page, "Int", 127)
+        p(f"{ch}_reso", f"{C} Resonance", f"{C} Reso", page, "Int", 0)
+        # Maquina additions: envelope, level (A on, B and C off), mute
+        p(f"{ch}_attack", f"{C} Attack", f"{C} Attack", page, "Int", 0)
+        p(f"{ch}_decay", f"{C} Decay", f"{C} Decay", page, "Int", 70)
+        p(f"{ch}_level", f"{C} Level", f"{C} Level", page, "Int", 127 if ch == "a" else 0)
+        p(f"{ch}_mute", f"{C} Mute", f"{C} Mute", page, "Toggle", 0, 1, ["Off", "On"])
+    p("env_sync", "Envelope Sync", "Env Sync", 3, "Toggle", 0, 1, ["Off", "On"])
+    p("trig_mode", "Trigger Mode", "Mode", 3, "Enum", 0, 1, ["Trig", "Gate"])
+    # display order: per channel, then global
+    order = {s: i for i, s in enumerate(
+        [f"{c}_{k}" for c in "ab" for k in ("algo", "x", "y", "ftype", "cutoff", "reso", "attack", "decay", "level",
+                                            "mute")] +
+        ["c_source", "c_grit"] + [f"c_{k}" for k in ("ftype", "cutoff", "reso", "attack", "decay", "level", "mute")] +
+        ["env_sync", "trig_mode"])}
+    params.sort(key=lambda q: order[q["symbol"]])
+    for q in params:
+        q.update(par="0", offset=0, fwmin=0, modtargets=None)
+        if len(q["short"]) > MAX_SHORT_NAME:
+            sys.exit(f"plethora: '{q['short']}' is longer than {MAX_SHORT_NAME} characters")
+    pages = [dict(title=t, controls=[q["symbol"] for q in params if q["page"] == i])
+             for i, t in enumerate(PLETHORA_PAGE_TITLES)]
+    return params, pages
 
 
 def dredrum_params():
@@ -465,6 +532,9 @@ def main():
     dd_params, dd_pages = dredrum_params()
     plugins_out.append(dict(id="dredrum", name="Dredrum", voice=DREDRUM_VOICE, params=dd_params))
     layout["dredrum"] = dict(name="Dredrum", pages=dd_pages)
+    np_params, np_pages = plethora_params()
+    plugins_out.append(dict(id="plethora", name="Plethora", voice=PLETHORA_VOICE, params=np_params))
+    layout["plethora"] = dict(name="Plethora", pages=np_pages)
 
     write_header(plugins_out)
     os.makedirs(os.path.join(ROOT, "machinista"), exist_ok=True)
@@ -481,7 +551,7 @@ def cstr(s):
 
 def write_header(plugins):
     o = []
-    o.append("// GENERATED by tools/gen_params.py from the LXR firmware UI tables (+ Dredrum). Do not edit.")
+    o.append("// GENERATED by tools/gen_params.py from the LXR firmware UI tables (+ Dredrum, Plethora). Do not edit.")
     o.append("// SPDX-License-Identifier: GPL-3.0-only")
     o.append("#pragma once")
     o.append("#include \"VoiceTypes.hpp\"")

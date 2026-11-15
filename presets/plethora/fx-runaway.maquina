@@ -1,0 +1,8 @@
+# Maquina factory preset
+# design: RunawayFilter, longer decay
+voice = plethora
+name = Runaway Filter
+category = FX
+tags = pitched, bright
+a_algo = 5-07 RunawayFilter
+a_decay = 85

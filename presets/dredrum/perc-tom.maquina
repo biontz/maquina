@@ -1,0 +1,11 @@
+# Maquina factory preset
+# design: ~100 Hz sine with a clear drop
+voice = dredrum
+name = Chip Tom
+category = Perc
+tags = pitched
+osc1_wave = Sine
+osc1_pitch = 43
+osc1_drop = 60
+osc1_decay = 150
+osc1_level = 255

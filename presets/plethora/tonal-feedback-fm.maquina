@@ -1,0 +1,10 @@
+# Maquina factory preset
+# design: FeedbackFM, gently low-passed
+voice = plethora
+name = Feedback FM
+category = Tonal
+tags = pitched
+a_algo = 5-06 FeedbackFM
+a_ftype = Lowpass
+a_cutoff = 105
+a_decay = 77

@@ -1,0 +1,19 @@
+# Maquina factory preset
+# design: two squares a few Hz apart beat against each other + saw click
+voice = dredrum
+name = Metal Beat
+category = Perc
+tags = metallic
+osc1_wave = Square
+osc1_pitch = 180
+osc1_drop = 0
+osc1_decay = 140
+osc1_level = 150
+osc2_wave = Square
+osc2_pitch = 193
+osc2_decay = 140
+osc2_level = 150
+osc3_wave = Saw
+osc3_pitch = 230
+osc3_level = 180
+click = On

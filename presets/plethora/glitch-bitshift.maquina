@@ -1,0 +1,8 @@
+# Maquina factory preset
+# design: BitShift, medium decay
+voice = plethora
+name = Bit Shift
+category = Glitch
+tags = bright, lo-fi
+a_algo = 5-05 BitShift
+a_decay = 65

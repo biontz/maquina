@@ -156,10 +156,12 @@ const SectionSpec kSections[] = {
         { "lfo_offset", "Phase" }, { "lfo_target", "Target" }, { "lfo_retrigger", "Retrig" } } },
     { "VELOCITY", GraphKind::None,
       { { "velo_dest", "Dest" }, { "velo_amount", "Amount" }, { "velo_volume", "> Vol" } } },
+    // + the output gain (ExtraParams.hpp, all voices; Dredrum/Plethora: Gain only)
     { "MIX", GraphKind::None,
-      { { "volume", "Volume" }, { "pan", "Pan" }, { "drive", "Drive" }, { "decimation", "Rate" } } },
-    { "TRIGGER", GraphKind::None,
-      { { "trigger_note", "Note" }, { "hat_mode", "Hat" }, { "note_pitch", "Pitch" } } },
+      { { "volume", "Volume" }, { "pan", "Pan" }, { "drive", "Drive" }, { "decimation", "Rate" },
+        { "gain", "Gain" } } },
+    // Key Track: every note triggers; on = the played note sets the pitch
+    { "KEY", GraphKind::None, { { "note_pitch", "Track" } } },
     // Maquina Dredrum
     { "OSC 1", GraphKind::None,
       { { "osc1_wave", "Wave" }, { "osc1_pitch", "Pitch" }, { "osc1_drop", "Drop" }, { "osc1_decay", "Decay" },
@@ -177,6 +179,20 @@ const SectionSpec kSections[] = {
         { "osc3_octave", "Octave" },
         { "osc3_semi", "Semi" } } },
     { "MODE", GraphKind::None, { { "trig_mode", "Trigger" } } },
+    // Maquina Plethora
+    { "CHANNEL A", GraphKind::None,
+      { { "a_algo", "Algorithm" }, { "a_x", "X" }, { "a_y", "Y" }, { "a_ftype", "Filter" }, { "a_cutoff", "Cutoff" },
+        { "a_reso", "Reso" }, { "a_attack", "Attack" }, { "a_decay", "Decay" }, { "a_level", "Level" },
+        { "a_mute", "Mute" } } },
+    { "CHANNEL B", GraphKind::None,
+      { { "b_algo", "Algorithm" }, { "b_x", "X" }, { "b_y", "Y" }, { "b_ftype", "Filter" }, { "b_cutoff", "Cutoff" },
+        { "b_reso", "Reso" }, { "b_attack", "Attack" }, { "b_decay", "Decay" }, { "b_level", "Level" },
+        { "b_mute", "Mute" } } },
+    { "CHANNEL C", GraphKind::None,
+      { { "c_source", "Source" }, { "c_grit", "Grit" }, { "c_ftype", "Filter" }, { "c_cutoff", "Cutoff" },
+        { "c_reso", "Reso" }, { "c_attack", "Attack" }, { "c_decay", "Decay" }, { "c_level", "Level" },
+        { "c_mute", "Mute" } } },
+    { "GLOBAL", GraphKind::None, { { "env_sync", "Env Sync" } } }, // + MODE (trig_mode), shared with Dredrum
 };
 
 enum class CtlType { Knob, Select, Toggle };
@@ -196,7 +212,7 @@ struct Box { float x, y, w, h; bool hit(float px, float py) const { return px >=
 struct Section {
     const char* title;
     float x, y, w, h;
-    // Maquina Dredrum OSC sections: oscillator 0..2 (else -1), with a ROLL
+    // Maquina Dredrum OSC / Plethora CHANNEL sections: 0..2 (else -1), with a ROLL
     // button and the "main RANDOM includes it" switch in the title bar
     int osc = -1;
     Box roll {}, randOn {};
@@ -271,24 +287,30 @@ Layout makeLayout()
     // Rows per voice family, chosen so each row is nearly full (3 rows).
     // Sections a voice does not have are skipped; anything not listed (or a
     // row that would overflow) falls back to greedy packing.
+    // (MIX with Gain is too wide to share a row with LFO and VELOCITY)
     static const char* const kDrumRows[3][5] = {
         { "OSCILLATOR", "AMP EG", "PITCH EG" },
-        { "FM", "TRANSIENT", "FILTER", "TRIGGER" },
-        { "LFO", "VELOCITY", "MIX" } };
+        { "TRANSIENT", "LFO", "VELOCITY" },
+        { "FM", "FILTER", "KEY", "MIX" } };
     static const char* const kSnareRows[3][5] = {
-        { "OSCILLATOR", "NOISE", "PITCH EG", "TRIGGER" },
-        { "AMP EG", "TRANSIENT", "FILTER" },
-        { "LFO", "VELOCITY", "MIX" } };
+        { "OSCILLATOR", "NOISE", "PITCH EG", "KEY" },
+        { "TRANSIENT", "LFO", "VELOCITY" },
+        { "AMP EG", "FILTER", "MIX" } };
     static const char* const kMetalRows[3][5] = {
-        { "OSCILLATOR", "AMP EG", "TRIGGER" },
+        { "OSCILLATOR", "AMP EG", "KEY", "VELOCITY" },
         { "MOD OSCILLATORS", "TRANSIENT", "FILTER" },
-        { "LFO", "VELOCITY", "MIX" } };
+        { "LFO", "MIX" } };
     static const char* const kDredrumRows[3][5] = {
         { "OSC 1" },
         { "OSC 2" },
-        { "OSC 3", "MODE" } };
+        { "OSC 3", "MODE", "MIX" } };
+    static const char* const kPlethoraRows[3][5] = {
+        { "CHANNEL A" },
+        { "CHANNEL B" },
+        { "CHANNEL C", "GLOBAL", "MODE", "MIX" } };
     const uint8_t v = voiceDef().voice;
-    const char* const (*plan)[5] = v == maquina::kDredrumVoice ? kDredrumRows
+    const char* const (*plan)[5] = v == maquina::kPlethoraVoice ? kPlethoraRows
+                                   : v == maquina::kDredrumVoice ? kDredrumRows
                                    : v <= 2                    ? kDrumRows
                                    : v == 3                    ? kSnareRows
                                                                : kMetalRows;
@@ -330,9 +352,14 @@ Layout makeLayout()
         for (auto* s : row) {
             const float w = s->natural + spare * (s->natural / natural);
             L.sections.push_back({ s->spec->title, x, y, w, rowH });
-            if (voiceDef().voice == maquina::kDredrumVoice && !std::strncmp(s->spec->title, "OSC ", 4)) {
+            const char* t = s->spec->title;
+            const int chan = voiceDef().voice == maquina::kDredrumVoice && !std::strncmp(t, "OSC ", 4) ? t[4] - '1'
+                             : voiceDef().voice == maquina::kPlethoraVoice && !std::strncmp(t, "CHANNEL ", 8)
+                                 ? t[8] - 'A'
+                                 : -1;
+            if (chan >= 0) {
                 Section& sec = L.sections.back();
-                sec.osc = s->spec->title[4] - '1';
+                sec.osc = chan;
                 sec.roll = { x + w - kSectionPad - 40.f, y + 3, 40.f, kTitleH - 5 };
                 sec.randOn = { sec.roll.x - kGap - 58.f, y + 3, 58.f, kTitleH - 5 };
             }
@@ -633,9 +660,9 @@ protected:
         textAlign(ALIGN_RIGHT | ALIGN_MIDDLE);
         fillColor(col(kDim));
         text(kZoomX - 14, kHeaderH / 2 + 2,
-             voiceDef().voice == maquina::kDredrumVoice
-                 ? "based on Dredrum firmware  \xc2\xb7  unofficial"
-                 : "based on Erica Synths LXR-02 firmware  \xc2\xb7  unofficial",
+             voiceDef().voice == maquina::kDredrumVoice    ? "based on Dredrum firmware  \xc2\xb7  unofficial"
+             : voiceDef().voice == maquina::kPlethoraVoice ? "based on Befaco Noise Plethora  \xc2\xb7  unofficial"
+                                                           : "based on Erica Synths LXR-02 firmware  \xc2\xb7  unofficial",
              nullptr);
 
         // zoom control: [-] 150% [+]

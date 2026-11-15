@@ -1,0 +1,11 @@
+# Maquina factory preset
+# design: PrimeCluster bandpassed with some resonance, long decay
+voice = plethora
+name = Prime Ride
+category = Metallic
+tags = long, metallic
+a_algo = 2-06 PrimeCluster
+a_ftype = Bandpass
+a_cutoff = 108
+a_reso = 40
+a_decay = 103

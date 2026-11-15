@@ -1,0 +1,11 @@
+# Maquina factory preset
+# design: HenonDust through a resonant bandpass
+voice = plethora
+name = Henon Dust
+category = FX
+tags = noisy, bright
+a_algo = 5-02 HenonDust
+a_ftype = Bandpass
+a_cutoff = 110
+a_reso = 50
+a_decay = 92

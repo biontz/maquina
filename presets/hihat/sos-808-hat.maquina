@@ -1,0 +1,20 @@
+# Maquina factory preset
+# inspired by: Sound On Sound, Synth Secrets (Practical Cymbal Synthesis: enharmonic square cluster (808 hat oscillators ~370/540/800 Hz), highpassed)
+voice = hihat
+name = SOS 808 Hat
+category = Analog
+tags = short, metallic
+osc_wave = Square
+osc_coarse = 12
+mod1_wave = Square
+mod1_freq = 19
+mod1_gain = 110
+mod2_wave = Square
+mod2_freq = 6
+mod2_gain = 110
+amp_attack = 0
+amp_decay = 10
+amp_slope = 5
+filter_type = Highpass
+filter_freq = 118
+filter_reso = 15

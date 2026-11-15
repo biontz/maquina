@@ -63,10 +63,9 @@ EngineHost::EngineHost(const VoiceDef& def, uint32_t seed)
     // Fresh engine state with the firmware's Initkit loaded.
     lxr_state_reset();
     lxr_load_init_kit();
-    // HiHat: one Amp Decay for both hats (see applyDirtyParams); the Initkit's
-    // open decay would otherwise stay until the decay is first changed
-    if (def.voice == LXR_VOICE_HIHAT)
-        lxr_set_param(PAR_VELOD6_OPEN, lxr_get_param(PAR_VELOD6_CLOSED));
+    // Every note triggers: the hardware's trigger-note setting stays on Any
+    // (it is not a plugin parameter; Key Track decides the pitch).
+    lxr_set_param(PAR_MIDI_NOTE1 + def.voice, 0);
     lxr_seed_rng(seed);
     for (uint32_t i = 0; i < def.numParams; ++i) {
         fDefaults[i] = fromFirmware(i, lxr_get_param(def.params[i].fwPar));
@@ -141,13 +140,8 @@ uint8_t EngineHost::toFirmware(uint32_t index, float value) const
         return uint8_t(std::clamp<long>(v - p.offset, p.fwMin, p.fwMax));
     case ParamKind::Retrigger:
         return v >= 1 ? uint8_t(fDef.voice + 1) : 0;
-    case ParamKind::ModTarget: {
-        const uint8_t t = p.targets[std::clamp<long>(v, 0, p.numLabels - 1)];
-        // HiHat: "Amp Decay" modulates the decay of the hat this instance plays
-        if (fDef.voice == LXR_VOICE_HIHAT && hatOpen() && lxr_mod_target_param(t) == PAR_VELOD6_CLOSED)
-            return hatOpenDecayTarget(t);
-        return t;
-    }
+    case ParamKind::ModTarget:
+        return p.targets[std::clamp<long>(v, 0, p.numLabels - 1)];
     case ParamKind::Enum:
     case ParamKind::Toggle:
     case ParamKind::Note:
@@ -172,27 +166,6 @@ float EngineHost::fromFirmware(uint32_t index, uint8_t fw) const
     default:
         return float(fw);
     }
-}
-
-// modTargets[] index of PAR_VELOD6_OPEN, next to the closed decay's (fallback: closed)
-uint8_t EngineHost::hatOpenDecayTarget(uint8_t closedTarget)
-{
-    uint8_t start, end;
-    lxr_mod_target_range(LXR_VOICE_HIHAT, &start, &end);
-    for (uint8_t i = start; i <= end; ++i)
-        if (lxr_mod_target_param(i) == PAR_VELOD6_OPEN)
-            return i;
-    return closedTarget;
-}
-
-void EngineHost::setHatOpen(bool on)
-{
-    if (fHatOpen.exchange(on, std::memory_order_relaxed) == on)
-        return;
-    // re-send the modulation targets: "Amp Decay" follows the hat
-    for (uint32_t i = 0; i < fDef.numParams; ++i)
-        if (fDef.params[i].kind == ParamKind::ModTarget)
-            fDirty[i / 32].fetch_or(1u << (i % 32), std::memory_order_release);
 }
 
 void EngineHost::setParam(uint32_t index, float value)
@@ -229,9 +202,6 @@ void EngineHost::applyDirtyParams()
             const uint32_t i = w * 32 + uint32_t(b);
             const uint8_t fw = toFirmware(i, fValues[i].load(std::memory_order_relaxed));
             lxr_set_param(fDef.params[i].fwPar, fw);
-            // HiHat: one Amp Decay for both hats (each instance plays one of them)
-            if (fDef.params[i].fwPar == PAR_VELOD6_CLOSED)
-                lxr_set_param(PAR_VELOD6_OPEN, fw);
         }
     }
 }
@@ -253,21 +223,9 @@ void EngineHost::noteOn(uint32_t frameOffset, uint8_t note, uint8_t velocity)
 
 void EngineHost::triggerNote(uint8_t note, uint8_t velocity)
 {
-    const uint8_t trigNote = lxr_get_param(PAR_MIDI_NOTE1 + fDef.voice);
-    if (trigNote == 0 && !noteFollowsPitch())
+    if (!noteFollowsPitch())
         note = 60; // SEQ_DEFAULT_NOTE: the voice's own pitch
-
-    if (fDef.voice == LXR_VOICE_HIHAT && hatOpen()) {
-        // The open hat's own note setting (PAR_MIDI_NOTE7) stays on Any; the
-        // instance's Trigger Note filters here, as the firmware would.
-        if (trigNote != 0) {
-            if (note != trigNote)
-                return;
-            note = 60;
-        }
-        lxr_note_on(LXR_TRIGGER_HIHAT_OPEN, note, velocity);
-        return;
-    }
+    // the HiHat plays the firmware's closed-hat trigger (one Decay)
     lxr_note_on(fDef.voice, note, velocity);
 }
 
