@@ -90,10 +90,13 @@ double egRate(int v, double k) // value change per 64-sample block
     const double r = (1.0 - ((1.0 + k) * x / (1.0 + k * std::fabs(x)))) * 2.0;
     return std::min(1.0, r);
 }
+// an envelope stage that never ends; finite, as the build uses -ffast-math
+// (no infinities: std::isinf would be folded away)
+constexpr double kNever = 1e9;
 double egSeconds(int v, double k)
 {
     const double r = egRate(v, k);
-    return r <= 1e-9 ? INFINITY : kBlockSec / r;
+    return r <= 1e-9 ? kNever : kBlockSec / r;
 }
 constexpr double kAttackK = 2 * 0.99 / (1 - 0.99);
 constexpr double kDecayK = 2 * 0.999 / (1 - 0.999);
@@ -118,7 +121,7 @@ float timeToX(double t) // 0..1
 
 void fmtTime(char* buf, size_t n, double t)
 {
-    if (std::isinf(t)) std::snprintf(buf, n, "inf");
+    if (t >= kNever) std::snprintf(buf, n, "inf");
     else if (t < 1.0) std::snprintf(buf, n, "%.0f ms", t * 1000.0);
     else std::snprintf(buf, n, "%.2f s", t);
 }
@@ -1259,7 +1262,7 @@ protected:
             case 0: {
                 const char* label = i == 0 ? "All" : i <= nc ? vc->names[i - 1] : "User";
                 const bool on = fBrowseCat == i;
-                if (on || fBrowseHoverKind == 0 && fBrowseHover == i) {
+                if (on || (fBrowseHoverKind == 0 && fBrowseHover == i)) {
                     beginPath(); rect(x, y, w, h);
                     fillColor(on ? col(kAccent) : col(kTrack)); fill();
                 }
