@@ -1,6 +1,6 @@
 #!/bin/sh
 # check_state.sh - every mutable global in the engine must either be part of
-# the per-instance state blob (LXR_STATE(...) in engine/lxr_host.c) or be on
+# the per-instance state blob (LXR_STATE(...) in drum02/engine/lxr_host.c) or be on
 # the list of state the voice plugins provably never use. Run after updating
 # the firmware; fails if a new global appears.
 # SPDX-License-Identifier: GPL-3.0-only
@@ -10,7 +10,7 @@ LIB="$ROOT/build/engine/libmaquinaengine.a"
 [ -f "$LIB" ] || { echo "build the engine first ($LIB missing)"; exit 1; }
 
 # captured in the state blob
-captured=$(sed -n 's/^ *LXR_STATE(\([A-Za-z0-9_]*\)),.*/\1/p' "$ROOT/engine/lxr_host.c")
+captured=$(sed -n 's/^ *LXR_STATE(\([A-Za-z0-9_]*\)),.*/\1/p' "$ROOT/drum02/engine/lxr_host.c")
 captured="$captured midiParser_selectedLfoVoice"
 
 # not captured on purpose (see the comment above lxr_state_entries)

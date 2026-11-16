@@ -16,7 +16,7 @@
 #include <stdint.h>
 
 #include "lxr_host.h"
-#include "../../plugins/common/Timing.h"
+#include "../../common/Timing.h"
 #include "Parameters.h"
 
 #define BLOCKS 700 /* ~1 s at 44140 Hz */

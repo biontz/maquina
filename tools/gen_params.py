@@ -12,7 +12,7 @@ parameters, ranges, option lists and page layout of the hardware voice:
   Inc/Parameters.h       ParamEnums                             -> numbers (via cc)
 
 Outputs (checked in, regenerate after a firmware update):
-  plugins/common/VoiceTables.generated.hpp
+  common/VoiceTables.generated.hpp
   machinista/layout.json   (pages per plugin; used by gen_machinista_profiles.py)
 
 LV2 symbols are API: hosts and Machinista profiles store them. SYMBOLS below
@@ -21,7 +21,7 @@ pins them; never rename an existing one.
 Maquina Dredrum is not an LXR voice: its table is DREDRUM below (the
 Dredrum firmware has no UI tables, only 3 x 5 pot/button values plus the
 CLICK switch). It is appended after the LXR voices, then Maquina Plethora
-(PLETHORA below; algorithm list from third_party/noise-plethora Banks_Def.hpp),
+(PLETHORA below; algorithm list from befaco/plethora/third_party/noise-plethora Banks_Def.hpp),
 then Maquina Oneiroi and Oneiroi FX (oneiroi_params below).
 """
 import json
@@ -31,8 +31,9 @@ import subprocess
 import sys
 import tempfile
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-FW = os.path.join(ROOT, "third_party", "lxr-firmware", "Core")
+from layout import COMMON, DRUM02, LXR_FW, PLETHORA, ROOT
+
+FW = os.path.join(LXR_FW, "Core")
 
 PLUGINS = [
     # id, display name, engine voice, menu page
@@ -150,7 +151,7 @@ MENU_ARRAYS = {
 PM60 = re.compile(r"PAR_(COARSE\d|FM_FREQ\d|MOD_OSC_F[12](_CYM)?)$")
 
 # ---------------------------------------------------------------------------
-# Maquina Dredrum (engine/dredrum, third_party/dredrum). Engine voice number
+# Maquina Dredrum (euro-modules/dredrum/engine/, euro-modules/dredrum/third_party/dredrum). Engine voice number
 # kDredrumVoice in VoiceTypes.hpp. Pages: 0..2 = oscillator 1..3, 3 = mode.
 # Values are the firmware's own 0..255 (8-bit ADC) per pot.
 DREDRUM_VOICE = 16
@@ -166,12 +167,12 @@ DREDRUM_INIT = {
 
 
 # ---------------------------------------------------------------------------
-# Maquina Plethora (Befaco Noise Plethora, VCV port in third_party/noise-plethora).
+# Maquina Plethora (Befaco Noise Plethora, VCV port in befaco/plethora/third_party/noise-plethora).
 # Engine voice number kPlethoraVoice in VoiceTypes.hpp. Pages: 0..2 = channel
 # A, B, C, 3 = global. Knobs 0..127 map onto the module's 0..1 controls.
 PLETHORA_VOICE = 17
 PLETHORA_PAGE_TITLES = ["A", "B", "C", "GLOBAL"]
-PLETHORA_BANKS_DEF = os.path.join(ROOT, "third_party", "noise-plethora", "src", "noise-plethora", "plugins",
+PLETHORA_BANKS_DEF = os.path.join(PLETHORA, "third_party", "noise-plethora", "src", "noise-plethora", "plugins",
                                   "Banks_Def.hpp")
 
 
@@ -273,7 +274,7 @@ def dredrum_params():
 
 
 # ---------------------------------------------------------------------------
-# Maquina Oneiroi / Oneiroi FX (Befaco Oneiroi, third_party/oneiroi). Engine
+# Maquina Oneiroi / Oneiroi FX (Befaco Oneiroi, befaco/oneiroi/third_party/oneiroi). Engine
 # voice numbers kOneiroiVoice / kOneiroiFxVoice in VoiceTypes.hpp. Pages are
 # the module's sections (port groups): 0 looper, 1 oscillators, 2 filter,
 # 3 resonator, 4 echo, 5 ambience, 6 modulation, 7 mix (faders), 8 envelope,
@@ -480,7 +481,7 @@ def enum_values(names):
         c, exe = os.path.join(d, "e.c"), os.path.join(d, "e")
         with open(c, "w") as f:
             f.write(src)
-        subprocess.check_call(["cc", "-w", "-I" + os.path.join(ROOT, "engine", "fw_shim"),
+        subprocess.check_call(["cc", "-w", "-I" + os.path.join(DRUM02, "engine", "fw_shim"),
                                "-I" + os.path.join(FW, "Inc"), c, "-o", exe])
         out = subprocess.check_output([exe], text=True)
     return {k: int(v) for k, v in (l.split() for l in out.splitlines())}
@@ -687,7 +688,7 @@ def write_header(plugins):
     o.append("};")
     o.append("")
     o.append("} // namespace maquina")
-    path = os.path.join(ROOT, "plugins", "common", "VoiceTables.generated.hpp")
+    path = os.path.join(COMMON, "VoiceTables.generated.hpp")
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w") as f:
         f.write("\n".join(o) + "\n")

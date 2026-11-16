@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-only
-// dredrum_ref - bit-exact check of engine/dredrum against the real firmware.
+// dredrum_ref - bit-exact check of euro-modules/dredrum/engine/ against the real firmware.
 //
 // Runs the Dredrum firmware (build/dredrum/{trig,gate}.bin, the flash image
 // the module is programmed with, made by tools/dredrum_flash/gen_dredrum_flash.py;
@@ -28,7 +28,7 @@
 #include <simavr/avr_ioport.h>
 #include <simavr/sim_avr.h>
 
-#include "dredrum/dredrum_core.h"
+#include "dredrum_core.h"
 
 #define CYCLES_PER_SAMPLE (8 * 131) // timer 0: prescaler 8, OCR0A 130
 #define MAX_SAMPLES 200000

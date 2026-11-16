@@ -1,4 +1,4 @@
-// check_presets - factory presets: every source file in presets/<voice>/
+// check_presets - factory presets: every source file in <module>/presets/<voice>/
 // parses (Presets.hpp) to exactly the compiled table entry, and a preset
 // written by writePreset() (the editor's Save) reads back to the same values.
 // Run from the repository root.
@@ -14,6 +14,16 @@
 
 using namespace maquina;
 
+// the module folder of a voice (tools/layout.py, common/paths.mk)
+static std::string presetDir(const std::string& voice)
+{
+    std::string module = "drum02";
+    if (voice == "dredrum") module = "euro-modules/dredrum";
+    else if (voice == "plethora") module = "befaco/plethora";
+    else if (voice == "oneiroi" || voice == "oneiroi_fx") module = "befaco/oneiroi";
+    return module + "/presets/" + voice;
+}
+
 int main()
 {
     int bad = 0, files = 0;
@@ -21,7 +31,7 @@ int main()
         const VoiceDef& d = k_voices[vi];
         const VoicePresets& fp = k_factory_presets[vi];
         const uint32_t n = numAllParams(d);
-        const std::string dir = std::string("presets/") + d.id;
+        const std::string dir = presetDir(d.id);
         DIR* dp = opendir(dir.c_str());
         if (!dp) { std::printf("no %s\n", dir.c_str()); return 1; }
         uint32_t found = 0;

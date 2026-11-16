@@ -1,7 +1,7 @@
 // oneiroi_ref.cpp - fidelity check for Maquina Oneiroi's engine.
 //
-// Runs the module's engine as vendored (third_party/oneiroi/Oneiroi.h, class
-// Oneiroi) and Maquina's copy (engine/oneiroi/OneiroiCore.h) side by side on
+// Runs the module's engine as vendored (befaco/oneiroi/third_party/oneiroi/Oneiroi.h, class
+// Oneiroi) and Maquina's copy (befaco/oneiroi/engine/OneiroiCore.h) side by side on
 // the same controls, the same input and the same random stream, and
 // requires bit-identical output for every scenario: OneiroiCore without a
 // note envelope is the module. Scenarios cover every source, every filter

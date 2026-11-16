@@ -15,7 +15,7 @@ sounds different from the LXR-02.
 How: clang's JSON AST lists every FloatingToIntegral conversion (explicit
 casts, implicit conversions) and every compound assignment of a float into an
 integer, with byte offsets. The converted expression is wrapped in
-lxr_arm_f2u32()/lxr_arm_f2s32() (engine/fw_shim/lxr_arm.h), which return the
+lxr_arm_f2u32()/lxr_arm_f2s32() (drum02/engine/fw_shim/lxr_arm.h), which return the
 32-bit value VCVT produces; a narrower destination then truncates exactly as
 the firmware's code does on the hardware. `a op= b` with integer a and float b
 becomes `a = conv(a op (b))` (only for side-effect-free a).

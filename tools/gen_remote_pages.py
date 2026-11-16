@@ -7,7 +7,7 @@ knobs and hardware controllers. The layout is the Machinista one, with the
 Machinista-only "@bank"/"@patch" slots replaced by CLAP_FILL (see pages.py).
 
 Validates every symbol against the generated parameter tables and writes
-plugins/common/RemotePages.generated.hpp (compiled into the CLAP plugins,
+common/RemotePages.generated.hpp (compiled into the CLAP plugins,
 served by patches/dpf/0002-clap-remote-controls.patch).
 
 SPDX-License-Identifier: GPL-3.0-only
@@ -18,10 +18,10 @@ import sys
 
 from pages import clap_pages
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-TABLES = os.path.join(ROOT, "plugins", "common", "VoiceTables.generated.hpp")
-EXTRA = os.path.join(ROOT, "plugins", "common", "ExtraParams.hpp")
-OUT_HPP = os.path.join(ROOT, "plugins", "common", "RemotePages.generated.hpp")
+from layout import COMMON, ROOT
+TABLES = os.path.join(COMMON, "VoiceTables.generated.hpp")
+EXTRA = os.path.join(COMMON, "ExtraParams.hpp")
+OUT_HPP = os.path.join(COMMON, "RemotePages.generated.hpp")
 VOICES = ["kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora", "oneiroi",
           "oneiroi_fx"]  # order of k_voices / MAQUINA_VOICE_INDEX
 EXTRA_SYMBOLS = {v: {"note_pitch", "gain"} for v in VOICES}

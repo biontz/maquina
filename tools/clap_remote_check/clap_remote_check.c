@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 // clap_remote_check - minimal CLAP host: load each .clap, read its
 // remote-controls pages (what Bitwig shows as remote-control pages) and check
-// them against plugins/common/RemotePages.generated.hpp: page count, names,
+// them against common/RemotePages.generated.hpp: page count, names,
 // and that every slot points at the parameter with the expected symbol.
 //
 //   clap_remote_check <bundle.clap>... (Linux: the bundle is the .so itself)
@@ -18,7 +18,7 @@
 
 typedef struct { const char* name; const char* symbols[8]; } ClapRemotePage;
 typedef struct { const ClapRemotePage* pages; uint32_t count; } ClapRemotePages;
-#include "../../plugins/common/RemotePages.generated.hpp"
+#include "../../common/RemotePages.generated.hpp"
 
 static const char* const kVoices[] = { "kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora", "oneiroi",
                                        "oneiroi_fx" }; // k_voices order

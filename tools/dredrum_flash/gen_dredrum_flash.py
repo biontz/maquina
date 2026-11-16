@@ -5,7 +5,7 @@ gen_dredrum_flash.py - program memory bytes for Maquina Dredrum's noise wave.
 The Dredrum firmware makes noise by reading its own program memory past the
 sine table: pgm_read_byte(&q_sine_table[0xff + wave_pointer]), wave_pointer
 0..0x1ff. Those bytes are whatever avr-gcc put there, so this script builds
-both firmwares (third_party/dredrum/trig, gate) with the module's own flags
+both firmwares (euro-modules/dredrum/third_party/dredrum/trig, gate) with the module's own flags
 and copies the 0x200 bytes from q_sine_table + 0xff. Flash past the end of
 the program reads as erased (0xff), as on the chip.
 
@@ -15,7 +15,7 @@ recorded in the output.
 
 Needs avr-gcc, avr-libc, avr-binutils. `--check` only builds the firmwares
 and verifies the checked-in header (used by `make test`). Writes
-  plugins/common/DredrumFlash.generated.hpp   (checked in)
+  euro-modules/dredrum/engine/DredrumFlash.generated.hpp   (checked in)
   build/dredrum/{trig,gate}.elf                (simavr reference, tools/dredrum_ref)
 
 SPDX-License-Identifier: GPL-3.0-only
@@ -25,10 +25,12 @@ import re
 import subprocess
 import sys
 
-ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-SRC = os.path.join(ROOT, "third_party", "dredrum")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from layout import DREDRUM, ROOT  # noqa: E402
+
+SRC = os.path.join(DREDRUM, "third_party", "dredrum")
 OUT_DIR = os.path.join(ROOT, "build", "dredrum")
-HEADER = os.path.join(ROOT, "plugins", "common", "DredrumFlash.generated.hpp")
+HEADER = os.path.join(DREDRUM, "engine", "DredrumFlash.generated.hpp")
 
 MCU = "atmega48p"
 FLASH_SIZE = 4096

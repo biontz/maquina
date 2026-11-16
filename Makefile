@@ -10,17 +10,18 @@
 
 include dpf/Makefile.base.mk
 
-PLUGINS := kick tom snare cymbal hihat dredrum plethora oneiroi oneiroi-fx
+MAQUINA_ROOT := $(CURDIR)
+include common/paths.mk
 
 all: plugins gen
 
-# factory presets (presets/<voice>/*.maquina) -> compiled table + Machinista banks
+# factory presets (<module>/presets/<voice>/*.maquina) -> compiled table + Machinista banks
 presets:
 	python3 tools/gen_presets.py
 	python3 tools/gen_remote_pages.py
 
 engine:
-	$(MAKE) -C engine
+	$(MAKE) -C drum02/engine
 
 # local fixes to the DPF submodule (patches/dpf/*.patch), applied once;
 # a patch that is already applied is skipped
@@ -31,7 +32,7 @@ dpf-patches:
 	done
 
 plugins: engine dpf-patches
-	@for p in $(PLUGINS); do $(MAKE) -C plugins/$$p || exit 1; done
+	@for p in $(PLUGIN_DIRS); do $(MAKE) -C $$p || exit 1; done
 
 ifneq ($(CROSS_COMPILING),true)
 gen: plugins dpf/utils/lv2_ttl_generator
@@ -43,28 +44,23 @@ endif
 dpf/utils/lv2_ttl_generator:
 	$(MAKE) -C dpf/utils/lv2-ttl-generator
 
-# Maquina Oneiroi test tools: the vendored engine + OWL library (see plugins/common/plugin.mk)
-ONEIROI_FLAGS := -O2 -std=gnu++17 -fno-strict-aliasing -w -Iengine/oneiroi/compat -Iengine/oneiroi \
-	-Ithird_party/oneiroi -Ithird_party/owlprogram/LibSource -Iplugins/common -Iengine/fw_shim \
-	-Ithird_party/lxr-firmware/Core/Inc
+# Maquina Oneiroi test tools: the vendored engine + OWL library (see common/plugin.mk)
+ONEIROI_FLAGS := -O2 -std=gnu++17 -fno-strict-aliasing -w $(ONEIROI_INCLUDES) $(MAQUINA_INCLUDES)
 
 tools: engine
 	$(MAKE) -C tools/render_ref
 	$(CC) -O2 -std=gnu11 $(shell pkg-config --cflags lilv-0) tools/lv2_render/lv2_render.c \
 		$(shell pkg-config --libs lilv-0) -lm -o build/tools/lv2_render
-	$(CXX) -O2 -std=gnu++17 -Iplugins/common tools/resampler_test/resampler_test.cpp -o build/tools/resampler_test
-	$(CXX) -O1 -std=gnu++17 -Iplugins/common -Iengine -Iengine/fw_shim -Ithird_party/lxr-firmware/Core/Inc \
-		tools/check_defaults/check_defaults.cpp plugins/common/EngineHost.cpp build/engine/libmaquinaengine.a \
+	$(CXX) -O2 -std=gnu++17 $(MAQUINA_INCLUDES) tools/resampler_test/resampler_test.cpp -o build/tools/resampler_test
+	$(CXX) -O1 -std=gnu++17 $(MAQUINA_INCLUDES) \
+		tools/check_defaults/check_defaults.cpp drum02/engine/EngineHost.cpp build/engine/libmaquinaengine.a \
 		-lm -o build/tools/check_defaults
-	$(CXX) -O2 -std=gnu++17 -Iplugins/common -Iengine/fw_shim -Ithird_party/lxr-firmware/Core/Inc \
-		tools/check_random/check_random.cpp -o build/tools/check_random
-	$(CXX) -O2 -std=gnu++17 -Iplugins/common -Iengine/fw_shim -Ithird_party/lxr-firmware/Core/Inc \
-		tools/check_presets/check_presets.cpp -o build/tools/check_presets
-	$(CXX) -O2 -std=gnu++17 -Iplugins/common -Iengine -Iengine/fw_shim -Ithird_party/lxr-firmware/Core/Inc \
-		-Iengine/plethora/compat -Ithird_party/noise-plethora/src \
-		tools/preset_measure/preset_measure.cpp plugins/common/EngineHost.cpp build/engine/libmaquinaengine.a \
-		plugins/common/DredrumHost.cpp -x c++ engine/dredrum/dredrum_core.c -x none plugins/plethora/Engine.cpp \
-		-lm -o build/tools/preset_measure
+	$(CXX) -O2 -std=gnu++17 $(MAQUINA_INCLUDES) tools/check_random/check_random.cpp -o build/tools/check_random
+	$(CXX) -O2 -std=gnu++17 $(MAQUINA_INCLUDES) tools/check_presets/check_presets.cpp -o build/tools/check_presets
+	$(CXX) -O2 -std=gnu++17 $(MAQUINA_INCLUDES) $(PLETHORA_INCLUDES) \
+		tools/preset_measure/preset_measure.cpp drum02/engine/EngineHost.cpp build/engine/libmaquinaengine.a \
+		euro-modules/dredrum/engine/DredrumHost.cpp -x c++ euro-modules/dredrum/engine/dredrum_core.c -x none \
+		befaco/plethora/plugins/plethora/Engine.cpp -lm -o build/tools/preset_measure
 	$(CC) -O1 -std=gnu11 -Idpf/distrho/src tools/clap_latency_check/clap_latency_check.c \
 		-ldl -o build/tools/clap_latency_check
 	$(CC) -O1 -std=gnu11 -Idpf/distrho/src tools/clap_remote_check/clap_remote_check.c \
@@ -109,7 +105,8 @@ SIMAVR_LIBS ?= $(shell pkg-config --libs simavr 2>/dev/null || echo -lsimavr -le
 dredrum-check:
 	python3 tools/dredrum_flash/gen_dredrum_flash.py --check
 	@mkdir -p build/tools
-	$(CC) -O2 -std=gnu11 -Iengine tools/dredrum_ref/dredrum_ref.c engine/dredrum/dredrum_core.c \
+	$(CC) -O2 -std=gnu11 -Ieuro-modules/dredrum/engine tools/dredrum_ref/dredrum_ref.c \
+		euro-modules/dredrum/engine/dredrum_core.c \
 		$(SIMAVR_LIBS) -o build/tools/dredrum_ref
 	build/tools/dredrum_ref build/dredrum
 
@@ -136,8 +133,8 @@ $(SYSROOT_A64)/usr/lib/aarch64-linux-gnu/libc.so:
 	python3 tools/aarch64/make_sysroot.py $(SYSROOT_A64)
 
 aarch64: $(SYSROOT_A64)/usr/lib/aarch64-linux-gnu/libc.so dpf-patches
-	$(MAKE) -C engine $(A64_ENV) ENGINE_BUILD=$(CURDIR)/build/engine-aarch64
-	@for p in $(PLUGINS); do $(MAKE) -C plugins/$$p $(A64_ENV) TARGETS="lv2_dsp clap vst3" || exit 1; done
+	$(MAKE) -C drum02/engine $(A64_ENV) ENGINE_BUILD=$(CURDIR)/build/engine-aarch64
+	@for p in $(PLUGIN_DIRS); do $(MAKE) -C $$p $(A64_ENV) TARGETS="lv2_dsp clap vst3" || exit 1; done
 	clang $(A64_FLAGS) dpf/utils/lv2-ttl-generator/lv2_ttl_generator.c -ldl -o build/aarch64/lv2_ttl_generator
 	@for b in bin-aarch64/*.lv2; do \
 		(cd $$b && $(QEMU_A64) $(CURDIR)/build/aarch64/lv2_ttl_generator ./$$(ls *.so | head -n1)) || exit 1; \
@@ -153,7 +150,7 @@ test-aarch64: aarch64
 	$(QEMU_A64) build/tools-aarch64/oneiroi_test
 
 clean:
-	$(MAKE) -C engine clean
+	$(MAKE) -C drum02/engine clean
 	$(MAKE) clean -C dpf/utils/lv2-ttl-generator
 	rm -rf bin build
 

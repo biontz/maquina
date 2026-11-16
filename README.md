@@ -32,9 +32,9 @@ Platforms: Linux x86_64 and Raspberry Pi OS 64-bit (aarch64); macOS/Windows late
 
 ### LXR voices (Kick, Tom, Snare, Cymbal, HiHat)
 
-The firmware's DSP code is compiled **unmodified** from `third_party/lxr-firmware`
+The firmware's DSP code is compiled **unmodified** from `drum02/third_party/lxr-firmware`
 (pinned commit in `UPSTREAM_COMMIT`), with a small hardware shim
-(`engine/fw_shim`) in place of the STM32 HAL:
+(`drum02/engine/fw_shim`) in place of the STM32 HAL:
 
 * **Same maths, same rate.** The engine runs at the hardware's real sample rate
   (44140 Hz) in its 64-sample blocks. A 64-tap windowed-sinc resampler converts
@@ -77,8 +77,8 @@ build (fused multiply-adds, libm) - x86 and Arm builds agree to ~90 dB.
 ### Dredrum
 
 The module runs on an ATmega48P at 20 MHz. Its sound engine
-(`third_party/dredrum/trig` and `gate`, vendored unmodified) is ported to
-portable C in `engine/dredrum/dredrum_core.c`:
+(`euro-modules/dredrum/third_party/dredrum/trig` and `gate`, vendored unmodified) is ported to
+portable C in `euro-modules/dredrum/engine/dredrum_core.c`:
 
 * **Bit-exact with the firmware.** `make dredrum-check` builds the original
   firmware with avr-gcc, runs it in the simavr AVR simulator and compares
@@ -100,8 +100,8 @@ portable C in `engine/dredrum/dredrum_core.c`:
 ### Plethora
 
 The algorithms and DSP come from the VCV Rack port of the Noise Plethora
-(`third_party/noise-plethora`, vendored unmodified at a pinned commit), with a
-small compatibility header (`engine/plethora/compat`) in place of VCV Rack:
+(`befaco/plethora/third_party/noise-plethora`, vendored unmodified at a pinned commit), with a
+small compatibility header (`befaco/plethora/engine/compat`) in place of VCV Rack:
 
 * **Same chain as the VCV module.**
   * *A and B:* algorithm with X/Y, per-algorithm gain, multimode filter
@@ -123,12 +123,12 @@ filter model is used).
 
 ### Oneiroi
 
-The engine is the module's own patch (`third_party/oneiroi`, patch 1.2.2,
+The engine is the module's own patch (`befaco/oneiroi/third_party/oneiroi`, patch 1.2.2,
 vendored at a pinned commit) with the parts of the OWL library it uses
-(`third_party/owlprogram`) and a small runtime in place of the OWL firmware
-(`engine/oneiroi/compat`):
+(`befaco/oneiroi/third_party/owlprogram`) and a small runtime in place of the OWL firmware
+(`befaco/oneiroi/engine/compat`):
 
-* **Same engine.** `engine/oneiroi/OneiroiCore.h` is the module's
+* **Same engine.** `befaco/oneiroi/engine/OneiroiCore.h` is the module's
   `Oneiroi.h` plus two marked hooks (the note envelope, oscillators
   optional). `make oneiroi-check` renders 40 scenarios (every source, filter
   mode and position, resonator / echo / ambience extremes, all modulation
@@ -144,7 +144,7 @@ vendored at a pinned commit) with the parts of the OWL library it uses
   engine relies on it; Maquina's allocations are zero-filled too.
 * **One fix:** at the ends of SPACETIME the module's ambience reads past the
   end of a delay line (other memory, on the module); Maquina's reads inside
-  it (`third_party/oneiroi/MAQUINA.md`).
+  it (`befaco/oneiroi/third_party/oneiroi/MAQUINA.md`).
 
 Not reproducible: the ARM CMSIS maths of the module's processor (the C
 library is used), so the output matches the module's engine, not its DAC
@@ -501,8 +501,8 @@ make test
 make install    # copies to ~/.lv2 ~/.clap ~/.vst3
 ```
 
-Factory presets live in `presets/<voice>/*.maquina` (format in
-`plugins/common/Presets.hpp`). After adding or changing one run
+Factory presets live in `<module>/presets/<voice>/*.maquina`, e.g.
+`drum02/presets/kick/` (format in `common/Presets.hpp`). After adding or changing one run
 `make presets` (validates them, regenerates the compiled table and the
 Machinista banks), then `make`. `build/tools/preset_measure <voice> -f file`
 renders a preset and prints level, length, pitch and brightness
@@ -539,19 +539,29 @@ Oneiroi instance needs about 3 % of one x86 laptop core.
 
 ## Layout
 
+One folder per module family, each with the same parts: `engine/` (the port
+and its host class), `third_party/` (vendored sources), `plugins/<plugin>/`
+(DistrhoPluginInfo.h + Makefile) and `presets/<voice>/` (factory presets,
+.maquina text files).
+
 ```
-third_party/lxr-firmware/   LXR firmware sources, unmodified (GPL-3.0-only + NOTICE.md)
-third_party/dredrum/        Dredrum firmware (trig + gate), unmodified (GPL-3.0-or-later)
-third_party/noise-plethora/ VCV port of the Noise Plethora, unmodified (GPL-3.0-or-later; teensy/ parts MIT)
-third_party/oneiroi/        Befaco Oneiroi patch (GPL-3.0-or-later), one marked fix (MAQUINA.md)
-third_party/owlprogram/     OWL library files Oneiroi uses, unmodified (GPL-3.0)
-engine/                     LXR shim, host glue (lxr_host.c), engine build
-engine/dredrum/             Dredrum engine ported to portable C (bit-exact)
-engine/plethora/            VCV Rack compatibility header + DSP helpers for the Plethora port
-engine/oneiroi/             OneiroiCore (Oneiroi.h + hooks), OWL runtime stand-ins (compat/)
-plugins/common/             EngineHost / DredrumHost / PlethoraHost / OneiroiHost, resamplers, DPF plugin, editor, generated tables
-plugins/<voice>/            per-plugin DistrhoPluginInfo.h + Makefile
-presets/<voice>/            factory presets (.maquina text files)
+drum02/                     Erica Synths LXR-02 firmware: Kick, Tom, Snare, Cymbal, HiHat
+  engine/                   LXR shim (fw_shim/), host glue (lxr_host.c), engine build, EngineHost
+  third_party/lxr-firmware/ LXR firmware sources, unmodified (GPL-3.0-only + NOTICE.md)
+befaco/
+  plethora/                 Noise Plethora
+    engine/                 VCV Rack compatibility header (compat/), DSP helpers, PlethoraHost
+    third_party/noise-plethora/  VCV port, unmodified (GPL-3.0-or-later; teensy/ parts MIT)
+  oneiroi/                  Oneiroi + Oneiroi FX
+    engine/                 OneiroiCore (Oneiroi.h + hooks), OWL runtime stand-ins (compat/), OneiroiHost
+    third_party/oneiroi/    Befaco Oneiroi patch (GPL-3.0-or-later), one marked fix (MAQUINA.md)
+    third_party/owlprogram/ OWL library files Oneiroi uses, unmodified (GPL-3.0)
+euro-modules/
+  dredrum/                  Dredrum
+    engine/                 engine ported to portable C (bit-exact), DredrumHost
+    third_party/dredrum/    Dredrum firmware (trig + gate), unmodified (GPL-3.0-or-later)
+common/                     shared by all plugins: DPF plugin, editor, randomizer, presets, resamplers,
+                            generated tables, plugin.mk, paths.mk (where everything lives)
 tools/                      generators, tests, aarch64 sysroot, dredrum_flash + dredrum_ref (AVR reference),
                             oneiroi_ref (engine fidelity) + oneiroi_test (behaviour, preset measuring)
 machinista/                 Machinista profiles + layout
@@ -562,7 +572,7 @@ patches/dpf/                local DPF fixes (CLAP latency sync, CLAP remote-cont
 ## Licence
 
 GPL-3.0-only, like the LXR firmware it is built from (see `LICENSE`, and
-`third_party/lxr-firmware/NOTICE.md` for the firmware's additional terms,
+`drum02/third_party/lxr-firmware/NOTICE.md` for the firmware's additional terms,
 including the trademark terms above). This is a modified version of the LXR
 firmware's sound engine, marked as such in every plugin's description.
 
@@ -570,14 +580,15 @@ Other included code, all compatible with GPL-3.0-only:
 
 | Code | Authors | Licence |
 |---|---|---|
-| `third_party/dredrum`, `engine/dredrum` (port) | Jan Cumpelik, 2014 | GPL-3.0-or-later |
-| `third_party/noise-plethora` (VCV port, algorithms from Befaco's Noise Plethora firmware) | VCV and contributors; Befaco | GPL-3.0-or-later |
-| `third_party/noise-plethora/src/noise-plethora/teensy` (from the Teensy Audio library) | Paul Stoffregen and others | MIT |
-| `third_party/oneiroi`, `engine/oneiroi/OneiroiCore.h` | Roberto Noris (Befaco Oneiroi) | GPL-3.0-or-later |
-| `third_party/owlprogram` (OwlProgram LibSource) | Rebel Technology and contributors | GPL-3.0 (`fastlog.c` GPL-2.0-or-later, `fastpow.c` BSD-style) |
+| `euro-modules/dredrum` (firmware + port) | Jan Cumpelik, 2014 | GPL-3.0-or-later |
+| `befaco/plethora/third_party/noise-plethora` (VCV port, algorithms from Befaco's Noise Plethora firmware) | VCV and contributors; Befaco | GPL-3.0-or-later |
+| `befaco/plethora/third_party/noise-plethora/src/noise-plethora/teensy` (from the Teensy Audio library) | Paul Stoffregen and others | MIT |
+| `befaco/oneiroi/third_party/oneiroi`, `befaco/oneiroi/engine/OneiroiCore.h` | Roberto Noris (Befaco Oneiroi) | GPL-3.0-or-later |
+| `befaco/oneiroi/third_party/owlprogram` (OwlProgram LibSource) | Rebel Technology and contributors | GPL-3.0 (`fastlog.c` GPL-2.0-or-later, `fastpow.c` BSD-style) |
 | `dpf` | DISTRHO | ISC |
 
 Befaco's own Noise Plethora firmware framework is licensed CC BY-NC-SA and is
 **not** used; only the GPL-3.0-or-later algorithm code, through the VCV port,
 is. The VCV port's panel graphics (Befaco's) are not included.
-See `third_party/dredrum/README.md` and `third_party/noise-plethora/README.md`.
+See `euro-modules/dredrum/third_party/dredrum/README.md` and
+`befaco/plethora/third_party/noise-plethora/README.md`.

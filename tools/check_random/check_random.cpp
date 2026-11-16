@@ -1,4 +1,4 @@
-// check_random - the randomizer (plugins/common/Randomizer.hpp) for every
+// check_random - the randomizer (common/Randomizer.hpp) for every
 // voice: locked groups and trigger parameters never change, knob values stay
 // inside the group's min..max window, every value is an integer in range, the
 // filter is never switched off, and the settings string round-trips.

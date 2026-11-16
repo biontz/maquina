@@ -34,7 +34,7 @@
 
 #include <math.h>
 
-#include "../../plugins/common/Timing.h"
+#include "../../common/Timing.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
