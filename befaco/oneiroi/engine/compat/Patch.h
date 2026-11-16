@@ -11,6 +11,12 @@
 #define __Patch_h__
 
 #include "basicmaths.h"
+
+// exp10f is a glibc extension; Apple's libm has it as __exp10f (the OWL
+// library calls it: FloatArray.cpp, BiquadFilter.h, StateVariableFilter.h)
+#if defined(__APPLE__) && !defined(exp10f)
+static inline float exp10f(float x) { return __exp10f(x); }
+#endif
 #include "FloatArray.h"
 #include "AudioBuffer.h"
 
