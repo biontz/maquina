@@ -247,6 +247,13 @@ static void lxr_send_cc(uint16_t par, uint8_t value)
      * effect on the hardware, so skip it. parameterOrder[] is zero-padded. */
     if (par == PAR_NONE)
         return;
+    /* PAR_BANK_CHANGE (127, a placeholder): sent as CC data1 = (127 + 1) & 0x7f
+     * = 0, so midiParser_ccHandler's paramNr = data1 - 1 wraps to 65535 and it
+     * writes midiParser_originalCcValues[65536], 64 KB past the 255-byte
+     * array (on the STM32: other RAM; on a host: our memory, read-only on
+     * macOS -> SIGBUS). Its CC case does nothing else, so skip it. */
+    if (par == PAR_BANK_CHANGE)
+        return;
     MidiMsg msg;
     memset(&msg, 0, sizeof(msg));
     if (par < 128) {
