@@ -190,7 +190,9 @@ macos_cc = -target $(1)-apple-macos$(MACOS_MIN)
 macos_env = CC="clang $(call macos_cc,$(1))" CXX="clang++ $(call macos_cc,$(1))" \
 	MAQUINA_ARCH=macos-$(1) ARM_TARGET=$(if $(filter arm64,$(1)),true,false) BUILD_DIR_SUFFIX=-macos-$(1) \
 	SKIP_STRIPPING=true
-MACOS_VERSION = $(shell git describe --tags --always --dirty)
+# the commit (or tag); -dirty only for uncommitted changes in this repository,
+# not for the DPF patches applied in the dpf submodule's working tree
+MACOS_VERSION = $(shell git describe --tags --always)$(shell git diff --quiet --ignore-submodules=dirty HEAD -- || echo -dirty)
 
 macos-x86_64 macos-arm64: macos-%: dpf-patches
 	$(MAKE) -C drum02/engine $(call macos_env,$*) ENGINE_BUILD=$(CURDIR)/build/engine-macos-$*
