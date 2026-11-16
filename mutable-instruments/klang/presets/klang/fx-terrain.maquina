@@ -1,0 +1,13 @@
+# Maquina factory preset
+# design: wave terrain, the envelope moves the path
+voice = klang
+name = Terrain
+category = FX
+tags = modulated, bright
+model = Wave Terrain
+harmonics = 40
+timbre = 90
+morph = 64
+morph_env = 40
+lpg_decay = 75
+lpg_colour = 80

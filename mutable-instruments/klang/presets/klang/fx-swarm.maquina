@@ -1,0 +1,13 @@
+# Maquina factory preset
+# design: swarm of oscillators held by the note
+voice = klang
+name = Swarm
+category = FX
+tags = long, modulated
+model = Swarm
+harmonics = 80
+timbre = 50
+morph = 70
+lpg_decay = 120
+lpg_colour = 100
+lpg_mode = Velocity

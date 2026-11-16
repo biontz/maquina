@@ -1,0 +1,13 @@
+# Maquina factory preset
+# design: filtered noise held by the note
+voice = klang
+name = Wind
+category = Noise
+tags = noisy, long
+model = Filtered Noise
+harmonics = 64
+timbre = 90
+morph = 100
+lpg_decay = 100
+lpg_colour = 100
+lpg_mode = Velocity

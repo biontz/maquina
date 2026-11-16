@@ -369,6 +369,81 @@ def oneiroi_params(fx):
     return params, [pg for pg in pages if pg["controls"]]
 
 
+# Maquina Klang (Plaits), Klong + Klong FX (Rings): mutable-instruments/
+KLANG_VOICE = 20
+KLONG_VOICE = 21
+KLONG_FX_VOICE = 22
+# pages 0..3 + 7 (MIX: the output choice + gain, like the LXR mix page);
+# page 1 is Klang's SOUND, Klong's RESONATOR (common/DrumPlugin.cpp)
+MUTABLE_PAGE_TITLES = {0: "MODEL", 1: "SOUND", 2: "ENVELOPE", 3: "LPG", 7: "MIX"}
+# the Model parameter: Plaits' original 16 models, then the 8 of firmware
+# 1.1/1.2 (KlangHost::engineOfModel)
+KLANG_MODELS = ["Virtual Analog", "Waveshaping", "2-Op FM", "Formant", "Harmonic", "Wavetable", "Chords",
+                "Speech", "Swarm", "Filtered Noise", "Particle", "Inharm String", "Modal", "Bass Drum",
+                "Snare Drum", "Hi-Hat",
+                "VA + VCF", "Phase Dist", "6-Op FM 1", "6-Op FM 2", "6-Op FM 3", "Wave Terrain", "String Mach",
+                "Chiptune"]
+# Rings' 6 resonator models, then the string synth's 6 effects (the
+# "Disastrous Peace" easter egg)
+KLONG_MODELS = ["Modal", "Sympathetic", "Inharm String", "FM Voice", "Sympath Quant", "String + Verb",
+                "Peace Formant", "Peace Chorus", "Peace Reverb", "Peace Form 2", "Peace Ensemble", "Peace Rev 2"]
+
+
+def mutable_params(kind):
+    """kind: "klang", "klong" or "klong_fx"."""
+    params = []
+
+    def p(symbol, name, short, page, kind_, default, fwmax=127, offset=0, labels=None):
+        params.append(dict(symbol=symbol, name=name, short=short, page=page, kind=kind_, fwmax=fwmax,
+                           offset=offset, labels=labels, default=default))
+
+    def knob(symbol, name, short, page, default):
+        p(symbol, name, short, page, "Int", default)
+
+    if kind == "klang":
+        # MODEL: the model buttons; Coarse/Fine instead of FREQUENCY's octave ranges
+        p("model", "Model", "Model", 0, "Enum", 0, len(KLANG_MODELS) - 1, labels=KLANG_MODELS)
+        p("coarse", "Coarse Tune", "Coarse", 0, "Int", 0, 72, -36)   # semitones
+        p("fine", "Fine Tune", "Fine", 0, "Int", 0, 200, -100)        # cents
+        p("key_track", "Key Track", "Key Track", 0, "Toggle", 1, 1, labels=["Off", "On"])
+        # SOUND: the three big knobs
+        knob("harmonics", "Harmonics", "Harmonics", 1, 64)
+        knob("timbre", "Timbre", "Timbre", 1, 64)
+        knob("morph", "Morph", "Morph", 1, 64)
+        # ENVELOPE: the attenuverters, which set the internal decay envelope's
+        # amount on FM / TIMBRE / MORPH (nothing patched into those inputs)
+        p("fm_env", "Envelope to FM", "Env > FM", 2, "Int", 0, 126, -63)
+        p("timbre_env", "Envelope to Timbre", "Env > Tmb", 2, "Int", 0, 126, -63)
+        p("morph_env", "Envelope to Morph", "Env > Mrp", 2, "Int", 0, 126, -63)
+        # LPG: the hidden parameters (Decay, Colour) + how notes drive it
+        knob("lpg_decay", "LPG Decay", "Decay", 3, 64)
+        knob("lpg_colour", "LPG Colour", "Colour", 3, 64)
+        p("lpg_mode", "LPG Mode", "LPG Mode", 3, "Enum", 0, 1, labels=["Ping", "Velocity"])
+        p("output", "Output", "Output", 7, "Enum", 0, 3, labels=["Out", "Aux", "Out + Aux", "Mix"])
+    else:
+        p("model", "Model", "Model", 0, "Enum", 0, len(KLONG_MODELS) - 1, labels=KLONG_MODELS)
+        p("polyphony", "Polyphony", "Poly", 0, "Int", 1, 3, 1)
+        p("coarse", "Coarse Tune", "Coarse", 0, "Int", 0, 60, -48)    # tonic 12..72, as the FREQUENCY knob
+        p("fine", "Fine Tune", "Fine", 0, "Int", 0, 200, -100)
+        if kind == "klong_fx":
+            p("note_source", "Notes", "Notes", 0, "Enum", 0, 1, labels=["Internal", "MIDI"])
+        knob("structure", "Structure", "Structure", 1, 64)
+        knob("brightness", "Brightness", "Bright", 1, 64)
+        knob("damping", "Damping", "Damping", 1, 64)
+        knob("position", "Position", "Position", 1, 64)
+        p("output", "Output", "Output", 7, "Enum", 0, 1, labels=["Odd / Even", "Mono"])
+    for q in params:
+        q.update(par="0", fwmin=0, modtargets=None)
+        if len(q["short"]) > MAX_SHORT_NAME:
+            sys.exit(f"{kind}: '{q['short']}' is longer than {MAX_SHORT_NAME} characters")
+    titles = dict(MUTABLE_PAGE_TITLES)
+    if kind != "klang":
+        titles[1] = "RESONATOR"
+    pages = [dict(title=t, controls=[q["symbol"] for q in params if q["page"] == i])
+             for i, t in sorted(titles.items())]
+    return params, [pg for pg in pages if pg["controls"]]
+
+
 NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 
 
@@ -638,6 +713,11 @@ def main():
         o_params, o_pages = oneiroi_params(fx)
         plugins_out.append(dict(id=oid, name=oname, voice=ovoice, params=o_params))
         layout[oid] = dict(name=oname, pages=o_pages)
+    for mid, mname, mvoice in (("klang", "Klang", KLANG_VOICE), ("klong", "Klong", KLONG_VOICE),
+                               ("klong_fx", "Klong FX", KLONG_FX_VOICE)):
+        m_params, m_pages = mutable_params(mid)
+        plugins_out.append(dict(id=mid, name=mname, voice=mvoice, params=m_params))
+        layout[mid] = dict(name=mname, pages=m_pages)
 
     write_header(plugins_out)
     os.makedirs(os.path.join(ROOT, "machinista"), exist_ok=True)
@@ -654,7 +734,7 @@ def cstr(s):
 
 def write_header(plugins):
     o = []
-    o.append("// GENERATED by tools/gen_params.py from the LXR firmware UI tables (+ Dredrum, Plethora, Oneiroi). Do not edit.")
+    o.append("// GENERATED by tools/gen_params.py from the LXR firmware UI tables (+ Dredrum, Plethora, Oneiroi, Klang, Klong). Do not edit.")
     o.append("// SPDX-License-Identifier: GPL-3.0-only")
     o.append("#pragma once")
     o.append("#include \"VoiceTypes.hpp\"")

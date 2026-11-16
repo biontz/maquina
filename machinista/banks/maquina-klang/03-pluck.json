@@ -1,0 +1,67 @@
+{
+ "schema": 1,
+ "uri": "urn:maquina:klang",
+ "name": "Pluck",
+ "patches": [
+  {
+   "name": "Bell Mallet",
+   "controls": {
+    "model": 12,
+    "coarse": 0,
+    "fine": 0,
+    "key_track": 1,
+    "harmonics": 90,
+    "timbre": 70,
+    "morph": 60,
+    "fm_env": 0,
+    "timbre_env": 0,
+    "morph_env": 0,
+    "lpg_decay": 64,
+    "lpg_colour": 64,
+    "lpg_mode": 0,
+    "output": 0,
+    "gain": 0
+   }
+  },
+  {
+   "name": "PD Pluck",
+   "controls": {
+    "model": 17,
+    "coarse": 0,
+    "fine": 0,
+    "key_track": 1,
+    "harmonics": 60,
+    "timbre": 60,
+    "morph": 30,
+    "fm_env": 0,
+    "timbre_env": 40,
+    "morph_env": 0,
+    "lpg_decay": 45,
+    "lpg_colour": 70,
+    "lpg_mode": 0,
+    "output": 0,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Pluck String",
+   "controls": {
+    "model": 11,
+    "coarse": 0,
+    "fine": 0,
+    "key_track": 1,
+    "harmonics": 20,
+    "timbre": 80,
+    "morph": 70,
+    "fm_env": 0,
+    "timbre_env": 0,
+    "morph_env": 0,
+    "lpg_decay": 64,
+    "lpg_colour": 64,
+    "lpg_mode": 0,
+    "output": 0,
+    "gain": 0
+   }
+  }
+ ]
+}

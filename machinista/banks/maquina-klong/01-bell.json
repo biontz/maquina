@@ -1,0 +1,37 @@
+{
+ "schema": 1,
+ "uri": "urn:maquina:klong",
+ "name": "Bell",
+ "patches": [
+  {
+   "name": "Glass",
+   "controls": {
+    "model": 0,
+    "polyphony": 2,
+    "coarse": 0,
+    "fine": 0,
+    "structure": 110,
+    "brightness": 110,
+    "damping": 100,
+    "position": 20,
+    "output": 0,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Modal Bell",
+   "controls": {
+    "model": 0,
+    "polyphony": 2,
+    "coarse": 0,
+    "fine": 0,
+    "structure": 90,
+    "brightness": 90,
+    "damping": 90,
+    "position": 40,
+    "output": 0,
+    "gain": 0
+   }
+  }
+ ]
+}

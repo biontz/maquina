@@ -1,0 +1,47 @@
+{
+ "schema": 1,
+ "uri": "urn:maquina:klang",
+ "name": "Pad",
+ "patches": [
+  {
+   "name": "String Machine",
+   "controls": {
+    "model": 22,
+    "coarse": 0,
+    "fine": 0,
+    "key_track": 1,
+    "harmonics": 30,
+    "timbre": 70,
+    "morph": 50,
+    "fm_env": 0,
+    "timbre_env": 0,
+    "morph_env": 0,
+    "lpg_decay": 125,
+    "lpg_colour": 110,
+    "lpg_mode": 1,
+    "output": 0,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Wavetable Pad",
+   "controls": {
+    "model": 5,
+    "coarse": 0,
+    "fine": 0,
+    "key_track": 1,
+    "harmonics": 40,
+    "timbre": 60,
+    "morph": 80,
+    "fm_env": 0,
+    "timbre_env": 0,
+    "morph_env": 0,
+    "lpg_decay": 120,
+    "lpg_colour": 100,
+    "lpg_mode": 1,
+    "output": 0,
+    "gain": 0
+   }
+  }
+ ]
+}

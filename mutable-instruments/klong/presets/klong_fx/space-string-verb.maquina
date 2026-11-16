@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: string + the built-in reverb
+voice = klong_fx
+name = String Verb
+category = Space
+tags = long, soft
+model = String + Verb
+polyphony = 2
+structure = 50
+brightness = 60
+damping = 110
+position = 40

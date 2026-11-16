@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: particle noise through resonant filters
+voice = klang
+name = Particles
+category = Noise
+tags = noisy, modulated
+model = Particle
+harmonics = 60
+timbre = 70
+morph = 80
+lpg_decay = 90
+lpg_colour = 100

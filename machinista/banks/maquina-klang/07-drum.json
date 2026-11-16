@@ -1,0 +1,67 @@
+{
+ "schema": 1,
+ "uri": "urn:maquina:klang",
+ "name": "Drum",
+ "patches": [
+  {
+   "name": "Hat",
+   "controls": {
+    "model": 15,
+    "coarse": 0,
+    "fine": 0,
+    "key_track": 0,
+    "harmonics": 80,
+    "timbre": 90,
+    "morph": 25,
+    "fm_env": 0,
+    "timbre_env": 0,
+    "morph_env": 0,
+    "lpg_decay": 64,
+    "lpg_colour": 64,
+    "lpg_mode": 0,
+    "output": 0,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Kick",
+   "controls": {
+    "model": 13,
+    "coarse": -24,
+    "fine": 0,
+    "key_track": 0,
+    "harmonics": 60,
+    "timbre": 40,
+    "morph": 60,
+    "fm_env": 0,
+    "timbre_env": 0,
+    "morph_env": 0,
+    "lpg_decay": 64,
+    "lpg_colour": 64,
+    "lpg_mode": 0,
+    "output": 0,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Snare",
+   "controls": {
+    "model": 14,
+    "coarse": 0,
+    "fine": 0,
+    "key_track": 0,
+    "harmonics": 70,
+    "timbre": 60,
+    "morph": 50,
+    "fm_env": 0,
+    "timbre_env": 0,
+    "morph_env": 0,
+    "lpg_decay": 64,
+    "lpg_colour": 64,
+    "lpg_mode": 0,
+    "output": 0,
+    "gain": 0
+   }
+  }
+ ]
+}

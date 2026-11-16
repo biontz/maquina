@@ -1,0 +1,67 @@
+{
+ "schema": 1,
+ "uri": "urn:maquina:klang",
+ "name": "Bass",
+ "patches": [
+  {
+   "name": "FM Bass",
+   "controls": {
+    "model": 2,
+    "coarse": -24,
+    "fine": 0,
+    "key_track": 1,
+    "harmonics": 40,
+    "timbre": 50,
+    "morph": 70,
+    "fm_env": 0,
+    "timbre_env": 30,
+    "morph_env": 0,
+    "lpg_decay": 55,
+    "lpg_colour": 40,
+    "lpg_mode": 0,
+    "output": 0,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Fold Bass",
+   "controls": {
+    "model": 1,
+    "coarse": -24,
+    "fine": 0,
+    "key_track": 1,
+    "harmonics": 30,
+    "timbre": 60,
+    "morph": 40,
+    "fm_env": 0,
+    "timbre_env": 25,
+    "morph_env": 0,
+    "lpg_decay": 60,
+    "lpg_colour": 30,
+    "lpg_mode": 0,
+    "output": 0,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Sub Square",
+   "controls": {
+    "model": 0,
+    "coarse": -24,
+    "fine": 0,
+    "key_track": 1,
+    "harmonics": 64,
+    "timbre": 40,
+    "morph": 10,
+    "fm_env": 0,
+    "timbre_env": 0,
+    "morph_env": 0,
+    "lpg_decay": 70,
+    "lpg_colour": 20,
+    "lpg_mode": 1,
+    "output": 0,
+    "gain": 0
+   }
+  }
+ ]
+}

@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: string synth with formant filter
+voice = klong
+name = Formant Voice
+category = FX
+tags = modulated, pitched
+model = Peace Formant
+polyphony = 2
+structure = 50
+brightness = 70
+damping = 100
+position = 40

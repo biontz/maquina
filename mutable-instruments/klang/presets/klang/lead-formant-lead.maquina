@@ -1,0 +1,14 @@
+# Maquina factory preset
+# design: formant oscillator held by the note
+voice = klang
+name = Formant Lead
+category = Lead
+tags = pitched, modulated
+model = Formant
+harmonics = 50
+timbre = 70
+morph = 60
+morph_env = -15
+lpg_decay = 85
+lpg_colour = 80
+lpg_mode = Velocity

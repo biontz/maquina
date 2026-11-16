@@ -1,0 +1,10 @@
+# Maquina factory preset
+# design: inharmonic string, bright pluck
+voice = klang
+name = Pluck String
+category = Pluck
+tags = short, pitched
+model = Inharm String
+harmonics = 20
+timbre = 80
+morph = 70

@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: string synth (easter egg) with chorus, 4 voices
+voice = klong
+name = Peace Pad
+category = Pad
+tags = long, modulated
+model = Peace Chorus
+polyphony = 4
+structure = 40
+brightness = 60
+damping = 110
+position = 60

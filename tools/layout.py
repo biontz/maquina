@@ -4,6 +4,7 @@
   befaco/plethora/        Befaco Noise Plethora
   befaco/oneiroi/         Befaco Oneiroi: oneiroi + oneiroi_fx
   euro-modules/dredrum/   Dredrum
+  mutable-instruments/    Mutable Instruments: klang/ (Plaits), klong/ (Rings: klong + klong_fx)
 
 each with engine/, third_party/, plugins/<plugin>/ and presets/<voice>/.
 """
@@ -16,6 +17,8 @@ DRUM02 = os.path.join(ROOT, "drum02")
 PLETHORA = os.path.join(ROOT, "befaco", "plethora")
 ONEIROI = os.path.join(ROOT, "befaco", "oneiroi")
 DREDRUM = os.path.join(ROOT, "euro-modules", "dredrum")
+KLANG = os.path.join(ROOT, "mutable-instruments", "klang")
+KLONG = os.path.join(ROOT, "mutable-instruments", "klong")
 
 LXR_FW = os.path.join(DRUM02, "third_party", "lxr-firmware")
 
@@ -25,6 +28,8 @@ MODULE_OF = {
     "dredrum": DREDRUM,
     "plethora": PLETHORA,
     "oneiroi": ONEIROI, "oneiroi_fx": ONEIROI,
+    "klang": KLANG,
+    "klong": KLONG, "klong_fx": KLONG,
 }
 
 

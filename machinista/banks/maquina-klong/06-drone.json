@@ -1,0 +1,22 @@
+{
+ "schema": 1,
+ "uri": "urn:maquina:klong",
+ "name": "Drone",
+ "patches": [
+  {
+   "name": "Ensemble Drone",
+   "controls": {
+    "model": 10,
+    "polyphony": 2,
+    "coarse": 0,
+    "fine": 0,
+    "structure": 60,
+    "brightness": 70,
+    "damping": 120,
+    "position": 64,
+    "output": 0,
+    "gain": 0
+   }
+  }
+ ]
+}

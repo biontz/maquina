@@ -167,7 +167,7 @@ const SectionSpec kSections[] = {
       { { "volume", "Volume" }, { "pan", "Pan" }, { "drive", "Drive" }, { "decimation", "Rate" },
         { "vol_input", "Input" }, { "vol_looper", "Looper" }, { "vol_sine", "Sine" }, { "vol_osc2", "Saw / WT" },
         { "mix_filter", "Filter" }, { "mix_resonator", "Reso" }, { "mix_echo", "Echo" },
-        { "mix_ambience", "Ambience" }, { "gain", "Gain" } } },
+        { "mix_ambience", "Ambience" }, { "output", "Output" }, { "gain", "Gain" } } },
     // Key Track: every note triggers; on = the played note sets the pitch
     { "KEY", GraphKind::None, { { "note_pitch", "Track" } } },
     // Maquina Dredrum
@@ -222,6 +222,17 @@ const SectionSpec kSections[] = {
     { "ENVELOPE", GraphKind::None,
       { { "env_attack", "Attack" }, { "env_decay", "Decay" }, { "env_sustain", "Sustain" },
         { "env_release", "Release" }, { "env_drone", "Drone" } } },
+    // Maquina Klang / Klong / Klong FX (+ MIX: Output, Gain)
+    { "MODEL", GraphKind::None,
+      { { "model", "Model" }, { "polyphony", "Poly" }, { "note_source", "Notes" }, { "coarse", "Coarse" },
+        { "fine", "Fine" }, { "key_track", "Track" } } },
+    { "SOUND", GraphKind::None, { { "harmonics", "Harmonics" }, { "timbre", "Timbre" }, { "morph", "Morph" } } },
+    { "ENV MOD", GraphKind::None,
+      { { "fm_env", "> FM" }, { "timbre_env", "> Timbre" }, { "morph_env", "> Morph" } } },
+    { "LPG", GraphKind::None, { { "lpg_decay", "Decay" }, { "lpg_colour", "Colour" }, { "lpg_mode", "Mode" } } },
+    { "RESONATOR", GraphKind::None,
+      { { "structure", "Structure" }, { "brightness", "Brightness" }, { "damping", "Damping" },
+        { "position", "Position" } } },
 };
 
 enum class CtlType { Knob, Select, Toggle };
@@ -343,8 +354,18 @@ Layout makeLayout()
         { "LOOPER", "OSCILLATORS", "MODULATION" },
         { "FILTER", "RESONATOR", "ECHO", "AMBIENCE", "GLOBAL" },
         { "MIX", "ENVELOPE" } };
+    static const char* const kKlangRows[3][5] = {
+        { "MODEL", "SOUND" },
+        { "ENV MOD", "LPG", "MIX" },
+        {} };
+    static const char* const kKlongRows[3][5] = {
+        { "MODEL", "MIX" },
+        { "RESONATOR" },
+        {} };
     const uint8_t v = voiceDef().voice;
-    const char* const (*plan)[5] = maquina::isOneiroi(v)        ? kOneiroiRows
+    const char* const (*plan)[5] = v == maquina::kKlangVoice      ? kKlangRows
+                                   : maquina::isKlong(v)          ? kKlongRows
+                                   : maquina::isOneiroi(v)        ? kOneiroiRows
                                    : v == maquina::kPlethoraVoice ? kPlethoraRows
                                    : v == maquina::kDredrumVoice ? kDredrumRows
                                    : v <= 2                    ? kDrumRows
@@ -684,7 +705,7 @@ protected:
         } else if (!std::strcmp(p.symbol, "env_sustain")) {
             std::snprintf(buf, n, "%.0f %%", maquina::oneiroi::sustainLevel(iv) * 100.0);
         } else if (p.kind == ParamKind::Int) {
-            if (p.offset != 0) std::snprintf(buf, n, "%+d", iv);
+            if (p.offset < 0) std::snprintf(buf, n, "%+d", iv); // bipolar
             else std::snprintf(buf, n, "%d", iv);
         } else if (p.labels && iv >= 0 && iv < p.numLabels) {
             std::snprintf(buf, n, "%s", p.labels[iv]);
@@ -719,6 +740,8 @@ protected:
              voiceDef().voice == maquina::kDredrumVoice    ? "based on Dredrum firmware  \xc2\xb7  unofficial"
              : voiceDef().voice == maquina::kPlethoraVoice ? "based on Befaco Noise Plethora  \xc2\xb7  unofficial"
              : maquina::isOneiroi(voiceDef().voice)        ? "based on Befaco Oneiroi firmware  \xc2\xb7  unofficial"
+             : voiceDef().voice == maquina::kKlangVoice    ? "based on Mutable Instruments Plaits  \xc2\xb7  unofficial"
+             : maquina::isKlong(voiceDef().voice)          ? "based on Mutable Instruments Rings  \xc2\xb7  unofficial"
                                                            : "based on Erica Synths LXR-02 firmware  \xc2\xb7  unofficial",
              nullptr);
 

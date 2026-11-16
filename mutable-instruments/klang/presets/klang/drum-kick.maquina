@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: bass drum model, every note at the same pitch
+voice = klang
+name = Kick
+category = Drum
+tags = punchy, boomy
+model = Bass Drum
+coarse = -24
+key_track = 0
+harmonics = 60
+timbre = 40
+morph = 60

@@ -1,0 +1,14 @@
+# Maquina factory preset
+# design: 2-op FM, the decay envelope opens the index
+voice = klang
+name = FM Bass
+category = Bass
+tags = punchy, pitched
+model = 2-Op FM
+coarse = -24
+harmonics = 40
+timbre = 50
+morph = 70
+timbre_env = 30
+lpg_decay = 55
+lpg_colour = 40

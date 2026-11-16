@@ -21,6 +21,8 @@ static std::string presetDir(const std::string& voice)
     if (voice == "dredrum") module = "euro-modules/dredrum";
     else if (voice == "plethora") module = "befaco/plethora";
     else if (voice == "oneiroi" || voice == "oneiroi_fx") module = "befaco/oneiroi";
+    else if (voice == "klang") module = "mutable-instruments/klang";
+    else if (voice == "klong" || voice == "klong_fx") module = "mutable-instruments/klong";
     return module + "/presets/" + voice;
 }
 

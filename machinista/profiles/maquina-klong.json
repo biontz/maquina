@@ -1,0 +1,218 @@
+{
+  "schema": 1,
+  "id": "maquina-klong",
+  "uri": "urn:maquina:klong",
+  "title": "Maquina Klong",
+  "provider": "parameter-bank",
+  "bank_format": "json",
+  "extensions": [
+    ".json"
+  ],
+  "parameters": [
+    {
+      "index": 5,
+      "symbol": "model",
+      "name": "MODEL",
+      "default": 0,
+      "min": 0,
+      "max": 11,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "MODAL"
+        ],
+        [
+          1,
+          "SYMPATHETIC"
+        ],
+        [
+          2,
+          "INHARM STRING"
+        ],
+        [
+          3,
+          "FM VOICE"
+        ],
+        [
+          4,
+          "SYMPATH QUANT"
+        ],
+        [
+          5,
+          "STRING + VERB"
+        ],
+        [
+          6,
+          "PEACE FORMANT"
+        ],
+        [
+          7,
+          "PEACE CHORUS"
+        ],
+        [
+          8,
+          "PEACE REVERB"
+        ],
+        [
+          9,
+          "PEACE FORM 2"
+        ],
+        [
+          10,
+          "PEACE ENSEMBLE"
+        ],
+        [
+          11,
+          "PEACE REV 2"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 6,
+      "symbol": "polyphony",
+      "name": "POLY",
+      "default": 1,
+      "min": 1,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 7,
+      "symbol": "coarse",
+      "name": "COARSE",
+      "default": 0,
+      "min": -48,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 8,
+      "symbol": "fine",
+      "name": "FINE",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 9,
+      "symbol": "structure",
+      "name": "STRUCTURE",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 10,
+      "symbol": "brightness",
+      "name": "BRIGHT",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 11,
+      "symbol": "damping",
+      "name": "DAMPING",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 12,
+      "symbol": "position",
+      "name": "POSITION",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 13,
+      "symbol": "output",
+      "name": "OUTPUT",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "ODD / EVEN"
+        ],
+        [
+          1,
+          "MONO"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 14,
+      "symbol": "gain",
+      "name": "GAIN",
+      "default": 0,
+      "min": -24,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    }
+  ],
+  "pages": [
+    {
+      "title": "RESONATOR",
+      "controls": [
+        "@bank",
+        "@patch",
+        "model",
+        "polyphony",
+        "structure",
+        "brightness",
+        "damping",
+        "position"
+      ]
+    },
+    {
+      "title": "TUNE / MIX",
+      "controls": [
+        "coarse",
+        "fine",
+        "output",
+        "gain",
+        "structure",
+        "brightness",
+        "damping",
+        "position"
+      ]
+    }
+  ],
+  "quirks": [
+    "Resonator based on Mutable Instruments Rings, played by its internal exciter: each note strums.",
+    "POLY 1-4 voices; notes closer than 10 ms are strummed 10 ms apart (the module's strummer).",
+    "MODEL PEACE ...: the string synth easter egg. Strings ring out: DAMPING sets how long."
+  ]
+}

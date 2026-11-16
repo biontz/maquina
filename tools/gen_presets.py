@@ -28,7 +28,8 @@ TABLES = os.path.join(COMMON, "VoiceTables.generated.hpp")
 PRESETS_HPP = os.path.join(COMMON, "Presets.hpp")
 RANDOM_HPP = os.path.join(COMMON, "Randomizer.hpp")
 OUT_HPP = os.path.join(COMMON, "FactoryPresets.generated.hpp")
-VOICES = ["kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora", "oneiroi", "oneiroi_fx"]
+VOICES = ["kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora", "oneiroi", "oneiroi_fx",
+          "klang", "klong", "klong_fx"]
 
 
 def c_str(s):

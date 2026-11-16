@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: modal, low structure, damped
+voice = klong
+name = Marimba
+category = Mallet
+tags = short, pitched
+model = Modal
+polyphony = 2
+structure = 30
+brightness = 50
+damping = 55
+position = 60

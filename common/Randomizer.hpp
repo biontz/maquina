@@ -87,6 +87,14 @@ static const RandGroup kRandGroups[] = {
       { "vol_input", "vol_looper", "vol_sine", "vol_osc2", "mix_filter", "mix_resonator", "mix_echo",
         "mix_ambience" } },
     { "oenv", "ENV", true, 0, 100, { "env_attack", "env_decay", "env_sustain", "env_release", "env_drone" } },
+    // Maquina Klang / Klong / Klong FX (Model and Tune are shared by both)
+    { "mmodel", "MODEL", false, 0, 100, { "model" } },
+    { "ksound", "SOUND", false, 0, 100, { "harmonics", "timbre", "morph" } },
+    { "kenv", "ENV MOD", false, 0, 100, { "fm_env", "timbre_env", "morph_env" } },
+    { "klpg", "LPG", false, 0, 100, { "lpg_decay", "lpg_colour", "lpg_mode" } },
+    { "rres", "RESONATOR", false, 0, 100, { "structure", "brightness", "damping", "position" } },
+    { "rpoly", "POLY", true, 0, 100, { "polyphony" } },
+    { "mtune", "TUNE", true, 0, 100, { "coarse", "fine", "key_track" } },
 };
 constexpr int kNumRandGroups = int(sizeof(kRandGroups) / sizeof(kRandGroups[0]));
 

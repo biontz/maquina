@@ -1,0 +1,11 @@
+# Maquina factory preset
+# design: string, dark and short
+voice = klong
+name = Nylon
+category = Pluck
+tags = soft, pitched
+model = Inharm String
+structure = 0
+brightness = 60
+damping = 60
+position = 30

@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: string synth with ensemble
+voice = klong
+name = Ensemble Drone
+category = Drone
+tags = long, soft
+model = Peace Ensemble
+polyphony = 2
+structure = 60
+brightness = 70
+damping = 120
+position = 64

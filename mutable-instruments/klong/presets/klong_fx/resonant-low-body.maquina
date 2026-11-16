@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: low modal body
+voice = klong_fx
+name = Low Body
+category = Resonant
+tags = dark, boomy
+model = Modal
+coarse = -24
+structure = 35
+brightness = 55
+damping = 95
+position = 50

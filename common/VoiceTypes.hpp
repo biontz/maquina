@@ -35,9 +35,15 @@ constexpr uint8_t kDredrumVoice = 16;  // Maquina Dredrum (euro-modules/dredrum/
 constexpr uint8_t kPlethoraVoice = 17; // Maquina Plethora (befaco/plethora/engine/)
 constexpr uint8_t kOneiroiVoice = 18;   // Maquina Oneiroi (befaco/oneiroi/engine/)
 constexpr uint8_t kOneiroiFxVoice = 19; // Maquina Oneiroi FX (befaco/oneiroi/engine/, no oscillators)
+constexpr uint8_t kKlangVoice = 20;     // Maquina Klang (mutable-instruments/klang/engine/, Plaits)
+constexpr uint8_t kKlongVoice = 21;     // Maquina Klong (mutable-instruments/klong/engine/, Rings)
+constexpr uint8_t kKlongFxVoice = 22;   // Maquina Klong FX (the same, excited by the audio input)
 // the LXR-02 voices (EngineHost); everything else is a Maquina port of another device
 inline bool isLxrVoice(uint8_t voice) { return voice < kDredrumVoice; }
 inline bool isOneiroi(uint8_t voice) { return voice == kOneiroiVoice || voice == kOneiroiFxVoice; }
+inline bool isKlong(uint8_t voice) { return voice == kKlongVoice || voice == kKlongFxVoice; }
+// the Mutable Instruments ports (Maquina Klang, Klong, Klong FX)
+inline bool isMutable(uint8_t voice) { return voice == kKlangVoice || isKlong(voice); }
 // voices built from 3 channels/oscillators with their own random ROLL/RND
 // switches; no extra (LXR) parameters
 inline bool hasChannels(uint8_t voice) { return voice == kDredrumVoice || voice == kPlethoraVoice; }
@@ -45,7 +51,7 @@ inline bool hasChannels(uint8_t voice) { return voice == kDredrumVoice || voice 
 struct VoiceDef {
     const char* id;
     const char* name;
-    uint8_t voice;        // engine voice slot (LxrVoice), or kDredrumVoice ... kOneiroiFxVoice
+    uint8_t voice;        // engine voice slot (LxrVoice), or kDredrumVoice ... kKlongFxVoice
     const VoiceParam* params;
     uint32_t numParams;
 };

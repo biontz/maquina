@@ -1,0 +1,67 @@
+{
+ "schema": 1,
+ "uri": "urn:maquina:klang",
+ "name": "FX",
+ "patches": [
+  {
+   "name": "Speech",
+   "controls": {
+    "model": 7,
+    "coarse": 0,
+    "fine": 0,
+    "key_track": 1,
+    "harmonics": 90,
+    "timbre": 64,
+    "morph": 30,
+    "fm_env": 0,
+    "timbre_env": 0,
+    "morph_env": 0,
+    "lpg_decay": 70,
+    "lpg_colour": 90,
+    "lpg_mode": 0,
+    "output": 0,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Swarm",
+   "controls": {
+    "model": 8,
+    "coarse": 0,
+    "fine": 0,
+    "key_track": 1,
+    "harmonics": 80,
+    "timbre": 50,
+    "morph": 70,
+    "fm_env": 0,
+    "timbre_env": 0,
+    "morph_env": 0,
+    "lpg_decay": 120,
+    "lpg_colour": 100,
+    "lpg_mode": 1,
+    "output": 0,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Terrain",
+   "controls": {
+    "model": 21,
+    "coarse": 0,
+    "fine": 0,
+    "key_track": 1,
+    "harmonics": 40,
+    "timbre": 90,
+    "morph": 64,
+    "fm_env": 0,
+    "timbre_env": 0,
+    "morph_env": 40,
+    "lpg_decay": 75,
+    "lpg_colour": 80,
+    "lpg_mode": 0,
+    "output": 0,
+    "gain": 0
+   }
+  }
+ ]
+}

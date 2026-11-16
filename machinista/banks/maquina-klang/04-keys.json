@@ -1,0 +1,47 @@
+{
+ "schema": 1,
+ "uri": "urn:maquina:klang",
+ "name": "Keys",
+ "patches": [
+  {
+   "name": "DX Bells",
+   "controls": {
+    "model": 19,
+    "coarse": 0,
+    "fine": 0,
+    "key_track": 1,
+    "harmonics": 90,
+    "timbre": 64,
+    "morph": 64,
+    "fm_env": 0,
+    "timbre_env": 0,
+    "morph_env": 0,
+    "lpg_decay": 100,
+    "lpg_colour": 110,
+    "lpg_mode": 0,
+    "output": 0,
+    "gain": 0
+   }
+  },
+  {
+   "name": "DX Keys",
+   "controls": {
+    "model": 18,
+    "coarse": 0,
+    "fine": 0,
+    "key_track": 1,
+    "harmonics": 20,
+    "timbre": 64,
+    "morph": 64,
+    "fm_env": 0,
+    "timbre_env": 0,
+    "morph_env": 0,
+    "lpg_decay": 90,
+    "lpg_colour": 100,
+    "lpg_mode": 1,
+    "output": 0,
+    "gain": 0
+   }
+  }
+ ]
+}

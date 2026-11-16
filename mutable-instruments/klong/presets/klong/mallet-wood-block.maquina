@@ -1,0 +1,11 @@
+# Maquina factory preset
+# design: modal, very damped
+voice = klong
+name = Wood Block
+category = Mallet
+tags = short, punchy
+model = Modal
+structure = 10
+brightness = 40
+damping = 30
+position = 80

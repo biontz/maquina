@@ -1,0 +1,353 @@
+{
+  "schema": 1,
+  "id": "maquina-klang",
+  "uri": "urn:maquina:klang",
+  "title": "Maquina Klang",
+  "provider": "parameter-bank",
+  "bank_format": "json",
+  "extensions": [
+    ".json"
+  ],
+  "parameters": [
+    {
+      "index": 5,
+      "symbol": "model",
+      "name": "MODEL",
+      "default": 0,
+      "min": 0,
+      "max": 23,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "VIRTUAL ANALOG"
+        ],
+        [
+          1,
+          "WAVESHAPING"
+        ],
+        [
+          2,
+          "2-OP FM"
+        ],
+        [
+          3,
+          "FORMANT"
+        ],
+        [
+          4,
+          "HARMONIC"
+        ],
+        [
+          5,
+          "WAVETABLE"
+        ],
+        [
+          6,
+          "CHORDS"
+        ],
+        [
+          7,
+          "SPEECH"
+        ],
+        [
+          8,
+          "SWARM"
+        ],
+        [
+          9,
+          "FILTERED NOISE"
+        ],
+        [
+          10,
+          "PARTICLE"
+        ],
+        [
+          11,
+          "INHARM STRING"
+        ],
+        [
+          12,
+          "MODAL"
+        ],
+        [
+          13,
+          "BASS DRUM"
+        ],
+        [
+          14,
+          "SNARE DRUM"
+        ],
+        [
+          15,
+          "HI-HAT"
+        ],
+        [
+          16,
+          "VA + VCF"
+        ],
+        [
+          17,
+          "PHASE DIST"
+        ],
+        [
+          18,
+          "6-OP FM 1"
+        ],
+        [
+          19,
+          "6-OP FM 2"
+        ],
+        [
+          20,
+          "6-OP FM 3"
+        ],
+        [
+          21,
+          "WAVE TERRAIN"
+        ],
+        [
+          22,
+          "STRING MACH"
+        ],
+        [
+          23,
+          "CHIPTUNE"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 6,
+      "symbol": "coarse",
+      "name": "COARSE",
+      "default": 0,
+      "min": -36,
+      "max": 36,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 7,
+      "symbol": "fine",
+      "name": "FINE",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 8,
+      "symbol": "key_track",
+      "name": "KEY TRACK",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    },
+    {
+      "index": 9,
+      "symbol": "harmonics",
+      "name": "HARMONICS",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 10,
+      "symbol": "timbre",
+      "name": "TIMBRE",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 11,
+      "symbol": "morph",
+      "name": "MORPH",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 12,
+      "symbol": "fm_env",
+      "name": "ENV > FM",
+      "default": 0,
+      "min": -63,
+      "max": 63,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 13,
+      "symbol": "timbre_env",
+      "name": "ENV > TMB",
+      "default": 0,
+      "min": -63,
+      "max": 63,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 14,
+      "symbol": "morph_env",
+      "name": "ENV > MRP",
+      "default": 0,
+      "min": -63,
+      "max": 63,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 15,
+      "symbol": "lpg_decay",
+      "name": "DECAY",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 16,
+      "symbol": "lpg_colour",
+      "name": "COLOUR",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 17,
+      "symbol": "lpg_mode",
+      "name": "LPG MODE",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "PING"
+        ],
+        [
+          1,
+          "VELOCITY"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 18,
+      "symbol": "output",
+      "name": "OUTPUT",
+      "default": 0,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OUT"
+        ],
+        [
+          1,
+          "AUX"
+        ],
+        [
+          2,
+          "OUT + AUX"
+        ],
+        [
+          3,
+          "MIX"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 19,
+      "symbol": "gain",
+      "name": "GAIN",
+      "default": 0,
+      "min": -24,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    }
+  ],
+  "pages": [
+    {
+      "title": "SOUND",
+      "controls": [
+        "@bank",
+        "@patch",
+        "model",
+        "harmonics",
+        "timbre",
+        "morph",
+        "lpg_decay",
+        "lpg_colour"
+      ]
+    },
+    {
+      "title": "ENV / TUNE",
+      "controls": [
+        "fm_env",
+        "timbre_env",
+        "morph_env",
+        "lpg_mode",
+        "coarse",
+        "fine",
+        "key_track",
+        "gain"
+      ]
+    },
+    {
+      "title": "MIX",
+      "controls": [
+        "output",
+        "gain",
+        "model",
+        "harmonics",
+        "timbre",
+        "morph",
+        "lpg_decay",
+        "coarse"
+      ]
+    }
+  ],
+  "quirks": [
+    "Macro oscillator based on Mutable Instruments Plaits: 24 models (MODEL), HARMONICS/TIMBRE/MORPH.",
+    "Notes ping the low-pass gate (LPG MODE VELOCITY: velocity opens it while the note is held).",
+    "ENV > FM/TMB/MRP: the internal decay envelope's amount, as the module's attenuverters."
+  ]
+}

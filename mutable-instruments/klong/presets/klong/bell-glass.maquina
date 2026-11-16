@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: modal, high structure: glassy partials
+voice = klong
+name = Glass
+category = Bell
+tags = metallic, bright
+model = Modal
+polyphony = 2
+structure = 110
+brightness = 110
+damping = 100
+position = 20

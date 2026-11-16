@@ -1,0 +1,11 @@
+# Maquina factory preset
+# design: hi-hat model, every note at the same pitch
+voice = klang
+name = Hat
+category = Drum
+tags = short, metallic
+model = Hi-Hat
+key_track = 0
+harmonics = 80
+timbre = 90
+morph = 25

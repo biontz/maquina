@@ -1,6 +1,6 @@
 # Maquina
 
-Nine instrument and effect plugins, each built from the open-source code of a
+Twelve instrument and effect plugins, each built from the open-source code of a
 hardware instrument:
 
 * **Kick, Tom, Snare, Cymbal, HiHat**: the drum voices of the Erica
@@ -18,15 +18,25 @@ hardware instrument:
   ([Befaco/Oneiroi](https://github.com/Befaco/Oneiroi)). Oneiroi is the
   whole voice (oscillators, looper, filter, resonator, echo, reverb) played
   by MIDI notes; Oneiroi FX is its looper and effects on an audio track.
+* **Klang**: based on the Mutable Instruments Plaits macro oscillator by
+  Émilie Gillet ([pichenettes/eurorack](https://github.com/pichenettes/eurorack)):
+  24 synthesis models (firmware 1.2) and its low-pass gate.
+* **Klong** and **Klong FX**: based on the Mutable Instruments Rings
+  resonator: modal, string and FM resonators (and the string-synth easter
+  egg). Klong is played by MIDI notes with its internal exciter; Klong FX
+  puts the resonator on an audio track, excited by the input.
 
 Formats: **LV2, CLAP, VST3** and a JACK standalone (via [DPF](https://github.com/DISTRHO/DPF)).
 Platforms: Linux x86_64 and Raspberry Pi OS 64-bit (aarch64); macOS/Windows later.
 
 > Unofficial. Not affiliated with, endorsed by or supported by Erica Synths,
-> Befaco, VCV, Rebel Technology or the Dredrum and Oneiroi authors. "Erica
-> Synths", "LXR" and "LXR-02" are trademarks of Erica Synths, "Befaco",
-> "Noise Plethora" and "Oneiroi" belong to Befaco;
+> Befaco, VCV, Rebel Technology, Mutable Instruments or the Dredrum and
+> Oneiroi authors. "Erica Synths", "LXR" and "LXR-02" are trademarks of Erica
+> Synths, "Befaco", "Noise Plethora" and "Oneiroi" belong to Befaco,
+> "Mutable Instruments" is a registered trademark of Mutable Instruments;
 > these names are used here only to say what each sound engine is based on.
+> As Mutable Instruments asks, the plugins built from its code have their own
+> names (Klang, Klong) rather than the modules'.
 
 ## How it stays close to the hardware
 
@@ -150,6 +160,31 @@ Not reproducible: the ARM CMSIS maths of the module's processor (the C
 library is used), so the output matches the module's engine, not its DAC
 bit for bit.
 
+### Klang and Klong
+
+The engines are Mutable Instruments' own DSP code, vendored unmodified
+(`mutable-instruments/third_party/eurorack`: Plaits firmware 1.2 and Rings,
+with stmlib; see its `MAQUINA.md`) and compiled with `TEST` defined, the
+portable code path of Mutable's own desktop tests and of VCV Rack:
+
+* **Same engine, same main loop.** `KlangHost` / `KlongHost` call the code as
+  the modules' `FillBuffer()` does: Plaits' `Voice::Render` in 12-frame
+  blocks, Rings' strummer then `Part` (or the string synth) in 24-frame
+  blocks, with the input noise gate and the 16-bit output clipping.
+  `tools/mutable_test` renders every Plaits model, every Rings model at
+  several polyphonies and the FX's audio path, both through the hosts and
+  through the module code directly, and requires bit-identical output.
+* **Same rate.** Rings at 48 kHz; Plaits at 47872.34 Hz, the rate its DAC
+  really runs at and the one its code is tuned for (VCV Rack runs it at
+  48 kHz, 4.6 cents sharp). Float resamplers convert from and to the host
+  rate.
+* **Same controls.** Knobs are smoothed with the modules' pot coefficients,
+  Rings' chord follows STRUCTURE with its hysteresis, Plaits' V/OCT gets its
+  pitch low-pass. The modules' objects live in zeroed memory, as in their
+  `.bss`.
+* **Not reproduced:** the Arm-specific instructions stmlib uses on the
+  modules (saturation, square root), replaced by its portable C++.
+
 ## Using the plugins
 
 The drum and percussion voices (LXR, Dredrum, Plethora) first; Oneiroi has
@@ -244,6 +279,48 @@ its own section below.
 * **Oneiroi FX** has no oscillators and no envelope; Input sets the dry
   input level, the effects' dry/wet faders are in MIX.
 * Latency (0.7 ms at 48 kHz, ~2 ms at 44.1 kHz) is reported to the host.
+
+**Klang**
+
+* **Notes** set the pitch (V/OCT around C4: with Coarse and Fine at 0, note
+  60 plays C4) and trigger: the module's TRIGGER input is patched, so a note
+  pings the low-pass gate and starts the internal decay envelope. Mono, last
+  note wins; a new note while one is held retriggers, going back to a held
+  note is legato.
+* **Key Track** Off: every note plays the set pitch (drum models).
+* **LPG Mode** Ping (default): the module with only TRIGGER patched; notes
+  ping the LPG, Decay sets its length. Velocity: the velocity goes to the
+  LEVEL input while the note is held (the LPG opens with the velocity and
+  closes on note-off), and drives the accent of the drum models.
+* **Env > FM / Timbre / Morph:** the attenuverters. With nothing patched into
+  those CV inputs they set how much the internal decay envelope moves
+  frequency, Timbre and Morph, as on the module.
+* The models that make their own envelope (strings, modal, drums, 6-op FM
+  envelopes) bypass the LPG, as on the module.
+* **Output:** Out (both channels), Aux, Out + Aux (left / right) or their mix.
+* **Model** lists the original 16 models first, then the 8 of firmware 1.2.
+  The 6-op FM models play the module's built-in DX7 banks (Harmonics picks
+  the patch); loading your own SysEx banks is not supported.
+
+**Klong / Klong FX**
+
+* **Klong:** the internal exciter. Every note strums a new voice at its pitch
+  (V/OCT around C4); note-offs do nothing, the strings ring out and Damping
+  sets how long. **Poly** 1-4 voices (3 is the module's hidden setting).
+* The module's strummer ignores strums closer than 10 ms; Klong keeps such
+  notes and strums them 10 ms apart, so a chord fills the polyphony.
+* **Klong FX:** the input (left + right) excites the resonator, through the
+  module's noise gate. **Notes** Internal: as the module with nothing in
+  V/OCT and STRUM: the input's onsets strum, Coarse / Fine set the pitch.
+  MIDI: notes on the FX's MIDI input set the pitch and strum.
+* **Model:** the 6 resonator models, then the string synth easter egg
+  ("Disastrous Peace") with its 6 effects (Peace Formant … Peace Rev 2).
+  The chord of the sympathetic-quantized model and of the string synth
+  follows Structure, as on the module.
+* **Output:** Odd / Even (left / right, the module's two outputs) or Mono
+  (both mixed, as with one jack on the module).
+* No FM / CV amounts: modulate any parameter with the host instead.
+* Latency (Klong FX, 48 kHz: 26 frames) is reported to the host.
 
 ### Parameters
 
@@ -390,6 +467,34 @@ rows, plus Input and Source.
 | Sync | `sync` | Global › Sync | Off, Beat, Bar, 4 Bars (Maquina; not in presets) |
 | Gain | `gain` | Mix › Gain | Output gain in dB (Maquina, not in presets) -24..12 |
 
+**Klang** (14 + Gain parameters). Knobs are 0..127 over the module's knob range.
+
+| Host name | Symbol | Editor | Range |
+|---|---|---|---|
+| Model | `model` | Model › Model | Virtual Analog … Hi-Hat (the original 16), VA + VCF … Chiptune (firmware 1.2) |
+| Coarse | `coarse` | Model › Coarse | -36..36 semitones |
+| Fine | `fine` | Model › Fine | -100..100 cents |
+| Key Track | `key_track` | Model › Track | Off / On (On: note 60 = C4) |
+| Harmonics, Timbre, Morph | `harmonics`, `timbre`, `morph` | Sound › Harmonics, Timbre, Morph | 0..127 |
+| Env > FM, Env > Tmb, Env > Mrp | `fm_env`, `timbre_env`, `morph_env` | Env Mod › > FM, > Timbre, > Morph | -63..63 (the attenuverters) |
+| Decay, Colour | `lpg_decay`, `lpg_colour` | LPG › Decay, Colour | 0..127 |
+| LPG Mode | `lpg_mode` | LPG › Mode | Ping, Velocity (Maquina) |
+| Output | `output` | Mix › Output | Out, Aux, Out + Aux, Mix (Maquina, not in presets) |
+| Gain | `gain` | Mix › Gain | Output gain in dB (Maquina, not in presets) -24..12 |
+
+**Klong / Klong FX** (9 / 10 + Gain parameters).
+
+| Host name | Symbol | Editor | Range |
+|---|---|---|---|
+| Model | `model` | Model › Model | Modal, Sympathetic, Inharm String, FM Voice, Sympath Quant, String + Verb, Peace Formant, Peace Chorus, Peace Reverb, Peace Form 2, Peace Ensemble, Peace Rev 2 |
+| Poly | `polyphony` | Model › Poly | 1..4 |
+| Notes | `note_source` | Model › Notes | Internal, MIDI (FX only; not in presets) |
+| Coarse | `coarse` | Model › Coarse | -48..12 semitones (the FREQUENCY knob's range) |
+| Fine | `fine` | Model › Fine | -100..100 cents |
+| Structure, Bright, Damping, Position | `structure`, `brightness`, `damping`, `position` | Resonator › Structure, Brightness, Damping, Position | 0..127 |
+| Output | `output` | Mix › Output | Odd / Even, Mono (Maquina, not in presets) |
+| Gain | `gain` | Mix › Gain | Output gain in dB (Maquina, not in presets) -24..12 |
+
 #### Remote-control pages (CLAP)
 
 Bitwig and other CLAP hosts get these pages of 8 knobs; Machinista uses the
@@ -441,6 +546,13 @@ two knobs on the OSCILLATOR page.
 |  | FILTER / RESO | (as Oneiroi) |
 |  | ECHO / AMBIENCE | (as Oneiroi) |
 |  | MOD / MIX | Mod Level · Mod Speed · Mod Type · Filter · Resonator · Echo · Ambience · Gain |
+| Klang | SOUND | Coarse · Fine · Model · Harmonics · Timbre · Morph · Decay · Colour |
+|  | ENV / TUNE | Env > FM · Env > Tmb · Env > Mrp · LPG Mode · Coarse · Fine · Key Track · Gain |
+|  | MIX | Output · Gain · Model · Harmonics · Timbre · Morph · Decay · Coarse |
+| Klong | RESONATOR | Coarse · Fine · Model · Poly · Structure · Bright · Damping · Position |
+|  | TUNE / MIX | Coarse · Fine · Output · Gain · Structure · Bright · Damping · Position |
+| Klong FX | RESONATOR | Coarse · Notes · Model · Poly · Structure · Bright · Damping · Position |
+|  | TUNE / MIX | Coarse · Fine · Notes · Output · Gain · Structure · Damping · Position |
 
 On Machinista, Plethora has channel A only (pages A and A ENV, 12 parameters):
 B and C stay at Level 0, so they cost no CPU on the Pi.
@@ -553,7 +665,8 @@ Maquina Plethora's Machinista profile has channel A only, so its banks hold
 only the factory presets that use channel A alone.
 
 Maquina Oneiroi has a Machinista profile (all parameters, 6 pages); Oneiroi
-FX does not (Machinista hosts instruments). Not yet measured on a Pi: one
+FX does not (Machinista hosts instruments). Klang (3 pages) and Klong
+(2 pages) have profiles with all parameters; Klong FX does not. Not yet measured on a Pi: one
 Oneiroi instance needs about 3 % of one x86 laptop core.
 
 ## Layout
@@ -579,10 +692,16 @@ euro-modules/
   dredrum/                  Dredrum
     engine/                 engine ported to portable C (bit-exact), DredrumHost
     third_party/dredrum/    Dredrum firmware (trig + gate), unmodified (GPL-3.0-or-later)
+mutable-instruments/        Mutable Instruments (MIT code)
+  klang/                    Klang (Plaits): engine/ KlangHost, plugins/klang, presets/klang
+  klong/                    Klong + Klong FX (Rings): engine/ KlongHost, plugins/klong(-fx), presets/klong(_fx)
+  third_party/eurorack/     Plaits + Rings DSP code and stmlib, unmodified (MIT; MAQUINA.md),
+                            built as libklang.a / libklong.a (Makefile, eurorack.mk)
 common/                     shared by all plugins: DPF plugin, editor, randomizer, presets, resamplers,
                             generated tables, plugin.mk, paths.mk (where everything lives)
 tools/                      generators, tests, aarch64 sysroot, dredrum_flash + dredrum_ref (AVR reference),
-                            oneiroi_ref (engine fidelity) + oneiroi_test (behaviour, preset measuring)
+                            oneiroi_ref (engine fidelity) + oneiroi_test (behaviour, preset measuring),
+                            mutable_test (Klang/Klong engine fidelity + behaviour)
 machinista/                 Machinista profiles + layout
 dpf/                        DPF submodule
 patches/dpf/                local DPF fixes (CLAP latency sync, CLAP remote-controls), applied by `make dpf-patches`
@@ -604,6 +723,7 @@ Other included code, all compatible with GPL-3.0-only:
 | `befaco/plethora/third_party/noise-plethora/src/noise-plethora/teensy` (from the Teensy Audio library) | Paul Stoffregen and others | MIT |
 | `befaco/oneiroi/third_party/oneiroi`, `befaco/oneiroi/engine/OneiroiCore.h` | Roberto Noris (Befaco Oneiroi) | GPL-3.0-or-later |
 | `befaco/oneiroi/third_party/owlprogram` (OwlProgram LibSource) | Rebel Technology and contributors | GPL-3.0 (`fastlog.c` GPL-2.0-or-later, `fastpow.c` BSD-style) |
+| `mutable-instruments/third_party/eurorack` (Plaits, Rings, stmlib) | Émilie Gillet (Mutable Instruments) | MIT |
 | `dpf` | DISTRHO | ISC |
 
 Befaco's own Noise Plethora firmware framework is licensed CC BY-NC-SA and is

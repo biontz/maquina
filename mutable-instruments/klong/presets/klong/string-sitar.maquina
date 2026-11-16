@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: sympathetic strings ringing along
+voice = klong
+name = Sitar
+category = String
+tags = metallic, long
+model = Sympathetic
+polyphony = 2
+structure = 80
+brightness = 90
+damping = 95
+position = 40

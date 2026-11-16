@@ -1,0 +1,37 @@
+{
+ "schema": 1,
+ "uri": "urn:maquina:klong",
+ "name": "FX",
+ "patches": [
+  {
+   "name": "FM Bell",
+   "controls": {
+    "model": 3,
+    "polyphony": 1,
+    "coarse": 0,
+    "fine": 0,
+    "structure": 70,
+    "brightness": 80,
+    "damping": 80,
+    "position": 50,
+    "output": 0,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Formant Voice",
+   "controls": {
+    "model": 6,
+    "polyphony": 2,
+    "coarse": 0,
+    "fine": 0,
+    "structure": 50,
+    "brightness": 70,
+    "damping": 100,
+    "position": 40,
+    "output": 0,
+    "gain": 0
+   }
+  }
+ ]
+}

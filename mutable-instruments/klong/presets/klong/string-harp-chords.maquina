@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: quantized sympathetic strings, 4 voices
+voice = klong
+name = Harp Chords
+category = String
+tags = long, pitched
+model = Sympath Quant
+polyphony = 4
+structure = 50
+brightness = 75
+damping = 90
+position = 50

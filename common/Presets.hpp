@@ -52,6 +52,9 @@ static const VoiceCategories kPresetCategories[] = {
     { "plethora", { "Noise", "Metallic", "Glitch", "Tonal", "Perc", "Drone", "FX" } },
     { "oneiroi", { "Pad", "Drone", "Texture", "Lead", "Noise", "FX" } },
     { "oneiroi_fx", { "Space", "Echo", "Loop", "Resonant", "Filter", "Noise" } },
+    { "klang", { "Bass", "Lead", "Pluck", "Keys", "Pad", "Chord", "Drum", "Noise", "FX" } },
+    { "klong", { "Bell", "Pluck", "String", "Mallet", "Pad", "Drone", "FX" } },
+    { "klong_fx", { "Resonant", "Strings", "Bells", "Space", "Drone", "FX" } },
 };
 static const char* const kPresetTags[] = { "short", "long", "punchy", "boomy", "soft", "bright", "dark",
                                            "clean", "dirty", "metallic", "noisy", "pitched", "lo-fi",

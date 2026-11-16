@@ -1,0 +1,13 @@
+# Maquina factory preset
+# design: chord model, held by the note
+voice = klang
+name = Minor Chord
+category = Chord
+tags = pitched, clean
+model = Chords
+harmonics = 40
+timbre = 50
+morph = 60
+lpg_decay = 100
+lpg_colour = 90
+lpg_mode = Velocity

@@ -22,6 +22,7 @@ presets:
 
 engine:
 	$(MAKE) -C drum02/engine
+	$(MAKE) -C mutable-instruments
 
 # local fixes to the DPF submodule (patches/dpf/*.patch), applied once;
 # a patch that is already applied is skipped
@@ -46,6 +47,13 @@ dpf/utils/lv2_ttl_generator:
 
 # Maquina Oneiroi test tools: the vendored engine + OWL library (see common/plugin.mk)
 ONEIROI_FLAGS := -O2 -std=gnu++17 -fno-strict-aliasing -w $(ONEIROI_INCLUDES) $(MAQUINA_INCLUDES)
+# Maquina Klang / Klong test tool: both hosts + the Mutable libraries (ENGINE_DIR: per arch)
+MUTABLE_TEST_SRCS := tools/mutable_test/mutable_test.cpp $(KLANG_DIR)/plugins/klang/Engine.cpp \
+	$(KLONG_DIR)/plugins/klong/Engine.cpp
+MUTABLE_TEST_FLAGS = -O2 -std=gnu++17 -DTEST -w $(EURORACK_INCLUDES) $(MAQUINA_INCLUDES) $(MUTABLE_TEST_SRCS) \
+	$(ENGINE_DIR)/libklang.a $(ENGINE_DIR)/libklong.a
+tools: ENGINE_DIR := build/engine
+test-aarch64: ENGINE_DIR := build/engine-aarch64
 
 tools: engine
 	$(MAKE) -C tools/render_ref
@@ -60,18 +68,22 @@ tools: engine
 	$(CXX) -O2 -std=gnu++17 $(MAQUINA_INCLUDES) $(PLETHORA_INCLUDES) \
 		tools/preset_measure/preset_measure.cpp drum02/engine/EngineHost.cpp build/engine/libmaquinaengine.a \
 		euro-modules/dredrum/engine/DredrumHost.cpp -x c++ euro-modules/dredrum/engine/dredrum_core.c -x none \
-		befaco/plethora/plugins/plethora/Engine.cpp -lm -o build/tools/preset_measure
+		befaco/plethora/plugins/plethora/Engine.cpp $(EURORACK_INCLUDES) $(KLANG_DIR)/plugins/klang/Engine.cpp \
+		$(KLONG_DIR)/plugins/klong/Engine.cpp build/engine/libklang.a build/engine/libklong.a \
+		-lm -o build/tools/preset_measure
 	$(CC) -O1 -std=gnu11 -Idpf/distrho/src tools/clap_latency_check/clap_latency_check.c \
 		-ldl -o build/tools/clap_latency_check
 	$(CC) -O1 -std=gnu11 -Idpf/distrho/src tools/clap_remote_check/clap_remote_check.c \
 		-ldl -o build/tools/clap_remote_check
 	$(CXX) $(ONEIROI_FLAGS) tools/oneiroi_ref/oneiroi_ref.cpp -o build/tools/oneiroi_ref
 	$(CXX) $(ONEIROI_FLAGS) tools/oneiroi_test/oneiroi_test.cpp -o build/tools/oneiroi_test
+	$(CXX) $(MUTABLE_TEST_FLAGS) -o build/tools/mutable_test
 
 # engine fidelity + isolation, state completeness, resampler quality, GUI
 # defaults, randomizer rules, LV2 validation, every plugin rendered through a real
 # LV2 host, CLAP state restore + activation without restart requests / latency-change reports,
-# the CLAP remote-controls pages, and Maquina Oneiroi's engine fidelity + behaviour
+# the CLAP remote-controls pages, and the engine fidelity + behaviour of Maquina
+# Oneiroi, Klang and Klong
 test: all tools
 	tools/check_state.sh
 	build/tools/resampler_test
@@ -84,6 +96,8 @@ test: all tools
 	build/tools/clap_remote_check $(wildcard bin/*.clap)
 	build/tools/oneiroi_ref
 	build/tools/oneiroi_test
+	build/tools/mutable_test
+	build/tools/mutable_test --mutate | tail -n 1
 	@if command -v avr-gcc >/dev/null && [ -e /usr/include/simavr/sim_avr.h ]; then \
 		$(MAKE) --no-print-directory dredrum-check; \
 	else echo "dredrum-check: SKIPPED (needs avr-gcc + simavr)"; fi
@@ -134,6 +148,7 @@ $(SYSROOT_A64)/usr/lib/aarch64-linux-gnu/libc.so:
 
 aarch64: $(SYSROOT_A64)/usr/lib/aarch64-linux-gnu/libc.so dpf-patches
 	$(MAKE) -C drum02/engine $(A64_ENV) ENGINE_BUILD=$(CURDIR)/build/engine-aarch64
+	$(MAKE) -C mutable-instruments $(A64_ENV) ENGINE_BUILD=$(CURDIR)/build/engine-aarch64
 	@for p in $(PLUGIN_DIRS); do $(MAKE) -C $$p $(A64_ENV) TARGETS="lv2_dsp clap vst3" || exit 1; done
 	clang $(A64_FLAGS) dpf/utils/lv2-ttl-generator/lv2_ttl_generator.c -ldl -o build/aarch64/lv2_ttl_generator
 	@for b in bin-aarch64/*.lv2; do \
@@ -148,6 +163,8 @@ test-aarch64: aarch64
 	QEMU="$(QEMU_A64)" TOOLS=build/tools-aarch64 BIN=bin-aarch64 tools/test_plugins.sh
 	clang++ $(A64_FLAGS) $(ONEIROI_FLAGS) tools/oneiroi_test/oneiroi_test.cpp -o build/tools-aarch64/oneiroi_test
 	$(QEMU_A64) build/tools-aarch64/oneiroi_test
+	clang++ $(A64_FLAGS) $(MUTABLE_TEST_FLAGS) -o build/tools-aarch64/mutable_test
+	$(QEMU_A64) build/tools-aarch64/mutable_test
 
 # ---------------------------------------------------------------------------
 # macOS (on a Mac; CI: .github/workflows/macos.yml): universal CLAP + VST3
@@ -174,6 +191,7 @@ MACOS_VERSION = $(shell git describe --tags --always --dirty)
 
 macos-x86_64 macos-arm64: macos-%: dpf-patches
 	$(MAKE) -C drum02/engine $(call macos_env,$*) ENGINE_BUILD=$(CURDIR)/build/engine-macos-$*
+	$(MAKE) -C mutable-instruments $(call macos_env,$*) ENGINE_BUILD=$(CURDIR)/build/engine-macos-$*
 	@for p in $(MACOS_PLUGINS); do $(MAKE) -C $$p $(call macos_env,$*) TARGETS="clap vst3" || exit 1; done
 
 macos: $(MACOS_ARCHS:%=macos-%)
@@ -201,6 +219,7 @@ macos-dist:
 
 clean:
 	$(MAKE) -C drum02/engine clean
+	$(MAKE) -C mutable-instruments clean
 	$(MAKE) clean -C dpf/utils/lv2-ttl-generator
 	rm -rf bin build bin-macos bin-macos-* dist
 

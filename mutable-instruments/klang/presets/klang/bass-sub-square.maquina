@@ -1,0 +1,14 @@
+# Maquina factory preset
+# design: virtual analog two octaves down, LPG held by the note (velocity)
+voice = klang
+name = Sub Square
+category = Bass
+tags = clean, pitched
+model = Virtual Analog
+coarse = -24
+harmonics = 64
+timbre = 40
+morph = 10
+lpg_decay = 70
+lpg_colour = 20
+lpg_mode = Velocity

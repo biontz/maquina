@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: 6-op FM bank 2, bell-like patch
+voice = klang
+name = DX Bells
+category = Keys
+tags = metallic, long
+model = 6-Op FM 2
+harmonics = 90
+timbre = 64
+morph = 64
+lpg_decay = 100
+lpg_colour = 110

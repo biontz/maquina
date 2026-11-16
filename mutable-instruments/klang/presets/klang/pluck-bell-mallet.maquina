@@ -1,0 +1,10 @@
+# Maquina factory preset
+# design: modal resonator, struck bell
+voice = klang
+name = Bell Mallet
+category = Pluck
+tags = metallic, pitched
+model = Modal
+harmonics = 90
+timbre = 70
+morph = 60

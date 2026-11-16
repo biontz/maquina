@@ -1,0 +1,11 @@
+# Maquina factory preset
+# design: chiptune chord, the engine's own envelope
+voice = klang
+name = Chip Arp
+category = Chord
+tags = lo-fi, pitched
+model = Chiptune
+harmonics = 50
+timbre = 80
+morph = 60
+lpg_decay = 80

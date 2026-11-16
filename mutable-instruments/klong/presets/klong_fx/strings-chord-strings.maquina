@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: quantized sympathetic strings, 4 voices
+voice = klong_fx
+name = Chord Strings
+category = Strings
+tags = long, pitched
+model = Sympath Quant
+polyphony = 4
+structure = 60
+brightness = 75
+damping = 100
+position = 50

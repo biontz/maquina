@@ -82,6 +82,8 @@ int main()
             for (const char* sym : kOneiroiPerformance) oneiroiPerformance |= !std::strcmp(p.symbol, sym);
             const bool trigger = !std::strcmp(p.symbol, "gain") ? true
                                  : maquina::isOneiroi(d.voice) ? oneiroiPerformance
+                                 // Klang / Klong: Output (page 7) and Klong FX's note source
+                                 : maquina::isMutable(d.voice) ? p.page == 7 || !std::strcmp(p.symbol, "note_source")
                                  : maquina::hasChannels(d.voice)
                                      ? !std::strcmp(p.symbol, "trig_mode") || std::strstr(p.symbol, "_mute") != nullptr
                                      : p.page == 7;

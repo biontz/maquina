@@ -1,0 +1,11 @@
+# Maquina factory preset
+# design: FM voice excited by the input
+voice = klong_fx
+name = FM Ring
+category = FX
+tags = metallic, modulated
+model = FM Voice
+structure = 90
+brightness = 90
+damping = 80
+position = 50

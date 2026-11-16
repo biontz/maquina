@@ -1,0 +1,13 @@
+# Maquina factory preset
+# design: phase distortion, the envelope sweeps the amount
+voice = klang
+name = PD Pluck
+category = Pluck
+tags = short, bright
+model = Phase Dist
+harmonics = 60
+timbre = 60
+morph = 30
+timbre_env = 40
+lpg_decay = 45
+lpg_colour = 70

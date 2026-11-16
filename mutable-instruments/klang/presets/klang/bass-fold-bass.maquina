@@ -1,0 +1,14 @@
+# Maquina factory preset
+# design: waveshaper, the envelope adds folding
+voice = klang
+name = Fold Bass
+category = Bass
+tags = dirty, pitched
+model = Waveshaping
+coarse = -24
+harmonics = 30
+timbre = 60
+morph = 40
+timbre_env = 25
+lpg_decay = 60
+lpg_colour = 30

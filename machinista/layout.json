@@ -673,5 +673,108 @@
         ]
       }
     ]
+  },
+  "klang": {
+    "name": "Klang",
+    "pages": [
+      {
+        "title": "MODEL",
+        "controls": [
+          "model",
+          "coarse",
+          "fine",
+          "key_track"
+        ]
+      },
+      {
+        "title": "SOUND",
+        "controls": [
+          "harmonics",
+          "timbre",
+          "morph"
+        ]
+      },
+      {
+        "title": "ENVELOPE",
+        "controls": [
+          "fm_env",
+          "timbre_env",
+          "morph_env"
+        ]
+      },
+      {
+        "title": "LPG",
+        "controls": [
+          "lpg_decay",
+          "lpg_colour",
+          "lpg_mode"
+        ]
+      },
+      {
+        "title": "MIX",
+        "controls": [
+          "output"
+        ]
+      }
+    ]
+  },
+  "klong": {
+    "name": "Klong",
+    "pages": [
+      {
+        "title": "MODEL",
+        "controls": [
+          "model",
+          "polyphony",
+          "coarse",
+          "fine"
+        ]
+      },
+      {
+        "title": "RESONATOR",
+        "controls": [
+          "structure",
+          "brightness",
+          "damping",
+          "position"
+        ]
+      },
+      {
+        "title": "MIX",
+        "controls": [
+          "output"
+        ]
+      }
+    ]
+  },
+  "klong_fx": {
+    "name": "Klong FX",
+    "pages": [
+      {
+        "title": "MODEL",
+        "controls": [
+          "model",
+          "polyphony",
+          "coarse",
+          "fine",
+          "note_source"
+        ]
+      },
+      {
+        "title": "RESONATOR",
+        "controls": [
+          "structure",
+          "brightness",
+          "damping",
+          "position"
+        ]
+      },
+      {
+        "title": "MIX",
+        "controls": [
+          "output"
+        ]
+      }
+    ]
   }
 }

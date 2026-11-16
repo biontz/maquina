@@ -1,6 +1,7 @@
 // preset_measure - render one hit of a voice with given settings through the
 // plugin's engine host (EngineHost for the LXR voices, DredrumHost,
-// PlethoraHost; 44140 Hz output, velocity 127, note 60) and report
+// PlethoraHost, KlangHost, KlongHost; 44140 Hz output, velocity 127, note 60;
+// Klong FX: a click into its input instead of the note) and report
 // what it sounds like in numbers, since presets are designed without ears:
 //   peak / RMS, length to -40 dB, pitch at the start and after 150 ms
 //   (autocorrelation), brightness (zero-crossing rate, spectral centroid).
@@ -14,11 +15,14 @@
 #include <cstring>
 #include <fstream>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 #include "DredrumHost.hpp"
 #include "EngineHost.hpp"
 #include "PlethoraHost.hpp"
+#include "KlangHost.hpp"
+#include "KlongHost.hpp"
 #include "ExtraParams.hpp"
 #include "VoiceTables.generated.hpp"
 
@@ -132,6 +136,14 @@ int main(int argc, char** argv)
         PlethoraHost host(d, 7);
         return measure(host, d, settings, wav);
     }
+    if (d.voice == kKlangVoice) {
+        KlangHost host(d, 7);
+        return measure(host, d, settings, wav);
+    }
+    if (isKlong(d.voice)) {
+        KlongHost host(d, 7);
+        return measure(host, d, settings, wav);
+    }
     EngineHost host(d, 7);
     return measure(host, d, settings, wav);
 }
@@ -157,9 +169,19 @@ static int measure(Host& host, const VoiceDef& d, const std::vector<std::pair<st
     const size_t total = size_t(kRate * 3.0), block = 256;
     std::vector<float> L(total), R(total), m(total);
     host.noteOn(0, 60, 127);
+    // Klong FX: a 2 ms noise burst into the input (its onset strums)
+    std::vector<float> in(total, 0.f);
+    uint32_t noise = 1;
+    for (size_t i = 0; i < size_t(kRate * 0.002); ++i) {
+        noise = noise * 1664525u + 1013904223u;
+        in[i] = 0.8f * (float(noise >> 8) / 8388608.f - 1.f);
+    }
     for (size_t pos = 0; pos < total; pos += block) {
         const uint32_t n = uint32_t(std::min(block, total - pos));
-        host.process(L.data() + pos, R.data() + pos, n);
+        if constexpr (std::is_same_v<Host, KlongHost>)
+            host.process(in.data() + pos, in.data() + pos, L.data() + pos, R.data() + pos, n);
+        else
+            host.process(L.data() + pos, R.data() + pos, n);
     }
     // skip the plugin latency
     const size_t lat = host.latencyFrames();

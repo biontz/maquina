@@ -1,0 +1,13 @@
+# Maquina factory preset
+# design: long-ringing strings
+voice = klong_fx
+name = Drone Strings
+category = Drone
+tags = long, dark
+model = Inharm String
+polyphony = 2
+coarse = -12
+structure = 30
+brightness = 55
+damping = 125
+position = 30

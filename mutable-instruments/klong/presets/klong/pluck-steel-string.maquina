@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: string, bright, plucked near the bridge
+voice = klong
+name = Steel String
+category = Pluck
+tags = bright, pitched
+model = Inharm String
+polyphony = 2
+structure = 20
+brightness = 100
+damping = 80
+position = 15

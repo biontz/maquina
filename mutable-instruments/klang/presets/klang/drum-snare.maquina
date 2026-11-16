@@ -1,0 +1,11 @@
+# Maquina factory preset
+# design: snare model, every note at the same pitch
+voice = klang
+name = Snare
+category = Drum
+tags = punchy, noisy
+model = Snare Drum
+key_track = 0
+harmonics = 70
+timbre = 60
+morph = 50

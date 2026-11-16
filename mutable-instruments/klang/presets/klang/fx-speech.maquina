@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: speech synthesis, words bank
+voice = klang
+name = Speech
+category = FX
+tags = lo-fi, modulated
+model = Speech
+harmonics = 90
+timbre = 64
+morph = 30
+lpg_decay = 70
+lpg_colour = 90

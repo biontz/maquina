@@ -1,0 +1,13 @@
+# Maquina factory preset
+# design: wavetable, slow LPG held by the note
+voice = klang
+name = Wavetable Pad
+category = Pad
+tags = long, soft
+model = Wavetable
+harmonics = 40
+timbre = 60
+morph = 80
+lpg_decay = 120
+lpg_colour = 100
+lpg_mode = Velocity

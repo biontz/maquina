@@ -1,0 +1,13 @@
+# Maquina factory preset
+# design: string machine chord, held by the note
+voice = klang
+name = String Machine
+category = Pad
+tags = long, soft
+model = String Mach
+harmonics = 30
+timbre = 70
+morph = 50
+lpg_decay = 125
+lpg_colour = 110
+lpg_mode = Velocity

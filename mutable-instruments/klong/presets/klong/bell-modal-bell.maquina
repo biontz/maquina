@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: modal resonator, bright and long
+voice = klong
+name = Modal Bell
+category = Bell
+tags = metallic, long
+model = Modal
+polyphony = 2
+structure = 90
+brightness = 90
+damping = 90
+position = 40

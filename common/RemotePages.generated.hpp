@@ -71,6 +71,19 @@ static const ClapRemotePage k_oneiroi_fx_remote_pages[] = {
     { "ECHO / AMBIENCE", { "echo_density", "echo_repeats", "echo_filter", "mix_echo", "amb_spacetime", "amb_decay", "amb_autopan", "mix_ambience" } },
     { "MOD / MIX", { "mod_level", "mod_speed", "mod_type", "mix_filter", "mix_resonator", "mix_echo", "mix_ambience", "gain" } },
 };
+static const ClapRemotePage k_klang_remote_pages[] = {
+    { "SOUND", { "model", "harmonics", "timbre", "morph", "lpg_decay", "lpg_colour", "coarse", "fine" } },
+    { "ENV / TUNE", { "fm_env", "timbre_env", "morph_env", "lpg_mode", "coarse", "fine", "key_track", "gain" } },
+    { "MIX", { "output", "gain", "model", "harmonics", "timbre", "morph", "lpg_decay", "coarse" } },
+};
+static const ClapRemotePage k_klong_remote_pages[] = {
+    { "RESONATOR", { "model", "polyphony", "structure", "brightness", "damping", "position", "coarse", "fine" } },
+    { "TUNE / MIX", { "coarse", "fine", "output", "gain", "structure", "brightness", "damping", "position" } },
+};
+static const ClapRemotePage k_klong_fx_remote_pages[] = {
+    { "RESONATOR", { "model", "polyphony", "structure", "brightness", "damping", "position", "coarse", "note_source" } },
+    { "TUNE / MIX", { "coarse", "fine", "note_source", "output", "gain", "structure", "damping", "position" } },
+};
 
 static const ClapRemotePages k_remote_pages[] = {
     { k_kick_remote_pages, sizeof(k_kick_remote_pages) / sizeof(k_kick_remote_pages[0]) },
@@ -82,4 +95,7 @@ static const ClapRemotePages k_remote_pages[] = {
     { k_plethora_remote_pages, sizeof(k_plethora_remote_pages) / sizeof(k_plethora_remote_pages[0]) },
     { k_oneiroi_remote_pages, sizeof(k_oneiroi_remote_pages) / sizeof(k_oneiroi_remote_pages[0]) },
     { k_oneiroi_fx_remote_pages, sizeof(k_oneiroi_fx_remote_pages) / sizeof(k_oneiroi_fx_remote_pages[0]) },
+    { k_klang_remote_pages, sizeof(k_klang_remote_pages) / sizeof(k_klang_remote_pages[0]) },
+    { k_klong_remote_pages, sizeof(k_klong_remote_pages) / sizeof(k_klong_remote_pages[0]) },
+    { k_klong_fx_remote_pages, sizeof(k_klong_fx_remote_pages) / sizeof(k_klong_fx_remote_pages[0]) },
 };

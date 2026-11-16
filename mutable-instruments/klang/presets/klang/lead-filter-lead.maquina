@@ -1,0 +1,13 @@
+# Maquina factory preset
+# design: VA + VCF held by the note, resonant filter half open
+voice = klang
+name = Filter Lead
+category = Lead
+tags = bright, pitched
+model = VA + VCF
+harmonics = 70
+timbre = 90
+morph = 100
+lpg_decay = 80
+lpg_colour = 90
+lpg_mode = Velocity

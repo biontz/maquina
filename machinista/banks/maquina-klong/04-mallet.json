@@ -1,0 +1,37 @@
+{
+ "schema": 1,
+ "uri": "urn:maquina:klong",
+ "name": "Mallet",
+ "patches": [
+  {
+   "name": "Marimba",
+   "controls": {
+    "model": 0,
+    "polyphony": 2,
+    "coarse": 0,
+    "fine": 0,
+    "structure": 30,
+    "brightness": 50,
+    "damping": 55,
+    "position": 60,
+    "output": 0,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Wood Block",
+   "controls": {
+    "model": 0,
+    "polyphony": 1,
+    "coarse": 0,
+    "fine": 0,
+    "structure": 10,
+    "brightness": 40,
+    "damping": 30,
+    "position": 80,
+    "output": 0,
+    "gain": 0
+   }
+  }
+ ]
+}

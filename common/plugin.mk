@@ -1,7 +1,8 @@
 # plugin.mk - shared Makefile part for the voice plugins.
 # Set NAME and MAQUINA_VOICE_INDEX (and MAQUINA_DREDRUM = 1 for Maquina
 # Dredrum, MAQUINA_PLETHORA = 1 for Maquina Plethora, MAQUINA_ONEIROI = 1 for
-# Maquina Oneiroi / Oneiroi FX), then include this file.
+# Maquina Oneiroi / Oneiroi FX, MAQUINA_KLANG = 1 for Maquina Klang,
+# MAQUINA_KLONG = 1 for Maquina Klong / Klong FX), then include this file.
 
 # the repository root, from where this file is (plugins sit at different depths)
 MAQUINA_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))..)
@@ -28,6 +29,11 @@ endif
 ifeq ($(MAQUINA_ONEIROI),1)
 FILES_DSP += Engine.cpp
 endif
+# Maquina Klang / Klong: the host with the Mutable headers in its own
+# translation unit; the Mutable code itself is libklang.a / libklong.a
+ifneq ($(MAQUINA_KLANG)$(MAQUINA_KLONG),)
+FILES_DSP += Engine.cpp
+endif
 
 # MAQUINA_NO_UI=true: DSP-only build (Raspberry Pi / Machinista)
 ifneq ($(MAQUINA_NO_UI),true)
@@ -52,6 +58,17 @@ endif
 # type-puns floats (fastpow.c, Commons.h Power()): no strict aliasing.
 ifeq ($(MAQUINA_ONEIROI),1)
 BUILD_CXX_FLAGS += -DMAQUINA_ONEIROI=1 -fno-strict-aliasing $(ONEIROI_INCLUDES)
+endif
+# MAQUINA_KLANG=1 / MAQUINA_KLONG=1: the Mutable Instruments Plaits / Rings ports
+ifeq ($(MAQUINA_KLANG),1)
+BUILD_CXX_FLAGS += -DMAQUINA_KLANG=1 $(EURORACK_INCLUDES)
+LINK_FLAGS += $(ENGINE_BUILD)/libklang.a
+$(lv2_dsp) $(clap) $(vst3) $(jack): $(ENGINE_BUILD)/libklang.a
+endif
+ifeq ($(MAQUINA_KLONG),1)
+BUILD_CXX_FLAGS += -DMAQUINA_KLONG=1 $(EURORACK_INCLUDES)
+LINK_FLAGS += $(ENGINE_BUILD)/libklong.a
+$(lv2_dsp) $(clap) $(vst3) $(jack): $(ENGINE_BUILD)/libklong.a
 endif
 BUILD_CXX_FLAGS += -std=gnu++17 -DMAQUINA_VOICE_INDEX=$(MAQUINA_VOICE_INDEX) $(MAQUINA_INCLUDES)
 LINK_FLAGS += $(ENGINE_BUILD)/libmaquinaengine.a -lm

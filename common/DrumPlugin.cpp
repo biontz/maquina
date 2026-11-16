@@ -16,6 +16,10 @@
 #include "PlethoraHost.hpp"
 #elif MAQUINA_ONEIROI
 #include "OneiroiHost.hpp"
+#elif MAQUINA_KLANG
+#include "KlangHost.hpp"
+#elif MAQUINA_KLONG
+#include "KlongHost.hpp"
 #else
 #include "EngineHost.hpp"
 #endif
@@ -36,6 +40,10 @@ using Engine = maquina::DredrumHost; // Maquina Dredrum: the Dredrum firmware en
 using Engine = maquina::PlethoraHost; // Maquina Plethora: the Noise Plethora (VCV port)
 #elif MAQUINA_ONEIROI
 using Engine = maquina::OneiroiHost; // Maquina Oneiroi / Oneiroi FX: the Befaco Oneiroi
+#elif MAQUINA_KLANG
+using Engine = maquina::KlangHost; // Maquina Klang: the Mutable Instruments Plaits
+#elif MAQUINA_KLONG
+using Engine = maquina::KlongHost; // Maquina Klong / Klong FX: the Mutable Instruments Rings
 #else
 using Engine = maquina::EngineHost;  // the LXR-02 firmware engine
 #endif
@@ -91,9 +99,15 @@ static const char* const kOneiroiPageNames[10] = { "Looper", "Oscillators", "Fil
                                                    "Ambience", "Modulation", "Mix", "Envelope", "Global" };
 static const char* const kOneiroiPageSymbols[10] = { "looper", "osc", "filter", "resonator", "echo",
                                                      "ambience", "mod", "mix", "env", "global" };
+// Maquina Klang / Klong / Klong FX pages (tools/gen_params.py MUTABLE_PAGE_TITLES;
+// page 1 is Klang's SOUND, Klong's RESONATOR)
+static const char* const kMutablePageNames[8] = { "Model", "Sound", "Envelope", "LPG", "", "", "", "Mix" };
+static const char* const kMutablePageSymbols[8] = { "model", "sound", "env", "lpg", "", "", "", "mix" };
 static bool isDredrum() { return voiceDef().voice == maquina::kDredrumVoice; }
 static bool isPlethora() { return voiceDef().voice == maquina::kPlethoraVoice; }
 static bool isOneiroi() { return maquina::isOneiroi(voiceDef().voice); }
+static bool isKlang() { return voiceDef().voice == maquina::kKlangVoice; }
+static bool isKlong() { return maquina::isKlong(voiceDef().voice); }
 
 // Noise seed: differs per instance (like the hardware RNG) unless
 // MAQUINA_RNG_SEED is set, which makes renders reproducible for tests.
@@ -133,6 +147,15 @@ protected:
         if (isOneiroi())
             return "Ambient/drone synth voice from the Befaco Oneiroi firmware: oscillators, looper, filter, "
                    "resonator, echo, reverb (unofficial; not affiliated with Befaco).";
+        if (isKlang())
+            return "Macro oscillator voice based on the Mutable Instruments Plaits firmware: 24 synthesis "
+                   "models and its low-pass gate (unofficial; not affiliated with Mutable Instruments).";
+        if (voiceDef().voice == maquina::kKlongFxVoice)
+            return "Resonator effect based on the Mutable Instruments Rings firmware: the input excites "
+                   "modal, string and FM resonators (unofficial; not affiliated with Mutable Instruments).";
+        if (isKlong())
+            return "Resonator voice based on the Mutable Instruments Rings firmware: modal, string and FM "
+                   "resonators played by notes (unofficial; not affiliated with Mutable Instruments).";
         return "Drum voice from the LXR-02 firmware sound engine "
                "(unofficial; not affiliated with Erica Synths).";
     }
@@ -142,6 +165,7 @@ protected:
         return isDredrum()     ? "https://github.com/buranelectrix/dredrum"
                : isPlethora() ? "https://github.com/VCVRack/Befaco"
                : isOneiroi()  ? "https://github.com/Befaco/Oneiroi"
+               : isKlang() || isKlong() ? "https://github.com/pichenettes/eurorack"
                               : "https://github.com/erica-synths/lxr-desktop-app";
     }
     const char* getLicense() const override { return "GPL-3.0-only"; }
@@ -153,6 +177,11 @@ protected:
         if (isOneiroi()) {
             group.name = kOneiroiPageNames[page % 10];
             group.symbol = kOneiroiPageSymbols[page % 10];
+            return;
+        }
+        if (isKlang() || isKlong()) {
+            group.name = page == 1 && isKlong() ? "Resonator" : kMutablePageNames[page & 7];
+            group.symbol = page == 1 && isKlong() ? "resonator" : kMutablePageSymbols[page & 7];
             return;
         }
         if (isDredrum() || isPlethora()) {
@@ -325,7 +354,7 @@ protected:
         }
 #endif
 
-#if MAQUINA_ONEIROI && DISTRHO_PLUGIN_NUM_INPUTS == 2
+#if (MAQUINA_ONEIROI || MAQUINA_KLONG) && DISTRHO_PLUGIN_NUM_INPUTS == 2
         fEngine.process(inputs[0], inputs[1], outputs[0], outputs[1], frames);
 #else
         (void)inputs;

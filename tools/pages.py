@@ -115,6 +115,22 @@ PAGES["oneiroi_fx"] = [
                    "gain"]),
 ]
 
+# Maquina Klang: the big knobs + LPG first, then the envelope amounts and tuning
+PAGES["klang"] = [
+    ("SOUND", ["@bank", "@patch", "model", "harmonics", "timbre", "morph", "lpg_decay", "lpg_colour"]),
+    ("ENV / TUNE", ["fm_env", "timbre_env", "morph_env", "lpg_mode", "coarse", "fine", "key_track", "gain"]),
+    ("MIX", ["output", "gain", "model", "harmonics", "timbre", "morph", "lpg_decay", "coarse"]),
+]
+# Maquina Klong / Klong FX: the resonator's knobs, then tuning and output
+PAGES["klong"] = [
+    ("RESONATOR", ["@bank", "@patch", "model", "polyphony", "structure", "brightness", "damping", "position"]),
+    ("TUNE / MIX", ["coarse", "fine", "output", "gain", "structure", "brightness", "damping", "position"]),
+]
+PAGES["klong_fx"] = [
+    ("RESONATOR", ["@bank", "@patch", "model", "polyphony", "structure", "brightness", "damping", "position"]),
+    ("TUNE / MIX", ["coarse", "fine", "note_source", "output", "gain", "structure", "damping", "position"]),
+]
+
 # Machinista profiles that differ from PAGES: only these pages, and the
 # profile (and its preset banks) only holds the parameters on them; the rest
 # keep their defaults. Maquina Plethora on Machinista = channel A only (B and
@@ -137,6 +153,9 @@ CLAP_FILL = {
     "plethora": ["a_level", "a_decay"],
     "oneiroi": ["mix_echo", "mix_ambience"],
     "oneiroi_fx": ["mix_echo", "mix_ambience"],
+    "klang": ["coarse", "fine"],
+    "klong": ["coarse", "fine"],
+    "klong_fx": ["coarse", "note_source"],
 }
 
 

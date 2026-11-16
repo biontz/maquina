@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: sympathetic strings ring with the input
+voice = klong_fx
+name = Sympathetic Strings
+category = Strings
+tags = long, metallic
+model = Sympathetic
+polyphony = 2
+structure = 70
+brightness = 80
+damping = 95
+position = 40

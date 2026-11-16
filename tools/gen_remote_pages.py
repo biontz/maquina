@@ -23,9 +23,9 @@ TABLES = os.path.join(COMMON, "VoiceTables.generated.hpp")
 EXTRA = os.path.join(COMMON, "ExtraParams.hpp")
 OUT_HPP = os.path.join(COMMON, "RemotePages.generated.hpp")
 VOICES = ["kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora", "oneiroi",
-          "oneiroi_fx"]  # order of k_voices / MAQUINA_VOICE_INDEX
+          "oneiroi_fx", "klang", "klong", "klong_fx"]  # order of k_voices / MAQUINA_VOICE_INDEX
 EXTRA_SYMBOLS = {v: {"note_pitch", "gain"} for v in VOICES}
-for v in ("dredrum", "plethora", "oneiroi", "oneiroi_fx"):
+for v in ("dredrum", "plethora", "oneiroi", "oneiroi_fx", "klang", "klong", "klong_fx"):
     EXTRA_SYMBOLS[v] = {"gain"}  # numExtraParams() == 1
 
 

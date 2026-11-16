@@ -1,0 +1,11 @@
+# Maquina factory preset
+# design: modal body excited by the input
+voice = klong_fx
+name = Tuned Body
+category = Resonant
+tags = pitched, short
+model = Modal
+structure = 40
+brightness = 70
+damping = 70
+position = 30

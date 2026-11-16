@@ -1,0 +1,13 @@
+# Maquina factory preset
+# design: 6-op FM bank 1, held by the note
+voice = klang
+name = DX Keys
+category = Keys
+tags = clean, pitched
+model = 6-Op FM 1
+harmonics = 20
+timbre = 64
+morph = 64
+lpg_decay = 90
+lpg_colour = 100
+lpg_mode = Velocity

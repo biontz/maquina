@@ -320,6 +320,101 @@ static const FactoryPreset k_oneiroi_fx_presets[] = {
     { "Chaos Bed", "Noise", "noisy, dirty", k_oneiroi_fx_pv11, 5 },
 };
 
+static const PresetValue k_klang_pv0[] = { { 0, 2 }, { 1, -24 }, { 4, 40 }, { 5, 50 }, { 6, 70 }, { 8, 30 }, { 10, 55 }, { 11, 40 } };
+static const PresetValue k_klang_pv1[] = { { 0, 1 }, { 1, -24 }, { 4, 30 }, { 5, 60 }, { 6, 40 }, { 8, 25 }, { 10, 60 }, { 11, 30 } };
+static const PresetValue k_klang_pv2[] = { { 1, -24 }, { 5, 40 }, { 6, 10 }, { 10, 70 }, { 11, 20 }, { 12, 1 } };
+static const PresetValue k_klang_pv3[] = { { 0, 16 }, { 4, 70 }, { 5, 90 }, { 6, 100 }, { 10, 80 }, { 11, 90 }, { 12, 1 } };
+static const PresetValue k_klang_pv4[] = { { 0, 3 }, { 4, 50 }, { 5, 70 }, { 6, 60 }, { 9, -15 }, { 10, 85 }, { 11, 80 }, { 12, 1 } };
+static const PresetValue k_klang_pv5[] = { { 0, 12 }, { 4, 90 }, { 5, 70 }, { 6, 60 } };
+static const PresetValue k_klang_pv6[] = { { 0, 17 }, { 4, 60 }, { 5, 60 }, { 6, 30 }, { 8, 40 }, { 10, 45 }, { 11, 70 } };
+static const PresetValue k_klang_pv7[] = { { 0, 11 }, { 4, 20 }, { 5, 80 }, { 6, 70 } };
+static const PresetValue k_klang_pv8[] = { { 0, 19 }, { 4, 90 }, { 10, 100 }, { 11, 110 } };
+static const PresetValue k_klang_pv9[] = { { 0, 18 }, { 4, 20 }, { 10, 90 }, { 11, 100 }, { 12, 1 } };
+static const PresetValue k_klang_pv10[] = { { 0, 22 }, { 4, 30 }, { 5, 70 }, { 6, 50 }, { 10, 125 }, { 11, 110 }, { 12, 1 } };
+static const PresetValue k_klang_pv11[] = { { 0, 5 }, { 4, 40 }, { 5, 60 }, { 6, 80 }, { 10, 120 }, { 11, 100 }, { 12, 1 } };
+static const PresetValue k_klang_pv12[] = { { 0, 23 }, { 4, 50 }, { 5, 80 }, { 6, 60 }, { 10, 80 } };
+static const PresetValue k_klang_pv13[] = { { 0, 6 }, { 4, 40 }, { 5, 50 }, { 6, 60 }, { 10, 100 }, { 11, 90 }, { 12, 1 } };
+static const PresetValue k_klang_pv14[] = { { 0, 15 }, { 3, 0 }, { 4, 80 }, { 5, 90 }, { 6, 25 } };
+static const PresetValue k_klang_pv15[] = { { 0, 13 }, { 1, -24 }, { 3, 0 }, { 4, 60 }, { 5, 40 }, { 6, 60 } };
+static const PresetValue k_klang_pv16[] = { { 0, 14 }, { 3, 0 }, { 4, 70 }, { 5, 60 }, { 6, 50 } };
+static const PresetValue k_klang_pv17[] = { { 0, 10 }, { 4, 60 }, { 5, 70 }, { 6, 80 }, { 10, 90 }, { 11, 100 } };
+static const PresetValue k_klang_pv18[] = { { 0, 9 }, { 5, 90 }, { 6, 100 }, { 10, 100 }, { 11, 100 }, { 12, 1 } };
+static const PresetValue k_klang_pv19[] = { { 0, 7 }, { 4, 90 }, { 6, 30 }, { 10, 70 }, { 11, 90 } };
+static const PresetValue k_klang_pv20[] = { { 0, 8 }, { 4, 80 }, { 5, 50 }, { 6, 70 }, { 10, 120 }, { 11, 100 }, { 12, 1 } };
+static const PresetValue k_klang_pv21[] = { { 0, 21 }, { 4, 40 }, { 5, 90 }, { 9, 40 }, { 10, 75 }, { 11, 80 } };
+static const FactoryPreset k_klang_presets[] = {
+    { "FM Bass", "Bass", "punchy, pitched", k_klang_pv0, 8 },
+    { "Fold Bass", "Bass", "dirty, pitched", k_klang_pv1, 8 },
+    { "Sub Square", "Bass", "clean, pitched", k_klang_pv2, 6 },
+    { "Filter Lead", "Lead", "bright, pitched", k_klang_pv3, 7 },
+    { "Formant Lead", "Lead", "pitched, modulated", k_klang_pv4, 8 },
+    { "Bell Mallet", "Pluck", "metallic, pitched", k_klang_pv5, 4 },
+    { "PD Pluck", "Pluck", "short, bright", k_klang_pv6, 7 },
+    { "Pluck String", "Pluck", "short, pitched", k_klang_pv7, 4 },
+    { "DX Bells", "Keys", "metallic, long", k_klang_pv8, 4 },
+    { "DX Keys", "Keys", "clean, pitched", k_klang_pv9, 5 },
+    { "String Machine", "Pad", "long, soft", k_klang_pv10, 7 },
+    { "Wavetable Pad", "Pad", "long, soft", k_klang_pv11, 7 },
+    { "Chip Arp", "Chord", "lo-fi, pitched", k_klang_pv12, 5 },
+    { "Minor Chord", "Chord", "pitched, clean", k_klang_pv13, 7 },
+    { "Hat", "Drum", "short, metallic", k_klang_pv14, 5 },
+    { "Kick", "Drum", "punchy, boomy", k_klang_pv15, 6 },
+    { "Snare", "Drum", "punchy, noisy", k_klang_pv16, 5 },
+    { "Particles", "Noise", "noisy, modulated", k_klang_pv17, 6 },
+    { "Wind", "Noise", "noisy, long", k_klang_pv18, 6 },
+    { "Speech", "FX", "lo-fi, modulated", k_klang_pv19, 5 },
+    { "Swarm", "FX", "long, modulated", k_klang_pv20, 7 },
+    { "Terrain", "FX", "modulated, bright", k_klang_pv21, 6 },
+};
+
+static const PresetValue k_klong_pv0[] = { { 1, 2 }, { 4, 110 }, { 5, 110 }, { 6, 100 }, { 7, 20 } };
+static const PresetValue k_klong_pv1[] = { { 1, 2 }, { 4, 90 }, { 5, 90 }, { 6, 90 }, { 7, 40 } };
+static const PresetValue k_klong_pv2[] = { { 0, 2 }, { 4, 0 }, { 5, 60 }, { 6, 60 }, { 7, 30 } };
+static const PresetValue k_klong_pv3[] = { { 0, 2 }, { 1, 2 }, { 4, 20 }, { 5, 100 }, { 6, 80 }, { 7, 15 } };
+static const PresetValue k_klong_pv4[] = { { 0, 4 }, { 1, 4 }, { 4, 50 }, { 5, 75 }, { 6, 90 }, { 7, 50 } };
+static const PresetValue k_klong_pv5[] = { { 0, 1 }, { 1, 2 }, { 4, 80 }, { 5, 90 }, { 6, 95 }, { 7, 40 } };
+static const PresetValue k_klong_pv6[] = { { 1, 2 }, { 4, 30 }, { 5, 50 }, { 6, 55 }, { 7, 60 } };
+static const PresetValue k_klong_pv7[] = { { 4, 10 }, { 5, 40 }, { 6, 30 }, { 7, 80 } };
+static const PresetValue k_klong_pv8[] = { { 0, 7 }, { 1, 4 }, { 4, 40 }, { 5, 60 }, { 6, 110 }, { 7, 60 } };
+static const PresetValue k_klong_pv9[] = { { 0, 5 }, { 1, 2 }, { 4, 60 }, { 5, 70 }, { 6, 110 }, { 7, 40 } };
+static const PresetValue k_klong_pv10[] = { { 0, 10 }, { 1, 2 }, { 4, 60 }, { 5, 70 }, { 6, 120 } };
+static const PresetValue k_klong_pv11[] = { { 0, 3 }, { 4, 70 }, { 5, 80 }, { 6, 80 }, { 7, 50 } };
+static const PresetValue k_klong_pv12[] = { { 0, 6 }, { 1, 2 }, { 4, 50 }, { 5, 70 }, { 6, 100 }, { 7, 40 } };
+static const FactoryPreset k_klong_presets[] = {
+    { "Glass", "Bell", "metallic, bright", k_klong_pv0, 5 },
+    { "Modal Bell", "Bell", "metallic, long", k_klong_pv1, 5 },
+    { "Nylon", "Pluck", "soft, pitched", k_klong_pv2, 5 },
+    { "Steel String", "Pluck", "bright, pitched", k_klong_pv3, 6 },
+    { "Harp Chords", "String", "long, pitched", k_klong_pv4, 6 },
+    { "Sitar", "String", "metallic, long", k_klong_pv5, 6 },
+    { "Marimba", "Mallet", "short, pitched", k_klong_pv6, 5 },
+    { "Wood Block", "Mallet", "short, punchy", k_klong_pv7, 4 },
+    { "Peace Pad", "Pad", "long, modulated", k_klong_pv8, 6 },
+    { "Verb String", "Pad", "long, soft", k_klong_pv9, 6 },
+    { "Ensemble Drone", "Drone", "long, soft", k_klong_pv10, 5 },
+    { "FM Bell", "FX", "metallic, modulated", k_klong_pv11, 5 },
+    { "Formant Voice", "FX", "modulated, pitched", k_klong_pv12, 6 },
+};
+
+static const PresetValue k_klong_fx_pv0[] = { { 2, -24 }, { 5, 35 }, { 6, 55 }, { 7, 95 }, { 8, 50 } };
+static const PresetValue k_klong_fx_pv1[] = { { 5, 40 }, { 6, 70 }, { 7, 70 }, { 8, 30 } };
+static const PresetValue k_klong_fx_pv2[] = { { 0, 4 }, { 1, 4 }, { 5, 60 }, { 6, 75 }, { 7, 100 }, { 8, 50 } };
+static const PresetValue k_klong_fx_pv3[] = { { 0, 1 }, { 1, 2 }, { 5, 70 }, { 6, 80 }, { 7, 95 }, { 8, 40 } };
+static const PresetValue k_klong_fx_pv4[] = { { 1, 2 }, { 5, 115 }, { 6, 110 }, { 7, 100 }, { 8, 25 } };
+static const PresetValue k_klong_fx_pv5[] = { { 0, 5 }, { 1, 2 }, { 5, 50 }, { 6, 60 }, { 7, 110 }, { 8, 40 } };
+static const PresetValue k_klong_fx_pv6[] = { { 0, 2 }, { 1, 2 }, { 2, -12 }, { 5, 30 }, { 6, 55 }, { 7, 125 }, { 8, 30 } };
+static const PresetValue k_klong_fx_pv7[] = { { 0, 3 }, { 5, 90 }, { 6, 90 }, { 7, 80 }, { 8, 50 } };
+static const FactoryPreset k_klong_fx_presets[] = {
+    { "Low Body", "Resonant", "dark, boomy", k_klong_fx_pv0, 5 },
+    { "Tuned Body", "Resonant", "pitched, short", k_klong_fx_pv1, 4 },
+    { "Chord Strings", "Strings", "long, pitched", k_klong_fx_pv2, 6 },
+    { "Sympathetic Strings", "Strings", "long, metallic", k_klong_fx_pv3, 6 },
+    { "Metal Bells", "Bells", "metallic, bright", k_klong_fx_pv4, 5 },
+    { "String Verb", "Space", "long, soft", k_klong_fx_pv5, 6 },
+    { "Drone Strings", "Drone", "long, dark", k_klong_fx_pv6, 7 },
+    { "FM Ring", "FX", "metallic, modulated", k_klong_fx_pv7, 5 },
+};
+
 struct VoicePresets { const FactoryPreset* presets; uint32_t count; };
 // in k_voices order
 static const VoicePresets k_factory_presets[] = {
@@ -332,6 +427,9 @@ static const VoicePresets k_factory_presets[] = {
     { k_plethora_presets, 19 },
     { k_oneiroi_presets, 12 },
     { k_oneiroi_fx_presets, 12 },
+    { k_klang_presets, 22 },
+    { k_klong_presets, 13 },
+    { k_klong_fx_presets, 8 },
 };
 
 } // namespace maquina

@@ -59,7 +59,7 @@ PY
 # Output gain (ExtraParams.hpp, every plugin): +6 / -12 dB scale the whole
 # output (the parameter is set before the first block, so no ramp)
 echo "== gain"
-for n in kick tom snare cymbal hihat dredrum plethora oneiroi oneiroi-fx; do
+for n in kick tom snare cymbal hihat dredrum plethora oneiroi oneiroi-fx klang klong klong-fx; do
     for g in 0 6 -12; do
         $QEMU "$TOOLS/lv2_render" urn:maquina:$n 48000 2 "$OUT/$n-gain$g.wav" gain=$g >/dev/null
     done
@@ -70,7 +70,8 @@ def rms(n, g):
     a = array.array("f"); a.frombytes(open(f"{sys.argv[1]}/{n}-gain{g}.wav", "rb").read()[44:])
     return math.sqrt(sum(x * x for x in a) / len(a))
 ok = True
-for n in ("kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora", "oneiroi", "oneiroi-fx"):
+for n in ("kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora", "oneiroi", "oneiroi-fx", "klang",
+          "klong", "klong-fx"):
     dbs = [20 * math.log10(rms(n, g) / rms(n, 0)) for g in (6, -12)]
     good = abs(dbs[0] - 6) < 0.05 and abs(dbs[1] + 12) < 0.05
     ok &= good
@@ -183,6 +184,23 @@ for rate in 44100 48000 96000; do
         mix_echo=50 mix_filter=127 | sed 's/^/  /' || fail=1
     $QEMU "$TOOLS/lv2_render" urn:maquina:oneiroi-fx $rate 3 "$OUT/oneiroi-fx-$rate.wav" mix_resonator=80 \
         mix_ambience=60 mix_echo=50 | sed 's/^/  /' || fail=1
+done
+
+# Maquina Klang / Klong / Klong FX: engine fidelity and behaviour are
+# tools/mutable_test; here the built plugins: isolation (the Mutable code's
+# random generator is one global, kept per instance), sample rates, the FX
+# processing its input
+echo "== klang / klong"
+$QEMU "$TOOLS/lv2_render" urn:maquina:klang 48000 3 "$OUT/klang-twin.wav" --twin \
+    twin:model=17 twin:timbre=10 twin:lpg_decay=120 | sed -n 's/^  twin/  twin/p' || fail=1
+$QEMU "$TOOLS/lv2_render" urn:maquina:klong 48000 3 "$OUT/klong-twin.wav" --twin \
+    twin:model=3 twin:structure=10 twin:polyphony=4 | sed -n 's/^  twin/  twin/p' || fail=1
+$QEMU "$TOOLS/lv2_render" urn:maquina:klong-fx 48000 3 "$OUT/klong-fx-twin.wav" --twin \
+    twin:model=2 twin:damping=120 | sed -n 's/^  twin/  twin/p' || fail=1
+for rate in 44100 48000 96000; do
+    for n in klang klong klong-fx; do
+        $QEMU "$TOOLS/lv2_render" urn:maquina:$n $rate 3 "$OUT/$n-$rate.wav" | sed 's/^/  /' || fail=1
+    done
 done
 
 [ $fail -eq 0 ] && echo "test_plugins: PASSED" || { echo "test_plugins: FAILED"; exit 1; }

@@ -33,6 +33,8 @@ BUNDLES = {
     "dredrum": "MaquinaDredrum",
     "plethora": "MaquinaPlethora",
     "oneiroi": "MaquinaOneiroi",  # Oneiroi FX: Machinista hosts instruments only
+    "klang": "MaquinaKlang",
+    "klong": "MaquinaKlong",  # Klong FX: an effect, as Oneiroi FX
 }
 
 PORT_RE = re.compile(
@@ -87,6 +89,16 @@ QUIRKS = {
         "Ambient/drone voice from the Befaco Oneiroi firmware: sine + supersaw/wavetable, looper, filter,",
         "resonator, echo, reverb. Notes open the envelope and set the pitch; DRONE keeps it sounding.",
         "The randomizer and the looper's recording source (always the output) are as on the module.",
+    ],
+    "klang": [
+        "Macro oscillator based on Mutable Instruments Plaits: 24 models (MODEL), HARMONICS/TIMBRE/MORPH.",
+        "Notes ping the low-pass gate (LPG MODE VELOCITY: velocity opens it while the note is held).",
+        "ENV > FM/TMB/MRP: the internal decay envelope's amount, as the module's attenuverters.",
+    ],
+    "klong": [
+        "Resonator based on Mutable Instruments Rings, played by its internal exciter: each note strums.",
+        "POLY 1-4 voices; notes closer than 10 ms are strummed 10 ms apart (the module's strummer).",
+        "MODEL PEACE ...: the string synth easter egg. Strings ring out: DAMPING sets how long.",
     ],
 }
 

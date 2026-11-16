@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: bright modal bells
+voice = klong_fx
+name = Metal Bells
+category = Bells
+tags = metallic, bright
+model = Modal
+polyphony = 2
+structure = 115
+brightness = 110
+damping = 100
+position = 25

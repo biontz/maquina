@@ -1,0 +1,11 @@
+# Maquina factory preset
+# design: 2-op FM voice
+voice = klong
+name = FM Bell
+category = FX
+tags = metallic, modulated
+model = FM Voice
+structure = 70
+brightness = 80
+damping = 80
+position = 50
