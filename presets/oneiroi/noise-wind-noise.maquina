@@ -1,0 +1,20 @@
+# Maquina factory preset
+# design: the looper's noise buffer at low speed through a resonant bandpass the chaos modulation moves
+voice = oneiroi
+name = Wind Noise
+category = Noise
+tags = noisy, modulated
+vol_sine = 0
+vol_looper = 110
+loop_speed = 8
+flt_mode = Bandpass
+flt_cutoff = 80
+flt_reso = 80
+mix_filter = 127
+mod_level = 70
+mod_speed = 30
+mod_type = 0
+mix_ambience = 90
+amb_decay = 95
+env_attack = 80
+env_release = 100

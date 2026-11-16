@@ -935,6 +935,17 @@
       "integer": true,
       "toggle": true,
       "log": false
+    },
+    {
+      "index": 41,
+      "symbol": "gain",
+      "name": "GAIN",
+      "default": 0,
+      "min": -24,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
     }
   ],
   "pages": [
@@ -1000,7 +1011,7 @@
         "lfo_retrigger",
         "lfo_offset",
         "lfo_target",
-        "volume"
+        "gain"
       ]
     }
   ],

@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: RESO from 90 % (115): the filter's chaos noise on top of the input, lowpassed, into the ambience
+voice = oneiroi_fx
+name = Chaos Bed
+category = Noise
+tags = noisy, dirty
+flt_mode = Lowpass
+flt_cutoff = 80
+flt_reso = 124
+mix_filter = 100
+mix_ambience = 70
+amb_decay = 100

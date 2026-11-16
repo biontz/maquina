@@ -20,7 +20,8 @@ typedef struct { const char* name; const char* symbols[8]; } ClapRemotePage;
 typedef struct { const ClapRemotePage* pages; uint32_t count; } ClapRemotePages;
 #include "../../plugins/common/RemotePages.generated.hpp"
 
-static const char* const kVoices[] = { "kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora" }; // k_voices order
+static const char* const kVoices[] = { "kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora", "oneiroi",
+                                       "oneiroi_fx" }; // k_voices order
 
 static const void* host_get_extension(const clap_host_t* h, const char* id) { (void)h; (void)id; return NULL; }
 static void host_noop(const clap_host_t* h) { (void)h; }
@@ -53,6 +54,8 @@ static int check(const char* path)
     for (int v = 0; v < (int)(sizeof kVoices / sizeof kVoices[0]); ++v) {
         char id[64];
         snprintf(id, sizeof id, "org.maquina.%s", kVoices[v]);
+        for (char* c = id; *c; ++c)
+            if (*c == '_') *c = '-'; /* voice oneiroi_fx = CLAP id org.maquina.oneiroi-fx */
         if (!strcmp(desc->id, id)) voice = v;
     }
     int bad = 0;

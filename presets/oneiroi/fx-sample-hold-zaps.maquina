@@ -1,0 +1,21 @@
+# Maquina factory preset
+# design: supersaw into a resonant lowpass driven by fast sample & hold, ping-pong echo
+voice = oneiroi
+name = Sample & Hold Zaps
+category = FX
+tags = bright, modulated
+vol_sine = 30
+vol_osc2 = 110
+osc_detune = 60
+flt_mode = Lowpass
+flt_cutoff = 75
+flt_reso = 95
+mix_filter = 127
+mod_level = 100
+mod_speed = 95
+mod_type = 106
+mix_echo = 60
+echo_density = 35
+echo_repeats = 70
+env_attack = 2
+env_release = 60

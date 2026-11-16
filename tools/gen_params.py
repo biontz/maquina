@@ -21,7 +21,8 @@ pins them; never rename an existing one.
 Maquina Dredrum is not an LXR voice: its table is DREDRUM below (the
 Dredrum firmware has no UI tables, only 3 x 5 pot/button values plus the
 CLICK switch). It is appended after the LXR voices, then Maquina Plethora
-(PLETHORA below; algorithm list from third_party/noise-plethora Banks_Def.hpp).
+(PLETHORA below; algorithm list from third_party/noise-plethora Banks_Def.hpp),
+then Maquina Oneiroi and Oneiroi FX (oneiroi_params below).
 """
 import json
 import os
@@ -269,6 +270,102 @@ def dredrum_params():
     for i, title in enumerate(DREDRUM_PAGE_TITLES):
         pages.append(dict(title=title, controls=[p["symbol"] for p in params if p["page"] == i]))
     return params, pages
+
+
+# ---------------------------------------------------------------------------
+# Maquina Oneiroi / Oneiroi FX (Befaco Oneiroi, third_party/oneiroi). Engine
+# voice numbers kOneiroiVoice / kOneiroiFxVoice in VoiceTypes.hpp. Pages are
+# the module's sections (port groups): 0 looper, 1 oscillators, 2 filter,
+# 3 resonator, 4 echo, 5 ambience, 6 modulation, 7 mix (faders), 8 envelope,
+# 9 global. Knobs 0..127 map onto the module's 0..1 controls; "centred"
+# knobs are -64..+63 with 0 at the module's centre position (OneiroiHost.cpp).
+ONEIROI_VOICE = 18
+ONEIROI_FX_VOICE = 19
+ONEIROI_PAGE_TITLES = ["LOOPER", "OSCILLATORS", "FILTER", "RESONATOR", "ECHO", "AMBIENCE", "MODULATION", "MIX",
+                       "ENVELOPE", "GLOBAL"]
+
+
+def oneiroi_params(fx):
+    params = []
+
+    def p(symbol, name, short, page, kind, default, fwmax=127, offset=0, labels=None):
+        params.append(dict(symbol=symbol, name=name, short=short, page=page, kind=kind, fwmax=fwmax,
+                           offset=offset, labels=labels, default=default))
+
+    def knob(symbol, name, short, page, default):
+        p(symbol, name, short, page, "Int", default)
+
+    def centred(symbol, name, short, page, default):
+        p(symbol, name, short, page, "Int", default, 127, -64)
+
+    onoff = ["Off", "On"]
+    # LOOPER (+ SOS and Filter: the module's SHIFT functions of START / LENGTH)
+    centred("loop_speed", "Looper Speed", "Speed", 0, 32)  # +32 = 1x forward
+    knob("loop_start", "Looper Start", "Start", 0, 0)
+    knob("loop_length", "Looper Length", "Length", 0, 127)
+    knob("loop_sos", "Looper Sound On Sound", "SOS", 0, 0)
+    centred("loop_filter", "Looper Filter", "Loop Filt", 0, 0)
+    p("loop_record", "Looper Record", "Record", 0, "Toggle", 0, 1, labels=onoff)
+    if fx:
+        p("loop_source", "Looper Record Source", "Rec Src", 0, "Enum", 0, 1, labels=["Input", "Output"])
+    p("loop_clear", "Looper Clear", "Clear", 0, "Toggle", 0, 1, labels=onoff)
+    if not fx:
+        # OSCILLATORS (+ Octave, Unison: SHIFT of PITCH / DETUNE)
+        p("osc_pitch", "Oscillator Pitch", "Pitch", 1, "Int", 0, 120, -60)  # 1/10 semitones
+        p("osc_octave", "Oscillator Octave", "Octave", 1, "Int", 0, 8, -4)
+        knob("osc_detune", "Oscillator Detune / Offset", "Detune", 1, 0)
+        centred("osc_unison", "Oscillator Unison", "Unison", 1, 0)
+        p("osc2_mode", "Oscillator 2 Mode", "Osc 2", 1, "Enum", 0, 1, labels=["Supersaw", "Wavetable"])
+    # FILTER (+ Mode, Position: SHIFT of CUTOFF / RESO)
+    knob("flt_cutoff", "Filter Cutoff", "Cutoff", 2, 127)
+    knob("flt_reso", "Filter Resonance", "Reso", 2, 0)
+    p("flt_mode", "Filter Mode", "Flt Mode", 2, "Enum", 0, 3, labels=["Lowpass", "Bandpass", "Highpass", "Comb"])
+    p("flt_pos", "Filter Position", "Flt Pos", 2, "Enum", 0, 3,
+      labels=["I Start", "II Pre-Echo", "III Pre-Amb", "IV End"])
+    # RESONATOR (+ Dissonance: SHIFT of TUNE)
+    knob("res_tune", "Resonator Tune", "Res Tune", 3, 64)
+    knob("res_feedback", "Resonator Feedback", "Res Fdbk", 3, 64)
+    knob("res_dissonance", "Resonator Dissonance", "Res Diss", 3, 0)
+    # ECHO (+ Filter: SHIFT of DENSITY)
+    knob("echo_density", "Echo Density", "Density", 4, 64)
+    knob("echo_repeats", "Echo Repeats", "Repeats", 4, 64)
+    centred("echo_filter", "Echo Filter", "Echo Filt", 4, 0)
+    # AMBIENCE (+ Auto Pan: SHIFT of SPACETIME)
+    centred("amb_spacetime", "Ambience Spacetime", "Spacetime", 5, 40)
+    knob("amb_decay", "Ambience Decay", "Amb Decay", 5, 64)
+    knob("amb_autopan", "Ambience Auto Pan", "Auto Pan", 5, 0)
+    # MODULATION (+ Type: SHIFT of SPEED); routed to the filter cutoff, as the
+    # module's default modulation mapping
+    knob("mod_level", "Modulation Level", "Mod Level", 6, 0)
+    knob("mod_speed", "Modulation Speed", "Mod Speed", 6, 64)
+    knob("mod_type", "Modulation Type", "Mod Type", 6, 0)
+    # MIX: the module's 8 faders (volumes of the sources, dry/wet of the effects)
+    if fx:
+        knob("vol_input", "Input Volume", "Input", 7, 127)
+    knob("vol_looper", "Looper Volume", "Looper", 7, 0)
+    if not fx:
+        knob("vol_sine", "Sine Volume", "Sine", 7, 100)
+        knob("vol_osc2", "Supersaw / Wavetable Volume", "Saw / WT", 7, 0)
+    knob("mix_filter", "Filter Dry/Wet", "Filter", 7, 0)
+    knob("mix_resonator", "Resonator Dry/Wet", "Resonator", 7, 0)
+    knob("mix_echo", "Echo Dry/Wet", "Echo", 7, 0)
+    knob("mix_ambience", "Ambience Dry/Wet", "Ambience", 7, 0)
+    if not fx:
+        # ENVELOPE: Maquina addition (the module drones); Drone holds it open
+        knob("env_attack", "Envelope Attack", "Attack", 8, 20)
+        knob("env_decay", "Envelope Decay", "Decay", 8, 64)
+        knob("env_sustain", "Envelope Sustain", "Sustain", 8, 127)
+        knob("env_release", "Envelope Release", "Release", 8, 70)
+        p("env_drone", "Drone", "Drone", 8, "Toggle", 0, 1, labels=onoff)
+    # GLOBAL: SYNC IN from the host transport (Maquina)
+    p("sync", "Sync", "Sync", 9, "Enum", 0, 3, labels=["Off", "Beat", "Bar", "4 Bars"])
+    for q in params:
+        q.update(par="0", fwmin=0, modtargets=None)
+        if len(q["short"]) > MAX_SHORT_NAME:
+            sys.exit(f"oneiroi: '{q['short']}' is longer than {MAX_SHORT_NAME} characters")
+    pages = [dict(title=t, controls=[q["symbol"] for q in params if q["page"] == i])
+             for i, t in enumerate(ONEIROI_PAGE_TITLES)]
+    return params, [pg for pg in pages if pg["controls"]]
 
 
 NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
@@ -535,6 +632,11 @@ def main():
     np_params, np_pages = plethora_params()
     plugins_out.append(dict(id="plethora", name="Plethora", voice=PLETHORA_VOICE, params=np_params))
     layout["plethora"] = dict(name="Plethora", pages=np_pages)
+    for oid, oname, ovoice, fx in (("oneiroi", "Oneiroi", ONEIROI_VOICE, False),
+                                   ("oneiroi_fx", "Oneiroi FX", ONEIROI_FX_VOICE, True)):
+        o_params, o_pages = oneiroi_params(fx)
+        plugins_out.append(dict(id=oid, name=oname, voice=ovoice, params=o_params))
+        layout[oid] = dict(name=oname, pages=o_pages)
 
     write_header(plugins_out)
     os.makedirs(os.path.join(ROOT, "machinista"), exist_ok=True)
@@ -542,7 +644,7 @@ def main():
         json.dump(layout, f, indent=2)
         f.write("\n")
     for p in plugins_out:
-        print(f"{p['id']:7s} voice {p['voice']}: {len(p['params'])} parameters")
+        print(f"{p['id']:10s} voice {p['voice']}: {len(p['params'])} parameters")
 
 
 def cstr(s):
@@ -551,7 +653,7 @@ def cstr(s):
 
 def write_header(plugins):
     o = []
-    o.append("// GENERATED by tools/gen_params.py from the LXR firmware UI tables (+ Dredrum, Plethora). Do not edit.")
+    o.append("// GENERATED by tools/gen_params.py from the LXR firmware UI tables (+ Dredrum, Plethora, Oneiroi). Do not edit.")
     o.append("// SPDX-License-Identifier: GPL-3.0-only")
     o.append("#pragma once")
     o.append("#include \"VoiceTypes.hpp\"")

@@ -16,7 +16,8 @@
     "a_decay": 75,
     "a_level": 127,
     "a_mute": 0,
-    "trig_mode": 0
+    "trig_mode": 0,
+    "gain": 0
    }
   }
  ]

@@ -1,0 +1,17 @@
+# Maquina factory preset
+# design: detuned saws into the reversed ambience (SPACETIME below centre): every note swells backwards
+voice = oneiroi
+name = Reverse Swell
+category = Pad
+tags = long, soft, dark
+vol_sine = 50
+vol_osc2 = 95
+osc_detune = 70
+flt_mode = Lowpass
+flt_cutoff = 92
+mix_filter = 127
+amb_spacetime = -45
+amb_decay = 100
+mix_ambience = 105
+env_attack = 60
+env_release = 100

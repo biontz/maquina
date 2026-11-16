@@ -1,0 +1,261 @@
+// OneiroiCore.h - Oneiroi's synth engine (third_party/oneiroi/Oneiroi.h,
+// Befaco Oneiroi patch 1.2.2 by Roberto Noris, GPL-3.0-or-later) with the
+// Maquina changes marked "MAQUINA:". Everything else is the module's code.
+//
+//   1. Process() takes an optional per-sample gain for the sources (looper,
+//      input, oscillators), applied before the effects: Maquina Oneiroi's
+//      note envelope. Echo and Ambience tails ring on after it closes.
+//      Without a gain (nullptr) the result is bit-identical to Oneiroi.h
+//      (tools/oneiroi_ref checks this).
+//   2. The oscillators can be left out (Maquina Oneiroi FX has none).
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+#pragma once
+
+#include "Commons.h"
+#include "WaveTableBuffer.h"
+#include "StereoSineOscillator.h"
+#include "StereoSuperSaw.h"
+#include "StereoWaveTableOscillator.h"
+#include "Ambience.h"
+#include "Filter.h"
+#include "Resonator.h"
+#include "Echo.h"
+#include "Looper.h"
+#include "Schmitt.h"
+#include "TGate.h"
+#include "EnvFollower.h"
+#include "DcBlockingFilter.h"
+#include "SmoothValue.h"
+#include "Modulation.h"
+#include "Limiter.h"
+
+class OneiroiCore
+{
+private:
+    PatchCtrls* patchCtrls_;
+    PatchCvs* patchCvs_;
+    PatchState* patchState_;
+
+    StereoSineOscillator* sine_;
+    StereoSuperSaw* saw_;
+    StereoWaveTableOscillator* wt_;
+    WaveTableBuffer* wtBuffer_;
+    Filter* filter_;
+    Resonator* resonator_;
+    Echo* echo_;
+    Ambience* ambience_;
+    Looper* looper_;
+    Limiter* limiter_;
+
+    Modulation* modulation_;
+
+    AudioBuffer* input_;
+    AudioBuffer* resample_;
+    AudioBuffer* osc1Out_;
+    AudioBuffer* osc2Out_;
+
+    StereoDcBlockingFilter* inputDcFilter_;
+    StereoDcBlockingFilter* outputDcFilter_;
+
+    EnvFollower* inEnvFollower_[2];
+
+    FilterPosition filterPosition_, lastFilterPosition_;
+
+public:
+    OneiroiCore(PatchCtrls* patchCtrls, PatchCvs* patchCvs, PatchState* patchState)
+    {
+        patchCtrls_ = patchCtrls;
+        patchCvs_ = patchCvs;
+        patchState_ = patchState;
+
+        looper_ = Looper::create(patchCtrls_, patchCvs_, patchState_);
+        wtBuffer_ = WaveTableBuffer::create(looper_->GetBuffer());
+
+        sine_ = StereoSineOscillator::create(patchCtrls_, patchCvs_, patchState_);
+        saw_ = StereoSuperSaw::create(patchCtrls_, patchCvs_, patchState_);
+        wt_ = StereoWaveTableOscillator::create(patchCtrls_, patchCvs_, patchState_, wtBuffer_);
+
+        filter_ = Filter::create(patchCtrls_, patchCvs_, patchState_);
+        resonator_ = Resonator::create(patchCtrls_, patchCvs_, patchState_);
+        echo_ = Echo::create(patchCtrls_, patchCvs_, patchState_);
+        ambience_ = Ambience::create(patchCtrls_, patchCvs_, patchState_);
+
+        modulation_ = Modulation::create(patchCtrls_, patchCvs_, patchState_);
+
+        limiter_ = Limiter::create();
+
+        input_ = AudioBuffer::create(2, patchState_->blockSize);
+        resample_ = AudioBuffer::create(2, patchState_->blockSize);
+        osc1Out_ = AudioBuffer::create(2, patchState_->blockSize);
+        osc2Out_ = AudioBuffer::create(2, patchState_->blockSize);
+
+        for (size_t i = 0; i < 2; i++)
+        {
+            inEnvFollower_[i] = EnvFollower::create();
+            inEnvFollower_[i]->setLambda(0.9f);
+        }
+
+        inputDcFilter_ = StereoDcBlockingFilter::create();
+        outputDcFilter_ = StereoDcBlockingFilter::create();
+    }
+    ~OneiroiCore()
+    {
+        AudioBuffer::destroy(input_);
+        AudioBuffer::destroy(resample_);
+        AudioBuffer::destroy(osc1Out_);
+        AudioBuffer::destroy(osc2Out_);
+        WaveTableBuffer::destroy(wtBuffer_);
+        Looper::destroy(looper_);
+        StereoSineOscillator::destroy(sine_);
+        StereoSuperSaw::destroy(saw_);
+        StereoWaveTableOscillator::destroy(wt_);
+        Filter::destroy(filter_);
+        Resonator::destroy(resonator_);
+        Echo::destroy(echo_);
+        Ambience::destroy(ambience_);
+        Modulation::destroy(modulation_);
+        Limiter::destroy(limiter_);
+
+        for (size_t i = 0; i < 2; i++)
+        {
+            EnvFollower::destroy(inEnvFollower_[i]);
+        }
+    }
+
+    static OneiroiCore* create(PatchCtrls* patchCtrls, PatchCvs* patchCvs, PatchState* patchState)
+    {
+        return new OneiroiCore(patchCtrls, patchCvs, patchState);
+    }
+
+    static void destroy(OneiroiCore* obj)
+    {
+        delete obj;
+    }
+
+    // MAQUINA: sourceGain (one value per sample, or nullptr) and withOscillators
+    inline void Process(AudioBuffer &buffer, const float* sourceGain = nullptr, bool withOscillators = true)
+    {
+        FloatArray left = buffer.getSamples(LEFT_CHANNEL);
+        FloatArray right = buffer.getSamples(RIGHT_CHANNEL);
+
+        inputDcFilter_->process(buffer, buffer);
+
+        const int size = buffer.getSize();
+
+        // Input leds.
+        for (size_t i = 0; i < size; i++)
+        {
+            float l;
+            if (patchCtrls_->looperResampling)
+            {
+                l = Mix2(inEnvFollower_[0]->process(resample_->getSamples(LEFT_CHANNEL)[i]), inEnvFollower_[1]->process(resample_->getSamples(RIGHT_CHANNEL)[i])) * kLooperResampleLedAtt;
+            }
+            else
+            {
+                l = Mix2(inEnvFollower_[0]->process(left[i]), inEnvFollower_[1]->process(right[i]));
+            }
+            patchState_->inputLevel[i] = l;
+        }
+
+        modulation_->Process();
+
+        input_->copyFrom(buffer);
+        input_->multiply(patchCtrls_->inputVol);
+
+        if (patchCtrls_->looperResampling)
+        {
+            looper_->Process(*resample_, buffer);
+        }
+        else
+        {
+            looper_->Process(buffer, buffer);
+        }
+        buffer.add(*input_);
+
+        if (withOscillators) // MAQUINA: Oneiroi FX has no oscillators
+        {
+        sine_->Process(*osc1Out_);
+        buffer.add(*osc1Out_);
+        patchCtrls_->oscUseWavetable > 0.5f ? wt_->Process(*osc2Out_) : saw_->Process(*osc2Out_);
+        buffer.add(*osc2Out_);
+        }
+
+        // MAQUINA: the note envelope on the sources, before the effects
+        if (sourceGain)
+        {
+            for (int i = 0; i < size; i++)
+            {
+                left[i] *= sourceGain[i];
+                right[i] *= sourceGain[i];
+            }
+        }
+
+        buffer.multiply(kSourcesMakeupGain);
+
+        if (patchCtrls_->filterPosition < 0.25f)
+        {
+            filterPosition_ = FilterPosition::POSITION_1;
+        }
+        else if (patchCtrls_->filterPosition >= 0.25f && patchCtrls_->filterPosition < 0.5f)
+        {
+            filterPosition_ = FilterPosition::POSITION_2;
+        }
+        else if (patchCtrls_->filterPosition >= 0.5f && patchCtrls_->filterPosition < 0.75f)
+        {
+            filterPosition_ = FilterPosition::POSITION_3;
+        }
+        else if (patchCtrls_->filterPosition >= 0.75f)
+        {
+            filterPosition_ = FilterPosition::POSITION_4;
+        }
+
+        if (filterPosition_ != lastFilterPosition_)
+        {
+            lastFilterPosition_ = filterPosition_;
+            patchState_->filterPositionFlag = true;
+        }
+        else
+        {
+            patchState_->filterPositionFlag = false;
+        }
+
+        if (FilterPosition::POSITION_1 == filterPosition_)
+        {
+            filter_->process(buffer, buffer);
+        }
+        resonator_->process(buffer, buffer);
+        if (FilterPosition::POSITION_2 == filterPosition_)
+        {
+            filter_->process(buffer, buffer);
+        }
+        echo_->process(buffer, buffer);
+        if (FilterPosition::POSITION_3 == filterPosition_)
+        {
+            filter_->process(buffer, buffer);
+        }
+        ambience_->process(buffer, buffer);
+        if (FilterPosition::POSITION_4 == filterPosition_)
+        {
+            filter_->process(buffer, buffer);
+        }
+
+        outputDcFilter_->process(buffer, buffer);
+
+        buffer.multiply(kOutputMakeupGain);
+        limiter_->ProcessSoft(buffer, buffer);
+
+        if (StartupPhase::STARTUP_DONE == patchState_->startupPhase)
+        {
+            buffer.multiply(patchState_->outLevel);
+        }
+        else
+        {
+            // TODO: Fade in
+            buffer.clear();
+        }
+
+        resample_->copyFrom(buffer);
+    }
+};
+

@@ -1,0 +1,14 @@
+# Maquina factory preset
+# design: comb filter under ramp modulation, last in the chain, 55 % wet (the comb is quiet)
+voice = oneiroi_fx
+name = Comb Flanger
+category = Filter
+tags = metallic, modulated
+flt_mode = Comb
+flt_cutoff = 50
+flt_pos = IV End
+mod_level = 70
+mod_speed = 45
+mod_type = 42
+flt_reso = 100
+mix_filter = 55

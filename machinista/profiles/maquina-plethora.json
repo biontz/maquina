@@ -398,6 +398,17 @@
         ]
       ],
       "choice": true
+    },
+    {
+      "index": 36,
+      "symbol": "gain",
+      "name": "GAIN",
+      "default": 0,
+      "min": -24,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
     }
   ],
   "pages": [
@@ -424,7 +435,7 @@
         "trig_mode",
         "a_x",
         "a_y",
-        "a_cutoff"
+        "gain"
       ]
     }
   ],

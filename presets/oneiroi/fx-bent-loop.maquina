@@ -1,0 +1,17 @@
+# Maquina factory preset
+# design: press Record to capture its own output (POST); plays it back reversed at half speed with sound-on-sound
+voice = oneiroi
+name = Bent Loop
+category = FX
+tags = lo-fi, modulated
+vol_sine = 80
+vol_osc2 = 60
+osc_detune = 40
+loop_speed = -16
+loop_sos = 90
+loop_length = 90
+mix_echo = 30
+mix_ambience = 60
+env_attack = 10
+env_release = 80
+vol_looper = 70

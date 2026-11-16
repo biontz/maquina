@@ -1,0 +1,17 @@
+# Maquina factory preset
+# design: the wavetable oscillator reads 32 tables from the looper buffer, which holds noise until something is recorded: a bright dusty hiss through echo and ambience
+voice = oneiroi
+name = Wavetable Dust
+category = Texture
+tags = bright, noisy
+vol_sine = 40
+vol_osc2 = 100
+osc2_mode = Wavetable
+osc_detune = 80
+mix_echo = 40
+echo_density = 40
+echo_repeats = 70
+mix_ambience = 70
+amb_decay = 90
+env_attack = 30
+env_release = 90

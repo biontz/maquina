@@ -1,0 +1,20 @@
+# Maquina factory preset
+# design: sine + saw, partly through the comb filter (it is quiet: 40 % wet); quick envelope, a dotted echo
+voice = oneiroi
+name = Comb Lead
+category = Lead
+tags = bright, pitched
+osc_detune = 20
+flt_mode = Comb
+mix_echo = 45
+echo_density = 45
+echo_repeats = 50
+env_attack = 5
+env_decay = 60
+env_sustain = 100
+env_release = 45
+vol_sine = 127
+vol_osc2 = 100
+flt_cutoff = 40
+flt_reso = 110
+mix_filter = 40

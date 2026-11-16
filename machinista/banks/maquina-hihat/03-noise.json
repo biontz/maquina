@@ -40,7 +40,8 @@
     "pan": 0,
     "decimation": 127,
     "drive": 63,
-    "note_pitch": 0
+    "note_pitch": 0,
+    "gain": 0
    }
   },
   {
@@ -80,7 +81,8 @@
     "pan": 0,
     "decimation": 127,
     "drive": 63,
-    "note_pitch": 0
+    "note_pitch": 0,
+    "gain": 0
    }
   },
   {
@@ -120,7 +122,8 @@
     "pan": 0,
     "decimation": 127,
     "drive": 63,
-    "note_pitch": 0
+    "note_pitch": 0,
+    "gain": 0
    }
   }
  ]

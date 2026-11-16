@@ -395,6 +395,17 @@
         ]
       ],
       "choice": true
+    },
+    {
+      "index": 34,
+      "symbol": "gain",
+      "name": "GAIN",
+      "default": 0,
+      "min": -24,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
     }
   ],
   "pages": [
@@ -461,6 +472,19 @@
         "osc1_mute",
         "osc2_mute",
         "osc3_mute"
+      ]
+    },
+    {
+      "title": "MIX / OUT",
+      "controls": [
+        "gain",
+        "osc1_level",
+        "osc2_level",
+        "osc3_level",
+        "osc1_mute",
+        "osc2_mute",
+        "osc3_mute",
+        "trig_mode"
       ]
     }
   ],

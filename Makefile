@@ -10,7 +10,7 @@
 
 include dpf/Makefile.base.mk
 
-PLUGINS := kick tom snare cymbal hihat dredrum plethora
+PLUGINS := kick tom snare cymbal hihat dredrum plethora oneiroi oneiroi-fx
 
 all: plugins gen
 
@@ -43,6 +43,11 @@ endif
 dpf/utils/lv2_ttl_generator:
 	$(MAKE) -C dpf/utils/lv2-ttl-generator
 
+# Maquina Oneiroi test tools: the vendored engine + OWL library (see plugins/common/plugin.mk)
+ONEIROI_FLAGS := -O2 -std=gnu++17 -fno-strict-aliasing -w -Iengine/oneiroi/compat -Iengine/oneiroi \
+	-Ithird_party/oneiroi -Ithird_party/owlprogram/LibSource -Iplugins/common -Iengine/fw_shim \
+	-Ithird_party/lxr-firmware/Core/Inc
+
 tools: engine
 	$(MAKE) -C tools/render_ref
 	$(CC) -O2 -std=gnu11 $(shell pkg-config --cflags lilv-0) tools/lv2_render/lv2_render.c \
@@ -64,11 +69,13 @@ tools: engine
 		-ldl -o build/tools/clap_latency_check
 	$(CC) -O1 -std=gnu11 -Idpf/distrho/src tools/clap_remote_check/clap_remote_check.c \
 		-ldl -o build/tools/clap_remote_check
+	$(CXX) $(ONEIROI_FLAGS) tools/oneiroi_ref/oneiroi_ref.cpp -o build/tools/oneiroi_ref
+	$(CXX) $(ONEIROI_FLAGS) tools/oneiroi_test/oneiroi_test.cpp -o build/tools/oneiroi_test
 
 # engine fidelity + isolation, state completeness, resampler quality, GUI
 # defaults, randomizer rules, LV2 validation, every plugin rendered through a real
 # LV2 host, CLAP state restore + activation without restart requests / latency-change reports,
-# and the CLAP remote-controls pages
+# the CLAP remote-controls pages, and Maquina Oneiroi's engine fidelity + behaviour
 test: all tools
 	tools/check_state.sh
 	build/tools/resampler_test
@@ -79,9 +86,19 @@ test: all tools
 	tools/test_plugins.sh
 	build/tools/clap_latency_check $(wildcard bin/*.clap)
 	build/tools/clap_remote_check $(wildcard bin/*.clap)
+	build/tools/oneiroi_ref
+	build/tools/oneiroi_test
 	@if command -v avr-gcc >/dev/null && [ -e /usr/include/simavr/sim_avr.h ]; then \
 		$(MAKE) --no-print-directory dredrum-check; \
 	else echo "dredrum-check: SKIPPED (needs avr-gcc + simavr)"; fi
+
+# Maquina Oneiroi: OneiroiCore == the module's Oneiroi.h (bit-exact), and the
+# check notices a 1-ulp change
+oneiroi-check:
+	@mkdir -p build/tools
+	$(CXX) $(ONEIROI_FLAGS) tools/oneiroi_ref/oneiroi_ref.cpp -o build/tools/oneiroi_ref
+	build/tools/oneiroi_ref
+	build/tools/oneiroi_ref --mutate | tail -n 1
 
 # Maquina Dredrum: the noise wave's program-memory bytes (needs avr-gcc;
 # output checked in) and the bit-exact check against the firmware on simavr
@@ -132,10 +149,13 @@ test-aarch64: aarch64
 	clang $(A64_FLAGS) -O2 -std=gnu11 -I$(SYSROOT_A64)/usr/include/lilv-0 tools/lv2_render/lv2_render.c \
 		-llilv-0 -lm -o build/tools-aarch64/lv2_render
 	QEMU="$(QEMU_A64)" TOOLS=build/tools-aarch64 BIN=bin-aarch64 tools/test_plugins.sh
+	clang++ $(A64_FLAGS) $(ONEIROI_FLAGS) tools/oneiroi_test/oneiroi_test.cpp -o build/tools-aarch64/oneiroi_test
+	$(QEMU_A64) build/tools-aarch64/oneiroi_test
 
 clean:
 	$(MAKE) -C engine clean
 	$(MAKE) clean -C dpf/utils/lv2-ttl-generator
 	rm -rf bin build
 
-.PHONY: presets all engine dpf-patches plugins gen tools test install clean aarch64 test-aarch64 dredrum-flash dredrum-check
+.PHONY: presets all engine dpf-patches plugins gen tools test install clean aarch64 test-aarch64 dredrum-flash dredrum-check \
+	oneiroi-check

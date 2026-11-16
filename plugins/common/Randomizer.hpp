@@ -26,6 +26,7 @@
 #include <string>
 
 #include "ExtraParams.hpp"
+#include "OneiroiControls.hpp"
 
 namespace maquina {
 
@@ -69,6 +70,23 @@ static const RandGroup kRandGroups[] = {
     { "dtune", "TUNE", true, 0, 100,
       { "osc1_track", "osc2_track", "osc3_track", "osc1_octave", "osc2_octave", "osc3_octave", "osc1_semi",
         "osc2_semi", "osc3_semi" } },
+    // Maquina Oneiroi / Oneiroi FX use the module's own randomizer (below,
+    // oneiroiRandomize), not this panel. "oosc", "oloop" and "ofx" are its
+    // targets (the knobs the module randomizes); the locked groups hold the
+    // rest of the sound (SHIFT functions, faders, envelope), so presets
+    // (isSoundParam) cover them.
+    { "oosc", "OSC", false, 0, 100, { "osc_pitch", "osc_detune" } },
+    { "oloop", "LOOPER", false, 0, 100, { "loop_speed", "loop_start", "loop_length" } },
+    { "ofx", "EFFECTS", false, 0, 100,
+      { "flt_cutoff", "flt_reso", "res_tune", "res_feedback", "echo_repeats", "echo_density", "amb_decay",
+        "amb_spacetime" } },
+    { "oshift", "SHIFT", true, 0, 100,
+      { "osc_octave", "osc_unison", "osc2_mode", "loop_sos", "loop_filter", "flt_mode", "flt_pos",
+        "res_dissonance", "echo_filter", "amb_autopan", "mod_level", "mod_speed", "mod_type" } },
+    { "omix", "MIX", true, 0, 100,
+      { "vol_input", "vol_looper", "vol_sine", "vol_osc2", "mix_filter", "mix_resonator", "mix_echo",
+        "mix_ambience" } },
+    { "oenv", "ENV", true, 0, 100, { "env_attack", "env_decay", "env_sustain", "env_release", "env_drone" } },
 };
 constexpr int kNumRandGroups = int(sizeof(kRandGroups) / sizeof(kRandGroups[0]));
 
@@ -109,6 +127,8 @@ struct RandSettings {
     bool lock[kNumRandGroups];
     uint8_t min[kNumRandGroups], max[kNumRandGroups]; // %, min <= max
     bool oscOn[kNumRandOsc] = { true, true, true };  // main RANDOM includes the oscillator
+    // Maquina Oneiroi's randomizer switches (OneiroiTarget, OneiroiAmount)
+    uint8_t oTarget = 0, oAmount = 0;
 
     RandSettings()
     {
@@ -121,7 +141,8 @@ struct RandSettings {
 
     // state string: "osc=0:0:100 env=0:0:60 ..." (lock:min:max); unknown keys
     // are ignored, missing ones keep their default. "dosc=1:1:0" holds
-    // oscOn[0..2] (same three-number shape).
+    // oscOn[0..2], "orand=target:amount:0" Oneiroi's switches (same
+    // three-number shape).
     std::string toString() const
     {
         std::string out;
@@ -131,8 +152,9 @@ struct RandSettings {
                           int(min[g]), int(max[g]));
             out += buf;
         }
-        char buf[32];
-        std::snprintf(buf, sizeof buf, " dosc=%d:%d:%d", int(oscOn[0]), int(oscOn[1]), int(oscOn[2]));
+        char buf[64];
+        std::snprintf(buf, sizeof buf, " dosc=%d:%d:%d orand=%d:%d:0", int(oscOn[0]), int(oscOn[1]),
+                      int(oscOn[2]), int(oTarget), int(oAmount));
         return out + buf;
     }
     void fromString(const char* str)
@@ -147,6 +169,11 @@ struct RandSettings {
                 oscOn[0] = l != 0;
                 oscOn[1] = lo != 0;
                 oscOn[2] = hi != 0;
+                continue;
+            }
+            if (!std::strcmp(key, "orand")) {
+                oTarget = uint8_t(std::clamp(l, 0, 3));
+                oAmount = uint8_t(std::clamp(lo, 0, 2));
                 continue;
             }
             for (int g = 0; g < kNumRandGroups; ++g)
@@ -220,6 +247,70 @@ inline void randomize(const VoiceDef& d, const RandSettings& rs, float* values, 
         if (onlyOsc >= 0 ? osc != onlyOsc : (osc >= 0 && !rs.oscOn[osc])) continue;
         const int cur = int(values[i] + (values[i] < 0 ? -0.5f : 0.5f));
         values[i] = float(randomValue(p, rs.min[g], rs.max[g], cur, rng));
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Maquina Oneiroi / Oneiroi FX: the module's randomizer (Ui.h Randomize(),
+// ParamController.h LockableParam::Randomize()), on the editor side, so the
+// new values are ordinary parameter changes the host sees.
+//
+//   target  All, Oscillators, Looper, Effects: the knobs of groups "oosc",
+//           "oloop", "ofx" (the module never randomizes faders, switches,
+//           SHIFT functions or the modulation knobs)
+//   amount  the AMOUNT switch: Full = a new value anywhere (10 % of the time
+//           near the far end), Mid = up to 10 % of the range towards the
+//           centre, Low = up to 2 %. Pitch moves in whole semitones (Mid:
+//           2..4, Low: 1..2, up or down).
+//
+// Works on the module's 0..1 control positions (OneiroiControls.hpp) and
+// rounds back to plugin units.
+
+enum OneiroiTarget : uint8_t { kOneiroiAll = 0, kOneiroiOsc, kOneiroiLooper, kOneiroiFx };
+enum OneiroiAmount : uint8_t { kOneiroiFull = 0, kOneiroiMid, kOneiroiLow };
+static const char* const kOneiroiTargetLabels[] = { "All", "Osc", "Looper", "Effects" };
+static const char* const kOneiroiAmountLabels[] = { "Full", "Mid", "Low" };
+
+inline bool oneiroiTargets(const char* symbol, int target)
+{
+    const int g = randGroupOf(symbol);
+    if (g < 0) return false;
+    const char* key = kRandGroups[g].key;
+    switch (target) {
+    case kOneiroiOsc: return !std::strcmp(key, "oosc");
+    case kOneiroiLooper: return !std::strcmp(key, "oloop");
+    case kOneiroiFx: return !std::strcmp(key, "ofx");
+    default: return !std::strcmp(key, "oosc") || !std::strcmp(key, "oloop") || !std::strcmp(key, "ofx");
+    }
+}
+
+// LockableParam::Randomize() for one control position k (0..1); rf in [0, 1)
+inline float oneiroiRandomKnob(float k, int amount, bool semitones, float rf)
+{
+    const float s1 = k < 0.5f ? 1.f : -1.f; // towards the centre
+    const float s2 = rf < 0.5f ? 1.f : -1.f;
+    float v;
+    if (amount == kOneiroiFull)
+        v = rf < 0.1f ? (k < 0.5f ? 0.9f : 0.1f) : rf;
+    else if (amount == kOneiroiMid)
+        v = semitones ? k + 0.083f * (rf < 0.1f ? 4.f : rf < 0.5f ? 3.f : 2.f) * s2 : k + rf * 0.1f * s1;
+    else
+        v = semitones ? k + 0.083f * (rf < 0.1f ? 2.f : 1.f) * s2 : k + rf * 0.02f * s1;
+    v = std::clamp(v, 0.f, 1.f);
+    if (semitones) v = std::rint(v * 12.f) * (1.f / 12.f); // Quantize(v, 12)
+    return v;
+}
+
+// Randomize values[0 .. numAllParams(d)) in place (plugin units).
+inline void oneiroiRandomize(const VoiceDef& d, int target, int amount, float* values, std::mt19937& rng)
+{
+    std::uniform_real_distribution<float> unit(0.f, 1.f);
+    for (uint32_t i = 0; i < d.numParams; ++i) {
+        const VoiceParam& p = d.params[i];
+        if (!oneiroiTargets(p.symbol, target)) continue;
+        const bool semis = oneiroi::isPitch(p);
+        const float k = oneiroi::toKnob(p, values[i]);
+        values[i] = float(oneiroi::fromKnob(p, oneiroiRandomKnob(k, amount, semis, unit(rng))));
     }
 }
 

@@ -1,0 +1,9 @@
+# Maquina factory preset
+# design: the ambience at a large forward size, long decay, mostly wet
+voice = oneiroi_fx
+name = Big Hall
+category = Space
+tags = long, soft
+mix_ambience = 100
+amb_spacetime = 50
+amb_decay = 110

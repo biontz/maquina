@@ -1,0 +1,20 @@
+# Maquina factory preset
+# design: DRONE on, two octaves down: sine + a little saw under a low lowpass, slow chaos on the cutoff
+voice = oneiroi
+name = Sub Drone
+category = Drone
+tags = long, dark, boomy
+env_drone = 1
+osc_octave = -2
+vol_sine = 127
+vol_osc2 = 50
+osc_detune = 12
+flt_mode = Lowpass
+flt_cutoff = 70
+flt_reso = 40
+mix_filter = 127
+mod_level = 40
+mod_speed = 20
+mod_type = 0
+mix_ambience = 40
+amb_decay = 80

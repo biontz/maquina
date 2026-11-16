@@ -1,0 +1,14 @@
+# Maquina factory preset
+# design: plain sine, long darkened echo (ECHO FILTER below centre = lowpass) with many repeats
+voice = oneiroi
+name = Tape Echo Lead
+category = Lead
+tags = soft, pitched, lo-fi
+vol_sine = 110
+mix_echo = 80
+echo_density = 62
+echo_repeats = 95
+echo_filter = -30
+mix_ambience = 30
+env_attack = 3
+env_release = 50

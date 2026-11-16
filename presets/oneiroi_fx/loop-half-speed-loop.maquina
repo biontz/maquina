@@ -1,0 +1,11 @@
+# Maquina factory preset
+# design: press Record to capture the input; plays it back at half speed with sound-on-sound (until then: the noise buffer)
+voice = oneiroi_fx
+name = Half Speed Loop
+category = Loop
+tags = lo-fi
+vol_input = 110
+vol_looper = 100
+loop_speed = 16
+loop_sos = 110
+mix_ambience = 50

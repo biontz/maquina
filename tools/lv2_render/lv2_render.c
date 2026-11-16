@@ -17,6 +17,9 @@
  * Each note is released 0.15 s later (the LXR voices ignore note-off;
  * Maquina Dredrum's Gate mode holds its decay until then).
  *
+ * Audio inputs (effects, Maquina Oneiroi FX): the same pattern as plucks, a
+ * decaying sine at the note's pitch (left) and a fifth above (right).
+ *
  * SPDX-License-Identifier: GPL-3.0-only
  */
 #include <lilv/lilv.h>
@@ -54,6 +57,7 @@ typedef struct {
     LilvInstance* inst;
     float* controls;
     float* out[2];
+    float* in[2];
     uint8_t* atom_buf;
     uint32_t atom_port;
     float latency;
@@ -112,6 +116,8 @@ static Instance* make_instance(double rate, uint32_t block)
     in->controls = calloc(nports, sizeof(float));
     in->out[0] = calloc(block, sizeof(float));
     in->out[1] = calloc(block, sizeof(float));
+    in->in[0] = calloc(block, sizeof(float));
+    in->in[1] = calloc(block, sizeof(float));
     in->atom_buf = aligned_alloc(16, ATOM_CAP);
 
     LilvNode* audio = lilv_new_uri(world, LV2_CORE__AudioPort);
@@ -122,11 +128,15 @@ static Instance* make_instance(double rate, uint32_t block)
     float* maxs = calloc(nports, sizeof(float));
     float* defs = calloc(nports, sizeof(float));
     lilv_plugin_get_port_ranges_float(plugin, mins, maxs, defs);
-    int audio_idx = 0;
+    int audio_out = 0, audio_in = 0;
     for (uint32_t i = 0; i < nports; i++) {
         const LilvPort* p = lilv_plugin_get_port_by_index(plugin, i);
         if (lilv_port_is_a(plugin, p, audio)) {
-            lilv_instance_connect_port(in->inst, i, in->out[audio_idx++]);
+            if (lilv_port_is_a(plugin, p, input)) {
+                if (audio_in < 2) lilv_instance_connect_port(in->inst, i, in->in[audio_in++]);
+            } else if (audio_out < 2) {
+                lilv_instance_connect_port(in->inst, i, in->out[audio_out++]);
+            }
         } else if (lilv_port_is_a(plugin, p, control)) {
             in->controls[i] = isnan(defs[i]) ? 0.f : defs[i];
             if (lilv_port_is_a(plugin, p, input))
@@ -190,8 +200,30 @@ static void fill_events(Instance* in, uint64_t start, uint32_t frames)
     }
 }
 
+/* the input signal: plucks on the note pattern */
+static double g_rate;
+static void fill_input(Instance* in, uint64_t start, uint32_t frames)
+{
+    for (uint32_t i = 0; i < frames; i++) {
+        const uint64_t f = start + i;
+        float l = 0.f, r = 0.f;
+        for (int k = 0; k < nnotes; k++) {
+            if (!notes[k].vel || notes[k].frame > f) continue;
+            const double t = (double)(f - notes[k].frame) / g_rate;
+            if (t > 1.0) continue;
+            const double hz = 440.0 * pow(2.0, (notes[k].note - 69) / 12.0);
+            const double env = 0.5 * exp(-t * 6.0) * notes[k].vel / 127.0;
+            l += (float)(env * sin(2 * M_PI * hz * t));
+            r += (float)(env * sin(2 * M_PI * hz * 1.5 * t));
+        }
+        in->in[0][i] = l;
+        in->in[1][i] = r;
+    }
+}
+
 static void run_block(Instance* in, uint64_t pos, uint32_t frames)
 {
+    fill_input(in, pos, frames);
     fill_events(in, pos, frames);
     lilv_instance_run(in->inst, frames);
 }
@@ -249,6 +281,7 @@ int main(int argc, char** argv)
     if (!plugin) { fprintf(stderr, "plugin %s not found (LV2_PATH?)\n", uri); return 2; }
     nports = lilv_plugin_get_num_ports(plugin);
 
+    g_rate = rate;
     make_pattern(rate, seconds, aligned);
     const size_t total = (size_t)(seconds * rate);
     float* lr = calloc(total * 2, sizeof(float));

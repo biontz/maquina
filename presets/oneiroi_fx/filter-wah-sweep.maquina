@@ -1,0 +1,13 @@
+# Maquina factory preset
+# design: resonant bandpass swept by the sine modulation
+voice = oneiroi_fx
+name = Wah Sweep
+category = Filter
+tags = modulated
+flt_mode = Bandpass
+flt_cutoff = 85
+flt_reso = 80
+mix_filter = 127
+mod_level = 90
+mod_speed = 60
+mod_type = 21

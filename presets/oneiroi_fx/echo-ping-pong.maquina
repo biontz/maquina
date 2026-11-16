@@ -1,0 +1,9 @@
+# Maquina factory preset
+# design: the 2-tap ping-pong echo at ~0.5 s, medium feedback
+voice = oneiroi_fx
+name = Ping Pong
+category = Echo
+tags = clean
+mix_echo = 85
+echo_density = 45
+echo_repeats = 80

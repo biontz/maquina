@@ -2,6 +2,8 @@
 // voice: locked groups and trigger parameters never change, knob values stay
 // inside the group's min..max window, every value is an integer in range, the
 // filter is never switched off, and the settings string round-trips.
+// Maquina Oneiroi's own randomizer: only the target's knobs change, by no
+// more than the amount allows, pitch in whole semitones.
 // SPDX-License-Identifier: GPL-3.0-only
 #include <cmath>
 #include <cstring>
@@ -75,7 +77,11 @@ int main()
         // a parameter in no group must be a trigger/extra one (gain: a mix control)
         for (uint32_t i = 0; i < n; ++i) {
             const VoiceParam& p = paramAt(d, i);
+            static const char* const kOneiroiPerformance[] = { "loop_record", "loop_source", "loop_clear", "sync" };
+            bool oneiroiPerformance = false;
+            for (const char* sym : kOneiroiPerformance) oneiroiPerformance |= !std::strcmp(p.symbol, sym);
             const bool trigger = !std::strcmp(p.symbol, "gain") ? true
+                                 : maquina::isOneiroi(d.voice) ? oneiroiPerformance
                                  : maquina::hasChannels(d.voice)
                                      ? !std::strcmp(p.symbol, "trig_mode") || std::strstr(p.symbol, "_mute") != nullptr
                                      : p.page == 7;
@@ -116,6 +122,62 @@ int main()
         RandSettings back;
         back.fromString(on.toString().c_str());
         if (back.oscOn[0] || !back.oscOn[1] || back.oscOn[2]) { std::printf("dredrum: oscOn state round trip\n"); ++bad; }
+    }
+
+    // Maquina Oneiroi / FX: the module's randomizer
+    for (const VoiceDef& d : k_voices) {
+        if (!isOneiroi(d.voice)) continue;
+        const uint32_t n = numAllParams(d);
+        std::mt19937 orng(9);
+        for (int target = 0; target < 4; ++target)
+            for (int amount = 0; amount < 3; ++amount) {
+                bool moved = false;
+                for (int round = 0; round < 200; ++round) {
+                    std::vector<float> v(n), before(n);
+                    for (uint32_t i = 0; i < n; ++i) v[i] = float(paramAt(d, i).def);
+                    // start from a random knob position each round
+                    for (uint32_t i = 0; i < d.numParams; ++i)
+                        if (oneiroiTargets(d.params[i].symbol, target))
+                            v[i] = float(oneiroi::fromKnob(d.params[i], float(orng() % 1000) / 999.f));
+                    before = v;
+                    oneiroiRandomize(d, target, amount, v.data(), orng);
+                    for (uint32_t i = 0; i < n; ++i) {
+                        const VoiceParam& p = paramAt(d, i);
+                        if (v[i] == before[i]) continue;
+                        moved = true;
+                        if (!oneiroiTargets(p.symbol, target)) {
+                            std::printf("%s.%s changed outside target %d\n", d.id, p.symbol, target); ++bad;
+                            continue;
+                        }
+                        if (v[i] != std::round(v[i]) || v[i] < lo(p) || v[i] > hi(p)) {
+                            std::printf("%s.%s: %g out of range\n", d.id, p.symbol, v[i]); ++bad;
+                        }
+                        const bool pitch = oneiroi::isPitch(p);
+                        if (pitch && std::fmod(std::fabs(v[i] + 60.f), 10.f) != 0.f) {
+                            std::printf("%s.osc_pitch %g: not a whole semitone\n", d.id, v[i]); ++bad;
+                        }
+                        // knob movement: Mid <= 10 % (pitch 4 semitones), Low <= 2 % (2 semitones), plus rounding
+                        const float dk = std::fabs(oneiroi::toKnob(p, v[i]) - oneiroi::toKnob(p, before[i]));
+                        const float limit = amount == kOneiroiFull ? 1.f
+                                            : pitch ? (amount == kOneiroiMid ? 4.5f : 2.5f) / 12.f + 0.05f
+                                                    : (amount == kOneiroiMid ? 0.10f : 0.02f) + 0.02f;
+                        if (dk > limit) {
+                            std::printf("%s.%s moved %.3f > %.3f (amount %d)\n", d.id, p.symbol, dk, limit, amount);
+                            ++bad;
+                        }
+                    }
+                }
+                const bool noOsc = d.voice == kOneiroiFxVoice && target == kOneiroiOsc; // FX: no oscillators
+                if (!moved && !noOsc) { std::printf("%s: target %d amount %d changed nothing\n", d.id, target, amount); ++bad; }
+            }
+    }
+    {
+        RandSettings o;
+        o.oTarget = 2;
+        o.oAmount = 1;
+        RandSettings back;
+        back.fromString(o.toString().c_str());
+        if (back.oTarget != 2 || back.oAmount != 1) { std::printf("oneiroi: orand state round trip\n"); ++bad; }
     }
 
     RandSettings a;

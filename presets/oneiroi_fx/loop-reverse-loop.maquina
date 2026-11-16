@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: press Record; the loop plays reversed at 1x, ambience on top
+voice = oneiroi_fx
+name = Reverse Loop
+category = Loop
+tags = lo-fi, long
+vol_input = 100
+vol_looper = 110
+loop_speed = -32
+loop_sos = 100
+mix_ambience = 70
+amb_decay = 95

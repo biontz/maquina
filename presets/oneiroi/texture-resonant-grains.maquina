@@ -1,0 +1,18 @@
+# Maquina factory preset
+# design: a short looper slice of the noise buffer exciting the 3-band resonator with dissonance
+voice = oneiroi
+name = Resonant Grains
+category = Texture
+tags = metallic, noisy
+vol_sine = 0
+vol_looper = 90
+loop_length = 18
+loop_speed = 20
+res_tune = 80
+res_feedback = 115
+res_dissonance = 55
+mix_resonator = 110
+mix_ambience = 60
+amb_decay = 90
+env_attack = 10
+env_release = 85

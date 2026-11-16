@@ -16,7 +16,8 @@
     "a_decay": 48,
     "a_level": 127,
     "a_mute": 0,
-    "trig_mode": 0
+    "trig_mode": 0,
+    "gain": 0
    }
   },
   {
@@ -32,7 +33,8 @@
     "a_decay": 80,
     "a_level": 127,
     "a_mute": 0,
-    "trig_mode": 0
+    "trig_mode": 0,
+    "gain": 0
    }
   },
   {
@@ -48,7 +50,8 @@
     "a_decay": 95,
     "a_level": 127,
     "a_mute": 0,
-    "trig_mode": 0
+    "trig_mode": 0,
+    "gain": 0
    }
   },
   {
@@ -64,7 +67,8 @@
     "a_decay": 103,
     "a_level": 127,
     "a_mute": 0,
-    "trig_mode": 0
+    "trig_mode": 0,
+    "gain": 0
    }
   }
  ]

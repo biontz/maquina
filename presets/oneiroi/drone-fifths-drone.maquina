@@ -1,0 +1,17 @@
+# Maquina factory preset
+# design: DRONE on: sine + saw a fifth up (UNISON +32 = x1.5), resonator ringing on top, big room
+voice = oneiroi
+name = Fifths Drone
+category = Drone
+tags = long, clean, pitched
+env_drone = 1
+vol_sine = 100
+vol_osc2 = 60
+osc_detune = 25
+osc_unison = 32
+res_tune = 64
+res_feedback = 95
+mix_resonator = 60
+amb_spacetime = 50
+amb_decay = 105
+mix_ambience = 80

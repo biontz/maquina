@@ -1,0 +1,19 @@
+# Maquina factory preset
+# design: RESO from 90 % (115) switches on the filter's chaotic noise generator; detuned saws into a bandpass, square modulation
+voice = oneiroi
+name = Chaos Hiss
+category = Noise
+tags = noisy, dirty
+env_attack = 20
+env_release = 70
+vol_sine = 40
+vol_osc2 = 80
+osc_detune = 80
+flt_mode = Bandpass
+flt_cutoff = 85
+flt_reso = 120
+mix_filter = 127
+mod_level = 60
+mod_speed = 70
+mod_type = 85
+mix_ambience = 50

@@ -59,7 +59,7 @@ PY
 # Output gain (ExtraParams.hpp, every plugin): +6 / -12 dB scale the whole
 # output (the parameter is set before the first block, so no ramp)
 echo "== gain"
-for n in kick tom snare cymbal hihat dredrum plethora; do
+for n in kick tom snare cymbal hihat dredrum plethora oneiroi oneiroi-fx; do
     for g in 0 6 -12; do
         $QEMU "$TOOLS/lv2_render" urn:maquina:$n 48000 2 "$OUT/$n-gain$g.wav" gain=$g >/dev/null
     done
@@ -70,11 +70,11 @@ def rms(n, g):
     a = array.array("f"); a.frombytes(open(f"{sys.argv[1]}/{n}-gain{g}.wav", "rb").read()[44:])
     return math.sqrt(sum(x * x for x in a) / len(a))
 ok = True
-for n in ("kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora"):
+for n in ("kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora", "oneiroi", "oneiroi-fx"):
     dbs = [20 * math.log10(rms(n, g) / rms(n, 0)) for g in (6, -12)]
     good = abs(dbs[0] - 6) < 0.05 and abs(dbs[1] + 12) < 0.05
     ok &= good
-    print(f"  {n:8s} gain=+6: {dbs[0]:+.2f} dB, gain=-12: {dbs[1]:+.2f} dB  {'ok' if good else 'FAIL'}")
+    print(f"  {n:10s} gain=+6: {dbs[0]:+.2f} dB, gain=-12: {dbs[1]:+.2f} dB  {'ok' if good else 'FAIL'}")
 sys.exit(0 if ok else 1)
 PY
 
@@ -169,5 +169,20 @@ for name, ok in checks:
     print(f"  {name}: {'ok' if ok else 'FAIL'}")
 sys.exit(0 if all(ok for _, ok in checks) else 1)
 PY
+
+# Maquina Oneiroi / Oneiroi FX: engine fidelity and behaviour are
+# tools/oneiroi_ref + tools/oneiroi_test; here the built plugins: isolation,
+# sample rates, the FX processing its input (lv2_render feeds plucks)
+echo "== oneiroi"
+$QEMU "$TOOLS/lv2_render" urn:maquina:oneiroi 48000 3 "$OUT/oneiroi-twin.wav" --twin \
+    twin:osc_pitch=30 twin:vol_looper=100 twin:mix_ambience=90 | sed -n 's/^  twin/  twin/p' || fail=1
+$QEMU "$TOOLS/lv2_render" urn:maquina:oneiroi-fx 48000 3 "$OUT/oneiroi-fx-twin.wav" --twin \
+    twin:mix_ambience=100 twin:vol_looper=80 twin:flt_reso=120 | sed -n 's/^  twin/  twin/p' || fail=1
+for rate in 44100 48000 96000; do
+    $QEMU "$TOOLS/lv2_render" urn:maquina:oneiroi $rate 3 "$OUT/oneiroi-$rate.wav" vol_osc2=90 mix_ambience=60 \
+        mix_echo=50 mix_filter=127 | sed 's/^/  /' || fail=1
+    $QEMU "$TOOLS/lv2_render" urn:maquina:oneiroi-fx $rate 3 "$OUT/oneiroi-fx-$rate.wav" mix_resonator=80 \
+        mix_ambience=60 mix_echo=50 | sed 's/^/  /' || fail=1
+done
 
 [ $fail -eq 0 ] && echo "test_plugins: PASSED" || { echo "test_plugins: FAILED"; exit 1; }

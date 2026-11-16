@@ -32,6 +32,7 @@ BUNDLES = {
     "hihat": "MaquinaHiHat",
     "dredrum": "MaquinaDredrum",
     "plethora": "MaquinaPlethora",
+    "oneiroi": "MaquinaOneiroi",  # Oneiroi FX: Machinista hosts instruments only
 }
 
 PORT_RE = re.compile(
@@ -81,6 +82,11 @@ QUIRKS = {
         "Channel A of the Befaco Noise Plethora (VCV port): 60 algorithms with X/Y, filter, envelope.",
         "Channels B and C of the desktop plugin are not on this profile; they stay off (level 0).",
         "DECAY at max holds while playing. MODE GATE holds the sound while the note is down.",
+    ],
+    "oneiroi": [
+        "Ambient/drone voice from the Befaco Oneiroi firmware: sine + supersaw/wavetable, looper, filter,",
+        "resonator, echo, reverb. Notes open the envelope and set the pitch; DRONE keeps it sounding.",
+        "The randomizer and the looper's recording source (always the output) are as on the module.",
     ],
 }
 

@@ -16,6 +16,7 @@
 
 #include "clap/entry.h"
 #include "clap/plugin-factory.h"
+#include "clap/ext/audio-ports.h"
 #include "clap/ext/latency.h"
 #include "clap/ext/state.h"
 
@@ -104,9 +105,14 @@ static int check(const char* path)
     const uint32_t latency = lat ? lat->get(plugin) : 0;
     plugin->start_processing(plugin);
 
-    float l[256], r[256];
+    float l[256], r[256], il[256] = { 0 }, ir[256] = { 0 };
     float* chans[2] = { l, r };
+    float* in_chans[2] = { il, ir };
     clap_audio_buffer_t out = { chans, NULL, 2, 0, 0 };
+    clap_audio_buffer_t in = { in_chans, NULL, 2, 0, 0 };
+    /* effects (Maquina Oneiroi FX) get a silent stereo input */
+    const clap_plugin_audio_ports_t* ports = (const clap_plugin_audio_ports_t*)plugin->get_extension(plugin, CLAP_EXT_AUDIO_PORTS);
+    const uint32_t n_in = ports ? ports->count(plugin, true) : 0;
     clap_input_events_t in_ev = { NULL, in_size, in_get };
     clap_output_events_t out_ev = { NULL, out_push };
     clap_process_t proc;
@@ -114,6 +120,8 @@ static int check(const char* path)
     proc.frames_count = frames;
     proc.audio_outputs = &out;
     proc.audio_outputs_count = 1;
+    proc.audio_inputs = n_in ? &in : NULL;
+    proc.audio_inputs_count = n_in ? 1 : 0;
     proc.in_events = &in_ev;
     proc.out_events = &out_ev;
     for (int i = 0; i < 4; ++i) {

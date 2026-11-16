@@ -266,6 +266,60 @@ static const FactoryPreset k_plethora_presets[] = {
     { "Runaway Filter", "FX", "pitched, bright", k_plethora_pv18, 2 },
 };
 
+static const PresetValue k_oneiroi_pv0[] = { { 9, 70 }, { 12, 92 }, { 22, -45 }, { 23, 100 }, { 29, 50 }, { 30, 95 }, { 31, 127 }, { 34, 105 }, { 35, 60 }, { 38, 100 } };
+static const PresetValue k_oneiroi_pv1[] = { { 9, 45 }, { 12, 88 }, { 13, 25 }, { 23, 95 }, { 25, 35 }, { 26, 40 }, { 27, 21 }, { 29, 70 }, { 30, 100 }, { 31, 127 }, { 34, 70 }, { 35, 75 }, { 38, 96 } };
+static const PresetValue k_oneiroi_pv2[] = { { 9, 25 }, { 10, 32 }, { 17, 95 }, { 22, 50 }, { 23, 105 }, { 30, 60 }, { 32, 60 }, { 34, 80 }, { 39, 1 } };
+static const PresetValue k_oneiroi_pv3[] = { { 8, -2 }, { 9, 12 }, { 12, 70 }, { 13, 40 }, { 23, 80 }, { 25, 40 }, { 26, 20 }, { 29, 127 }, { 30, 50 }, { 31, 127 }, { 34, 40 }, { 39, 1 } };
+static const PresetValue k_oneiroi_pv4[] = { { 0, 20 }, { 2, 18 }, { 16, 80 }, { 17, 115 }, { 18, 55 }, { 23, 90 }, { 28, 90 }, { 29, 0 }, { 32, 110 }, { 34, 60 }, { 35, 10 }, { 38, 85 } };
+static const PresetValue k_oneiroi_pv5[] = { { 9, 80 }, { 11, 1 }, { 19, 40 }, { 20, 70 }, { 23, 90 }, { 29, 40 }, { 30, 100 }, { 33, 40 }, { 34, 70 }, { 35, 30 }, { 38, 90 } };
+static const PresetValue k_oneiroi_pv6[] = { { 9, 20 }, { 12, 40 }, { 13, 110 }, { 14, 3 }, { 19, 45 }, { 20, 50 }, { 29, 127 }, { 30, 100 }, { 31, 40 }, { 33, 45 }, { 35, 5 }, { 36, 60 }, { 37, 100 }, { 38, 45 } };
+static const PresetValue k_oneiroi_pv7[] = { { 19, 62 }, { 20, 95 }, { 21, -30 }, { 29, 110 }, { 33, 80 }, { 34, 30 }, { 35, 3 }, { 38, 50 } };
+static const PresetValue k_oneiroi_pv8[] = { { 9, 80 }, { 12, 85 }, { 13, 120 }, { 14, 1 }, { 25, 60 }, { 26, 70 }, { 27, 85 }, { 29, 40 }, { 30, 80 }, { 31, 127 }, { 34, 50 } };
+static const PresetValue k_oneiroi_pv9[] = { { 0, 8 }, { 12, 80 }, { 13, 80 }, { 14, 1 }, { 23, 95 }, { 25, 70 }, { 26, 30 }, { 28, 110 }, { 29, 0 }, { 31, 127 }, { 34, 90 }, { 35, 80 }, { 38, 100 } };
+static const PresetValue k_oneiroi_pv10[] = { { 0, -16 }, { 2, 90 }, { 3, 90 }, { 9, 40 }, { 28, 70 }, { 29, 80 }, { 30, 60 }, { 33, 30 }, { 34, 60 }, { 35, 10 }, { 38, 80 } };
+static const PresetValue k_oneiroi_pv11[] = { { 9, 60 }, { 12, 75 }, { 13, 95 }, { 19, 35 }, { 20, 70 }, { 25, 100 }, { 26, 95 }, { 27, 106 }, { 29, 30 }, { 30, 110 }, { 31, 127 }, { 33, 60 }, { 35, 2 }, { 38, 60 } };
+static const FactoryPreset k_oneiroi_presets[] = {
+    { "Reverse Swell", "Pad", "long, soft, dark", k_oneiroi_pv0, 10 },
+    { "Warm Saw Pad", "Pad", "long, soft, modulated", k_oneiroi_pv1, 13 },
+    { "Fifths Drone", "Drone", "long, clean, pitched", k_oneiroi_pv2, 9 },
+    { "Sub Drone", "Drone", "long, dark, boomy", k_oneiroi_pv3, 12 },
+    { "Resonant Grains", "Texture", "metallic, noisy", k_oneiroi_pv4, 12 },
+    { "Wavetable Dust", "Texture", "bright, noisy", k_oneiroi_pv5, 11 },
+    { "Comb Lead", "Lead", "bright, pitched", k_oneiroi_pv6, 14 },
+    { "Tape Echo Lead", "Lead", "soft, pitched, lo-fi", k_oneiroi_pv7, 8 },
+    { "Chaos Hiss", "Noise", "noisy, dirty", k_oneiroi_pv8, 11 },
+    { "Wind Noise", "Noise", "noisy, modulated", k_oneiroi_pv9, 13 },
+    { "Bent Loop", "FX", "lo-fi, modulated", k_oneiroi_pv10, 11 },
+    { "Sample & Hold Zaps", "FX", "bright, modulated", k_oneiroi_pv11, 14 },
+};
+
+static const PresetValue k_oneiroi_fx_pv0[] = { { 18, 50 }, { 19, 110 }, { 29, 100 } };
+static const PresetValue k_oneiroi_fx_pv1[] = { { 15, 60 }, { 16, 50 }, { 18, -50 }, { 19, 100 }, { 20, 60 }, { 28, 40 }, { 29, 110 } };
+static const PresetValue k_oneiroi_fx_pv2[] = { { 18, 8 }, { 19, 60 }, { 29, 80 } };
+static const PresetValue k_oneiroi_fx_pv3[] = { { 8, 95 }, { 11, 2 }, { 15, 62 }, { 16, 112 }, { 17, -35 }, { 19, 90 }, { 21, 50 }, { 22, 35 }, { 23, 21 }, { 26, 110 }, { 28, 95 }, { 29, 50 } };
+static const PresetValue k_oneiroi_fx_pv4[] = { { 15, 45 }, { 16, 80 }, { 28, 85 } };
+static const PresetValue k_oneiroi_fx_pv5[] = { { 0, 16 }, { 3, 110 }, { 24, 110 }, { 25, 100 }, { 29, 50 } };
+static const PresetValue k_oneiroi_fx_pv6[] = { { 0, -32 }, { 3, 100 }, { 19, 95 }, { 24, 100 }, { 25, 110 }, { 29, 70 } };
+static const PresetValue k_oneiroi_fx_pv7[] = { { 12, 90 }, { 13, 105 }, { 14, 100 }, { 19, 100 }, { 27, 120 }, { 29, 70 } };
+static const PresetValue k_oneiroi_fx_pv8[] = { { 13, 112 }, { 27, 110 }, { 29, 50 } };
+static const PresetValue k_oneiroi_fx_pv9[] = { { 8, 50 }, { 9, 100 }, { 10, 3 }, { 11, 3 }, { 21, 70 }, { 22, 45 }, { 23, 42 }, { 26, 55 } };
+static const PresetValue k_oneiroi_fx_pv10[] = { { 8, 85 }, { 9, 80 }, { 10, 1 }, { 21, 90 }, { 22, 60 }, { 23, 21 }, { 26, 127 } };
+static const PresetValue k_oneiroi_fx_pv11[] = { { 8, 80 }, { 9, 124 }, { 19, 100 }, { 26, 100 }, { 29, 70 } };
+static const FactoryPreset k_oneiroi_fx_presets[] = {
+    { "Big Hall", "Space", "long, soft", k_oneiroi_fx_pv0, 3 },
+    { "Reverse Cloud", "Space", "long, dark, modulated", k_oneiroi_fx_pv1, 7 },
+    { "Small Room", "Space", "short, bright, clean", k_oneiroi_fx_pv2, 3 },
+    { "Dub Wash", "Echo", "long, dark, modulated", k_oneiroi_fx_pv3, 12 },
+    { "Ping Pong", "Echo", "clean", k_oneiroi_fx_pv4, 3 },
+    { "Half Speed Loop", "Loop", "lo-fi", k_oneiroi_fx_pv5, 5 },
+    { "Reverse Loop", "Loop", "lo-fi, long", k_oneiroi_fx_pv6, 6 },
+    { "Dissonant Metal", "Resonant", "metallic, dirty", k_oneiroi_fx_pv7, 6 },
+    { "Resonant Strings", "Resonant", "metallic, pitched", k_oneiroi_fx_pv8, 3 },
+    { "Comb Flanger", "Filter", "metallic, modulated", k_oneiroi_fx_pv9, 8 },
+    { "Wah Sweep", "Filter", "modulated", k_oneiroi_fx_pv10, 7 },
+    { "Chaos Bed", "Noise", "noisy, dirty", k_oneiroi_fx_pv11, 5 },
+};
+
 struct VoicePresets { const FactoryPreset* presets; uint32_t count; };
 // in k_voices order
 static const VoicePresets k_factory_presets[] = {
@@ -276,6 +330,8 @@ static const VoicePresets k_factory_presets[] = {
     { k_hihat_presets, 14 },
     { k_dredrum_presets, 16 },
     { k_plethora_presets, 19 },
+    { k_oneiroi_presets, 12 },
+    { k_oneiroi_fx_presets, 12 },
 };
 
 } // namespace maquina

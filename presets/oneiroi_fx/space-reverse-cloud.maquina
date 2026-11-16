@@ -1,0 +1,13 @@
+# Maquina factory preset
+# design: reversed ambience (SPACETIME below centre) with auto-pan and a soft echo
+voice = oneiroi_fx
+name = Reverse Cloud
+category = Space
+tags = long, dark, modulated
+mix_ambience = 110
+amb_spacetime = -50
+amb_decay = 100
+amb_autopan = 60
+mix_echo = 40
+echo_density = 60
+echo_repeats = 50

@@ -33,6 +33,11 @@ struct VoiceParam {
 // VoiceDef::voice of the non-LXR voices
 constexpr uint8_t kDredrumVoice = 16;  // Maquina Dredrum (engine/dredrum)
 constexpr uint8_t kPlethoraVoice = 17; // Maquina Plethora (engine/plethora)
+constexpr uint8_t kOneiroiVoice = 18;   // Maquina Oneiroi (engine/oneiroi)
+constexpr uint8_t kOneiroiFxVoice = 19; // Maquina Oneiroi FX (engine/oneiroi, no oscillators)
+// the LXR-02 voices (EngineHost); everything else is a Maquina port of another device
+inline bool isLxrVoice(uint8_t voice) { return voice < kDredrumVoice; }
+inline bool isOneiroi(uint8_t voice) { return voice == kOneiroiVoice || voice == kOneiroiFxVoice; }
 // voices built from 3 channels/oscillators with their own random ROLL/RND
 // switches; no extra (LXR) parameters
 inline bool hasChannels(uint8_t voice) { return voice == kDredrumVoice || voice == kPlethoraVoice; }
@@ -40,7 +45,7 @@ inline bool hasChannels(uint8_t voice) { return voice == kDredrumVoice || voice 
 struct VoiceDef {
     const char* id;
     const char* name;
-    uint8_t voice;        // engine voice slot (LxrVoice), or kDredrumVoice / kPlethoraVoice
+    uint8_t voice;        // engine voice slot (LxrVoice), or kDredrumVoice ... kOneiroiFxVoice
     const VoiceParam* params;
     uint32_t numParams;
 };

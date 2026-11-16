@@ -1,0 +1,10 @@
+# Maquina factory preset
+# design: the 3-band resonator at high feedback: plucked input rings like strings
+voice = oneiroi_fx
+name = Resonant Strings
+category = Resonant
+tags = metallic, pitched
+mix_resonator = 110
+res_feedback = 112
+res_tune = 64
+mix_ambience = 50

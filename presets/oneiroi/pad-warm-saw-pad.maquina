@@ -1,0 +1,21 @@
+# Maquina factory preset
+# design: supersaw + sine through a lowpass the slow sine LFO moves; slow attack and release, hall
+voice = oneiroi
+name = Warm Saw Pad
+category = Pad
+tags = long, soft, modulated
+vol_sine = 70
+vol_osc2 = 100
+osc_detune = 45
+flt_mode = Lowpass
+flt_cutoff = 88
+flt_reso = 25
+mix_filter = 127
+mod_level = 35
+mod_speed = 40
+mod_type = 21
+amb_spacetime = 40
+amb_decay = 95
+mix_ambience = 70
+env_attack = 75
+env_release = 96

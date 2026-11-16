@@ -1,0 +1,9 @@
+# Maquina factory preset
+# design: SPACETIME near centre: the smallest, brightest room
+voice = oneiroi_fx
+name = Small Room
+category = Space
+tags = short, bright, clean
+mix_ambience = 80
+amb_spacetime = 8
+amb_decay = 60

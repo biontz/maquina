@@ -12,8 +12,9 @@
 //   osc_wave = Sine           (selectors may use the label)
 //
 // Parameters not listed take their default. A preset holds the sound only:
-// performance settings (Key Track, Dredrum/Plethora Mode and Mutes; the
-// parameters in no Randomizer group) are never changed by loading a preset.
+// performance settings (Key Track, Dredrum/Plethora Mode and Mutes, Oneiroi
+// Record/Clear/Sync; the parameters in no Randomizer group) are never changed
+// by loading a preset.
 //
 // SPDX-License-Identifier: GPL-3.0-only
 #pragma once
@@ -48,6 +49,8 @@ static const VoiceCategories kPresetCategories[] = {
     { "hihat", { "Analog", "Metallic", "Noise", "Acoustic", "Lo-Fi", "FX" } },
     { "dredrum", { "Kick", "Snare", "Hat", "Perc", "Zap", "Drone", "FX" } },
     { "plethora", { "Noise", "Metallic", "Glitch", "Tonal", "Perc", "Drone", "FX" } },
+    { "oneiroi", { "Pad", "Drone", "Texture", "Lead", "Noise", "FX" } },
+    { "oneiroi_fx", { "Space", "Echo", "Loop", "Resonant", "Filter", "Noise" } },
 };
 static const char* const kPresetTags[] = { "short", "long", "punchy", "boomy", "soft", "bright", "dark",
                                            "clean", "dirty", "metallic", "noisy", "pitched", "lo-fi",

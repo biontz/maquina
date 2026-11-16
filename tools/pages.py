@@ -87,6 +87,34 @@ PAGES["plethora"] = [
     ("MUTES", ["a_mute", "b_mute", "c_mute", "gain", "trig_mode", "a_level", "b_level", "c_level"]),
 ]
 
+# Maquina Oneiroi / Oneiroi FX: the module's sections, SHIFT functions next
+# to their knob, each effect with its dry/wet fader
+_ONEIROI_FX_PAGES = [
+    ("FILTER / RESO", ["flt_cutoff", "flt_reso", "flt_mode", "flt_pos", "res_tune", "res_feedback",
+                       "res_dissonance", "mix_resonator"]),
+    ("ECHO / AMBIENCE", ["echo_density", "echo_repeats", "echo_filter", "mix_echo", "amb_spacetime", "amb_decay",
+                         "amb_autopan", "mix_ambience"]),
+]
+PAGES["oneiroi"] = [
+    ("OSC / MIX", ["@bank", "@patch", "osc_pitch", "osc_detune", "vol_sine", "vol_osc2", "vol_looper", "env_drone"]),
+    ("LOOPER", ["loop_speed", "loop_start", "loop_length", "loop_sos", "loop_filter", "loop_record", "loop_clear",
+                "vol_looper"]),
+] + _ONEIROI_FX_PAGES + [
+    ("MOD / OSC", ["mod_level", "mod_speed", "mod_type", "osc_octave", "osc_unison", "osc2_mode", "mix_filter",
+                   "sync"]),
+    ("ENVELOPE", ["env_attack", "env_decay", "env_sustain", "env_release", "env_drone", "gain", "osc_pitch",
+                  "osc_octave"]),
+]
+PAGES["oneiroi_fx"] = [
+    ("INPUT / LOOPER", ["@bank", "@patch", "vol_input", "vol_looper", "loop_record", "loop_source", "loop_clear",
+                        "sync"]),
+    ("LOOPER", ["loop_speed", "loop_start", "loop_length", "loop_sos", "loop_filter", "loop_record", "vol_looper",
+                "vol_input"]),
+] + _ONEIROI_FX_PAGES + [
+    ("MOD / MIX", ["mod_level", "mod_speed", "mod_type", "mix_filter", "mix_resonator", "mix_echo", "mix_ambience",
+                   "gain"]),
+]
+
 # Machinista profiles that differ from PAGES: only these pages, and the
 # profile (and its preset banks) only holds the parameters on them; the rest
 # keep their defaults. Maquina Plethora on Machinista = channel A only (B and
@@ -107,6 +135,8 @@ CLAP_FILL = {
     "hihat": ["drive", "decimation"],
     "dredrum": ["trig_mode", "click"],
     "plethora": ["a_level", "a_decay"],
+    "oneiroi": ["mix_echo", "mix_ambience"],
+    "oneiroi_fx": ["mix_echo", "mix_ambience"],
 }
 
 

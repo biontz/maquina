@@ -1,6 +1,7 @@
 # plugin.mk - shared Makefile part for the voice plugins.
 # Set NAME and MAQUINA_VOICE_INDEX (and MAQUINA_DREDRUM = 1 for Maquina
-# Dredrum, MAQUINA_PLETHORA = 1 for Maquina Plethora), then include this file.
+# Dredrum, MAQUINA_PLETHORA = 1 for Maquina Plethora, MAQUINA_ONEIROI = 1 for
+# Maquina Oneiroi / Oneiroi FX), then include this file.
 
 MAQUINA_ROOT := $(abspath ../..)
 
@@ -19,6 +20,10 @@ endif
 FILES_DSP = Plugin.cpp
 # Maquina Plethora: the Noise Plethora port in its own translation unit
 ifeq ($(MAQUINA_PLETHORA),1)
+FILES_DSP += Engine.cpp
+endif
+# Maquina Oneiroi: the Oneiroi engine + OWL library in their own translation unit
+ifeq ($(MAQUINA_ONEIROI),1)
 FILES_DSP += Engine.cpp
 endif
 
@@ -42,6 +47,13 @@ endif
 ifeq ($(MAQUINA_PLETHORA),1)
 BUILD_CXX_FLAGS += -DMAQUINA_PLETHORA=1 -I$(MAQUINA_ROOT)/engine/plethora/compat \
 	-I$(MAQUINA_ROOT)/third_party/noise-plethora/src
+endif
+# MAQUINA_ONEIROI=1: the Befaco Oneiroi engine (OneiroiHost). The OWL library
+# type-puns floats (fastpow.c, Commons.h Power()): no strict aliasing.
+ifeq ($(MAQUINA_ONEIROI),1)
+BUILD_CXX_FLAGS += -DMAQUINA_ONEIROI=1 -fno-strict-aliasing -I$(MAQUINA_ROOT)/engine/oneiroi/compat \
+	-I$(MAQUINA_ROOT)/engine/oneiroi -I$(MAQUINA_ROOT)/third_party/oneiroi \
+	-I$(MAQUINA_ROOT)/third_party/owlprogram/LibSource
 endif
 BUILD_CXX_FLAGS += -std=gnu++17 -DMAQUINA_VOICE_INDEX=$(MAQUINA_VOICE_INDEX) \
 	-I$(MAQUINA_ROOT)/plugins/common -I$(MAQUINA_ROOT)/engine \

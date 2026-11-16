@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: resonator with DISSONANCE up and high feedback, into a big room
+voice = oneiroi_fx
+name = Dissonant Metal
+category = Resonant
+tags = metallic, dirty
+mix_resonator = 120
+res_feedback = 105
+res_dissonance = 100
+res_tune = 90
+mix_ambience = 70
+amb_decay = 100

@@ -501,5 +501,177 @@
         ]
       }
     ]
+  },
+  "oneiroi": {
+    "name": "Oneiroi",
+    "pages": [
+      {
+        "title": "LOOPER",
+        "controls": [
+          "loop_speed",
+          "loop_start",
+          "loop_length",
+          "loop_sos",
+          "loop_filter",
+          "loop_record",
+          "loop_clear"
+        ]
+      },
+      {
+        "title": "OSCILLATORS",
+        "controls": [
+          "osc_pitch",
+          "osc_octave",
+          "osc_detune",
+          "osc_unison",
+          "osc2_mode"
+        ]
+      },
+      {
+        "title": "FILTER",
+        "controls": [
+          "flt_cutoff",
+          "flt_reso",
+          "flt_mode",
+          "flt_pos"
+        ]
+      },
+      {
+        "title": "RESONATOR",
+        "controls": [
+          "res_tune",
+          "res_feedback",
+          "res_dissonance"
+        ]
+      },
+      {
+        "title": "ECHO",
+        "controls": [
+          "echo_density",
+          "echo_repeats",
+          "echo_filter"
+        ]
+      },
+      {
+        "title": "AMBIENCE",
+        "controls": [
+          "amb_spacetime",
+          "amb_decay",
+          "amb_autopan"
+        ]
+      },
+      {
+        "title": "MODULATION",
+        "controls": [
+          "mod_level",
+          "mod_speed",
+          "mod_type"
+        ]
+      },
+      {
+        "title": "MIX",
+        "controls": [
+          "vol_looper",
+          "vol_sine",
+          "vol_osc2",
+          "mix_filter",
+          "mix_resonator",
+          "mix_echo",
+          "mix_ambience"
+        ]
+      },
+      {
+        "title": "ENVELOPE",
+        "controls": [
+          "env_attack",
+          "env_decay",
+          "env_sustain",
+          "env_release",
+          "env_drone"
+        ]
+      },
+      {
+        "title": "GLOBAL",
+        "controls": [
+          "sync"
+        ]
+      }
+    ]
+  },
+  "oneiroi_fx": {
+    "name": "Oneiroi FX",
+    "pages": [
+      {
+        "title": "LOOPER",
+        "controls": [
+          "loop_speed",
+          "loop_start",
+          "loop_length",
+          "loop_sos",
+          "loop_filter",
+          "loop_record",
+          "loop_source",
+          "loop_clear"
+        ]
+      },
+      {
+        "title": "FILTER",
+        "controls": [
+          "flt_cutoff",
+          "flt_reso",
+          "flt_mode",
+          "flt_pos"
+        ]
+      },
+      {
+        "title": "RESONATOR",
+        "controls": [
+          "res_tune",
+          "res_feedback",
+          "res_dissonance"
+        ]
+      },
+      {
+        "title": "ECHO",
+        "controls": [
+          "echo_density",
+          "echo_repeats",
+          "echo_filter"
+        ]
+      },
+      {
+        "title": "AMBIENCE",
+        "controls": [
+          "amb_spacetime",
+          "amb_decay",
+          "amb_autopan"
+        ]
+      },
+      {
+        "title": "MODULATION",
+        "controls": [
+          "mod_level",
+          "mod_speed",
+          "mod_type"
+        ]
+      },
+      {
+        "title": "MIX",
+        "controls": [
+          "vol_input",
+          "vol_looper",
+          "mix_filter",
+          "mix_resonator",
+          "mix_echo",
+          "mix_ambience"
+        ]
+      },
+      {
+        "title": "GLOBAL",
+        "controls": [
+          "sync"
+        ]
+      }
+    ]
   }
 }

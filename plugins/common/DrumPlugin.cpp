@@ -14,6 +14,8 @@
 #include "DredrumHost.hpp"
 #elif MAQUINA_PLETHORA
 #include "PlethoraHost.hpp"
+#elif MAQUINA_ONEIROI
+#include "OneiroiHost.hpp"
 #else
 #include "EngineHost.hpp"
 #endif
@@ -32,6 +34,8 @@ START_NAMESPACE_DISTRHO
 using Engine = maquina::DredrumHost; // Maquina Dredrum: the Dredrum firmware engine
 #elif MAQUINA_PLETHORA
 using Engine = maquina::PlethoraHost; // Maquina Plethora: the Noise Plethora (VCV port)
+#elif MAQUINA_ONEIROI
+using Engine = maquina::OneiroiHost; // Maquina Oneiroi / Oneiroi FX: the Befaco Oneiroi
 #else
 using Engine = maquina::EngineHost;  // the LXR-02 firmware engine
 #endif
@@ -50,16 +54,17 @@ static uint8_t extraPage() { return hasChannelsVoice() ? 3 : 7; }
 
 // DPF wants port group ids 0..N-1 without gaps; the snare has no FM page.
 struct PageGroups {
-    int8_t groupOfPage[8];
-    uint8_t pageOfGroup[8];
+    static constexpr uint8_t kMaxPages = 16;
+    int8_t groupOfPage[kMaxPages];
+    uint8_t pageOfGroup[kMaxPages];
     uint8_t count = 0;
     PageGroups()
     {
-        bool used[8] = {};
+        bool used[kMaxPages] = {};
         for (uint32_t i = 0; i < voiceDef().numParams; ++i)
-            used[voiceDef().params[i].page] = true;
+            used[voiceDef().params[i].page % kMaxPages] = true;
         used[extraPage()] = true; // the extra parameters (ExtraParams.hpp)
-        for (uint8_t pg = 0; pg < 8; ++pg) {
+        for (uint8_t pg = 0; pg < kMaxPages; ++pg) {
             groupOfPage[pg] = used[pg] ? int8_t(count) : -1;
             if (used[pg])
                 pageOfGroup[count++] = pg;
@@ -81,8 +86,14 @@ static const char* const kDredrumPageNames[4] = { "Osc 1", "Osc 2", "Osc 3", "Mo
 static const char* const kDredrumPageSymbols[4] = { "osc1", "osc2", "osc3", "mode" };
 static const char* const kPlethoraPageNames[4] = { "Channel A", "Channel B", "Channel C", "Global" };
 static const char* const kPlethoraPageSymbols[4] = { "chan_a", "chan_b", "chan_c", "global" };
+// Maquina Oneiroi pages: the module's sections (tools/gen_params.py ONEIROI_PAGE_TITLES)
+static const char* const kOneiroiPageNames[10] = { "Looper", "Oscillators", "Filter", "Resonator", "Echo",
+                                                   "Ambience", "Modulation", "Mix", "Envelope", "Global" };
+static const char* const kOneiroiPageSymbols[10] = { "looper", "osc", "filter", "resonator", "echo",
+                                                     "ambience", "mod", "mix", "env", "global" };
 static bool isDredrum() { return voiceDef().voice == maquina::kDredrumVoice; }
 static bool isPlethora() { return voiceDef().voice == maquina::kPlethoraVoice; }
+static bool isOneiroi() { return maquina::isOneiroi(voiceDef().voice); }
 
 // Noise seed: differs per instance (like the hardware RNG) unless
 // MAQUINA_RNG_SEED is set, which makes renders reproducible for tests.
@@ -116,6 +127,12 @@ protected:
         if (isPlethora())
             return "Noise voice after the Befaco Noise Plethora (its VCV Rack port): 2 x 60 algorithms "
                    "+ noise, filters, envelopes (unofficial; not affiliated with Befaco).";
+        if (voiceDef().voice == maquina::kOneiroiFxVoice)
+            return "Looper, filter, resonator, echo and reverb from the Befaco Oneiroi firmware "
+                   "(unofficial; not affiliated with Befaco).";
+        if (isOneiroi())
+            return "Ambient/drone synth voice from the Befaco Oneiroi firmware: oscillators, looper, filter, "
+                   "resonator, echo, reverb (unofficial; not affiliated with Befaco).";
         return "Drum voice from the LXR-02 firmware sound engine "
                "(unofficial; not affiliated with Erica Synths).";
     }
@@ -124,6 +141,7 @@ protected:
     {
         return isDredrum()     ? "https://github.com/buranelectrix/dredrum"
                : isPlethora() ? "https://github.com/VCVRack/Befaco"
+               : isOneiroi()  ? "https://github.com/Befaco/Oneiroi"
                               : "https://github.com/erica-synths/lxr-desktop-app";
     }
     const char* getLicense() const override { return "GPL-3.0-only"; }
@@ -132,6 +150,11 @@ protected:
     void initPortGroup(uint32_t groupId, PortGroup& group) override
     {
         const uint8_t page = pageGroups().pageOfGroup[groupId];
+        if (isOneiroi()) {
+            group.name = kOneiroiPageNames[page % 10];
+            group.symbol = kOneiroiPageSymbols[page % 10];
+            return;
+        }
         if (isDredrum() || isPlethora()) {
             group.name = (isDredrum() ? kDredrumPageNames : kPlethoraPageNames)[page & 3];
             group.symbol = (isDredrum() ? kDredrumPageSymbols : kPlethoraPageSymbols)[page & 3];
@@ -267,12 +290,28 @@ protected:
         setLatency(fEngine.latencyFrames());
     }
 
-    void run(const float**, float** outputs, uint32_t frames,
+#if DISTRHO_PLUGIN_WANT_MIDI_INPUT
+    void run(const float** inputs, float** outputs, uint32_t frames,
              const MidiEvent* midiEvents, uint32_t midiEventCount) override
+#else
+    void run(const float** inputs, float** outputs, uint32_t frames) override
+#endif
     {
         const TimePosition& pos = getTimePosition();
         if (pos.bbt.valid && pos.bbt.beatsPerMinute > 0.0)
             fEngine.setTempo(pos.bbt.beatsPerMinute);
+#if MAQUINA_ONEIROI
+        // SYNC: the transport's position in beats (bar 1 beat 1 = 0)
+        if (pos.bbt.valid && pos.bbt.beatsPerMinute > 0.0 && pos.bbt.ticksPerBeat > 0.0) {
+            const double beat = double(pos.bbt.bar - 1) * pos.bbt.beatsPerBar + double(pos.bbt.beat - 1) +
+                                pos.bbt.tick / pos.bbt.ticksPerBeat;
+            fEngine.setTransport(pos.playing, beat, pos.bbt.beatsPerBar,
+                                 pos.bbt.beatsPerMinute / 60.0 / getSampleRate());
+        } else {
+            fEngine.setTransport(false, 0.0, 4.0, 0.0);
+        }
+#endif
+#if DISTRHO_PLUGIN_WANT_MIDI_INPUT
 
         for (uint32_t i = 0; i < midiEventCount; ++i) {
             const MidiEvent& ev = midiEvents[i];
@@ -284,8 +323,14 @@ protected:
             else if (status == 0x80 || status == 0x90)
                 fEngine.noteOff(ev.frame, ev.data[1]);
         }
+#endif
 
+#if MAQUINA_ONEIROI && DISTRHO_PLUGIN_NUM_INPUTS == 2
+        fEngine.process(inputs[0], inputs[1], outputs[0], outputs[1], frames);
+#else
+        (void)inputs;
         fEngine.process(outputs[0], outputs[1], frames);
+#endif
         applyGain(outputs[0], outputs[1], frames);
     }
 

@@ -22,10 +22,11 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TABLES = os.path.join(ROOT, "plugins", "common", "VoiceTables.generated.hpp")
 EXTRA = os.path.join(ROOT, "plugins", "common", "ExtraParams.hpp")
 OUT_HPP = os.path.join(ROOT, "plugins", "common", "RemotePages.generated.hpp")
-VOICES = ["kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora"]  # order of k_voices / MAQUINA_VOICE_INDEX
+VOICES = ["kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora", "oneiroi",
+          "oneiroi_fx"]  # order of k_voices / MAQUINA_VOICE_INDEX
 EXTRA_SYMBOLS = {v: {"note_pitch", "gain"} for v in VOICES}
-EXTRA_SYMBOLS["dredrum"] = {"gain"}  # numExtraParams() == 1
-EXTRA_SYMBOLS["plethora"] = {"gain"}
+for v in ("dredrum", "plethora", "oneiroi", "oneiroi_fx"):
+    EXTRA_SYMBOLS[v] = {"gain"}  # numExtraParams() == 1
 
 
 def voice_symbols():
@@ -75,7 +76,7 @@ def main():
         if missing:
             print(f"{voice}: parameters on no page: {sorted(missing)}")
             errors += 1
-        print(f"{voice:7s} {len(pages)} pages")
+        print(f"{voice:10s} {len(pages)} pages")
     out.append("")
     out.append("static const ClapRemotePages k_remote_pages[] = {")
     for voice in VOICES:

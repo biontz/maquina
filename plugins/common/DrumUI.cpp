@@ -15,6 +15,8 @@
 // (min..max % of each control's range) the random values are picked from.
 // Maquina Dredrum: each OSC section's title bar has ROLL (randomize only that
 // oscillator) and RND ON/OFF (whether RANDOM includes it); BACK undoes both.
+// Maquina Oneiroi / Oneiroi FX: the module's randomizer instead (TARGET,
+// AMOUNT, RANDOM, UNDO/REDO; Randomizer.hpp oneiroiRandomize).
 //
 // SPDX-License-Identifier: GPL-3.0-only
 #include "DistrhoUI.hpp"
@@ -129,7 +131,7 @@ struct ItemSpec { const char* symbol; const char* label; };
 struct SectionSpec {
     const char* title;
     GraphKind graph;
-    ItemSpec items[10];
+    ItemSpec items[14];
 };
 
 const SectionSpec kSections[] = {
@@ -156,10 +158,13 @@ const SectionSpec kSections[] = {
         { "lfo_offset", "Phase" }, { "lfo_target", "Target" }, { "lfo_retrigger", "Retrig" } } },
     { "VELOCITY", GraphKind::None,
       { { "velo_dest", "Dest" }, { "velo_amount", "Amount" }, { "velo_volume", "> Vol" } } },
-    // + the output gain (ExtraParams.hpp, all voices; Dredrum/Plethora: Gain only)
+    // + the output gain (ExtraParams.hpp, all voices; Dredrum/Plethora: Gain only;
+    // Oneiroi: the module's faders before it)
     { "MIX", GraphKind::None,
       { { "volume", "Volume" }, { "pan", "Pan" }, { "drive", "Drive" }, { "decimation", "Rate" },
-        { "gain", "Gain" } } },
+        { "vol_input", "Input" }, { "vol_looper", "Looper" }, { "vol_sine", "Sine" }, { "vol_osc2", "Saw / WT" },
+        { "mix_filter", "Filter" }, { "mix_resonator", "Reso" }, { "mix_echo", "Echo" },
+        { "mix_ambience", "Ambience" }, { "gain", "Gain" } } },
     // Key Track: every note triggers; on = the played note sets the pitch
     { "KEY", GraphKind::None, { { "note_pitch", "Track" } } },
     // Maquina Dredrum
@@ -192,7 +197,28 @@ const SectionSpec kSections[] = {
       { { "c_source", "Source" }, { "c_grit", "Grit" }, { "c_ftype", "Filter" }, { "c_cutoff", "Cutoff" },
         { "c_reso", "Reso" }, { "c_attack", "Attack" }, { "c_decay", "Decay" }, { "c_level", "Level" },
         { "c_mute", "Mute" } } },
-    { "GLOBAL", GraphKind::None, { { "env_sync", "Env Sync" } } }, // + MODE (trig_mode), shared with Dredrum
+    { "GLOBAL", GraphKind::None, { { "env_sync", "Env Sync" }, { "sync", "Sync" } } }, // + MODE (trig_mode), shared with Dredrum
+    // Maquina Oneiroi / Oneiroi FX: the module's sections (SHIFT functions next to their knob)
+    { "LOOPER", GraphKind::None,
+      { { "loop_speed", "Speed" }, { "loop_start", "Start" }, { "loop_length", "Length" }, { "loop_sos", "SOS" },
+        { "loop_filter", "Filter" }, { "loop_record", "Record" }, { "loop_source", "Source" },
+        { "loop_clear", "Clear" } } },
+    { "OSCILLATORS", GraphKind::None,
+      { { "osc_pitch", "Pitch" }, { "osc_octave", "Octave" }, { "osc_detune", "Detune" }, { "osc_unison", "Unison" },
+        { "osc2_mode", "Osc 2" } } },
+    { "MODULATION", GraphKind::None,
+      { { "mod_level", "Level" }, { "mod_speed", "Speed" }, { "mod_type", "Type" } } },
+    { "FILTER", GraphKind::None,
+      { { "flt_cutoff", "Cutoff" }, { "flt_reso", "Reso" }, { "flt_mode", "Mode" }, { "flt_pos", "Position" } } },
+    { "RESONATOR", GraphKind::None,
+      { { "res_tune", "Tune" }, { "res_feedback", "Feedback" }, { "res_dissonance", "Dissonance" } } },
+    { "ECHO", GraphKind::None,
+      { { "echo_density", "Density" }, { "echo_repeats", "Repeats" }, { "echo_filter", "Filter" } } },
+    { "AMBIENCE", GraphKind::None,
+      { { "amb_spacetime", "Spacetime" }, { "amb_decay", "Decay" }, { "amb_autopan", "Auto Pan" } } },
+    { "ENVELOPE", GraphKind::None,
+      { { "env_attack", "Attack" }, { "env_decay", "Decay" }, { "env_sustain", "Sustain" },
+        { "env_release", "Release" }, { "env_drone", "Drone" } } },
 };
 
 enum class CtlType { Knob, Select, Toggle };
@@ -218,8 +244,10 @@ struct Section {
     Box roll {}, randOn {};
 };
 // the RANDOM panel: two buttons and one level selector per Randomizer group
+// (Oneiroi: the module's TARGET and AMOUNT switches instead of the groups)
 struct RandPanel {
     Box random, back;
+    Box oTarget, oAmount;
     Box cell[maquina::kNumRandGroups]; // title (lock toggle) + range bar
     bool used[maquina::kNumRandGroups]; // group exists for this voice
 };
@@ -308,8 +336,13 @@ Layout makeLayout()
         { "CHANNEL A" },
         { "CHANNEL B" },
         { "CHANNEL C", "GLOBAL", "MODE", "MIX" } };
+    static const char* const kOneiroiRows[3][5] = {
+        { "LOOPER", "OSCILLATORS", "MODULATION" },
+        { "FILTER", "RESONATOR", "ECHO", "AMBIENCE", "GLOBAL" },
+        { "MIX", "ENVELOPE" } };
     const uint8_t v = voiceDef().voice;
-    const char* const (*plan)[5] = v == maquina::kPlethoraVoice ? kPlethoraRows
+    const char* const (*plan)[5] = maquina::isOneiroi(v)        ? kOneiroiRows
+                                   : v == maquina::kPlethoraVoice ? kPlethoraRows
                                    : v == maquina::kDredrumVoice ? kDredrumRows
                                    : v <= 2                    ? kDrumRows
                                    : v == 3                    ? kSnareRows
@@ -405,6 +438,15 @@ Layout makeLayout()
         L.rand.random = { x, cy + 2, 96.f, 30.f };
         L.rand.back = { x, cy + 38, 96.f, 22.f };
         x += 96.f + 3 * kGap;
+        if (maquina::isOneiroi(voiceDef().voice)) {
+            // the module's two switches, as selectors
+            L.rand.oTarget = { x, cy, kSelectW + 20.f, kCellH };
+            L.rand.oAmount = { x + kSelectW + 20.f + kGap, cy, kSelectW + 20.f, kCellH };
+            for (int i = 0; i < maquina::kNumRandGroups; ++i) L.rand.used[i] = false;
+            y += h + kGap;
+            L.height = y - kGap + kMargin;
+            return L;
+        }
         int n = 0;
         for (int i = 0; i < maquina::kNumRandGroups; ++i)
             n += (L.rand.used[i] = maquina::randGroupUsed(voiceDef(), i));
@@ -627,7 +669,16 @@ protected:
         const float v = fValues[i];
         const VoiceParam& p = paramAt(voiceDef(), i);
         const int iv = int(std::lround(v));
-        if (p.kind == ParamKind::Int) {
+        if (p.kind == ParamKind::Int && !std::strcmp(p.symbol, "osc_pitch")) {
+            std::snprintf(buf, n, "%+.1f st", double(iv) / 10.0); // Oneiroi: tenths of a semitone
+        } else if (!std::strcmp(p.symbol, "env_attack")) { // Oneiroi's envelope (OneiroiControls.hpp)
+            if (iv <= 0) std::snprintf(buf, n, "0 ms");
+            else fmtTime(buf, n, maquina::oneiroi::attackSeconds(iv));
+        } else if (!std::strcmp(p.symbol, "env_decay") || !std::strcmp(p.symbol, "env_release")) {
+            fmtTime(buf, n, maquina::oneiroi::fallSeconds(iv));
+        } else if (!std::strcmp(p.symbol, "env_sustain")) {
+            std::snprintf(buf, n, "%.0f %%", maquina::oneiroi::sustainLevel(iv) * 100.0);
+        } else if (p.kind == ParamKind::Int) {
             if (p.offset != 0) std::snprintf(buf, n, "%+d", iv);
             else std::snprintf(buf, n, "%d", iv);
         } else if (p.labels && iv >= 0 && iv < p.numLabels) {
@@ -662,6 +713,7 @@ protected:
         text(kZoomX - 14, kHeaderH / 2 + 2,
              voiceDef().voice == maquina::kDredrumVoice    ? "based on Dredrum firmware  \xc2\xb7  unofficial"
              : voiceDef().voice == maquina::kPlethoraVoice ? "based on Befaco Noise Plethora  \xc2\xb7  unofficial"
+             : maquina::isOneiroi(voiceDef().voice)        ? "based on Befaco Oneiroi firmware  \xc2\xb7  unofficial"
                                                            : "based on Erica Synths LXR-02 firmware  \xc2\xb7  unofficial",
              nullptr);
 
@@ -781,9 +833,58 @@ protected:
         stroke();
     }
 
+    // Oneiroi: a switch of the module's randomizer, [<] value [>]
+    void drawRandSwitch(const Box& c, const char* label, const char* value)
+    {
+        fontSize(10);
+        textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+        fillColor(col(kLabel));
+        text(c.x + c.w / 2, c.y + 8, label, nullptr);
+        const float bx = c.x + 2, bw = c.w - 4, by = c.y + 18, bh = 22, my = by + bh / 2;
+        beginPath();
+        rect(bx + 0.5f, by + 0.5f, bw - 1, bh - 1);
+        fillColor(col(kWell));
+        fill();
+        strokeColor(col(kBorder));
+        strokeWidth(1);
+        stroke();
+        fillColor(col(kDim));
+        beginPath();
+        moveTo(bx + 5, my); lineTo(bx + 10, my - 4); lineTo(bx + 10, my + 4); closePath();
+        fill();
+        beginPath();
+        moveTo(bx + bw - 5, my); lineTo(bx + bw - 10, my - 4); lineTo(bx + bw - 10, my + 4); closePath();
+        fill();
+        fontSize(11);
+        fillColor(col(kText));
+        text(bx + bw / 2, my + 1, value, nullptr);
+    }
+
     void drawRandPanel()
     {
         const RandPanel& R = layout().rand;
+        if (maquina::isOneiroi(voiceDef().voice)) {
+            drawButton(R.random, "RANDOM", true, true);
+            drawButton(R.back, fRedo ? "REDO" : "UNDO", fRunActive, false);
+            drawRandSwitch(R.oTarget, "TARGET", maquina::kOneiroiTargetLabels[fRand.oTarget % 4]);
+            drawRandSwitch(R.oAmount, "AMOUNT", maquina::kOneiroiAmountLabels[fRand.oAmount % 3]);
+            fontSize(10);
+            textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+            fillColor(col(kDim));
+            const float hx = R.oAmount.x + R.oAmount.w + 3 * kGap;
+            const bool fx = voiceDef().voice == maquina::kOneiroiFxVoice;
+            text(hx, R.oTarget.y + 22,
+                 fx ? "The module's randomizer: it moves the knobs of the target (Looper: speed, start,"
+                    : "The module's randomizer: it moves the knobs of the target (Osc: pitch, detune;",
+                 nullptr);
+            text(hx, R.oTarget.y + 36,
+                 fx ? "length; Effects: the 8 effect knobs). Full = anywhere,"
+                    : "Looper: speed, start, length; Effects: the 8 effect knobs). Full = anywhere,",
+                 nullptr);
+            text(hx, R.oTarget.y + 50, "Mid = up to 10 %, Low = up to 2 %. Faders, switches and SHIFT functions stay.",
+                 nullptr);
+            return;
+        }
         drawButton(R.random, "RANDOM", true, true);
         drawButton(R.back, "BACK", fRunActive, false);
         for (int g = 0; g < maquina::kNumRandGroups; ++g) {
@@ -860,6 +961,19 @@ protected:
     // onlyOsc >= 0: Maquina Dredrum's per-oscillator ROLL
     void doRandom(int onlyOsc = -1)
     {
+        if (maquina::isOneiroi(voiceDef().voice)) {
+            // the module: UNDO returns to the sound before the last roll, REDO back again
+            fSnapshot = fValues;
+            fSnapshotDirty = fPresetDirty;
+            fRunActive = true;
+            fRedo = false;
+            std::vector<float> v = fValues;
+            maquina::oneiroiRandomize(voiceDef(), fRand.oTarget, fRand.oAmount, v.data(), fRng);
+            applyValues(v);
+            fRunActive = true; // applyValues -> setValue ends a run only for edits made elsewhere
+            fPresetDirty = true;
+            return;
+        }
         if (!fRunActive) {
             fSnapshot = fValues;
             fSnapshotDirty = fPresetDirty;
@@ -873,6 +987,16 @@ protected:
     void doBack()
     {
         if (!fRunActive) return;
+        if (maquina::isOneiroi(voiceDef().voice)) {
+            std::vector<float> v = fSnapshot;
+            fSnapshot = fValues;
+            applyValues(v);
+            fRunActive = true;
+            fRedo = !fRedo;
+            std::swap(fPresetDirty, fSnapshotDirty);
+            repaint();
+            return;
+        }
         applyValues(fSnapshot);
         fRunActive = false;
         fPresetDirty = fSnapshotDirty;
@@ -1793,6 +1917,11 @@ protected:
         const float x = float(ev.pos.getX()) / s, y = float(ev.pos.getY()) / s;
 
         if (!ev.press) {
+            if (fMomentary >= 0) { // Oneiroi's CLEAR: a button
+                setValue(uint32_t(fMomentary), 0.f, true);
+                fMomentary = -1;
+                return true;
+            }
             if (fRangeDrag >= 0) {
                 fRangeDrag = -1;
                 saveRand();
@@ -1858,6 +1987,21 @@ protected:
         }
 
         if (layout().rand.random.hit(x, y)) { doRandom(); return true; }
+        if (maquina::isOneiroi(voiceDef().voice)) {
+            const RandPanel& R = layout().rand;
+            for (int k = 0; k < 2; ++k) {
+                const Box& b = k ? R.oAmount : R.oTarget;
+                if (!b.hit(x, y)) continue;
+                const int n = k ? 3 : 4;
+                uint8_t& v = k ? fRand.oAmount : fRand.oTarget;
+                v = uint8_t((v + (x < b.x + b.w / 2 ? n - 1 : 1)) % n); // left half: back, right half: on
+                if (!k && v == maquina::kOneiroiOsc && voiceDef().voice == maquina::kOneiroiFxVoice) // FX: no oscillators
+                    v = uint8_t((v + (x < b.x + b.w / 2 ? n - 1 : 1)) % n);
+                saveRand();
+                repaint();
+                return true;
+            }
+        }
         for (const Section& sec : fSections) {
             if (sec.osc < 0) continue;
             if (sec.roll.hit(x, y)) { doRandom(sec.osc); return true; }
@@ -1911,6 +2055,11 @@ protected:
             beginDrag(int(c->param), x, y, 1);
             break;
         case CtlType::Toggle:
+            if (!std::strcmp(paramAt(voiceDef(), c->param).symbol, "loop_clear")) { // momentary
+                setValue(c->param, 1.f, true);
+                fMomentary = int(c->param);
+                break;
+            }
             setValue(c->param, fValues[c->param] >= 0.5f ? 0.f : 1.f, true);
             break;
         case CtlType::Select: {
@@ -2019,6 +2168,8 @@ private:
     size_t fTypedLen = 0;
     std::vector<float> fSnapshot; // the sound before the first RANDOM of a run
     bool fRunActive = false;      // BACK available
+    bool fRedo = false;           // Oneiroi: the next UNDO press is a REDO
+    int fMomentary = -1;          // Oneiroi CLEAR held down
     bool fApplying = false;       // our own randomize/back edits in flight
     std::mt19937 fRng { std::random_device {}() };
 

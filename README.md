@@ -1,7 +1,7 @@
 # Maquina
 
-Seven drum and percussion instrument plugins, each built from the open-source
-code of a hardware instrument:
+Nine instrument and effect plugins, each built from the open-source code of a
+hardware instrument:
 
 * **Kick, Tom, Snare, Cymbal, HiHat**: the drum voices of the Erica
   Synths LXR-02 drum machine
@@ -13,13 +13,19 @@ code of a hardware instrument:
   Rack ([VCVRack/Befaco](https://github.com/VCVRack/Befaco)): 60 noise
   algorithms on two channels plus a filtered noise channel, with an envelope
   per channel added.
+* **Oneiroi** and **Oneiroi FX**: the Befaco Oneiroi Eurorack module, an
+  ambient/drone synth by Roberto Noris
+  ([Befaco/Oneiroi](https://github.com/Befaco/Oneiroi)). Oneiroi is the
+  whole voice (oscillators, looper, filter, resonator, echo, reverb) played
+  by MIDI notes; Oneiroi FX is its looper and effects on an audio track.
 
 Formats: **LV2, CLAP, VST3** and a JACK standalone (via [DPF](https://github.com/DISTRHO/DPF)).
 Platforms: Linux x86_64 and Raspberry Pi OS 64-bit (aarch64); macOS/Windows later.
 
 > Unofficial. Not affiliated with, endorsed by or supported by Erica Synths,
-> Befaco, VCV or the Dredrum authors. "Erica Synths", "LXR" and "LXR-02" are
-> trademarks of Erica Synths, "Befaco" and "Noise Plethora" belong to Befaco;
+> Befaco, VCV, Rebel Technology or the Dredrum and Oneiroi authors. "Erica
+> Synths", "LXR" and "LXR-02" are trademarks of Erica Synths, "Befaco",
+> "Noise Plethora" and "Oneiroi" belong to Befaco;
 > these names are used here only to say what each sound engine is based on.
 
 ## How it stays close to the hardware
@@ -115,7 +121,39 @@ small compatibility header (`engine/plethora/compat`) in place of VCV Rack:
 Not reproducible: the module's analog filter stage (the VCV port's digital
 filter model is used).
 
+### Oneiroi
+
+The engine is the module's own patch (`third_party/oneiroi`, patch 1.2.2,
+vendored at a pinned commit) with the parts of the OWL library it uses
+(`third_party/owlprogram`) and a small runtime in place of the OWL firmware
+(`engine/oneiroi/compat`):
+
+* **Same engine.** `engine/oneiroi/OneiroiCore.h` is the module's
+  `Oneiroi.h` plus two marked hooks (the note envelope, oscillators
+  optional). `make oneiroi-check` renders 40 scenarios (every source, filter
+  mode and position, resonator / echo / ambience extremes, all modulation
+  types, recording, clearing, sync) through both and requires bit-identical
+  output.
+* **Same rate and blocks.** 48 kHz in 32-frame blocks, as the module; a float
+  resampler converts from and to the host rate (the FX's input too).
+* **Same controls.** The module's UI layer is replaced by the plugin
+  parameters, which get what its `Ui::Poll()` does: the same smoothing per
+  control, fader curves, pitch / octave / unison maths and V/Oct glide. The
+  modulation goes to the filter cutoff, as the module's default mapping.
+* **Same memory.** The OWL firmware's allocator clears every block and the
+  engine relies on it; Maquina's allocations are zero-filled too.
+* **One fix:** at the ends of SPACETIME the module's ambience reads past the
+  end of a delay line (other memory, on the module); Maquina's reads inside
+  it (`third_party/oneiroi/MAQUINA.md`).
+
+Not reproducible: the ARM CMSIS maths of the module's processor (the C
+library is used), so the output matches the module's engine, not its DAC
+bit for bit.
+
 ## Using the plugins
+
+The drum and percussion voices (LXR, Dredrum, Plethora) first; Oneiroi has
+its own section below.
 
 * Every MIDI note triggers the voice; velocity works as on the hardware.
 * **Key Track** (editor: KEY › Track):
@@ -133,7 +171,7 @@ filter model is used).
     closed value is used).
   * Projects saved with the removed Trig Note or Hat settings still load;
     those values are ignored.
-* **Remote controls (CLAP)**: the CLAP plugins expose 5 pages of 8 controls
+* **Remote controls (CLAP)**: the CLAP plugins expose 5 or 6 pages of 8 controls
   (the Machinista layout, `tools/pages.py`), which Bitwig shows as the device's
   remote-control pages and maps onto controllers.
 * Parameter names are short so host knobs show them whole - see
@@ -169,6 +207,43 @@ filter model is used).
 * **Mode**: `Trig` or `Gate` (hold while the note is down).
 * Some algorithms are quiet at X/Y = 64 (BowedMetal, NoiseBells, PluckCloud,
   CellularSynth); turn X/Y or Level up.
+
+**Oneiroi**
+
+* **Notes:** a note opens the envelope (Attack, Decay, Sustain, Release) on
+  the sources (looper and oscillators) and sets the pitch: the note relative
+  to C4 (60) is added to Pitch and Octave, like the module's V/Oct input,
+  with its glide. Mono, last note wins; going back to a held note is legato.
+  Velocity does nothing (the module has none).
+* **Drone** holds the envelope open: the module's behaviour, sounding without
+  notes; notes still set the pitch.
+* The effects come after the envelope, so echo and reverb tails ring on after
+  the note ends. The filter's chaos noise (Reso from ~90 %) and a
+  self-oscillating resonator also sound without notes, as on the module.
+* The module's SHIFT functions are their own controls, next to their knob:
+  SOS and Filter (looper), Octave and Unison (oscillators), Mode and Position
+  (filter), Dissonance (resonator), Filter (echo), Auto Pan (ambience), Type
+  (modulation).
+* **Looper:** Record (on = recording, as the RECORD button or gate) and Clear
+  (SHIFT + RECORD on the module; a button in the editor, any 0 → 1 change from
+  the host). Oneiroi records its own output (the module's POST); Oneiroi FX
+  has **Source** Input / Output (PRE / POST). The buffer starts with noise, as
+  on the module, and is not saved with the project.
+* **Sync:** Off (the module's internal clock, one looper cycle ≈ 0.18 Hz),
+  or a sync pulse every Beat / Bar / 4 Bars of the host transport while it
+  plays (the module's SYNC IN). It clocks the modulation, the echo time and
+  auto-pan and restarts the looper. As on the module, the clock falls back
+  to internal when no pulse comes for 2 s, so at slow tempos use Beat.
+* **Randomizer:** the module's own (editor: RANDOM panel). TARGET All / Osc
+  / Looper / Effects, AMOUNT Full / Mid (up to 10 %) / Low (up to 2 %);
+  pitch moves in semitones. UNDO returns to the sound before the last roll,
+  then REDO. It moves only the target's knobs, never faders, switches or
+  SHIFT functions.
+* **Per-parameter modulation and CV amounts** (the module's MOD / CV pages)
+  are not parameters: use the host's modulators (Bitwig) on any parameter.
+* **Oneiroi FX** has no oscillators and no envelope; Input sets the dry
+  input level, the effects' dry/wet faders are in MIX.
+* Latency (0.7 ms at 48 kHz, ~2 ms at 44.1 kHz) is reported to the host.
 
 ### Parameters
 
@@ -277,6 +352,44 @@ range. Host names start with the channel letter.
 | Mode | `trig_mode` | Trigger Mode (not in presets) | Trig, Gate |
 | Gain | `gain` | Output gain in dB (Maquina, not in presets) | -24..12 |
 
+**Oneiroi / Oneiroi FX** (42 / 32 parameters). Knobs are 0..127 over the
+module's control range. *Centred* knobs are -64..+63 with 0 at the module's
+centre (0x speed, unison, no filter, smallest room). FX: no OSC and ENVELOPE
+rows, plus Input and Source.
+
+| Host name | Symbol | Editor | Range |
+|---|---|---|---|
+| Speed | `loop_speed` | Looper › Speed | centred: -64 = 2x reverse, -32 = 1x reverse, +32 = 1x, +63 = 2x |
+| Start, Length | `loop_start`, `loop_length` | Looper › Start, Length | 0..127 |
+| SOS | `loop_sos` | Looper › SOS | 0..127 (sound on sound: how much old material stays) |
+| Loop Filt | `loop_filter` | Looper › Filter | centred: below 0 lowpass, above highpass |
+| Record | `loop_record` | Looper › Record | Off / On (not in presets) |
+| Rec Src | `loop_source` | Looper › Source | Input, Output (FX only; not in presets) |
+| Clear | `loop_clear` | Looper › Clear | Off / On: clears on Off → On (not in presets) |
+| Pitch | `osc_pitch` | Oscillators › Pitch | -60..60 tenths of a semitone (±6 semitones) |
+| Octave | `osc_octave` | Oscillators › Octave | -4..4 (0: note 60 plays C4) |
+| Detune | `osc_detune` | Oscillators › Detune | 0..127 (supersaw detune / wavetable offset) |
+| Unison | `osc_unison` | Oscillators › Unison | centred: -64 = one octave down … +63 = one octave up |
+| Osc 2 | `osc2_mode` | Oscillators › Osc 2 | Supersaw, Wavetable |
+| Cutoff, Reso | `flt_cutoff`, `flt_reso` | Filter › Cutoff, Reso | 0..127 (Reso from 115: chaos noise, rising to 127) |
+| Flt Mode | `flt_mode` | Filter › Mode | Lowpass, Bandpass, Highpass, Comb |
+| Flt Pos | `flt_pos` | Filter › Position | I Start, II Pre-Echo, III Pre-Amb, IV End |
+| Res Tune, Res Fdbk, Res Diss | `res_tune`, `res_feedback`, `res_dissonance` | Resonator › Tune, Feedback, Dissonance | 0..127 |
+| Density, Repeats | `echo_density`, `echo_repeats` | Echo › Density, Repeats | 0..127 |
+| Echo Filt | `echo_filter` | Echo › Filter | centred: below 0 lowpass, above highpass |
+| Spacetime | `amb_spacetime` | Ambience › Spacetime | centred: 0 smallest/brightest, ± bigger and darker, below 0 reversed |
+| Amb Decay, Auto Pan | `amb_decay`, `amb_autopan` | Ambience › Decay, Auto Pan | 0..127 |
+| Mod Level, Mod Speed, Mod Type | `mod_level`, `mod_speed`, `mod_type` | Modulation › Level, Speed, Type | 0..127 (Type morphs: 0 chaos, 21 sine, 42 ramp, 64 saw, 85 square, 106 S&H, 127 envelope follower) |
+| Input | `vol_input` | Mix › Input | 0..127 (FX only) |
+| Looper, Sine, Saw / WT | `vol_looper`, `vol_sine`, `vol_osc2` | Mix › Looper, Sine, Saw / WT | 0..127 (Sine, Saw / WT: Oneiroi only) |
+| Filter, Resonator, Echo, Ambience | `mix_filter`, `mix_resonator`, `mix_echo`, `mix_ambience` | Mix › Filter, Reso, Echo, Ambience | 0..127 dry/wet |
+| Attack | `env_attack` | Envelope › Attack | 0..127: 0, 1 ms .. 10 s (Maquina; Oneiroi only) |
+| Decay, Release | `env_decay`, `env_release` | Envelope › Decay, Release | 0..127: 5 ms .. 20 s (Maquina; Oneiroi only) |
+| Sustain | `env_sustain` | Envelope › Sustain | 0..127 (Maquina; Oneiroi only) |
+| Drone | `env_drone` | Envelope › Drone | Off / On (Maquina; Oneiroi only) |
+| Sync | `sync` | Global › Sync | Off, Beat, Bar, 4 Bars (Maquina; not in presets) |
+| Gain | `gain` | Mix › Gain | Output gain in dB (Maquina, not in presets) -24..12 |
+
 #### Remote-control pages (CLAP)
 
 Bitwig and other CLAP hosts get these pages of 8 knobs; Machinista uses the
@@ -316,6 +429,18 @@ two knobs on the OSCILLATOR page.
 |  | B | B Algo · B X · B Y · B Filter · B Cutoff · B Reso · B Attack · B Decay |
 |  | C | C Source · C Grit · C Filter · C Cutoff · C Reso · C Attack · C Decay · C Level |
 |  | MUTES | A Mute · B Mute · C Mute · Gain · Mode · A Level · B Level · C Level |
+
+| Oneiroi | OSC / MIX | Pitch · Detune · Sine · Saw / WT · Looper · Drone · Echo · Ambience |
+|  | LOOPER | Speed · Start · Length · SOS · Loop Filt · Record · Clear · Looper |
+|  | FILTER / RESO | Cutoff · Reso · Flt Mode · Flt Pos · Res Tune · Res Fdbk · Res Diss · Resonator |
+|  | ECHO / AMBIENCE | Density · Repeats · Echo Filt · Echo · Spacetime · Amb Decay · Auto Pan · Ambience |
+|  | MOD / OSC | Mod Level · Mod Speed · Mod Type · Octave · Unison · Osc 2 · Filter · Sync |
+|  | ENVELOPE | Attack · Decay · Sustain · Release · Drone · Gain · Pitch · Octave |
+| Oneiroi FX | INPUT / LOOPER | Input · Looper · Record · Rec Src · Clear · Sync · Echo · Ambience |
+|  | LOOPER | Speed · Start · Length · SOS · Loop Filt · Record · Looper · Input |
+|  | FILTER / RESO | (as Oneiroi) |
+|  | ECHO / AMBIENCE | (as Oneiroi) |
+|  | MOD / MIX | Mod Level · Mod Speed · Mod Type · Filter · Resonator · Echo · Ambience · Gain |
 
 On Machinista, Plethora has channel A only (pages A and A ENV, 12 parameters):
 B and C stay at Level 0, so they cost no CPU on the Pi.
@@ -380,7 +505,8 @@ Factory presets live in `presets/<voice>/*.maquina` (format in
 `plugins/common/Presets.hpp`). After adding or changing one run
 `make presets` (validates them, regenerates the compiled table and the
 Machinista banks), then `make`. `build/tools/preset_measure <voice> -f file`
-renders a preset and prints level, length, pitch and brightness.
+renders a preset and prints level, length, pitch and brightness
+(Oneiroi: `build/tools/oneiroi_test --measure file.maquina`).
 
 ### Raspberry Pi (aarch64)
 
@@ -407,19 +533,27 @@ Factory presets as Machinista banks (one bank per category) are in
 Maquina Plethora's Machinista profile has channel A only, so its banks hold
 only the factory presets that use channel A alone.
 
+Maquina Oneiroi has a Machinista profile (all parameters, 6 pages); Oneiroi
+FX does not (Machinista hosts instruments). Not yet measured on a Pi: one
+Oneiroi instance needs about 3 % of one x86 laptop core.
+
 ## Layout
 
 ```
 third_party/lxr-firmware/   LXR firmware sources, unmodified (GPL-3.0-only + NOTICE.md)
 third_party/dredrum/        Dredrum firmware (trig + gate), unmodified (GPL-3.0-or-later)
 third_party/noise-plethora/ VCV port of the Noise Plethora, unmodified (GPL-3.0-or-later; teensy/ parts MIT)
+third_party/oneiroi/        Befaco Oneiroi patch (GPL-3.0-or-later), one marked fix (MAQUINA.md)
+third_party/owlprogram/     OWL library files Oneiroi uses, unmodified (GPL-3.0)
 engine/                     LXR shim, host glue (lxr_host.c), engine build
 engine/dredrum/             Dredrum engine ported to portable C (bit-exact)
 engine/plethora/            VCV Rack compatibility header + DSP helpers for the Plethora port
-plugins/common/             EngineHost / DredrumHost / PlethoraHost, resampler, DPF plugin, editor, generated tables
+engine/oneiroi/             OneiroiCore (Oneiroi.h + hooks), OWL runtime stand-ins (compat/)
+plugins/common/             EngineHost / DredrumHost / PlethoraHost / OneiroiHost, resamplers, DPF plugin, editor, generated tables
 plugins/<voice>/            per-plugin DistrhoPluginInfo.h + Makefile
 presets/<voice>/            factory presets (.maquina text files)
-tools/                      generators, tests, aarch64 sysroot, dredrum_flash + dredrum_ref (AVR reference)
+tools/                      generators, tests, aarch64 sysroot, dredrum_flash + dredrum_ref (AVR reference),
+                            oneiroi_ref (engine fidelity) + oneiroi_test (behaviour, preset measuring)
 machinista/                 Machinista profiles + layout
 dpf/                        DPF submodule
 patches/dpf/                local DPF fixes (CLAP latency sync, CLAP remote-controls), applied by `make dpf-patches`
@@ -439,6 +573,8 @@ Other included code, all compatible with GPL-3.0-only:
 | `third_party/dredrum`, `engine/dredrum` (port) | Jan Cumpelik, 2014 | GPL-3.0-or-later |
 | `third_party/noise-plethora` (VCV port, algorithms from Befaco's Noise Plethora firmware) | VCV and contributors; Befaco | GPL-3.0-or-later |
 | `third_party/noise-plethora/src/noise-plethora/teensy` (from the Teensy Audio library) | Paul Stoffregen and others | MIT |
+| `third_party/oneiroi`, `engine/oneiroi/OneiroiCore.h` | Roberto Noris (Befaco Oneiroi) | GPL-3.0-or-later |
+| `third_party/owlprogram` (OwlProgram LibSource) | Rebel Technology and contributors | GPL-3.0 (`fastlog.c` GPL-2.0-or-later, `fastpow.c` BSD-style) |
 | `dpf` | DISTRHO | ISC |
 
 Befaco's own Noise Plethora firmware framework is licensed CC BY-NC-SA and is

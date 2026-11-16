@@ -1,0 +1,628 @@
+{
+  "schema": 1,
+  "id": "maquina-oneiroi",
+  "uri": "urn:maquina:oneiroi",
+  "title": "Maquina Oneiroi",
+  "provider": "parameter-bank",
+  "bank_format": "json",
+  "extensions": [
+    ".json"
+  ],
+  "parameters": [
+    {
+      "index": 5,
+      "symbol": "loop_speed",
+      "name": "SPEED",
+      "default": 32,
+      "min": -64,
+      "max": 63,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 6,
+      "symbol": "loop_start",
+      "name": "START",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 7,
+      "symbol": "loop_length",
+      "name": "LENGTH",
+      "default": 127,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 8,
+      "symbol": "loop_sos",
+      "name": "SOS",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 9,
+      "symbol": "loop_filter",
+      "name": "LOOP FILT",
+      "default": 0,
+      "min": -64,
+      "max": 63,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 10,
+      "symbol": "loop_record",
+      "name": "RECORD",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    },
+    {
+      "index": 11,
+      "symbol": "loop_clear",
+      "name": "CLEAR",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    },
+    {
+      "index": 12,
+      "symbol": "osc_pitch",
+      "name": "PITCH",
+      "default": 0,
+      "min": -60,
+      "max": 60,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 13,
+      "symbol": "osc_octave",
+      "name": "OCTAVE",
+      "default": 0,
+      "min": -4,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 14,
+      "symbol": "osc_detune",
+      "name": "DETUNE",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 15,
+      "symbol": "osc_unison",
+      "name": "UNISON",
+      "default": 0,
+      "min": -64,
+      "max": 63,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 16,
+      "symbol": "osc2_mode",
+      "name": "OSC 2",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "SUPERSAW"
+        ],
+        [
+          1,
+          "WAVETABLE"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 17,
+      "symbol": "flt_cutoff",
+      "name": "CUTOFF",
+      "default": 127,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 18,
+      "symbol": "flt_reso",
+      "name": "RESO",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 19,
+      "symbol": "flt_mode",
+      "name": "FLT MODE",
+      "default": 0,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "LOWPASS"
+        ],
+        [
+          1,
+          "BANDPASS"
+        ],
+        [
+          2,
+          "HIGHPASS"
+        ],
+        [
+          3,
+          "COMB"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 20,
+      "symbol": "flt_pos",
+      "name": "FLT POS",
+      "default": 0,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "I START"
+        ],
+        [
+          1,
+          "II PRE-ECHO"
+        ],
+        [
+          2,
+          "III PRE-AMB"
+        ],
+        [
+          3,
+          "IV END"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 21,
+      "symbol": "res_tune",
+      "name": "RES TUNE",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 22,
+      "symbol": "res_feedback",
+      "name": "RES FDBK",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 23,
+      "symbol": "res_dissonance",
+      "name": "RES DISS",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 24,
+      "symbol": "echo_density",
+      "name": "DENSITY",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 25,
+      "symbol": "echo_repeats",
+      "name": "REPEATS",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 26,
+      "symbol": "echo_filter",
+      "name": "ECHO FILT",
+      "default": 0,
+      "min": -64,
+      "max": 63,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 27,
+      "symbol": "amb_spacetime",
+      "name": "SPACETIME",
+      "default": 40,
+      "min": -64,
+      "max": 63,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 28,
+      "symbol": "amb_decay",
+      "name": "AMB DECAY",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 29,
+      "symbol": "amb_autopan",
+      "name": "AUTO PAN",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 30,
+      "symbol": "mod_level",
+      "name": "MOD LEVEL",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 31,
+      "symbol": "mod_speed",
+      "name": "MOD SPEED",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 32,
+      "symbol": "mod_type",
+      "name": "MOD TYPE",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 33,
+      "symbol": "vol_looper",
+      "name": "LOOPER",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 34,
+      "symbol": "vol_sine",
+      "name": "SINE",
+      "default": 100,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 35,
+      "symbol": "vol_osc2",
+      "name": "SAW / WT",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 36,
+      "symbol": "mix_filter",
+      "name": "FILTER",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 37,
+      "symbol": "mix_resonator",
+      "name": "RESONATOR",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 38,
+      "symbol": "mix_echo",
+      "name": "ECHO",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 39,
+      "symbol": "mix_ambience",
+      "name": "AMBIENCE",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 40,
+      "symbol": "env_attack",
+      "name": "ATTACK",
+      "default": 20,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 41,
+      "symbol": "env_decay",
+      "name": "DECAY",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 42,
+      "symbol": "env_sustain",
+      "name": "SUSTAIN",
+      "default": 127,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 43,
+      "symbol": "env_release",
+      "name": "RELEASE",
+      "default": 70,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 44,
+      "symbol": "env_drone",
+      "name": "DRONE",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    },
+    {
+      "index": 45,
+      "symbol": "sync",
+      "name": "SYNC",
+      "default": 0,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "BEAT"
+        ],
+        [
+          2,
+          "BAR"
+        ],
+        [
+          3,
+          "4 BARS"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 46,
+      "symbol": "gain",
+      "name": "GAIN",
+      "default": 0,
+      "min": -24,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    }
+  ],
+  "pages": [
+    {
+      "title": "OSC / MIX",
+      "controls": [
+        "@bank",
+        "@patch",
+        "osc_pitch",
+        "osc_detune",
+        "vol_sine",
+        "vol_osc2",
+        "vol_looper",
+        "env_drone"
+      ]
+    },
+    {
+      "title": "LOOPER",
+      "controls": [
+        "loop_speed",
+        "loop_start",
+        "loop_length",
+        "loop_sos",
+        "loop_filter",
+        "loop_record",
+        "loop_clear",
+        "vol_looper"
+      ]
+    },
+    {
+      "title": "FILTER / RESO",
+      "controls": [
+        "flt_cutoff",
+        "flt_reso",
+        "flt_mode",
+        "flt_pos",
+        "res_tune",
+        "res_feedback",
+        "res_dissonance",
+        "mix_resonator"
+      ]
+    },
+    {
+      "title": "ECHO / AMBIENCE",
+      "controls": [
+        "echo_density",
+        "echo_repeats",
+        "echo_filter",
+        "mix_echo",
+        "amb_spacetime",
+        "amb_decay",
+        "amb_autopan",
+        "mix_ambience"
+      ]
+    },
+    {
+      "title": "MOD / OSC",
+      "controls": [
+        "mod_level",
+        "mod_speed",
+        "mod_type",
+        "osc_octave",
+        "osc_unison",
+        "osc2_mode",
+        "mix_filter",
+        "sync"
+      ]
+    },
+    {
+      "title": "ENVELOPE",
+      "controls": [
+        "env_attack",
+        "env_decay",
+        "env_sustain",
+        "env_release",
+        "env_drone",
+        "gain",
+        "osc_pitch",
+        "osc_octave"
+      ]
+    }
+  ],
+  "quirks": [
+    "Ambient/drone voice from the Befaco Oneiroi firmware: sine + supersaw/wavetable, looper, filter,",
+    "resonator, echo, reverb. Notes open the envelope and set the pitch; DRONE keeps it sounding.",
+    "The randomizer and the looper's recording source (always the output) are as on the module."
+  ]
+}

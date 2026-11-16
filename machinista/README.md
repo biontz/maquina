@@ -15,6 +15,7 @@ dead:
 | Cymbal, HiHat | OSCILLATOR · MOD OSC · ENVELOPE / TRANSIENT · FILTER / VELOCITY · LFO (+ gain) |
 | Dredrum | MIX (bank, patch, levels, decays) · OSC 1 · OSC 2 · OSC 3 · SWITCHES (mode, click, track, mutes) · MIX / OUT (gain, levels, mutes, mode) |
 | Plethora | A (bank, patch, algorithm, X/Y, filter) · A ENV (envelope, level, mute, mode, gain) - channel A only |
+| Oneiroi | OSC / MIX (bank, patch, pitch, detune, levels, drone) · LOOPER · FILTER / RESO · ECHO / AMBIENCE · MOD / OSC · ENVELOPE (+ gain) |
 
 The display shows the plugins' short host names uppercased (COARSE, T VOL,
 1 FREQ...); the full list of names, symbols and ranges, and every page knob by
@@ -33,6 +34,10 @@ knob, is in the main README under [Parameters](../README.md#parameters).
 * LXR voices use the LXR's 0..127 scales; coarse tune and pan are shown
   centred (-60..67 / -63..64) as on the hardware display. Dredrum uses the
   module's 0..255 pot scales, Plethora 0..127.
+* **Oneiroi** is the whole module: pads open its envelope and set the pitch
+  (relative to C4), **DRONE** keeps it sounding. Oneiroi FX (an audio effect)
+  has no profile: Machinista hosts instruments. Its CPU use on a Pi is not
+  measured yet (about 3 % of one x86 laptop core per instance).
 * **Plethora on Machinista is channel A only**, to keep the Pi's CPU load to
   one channel. B and C stay at Level 0, so they are silent and not computed.
   The factory banks hold the presets that use channel A alone.

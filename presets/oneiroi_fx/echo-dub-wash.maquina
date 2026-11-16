@@ -1,0 +1,19 @@
+# Maquina factory preset
+# design: long dark echo (filter below centre = lowpass) at high feedback into a slowly moving lowpass
+voice = oneiroi_fx
+name = Dub Wash
+category = Echo
+tags = long, dark, modulated
+mix_echo = 95
+echo_density = 62
+echo_repeats = 112
+echo_filter = -35
+flt_mode = Lowpass
+flt_cutoff = 95
+flt_pos = III Pre-Amb
+mix_filter = 110
+mod_level = 50
+mod_speed = 35
+mod_type = 21
+mix_ambience = 50
+amb_decay = 90

@@ -27,7 +27,7 @@ TABLES = os.path.join(ROOT, "plugins", "common", "VoiceTables.generated.hpp")
 PRESETS_HPP = os.path.join(ROOT, "plugins", "common", "Presets.hpp")
 RANDOM_HPP = os.path.join(ROOT, "plugins", "common", "Randomizer.hpp")
 OUT_HPP = os.path.join(ROOT, "plugins", "common", "FactoryPresets.generated.hpp")
-VOICES = ["kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora"]
+VOICES = ["kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora", "oneiroi", "oneiroi_fx"]
 
 
 def c_str(s):
@@ -56,7 +56,7 @@ def load_tables():
             params.append(p)
         # extras (ExtraParams.hpp): note_pitch on the LXR voices; gain (a mix
         # control, not a sound param) on all
-        if v not in ("dredrum", "plethora"):
+        if v in ("kick", "tom", "snare", "cymbal", "hihat"):
             params.append(dict(symbol="note_pitch", kind="Toggle", default=0, labels=["Off", "On"], min=0, max=1))
         params.append(dict(symbol="gain", kind="Int", default=0, labels=[], min=-24, max=12))
         voices[v] = params
@@ -183,11 +183,11 @@ def main():
     for v in VOICES:
         prof_path = os.path.join(ROOT, "machinista", "profiles", f"maquina-{v}.json")
         bank_dir = os.path.join(ROOT, "machinista", "banks", f"maquina-{v}")
-        os.makedirs(bank_dir, exist_ok=True)
         for old in glob.glob(os.path.join(bank_dir, "*.json")):
             os.remove(old)
         if not os.path.exists(prof_path):
-            continue
+            continue  # no Machinista profile (Oneiroi FX)
+        os.makedirs(bank_dir, exist_ok=True)
         prof = json.load(open(prof_path))
         for ci, cat in enumerate(cats[v]):
             patches = []
@@ -215,7 +215,7 @@ def main():
         by_cat = {}
         for p in all_presets[v]:
             by_cat[p["category"]] = by_cat.get(p["category"], 0) + 1
-        print(f"{v:7} {len(all_presets[v]):3} presets  " + "  ".join(f"{c}:{n}" for c, n in by_cat.items()))
+        print(f"{v:10} {len(all_presets[v]):3} presets  " + "  ".join(f"{c}:{n}" for c, n in by_cat.items()))
 
 
 if __name__ == "__main__":

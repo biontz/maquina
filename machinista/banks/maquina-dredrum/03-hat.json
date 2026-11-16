@@ -34,7 +34,8 @@
     "osc3_octave": 0,
     "osc3_semi": 0,
     "click": 1,
-    "trig_mode": 0
+    "trig_mode": 0,
+    "gain": 0
    }
   },
   {
@@ -68,7 +69,8 @@
     "osc3_octave": 0,
     "osc3_semi": 0,
     "click": 0,
-    "trig_mode": 0
+    "trig_mode": 0,
+    "gain": 0
    }
   }
  ]
