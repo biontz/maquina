@@ -183,10 +183,12 @@ MACOS_PLUGINS ?= $(PLUGIN_DIRS)
 MACOS_ARCHS := x86_64 arm64
 MACOS_MIN := 10.15
 macos_cc = -target $(1)-apple-macos$(MACOS_MIN)
+# SKIP_STRIPPING: keep local symbols, so crash reports can be symbolicated.
 # BUILD_DIR_SUFFIX: DPF builds its UI library (DGL) in dpf/build<suffix>,
 # shared by every plugin; one per arch, or the second arch links the first's
 macos_env = CC="clang $(call macos_cc,$(1))" CXX="clang++ $(call macos_cc,$(1))" \
-	MAQUINA_ARCH=macos-$(1) ARM_TARGET=$(if $(filter arm64,$(1)),true,false) BUILD_DIR_SUFFIX=-macos-$(1)
+	MAQUINA_ARCH=macos-$(1) ARM_TARGET=$(if $(filter arm64,$(1)),true,false) BUILD_DIR_SUFFIX=-macos-$(1) \
+	SKIP_STRIPPING=true
 MACOS_VERSION = $(shell git describe --tags --always --dirty)
 
 macos-x86_64 macos-arm64: macos-%: dpf-patches
