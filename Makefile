@@ -204,11 +204,19 @@ macos-test:
 			clang $(call macos_cc,$$a) -O1 -std=gnu11 -Idpf/distrho/src tools/$$t/$$t.c \
 				-o build/tools-macos/$$t-$$a || exit 1; \
 		done; \
-		echo "== $$a"; \
-		arch -$$a build/tools-macos/clap_latency_check-$$a bin-macos/*.clap || exit 1; \
-		arch -$$a build/tools-macos/clap_remote_check-$$a bin-macos/*.clap || exit 1; \
 	done
-	tools/macos/check_bundles.sh bin-macos $(MACOS_ARCHS)
+	@# one process per plugin and check, so a crash names its plugin and the
+	@# others still run; fails at the end if any failed
+	@fail=0; for a in $(MACOS_ARCHS); do \
+		echo "== $$a"; \
+		for c in bin-macos/*.clap; do \
+			for t in clap_latency_check clap_remote_check; do \
+				arch -$$a build/tools-macos/$$t-$$a $$c || { echo "FAILED: $$t $$a $$c"; fail=1; }; \
+			done; \
+		done; \
+	done; \
+	tools/macos/check_bundles.sh bin-macos $(MACOS_ARCHS) || fail=1; \
+	exit $$fail
 
 macos-dist:
 	@mkdir -p dist
