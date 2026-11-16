@@ -1,6 +1,7 @@
 # macOS build: universal (x86_64 + arm64) CLAP + VST3, signed ad hoc.
 # Runs on pushes to macos* branches, v* tags, or by hand
-# (gh workflow run macos.yml); the zip is the run's artifact.
+# (gh workflow run macos.yml); artifacts: maquina-macos (zip) and
+# maquina-macos-dmg (the disk image with an installer).
 name: macOS
 
 on:
@@ -37,7 +38,15 @@ jobs:
       - name: Package
         run: make macos-dist
 
+      - name: Disk image (+ test install)
+        run: make macos-dmg
+
       - uses: actions/upload-artifact@v4
         with:
           name: maquina-macos
           path: dist/*.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: maquina-macos-dmg
+          path: dist/*.dmg

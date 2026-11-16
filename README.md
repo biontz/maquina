@@ -637,12 +637,16 @@ The binaries need glibc >= 2.34. Copy `bin-aarch64/*.lv2` to `~/.lv2` on the Pi.
 Universal (Intel + Apple Silicon) CLAP + VST3 for macOS 10.15 or later,
 signed ad hoc. Built by GitHub Actions (`.github/workflows/macos.yml`) on
 pushes to `macos*` branches, `v*` tags, or `gh workflow run macos.yml`; the
-zip (with install notes) is the run's artifact. On a Mac:
+artifacts are a zip (`maquina-macos`) and a disk image (`maquina-macos-dmg`:
+the plugins, an `Install Maquina.command` that copies them to
+`~/Library/Audio/Plug-Ins` and clears the download quarantine, and the
+install notes). On a Mac:
 
 ```sh
 make macos          # MACOS_PLUGINS (default: all plugins) -> bin-macos/
 make macos-test     # CLAP checks for both archs, universal + signed + exports
 make macos-dist     # dist/Maquina-macOS-<version>.zip
+make macos-dmg      # dist/Maquina-<version>-macOS.dmg, then a test install into a temp HOME
 ```
 
 Each arch is built on its own (`bin-macos-x86_64/`, `bin-macos-arm64/`) and

@@ -173,6 +173,7 @@ test-aarch64: aarch64
 #   make macos-test    CLAP checks per arch (x86_64 under Rosetta on Apple
 #                      Silicon), universal binaries, signatures, exports
 #   make macos-dist    bin-macos/ -> dist/Maquina-macOS-<version>.zip
+#   make macos-dmg     bin-macos/ -> dist/Maquina-<version>-macOS.dmg (+ install test)
 #
 # Each arch is a full build of its own (bin-macos-<arch>/, own engine library:
 # x86_64 gets the Arm float->int pass, arm64 compiles the firmware untouched);
@@ -228,6 +229,13 @@ macos-dist:
 	zip -qj dist/Maquina-macOS-$(MACOS_VERSION).zip tools/macos/INSTALL-macOS.txt
 	@ls -l dist/
 
+# one universal disk image: the plugins, an installer script and the notes
+# (tools/macos/make_dmg.sh), then mount it and test-install into a temp HOME
+macos-dmg:
+	@mkdir -p dist
+	tools/macos/make_dmg.sh bin-macos dist/Maquina-$(MACOS_VERSION)-macOS.dmg "Maquina $(MACOS_VERSION)"
+	tools/macos/test_dmg.sh dist/Maquina-$(MACOS_VERSION)-macOS.dmg
+
 clean:
 	$(MAKE) -C drum02/engine clean
 	$(MAKE) -C mutable-instruments clean
@@ -235,4 +243,4 @@ clean:
 	rm -rf bin build bin-macos bin-macos-* dist
 
 .PHONY: presets all engine dpf-patches plugins gen tools test install clean aarch64 test-aarch64 dredrum-flash dredrum-check \
-	oneiroi-check macos macos-test macos-dist
+	oneiroi-check macos macos-test macos-dist macos-dmg

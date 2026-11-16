@@ -1,18 +1,33 @@
 Maquina for macOS - CLAP + VST3, universal (Intel + Apple Silicon), macOS 10.15 or later
 
-Install
+Install from the disk image (Maquina-<version>-macOS.dmg)
+  1. Open the .dmg.
+  2. Right-click "Install Maquina.command" > Open, then Open again in the dialog.
+     (The first time, macOS blocks a plain double-click: the installer and the
+     plugins are signed ad hoc, not by a registered Apple developer. If there
+     is no Open button: System Settings > Privacy & Security > Open Anyway.)
+     It copies the plugins to ~/Library/Audio/Plug-Ins/CLAP and VST3, replacing
+     older Maquina versions, and clears macOS's download quarantine on them.
+  3. Restart your DAW (or rescan plugins).
+
+Install by hand (zip, or the CLAP / VST3 folders of the disk image)
   1. Copy the .clap bundles to   ~/Library/Audio/Plug-Ins/CLAP/
      and the .vst3 bundles to    ~/Library/Audio/Plug-Ins/VST3/
      (Finder: Go > Go to Folder..., paste the path; create the folder if missing)
 
-  2. The plugins are signed ad hoc, not by a registered Apple developer, so
-     macOS quarantines them after a download. Clear that once, in Terminal:
+  2. Clear the quarantine once, in Terminal:
 
        xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/CLAP/Maquina*.clap
        xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/Maquina*.vst3
 
+     Without this the DAW does not list the plugins, or macOS says they
+     "can't be opened" / "are damaged".
+
   3. Rescan plugins in your DAW.
 
 User presets are saved in ~/Library/Application Support/Maquina/presets/<voice>/.
+
+Uninstall: delete ~/Library/Audio/Plug-Ins/CLAP/Maquina*.clap and
+~/Library/Audio/Plug-Ins/VST3/Maquina*.vst3.
 
 Maquina is free software under the GPL-3.0; source and details in the README.
