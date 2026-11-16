@@ -211,7 +211,9 @@ macos-test:
 		echo "== $$a"; \
 		for c in bin-macos/*.clap; do \
 			for t in clap_latency_check clap_remote_check; do \
-				arch -$$a build/tools-macos/$$t-$$a $$c || { echo "FAILED: $$t $$a $$c"; fail=1; }; \
+				arch -$$a build/tools-macos/$$t-$$a $$c || { echo "FAILED: $$t $$a $$c"; fail=1; \
+					arch -$$a lldb --batch -o run -k "bt 25" -k "register read" -k quit \
+						-- build/tools-macos/$$t-$$a $$c 2>&1 | tail -n 60; }; \
 			done; \
 		done; \
 	done; \
