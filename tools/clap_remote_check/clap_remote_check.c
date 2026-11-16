@@ -4,13 +4,14 @@
 // them against common/RemotePages.generated.hpp: page count, names,
 // and that every slot points at the parameter with the expected symbol.
 //
-//   clap_remote_check <bundle.clap>... (Linux: the bundle is the .so itself)
+//   clap_remote_check <bundle.clap>... (Linux: the .so itself; macOS: the bundle folder)
 
 #include <dlfcn.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
+#include "../clap_bundle.h"
 #include "clap/entry.h"
 #include "clap/plugin-factory.h"
 #include "clap/ext/params.h"
@@ -40,7 +41,8 @@ static int module_is(const char* module, const char* symbol)
 
 static int check(const char* path)
 {
-    void* lib = dlopen(path, RTLD_NOW | RTLD_LOCAL);
+    char bin[4096];
+    void* lib = dlopen(clap_binary(path, bin, sizeof bin), RTLD_NOW | RTLD_LOCAL);
     if (!lib) { printf("%s: dlopen failed: %s\n", path, dlerror()); return 1; }
     const clap_plugin_entry_t* entry = (const clap_plugin_entry_t*)dlsym(lib, "clap_entry");
     if (!entry || !entry->init(path)) { printf("%s: no clap_entry\n", path); return 1; }

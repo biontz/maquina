@@ -520,6 +520,25 @@ Debian bookworm arm64 sysroot (glibc 2.36, the Raspberry Pi OS bookworm base;
 checksums verified against the Debian index) and clang + lld build against it.
 The binaries need glibc >= 2.34. Copy `bin-aarch64/*.lv2` to `~/.lv2` on the Pi.
 
+### macOS
+
+Universal (Intel + Apple Silicon) CLAP + VST3 for macOS 10.15 or later,
+signed ad hoc. Built by GitHub Actions (`.github/workflows/macos.yml`) on
+pushes to `macos*` branches, `v*` tags, or `gh workflow run macos.yml`; the
+zip (with install notes) is the run's artifact. On a Mac:
+
+```sh
+make macos          # MACOS_PLUGINS (for now Plethora) -> bin-macos/
+make macos-test     # CLAP checks for both archs, universal + signed + exports
+make macos-dist     # dist/Maquina-macOS-<version>.zip
+```
+
+Each arch is built on its own (`bin-macos-x86_64/`, `bin-macos-arm64/`) and
+`tools/macos/lipo_bundles.sh` merges them. Install to
+`~/Library/Audio/Plug-Ins/CLAP` and `VST3`, then clear the download
+quarantine: `xattr -dr com.apple.quarantine <bundle>`. User presets live in
+`~/Library/Application Support/Maquina/presets/`.
+
 ### Machinista
 
 Controller profiles for [Machinista](https://github.com/photogeen/machinista)

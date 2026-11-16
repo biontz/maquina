@@ -1,0 +1,18 @@
+Maquina for macOS - CLAP + VST3, universal (Intel + Apple Silicon), macOS 10.15 or later
+
+Install
+  1. Copy the .clap bundles to   ~/Library/Audio/Plug-Ins/CLAP/
+     and the .vst3 bundles to    ~/Library/Audio/Plug-Ins/VST3/
+     (Finder: Go > Go to Folder..., paste the path; create the folder if missing)
+
+  2. The plugins are signed ad hoc, not by a registered Apple developer, so
+     macOS quarantines them after a download. Clear that once, in Terminal:
+
+       xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/CLAP/Maquina*.clap
+       xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/Maquina*.vst3
+
+  3. Rescan plugins in your DAW.
+
+User presets are saved in ~/Library/Application Support/Maquina/presets/<voice>/.
+
+Maquina is free software under the GPL-3.0; source and details in the README.

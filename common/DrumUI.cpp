@@ -494,11 +494,16 @@ double desktopScale(double dpfScale)
     return dpfScale > 0 ? dpfScale : 1.0;
 }
 
-std::string configDir() // ~/.config/maquina (no trailing slash), empty if unknown
+// ~/.config/maquina (macOS: ~/Library/Application Support/Maquina), no
+// trailing slash; empty if unknown
+std::string configDir()
 {
 #ifdef _WIN32
     const char* base = std::getenv("APPDATA");
     return base ? std::string(base) + "\\Maquina" : std::string();
+#elif defined(__APPLE__)
+    if (const char* h = std::getenv("HOME")) return std::string(h) + "/Library/Application Support/Maquina";
+    return std::string();
 #else
     if (const char* x = std::getenv("XDG_CONFIG_HOME")) return std::string(x) + "/maquina";
     if (const char* h = std::getenv("HOME")) return std::string(h) + "/.config/maquina";
@@ -520,11 +525,8 @@ std::string configPath()
     const char* base = std::getenv("APPDATA");
     return base ? std::string(base) + "\\Maquina\\ui.conf" : std::string();
 #else
-    std::string dir;
-    if (const char* x = std::getenv("XDG_CONFIG_HOME")) dir = x;
-    else if (const char* h = std::getenv("HOME")) dir = std::string(h) + "/.config";
-    else return std::string();
-    return dir + "/maquina/ui.conf";
+    const std::string dir = configDir();
+    return dir.empty() ? dir : dir + "/ui.conf";
 #endif
 }
 

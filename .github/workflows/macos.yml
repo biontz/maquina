@@ -1,0 +1,43 @@
+# macOS build: universal (x86_64 + arm64) CLAP + VST3, signed ad hoc.
+# Runs on pushes to macos* branches, v* tags, or by hand
+# (gh workflow run macos.yml); the zip is the run's artifact.
+name: macOS
+
+on:
+  push:
+    branches: ["macos*"]
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      plugins:
+        description: "plugin folders (empty = the Makefile's MACOS_PLUGINS)"
+        required: false
+        default: ""
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Build (x86_64 + arm64, lipo, ad-hoc sign)
+        run: |
+          if [ -n "${{ github.event.inputs.plugins }}" ]; then
+            make -j"$(sysctl -n hw.ncpu)" macos MACOS_PLUGINS="${{ github.event.inputs.plugins }}"
+          else
+            make -j"$(sysctl -n hw.ncpu)" macos
+          fi
+
+      - name: Test (both archs; x86_64 under Rosetta)
+        run: make macos-test
+
+      - name: Package
+        run: make macos-dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: maquina-macos
+          path: dist/*.zip

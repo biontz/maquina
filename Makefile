@@ -149,10 +149,60 @@ test-aarch64: aarch64
 	clang++ $(A64_FLAGS) $(ONEIROI_FLAGS) tools/oneiroi_test/oneiroi_test.cpp -o build/tools-aarch64/oneiroi_test
 	$(QEMU_A64) build/tools-aarch64/oneiroi_test
 
+# ---------------------------------------------------------------------------
+# macOS (on a Mac; CI: .github/workflows/macos.yml): universal CLAP + VST3
+#
+#   make macos         MACOS_PLUGINS for x86_64 + arm64, merged into bin-macos/
+#   make macos-test    CLAP checks per arch (x86_64 under Rosetta on Apple
+#                      Silicon), universal binaries, signatures, exports
+#   make macos-dist    bin-macos/ -> dist/Maquina-macOS-<version>.zip
+#
+# Each arch is a full build of its own (bin-macos-<arch>/, own engine library:
+# x86_64 gets the Arm float->int pass, arm64 compiles the firmware untouched);
+# tools/macos/lipo_bundles.sh merges them and signs ad hoc. -target (not
+# -arch) so DPF's `$(CC) -dumpmachine` sees the arch it builds for.
+
+MACOS_PLUGINS ?= befaco/plethora/plugins/plethora
+MACOS_ARCHS := x86_64 arm64
+MACOS_MIN := 10.15
+macos_cc = -target $(1)-apple-macos$(MACOS_MIN)
+# BUILD_DIR_SUFFIX: DPF builds its UI library (DGL) in dpf/build<suffix>,
+# shared by every plugin; one per arch, or the second arch links the first's
+macos_env = CC="clang $(call macos_cc,$(1))" CXX="clang++ $(call macos_cc,$(1))" \
+	MAQUINA_ARCH=macos-$(1) ARM_TARGET=$(if $(filter arm64,$(1)),true,false) BUILD_DIR_SUFFIX=-macos-$(1)
+MACOS_VERSION = $(shell git describe --tags --always --dirty)
+
+macos-x86_64 macos-arm64: macos-%: dpf-patches
+	$(MAKE) -C drum02/engine $(call macos_env,$*) ENGINE_BUILD=$(CURDIR)/build/engine-macos-$*
+	@for p in $(MACOS_PLUGINS); do $(MAKE) -C $$p $(call macos_env,$*) TARGETS="clap vst3" || exit 1; done
+
+macos: $(MACOS_ARCHS:%=macos-%)
+	tools/macos/lipo_bundles.sh bin-macos $(MACOS_ARCHS)
+
+macos-test:
+	@mkdir -p build/tools-macos
+	@for a in $(MACOS_ARCHS); do \
+		for t in clap_latency_check clap_remote_check; do \
+			clang $(call macos_cc,$$a) -O1 -std=gnu11 -Idpf/distrho/src tools/$$t/$$t.c \
+				-o build/tools-macos/$$t-$$a || exit 1; \
+		done; \
+		echo "== $$a"; \
+		arch -$$a build/tools-macos/clap_latency_check-$$a bin-macos/*.clap || exit 1; \
+		arch -$$a build/tools-macos/clap_remote_check-$$a bin-macos/*.clap || exit 1; \
+	done
+	tools/macos/check_bundles.sh bin-macos $(MACOS_ARCHS)
+
+macos-dist:
+	@mkdir -p dist
+	rm -f dist/Maquina-macOS-$(MACOS_VERSION).zip
+	cd bin-macos && zip -qry ../dist/Maquina-macOS-$(MACOS_VERSION).zip *.clap *.vst3
+	zip -qj dist/Maquina-macOS-$(MACOS_VERSION).zip tools/macos/INSTALL-macOS.txt
+	@ls -l dist/
+
 clean:
 	$(MAKE) -C drum02/engine clean
 	$(MAKE) clean -C dpf/utils/lv2-ttl-generator
-	rm -rf bin build
+	rm -rf bin build bin-macos bin-macos-* dist
 
 .PHONY: presets all engine dpf-patches plugins gen tools test install clean aarch64 test-aarch64 dredrum-flash dredrum-check \
-	oneiroi-check
+	oneiroi-check macos macos-test macos-dist

@@ -8,12 +8,13 @@
 // project; a latency report there makes Bitwig log "Plugin needs to restart
 // processing during initialization".
 //
-//   clap_latency_check <bundle.clap>... (Linux: the bundle is the .so itself)
+//   clap_latency_check <bundle.clap>... (Linux: the .so itself; macOS: the bundle folder)
 
 #include <dlfcn.h>
 #include <stdio.h>
 #include <string.h>
 
+#include "../clap_bundle.h"
 #include "clap/entry.h"
 #include "clap/plugin-factory.h"
 #include "clap/ext/audio-ports.h"
@@ -75,7 +76,8 @@ static int64_t is_read(const clap_istream_t* s, void* buf, uint64_t size)
 
 static int check(const char* path)
 {
-    void* lib = dlopen(path, RTLD_NOW | RTLD_LOCAL);
+    char bin[4096];
+    void* lib = dlopen(clap_binary(path, bin, sizeof bin), RTLD_NOW | RTLD_LOCAL);
     if (!lib) { printf("%s: dlopen failed: %s\n", path, dlerror()); return 1; }
     const clap_plugin_entry_t* entry = (const clap_plugin_entry_t*)dlsym(lib, "clap_entry");
     if (!entry || !entry->init(path)) { printf("%s: no clap_entry\n", path); return 1; }

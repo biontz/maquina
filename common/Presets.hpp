@@ -1,7 +1,8 @@
 // Presets.hpp - preset format and helpers shared by DSP, editor and tools.
 //
 // A preset file (.maquina, UTF-8 text) - the factory sources in presets/ and
-// user presets in ~/.config/maquina/presets/<voice>/ use the same format:
+// user presets in ~/.config/maquina/presets/<voice>/ (macOS: ~/Library/Application
+// Support/Maquina/presets/<voice>/) use the same format:
 //
 //   # Maquina preset
 //   voice = kick
