@@ -179,7 +179,7 @@ test-aarch64: aarch64
 # tools/macos/lipo_bundles.sh merges them and signs ad hoc. -target (not
 # -arch) so DPF's `$(CC) -dumpmachine` sees the arch it builds for.
 
-MACOS_PLUGINS ?= befaco/plethora/plugins/plethora
+MACOS_PLUGINS ?= $(PLUGIN_DIRS)
 MACOS_ARCHS := x86_64 arm64
 MACOS_MIN := 10.15
 macos_cc = -target $(1)-apple-macos$(MACOS_MIN)

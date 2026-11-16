@@ -640,7 +640,7 @@ pushes to `macos*` branches, `v*` tags, or `gh workflow run macos.yml`; the
 zip (with install notes) is the run's artifact. On a Mac:
 
 ```sh
-make macos          # MACOS_PLUGINS (for now Plethora) -> bin-macos/
+make macos          # MACOS_PLUGINS (default: all plugins) -> bin-macos/
 make macos-test     # CLAP checks for both archs, universal + signed + exports
 make macos-dist     # dist/Maquina-macOS-<version>.zip
 ```
