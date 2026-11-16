@@ -30,25 +30,46 @@ def atos(img, addr):
     except Exception as e:
         return "(atos: %s)" % e
 th = next((t for t in r.get("threads", []) if t.get("triggered")), None)
-for fr in (th or {}).get("frames", [])[:25]:
+frames = (th or {}).get("frames", [])
+for fr in frames[:25]:
     img = images[fr["imageIndex"]] if fr.get("imageIndex", -1) < len(images) else {}
     sym = fr.get("symbol") or atos(img, img.get("base", 0) + fr.get("imageOffset", 0))
-    print("   ", img.get("name", "?"), sym, "offset 0x%x" % fr.get("imageOffset", 0))
-# the faulting address: which symbol / section of which image
+    print("   ", img.get("name", "?"), sym, "+%s" % fr.get("symbolLocation", "?"),
+          "offset 0x%x" % fr.get("imageOffset", 0))
+# the crashing instruction, disassembled
+if frames:
+    fr = frames[0]
+    img = images[fr["imageIndex"]]
+    off = fr.get("imageOffset", 0)
+    out = subprocess.run(["objdump", "-d", "--no-show-raw-insn", "--start-address=0x%x" % max(0, off - 48),
+                          "--stop-address=0x%x" % (off + 8), img["path"]], capture_output=True, text=True).stdout
+    print("\n".join("    " + l for l in out.splitlines()[-16:]))
+# the faulting address: image, offset, nearest symbol
+st = r.get("threadState", (th or {}).get("threadState", {}))
+sub = str(r.get("exception", {}).get("subtype", ""))
 try:
-    fault = int(str(r.get("exception", {}).get("subtype", "")).split(" at ")[-1], 16)
+    fault = int(sub.split(" at ")[-1], 16)
     for img in images:
-        if img.get("base", 0) <= fault < img.get("base", 0) + img.get("size", 0):
-            print("  fault address in", img.get("name"), "offset 0x%x:" % (fault - img["base"]), atos(img, fault))
+        base = img.get("base", 0)
+        if img.get("path") and base <= fault < base + img.get("size", 1 << 32) and "Maquina" in img.get("name", ""):
+            print("  fault address = %s + 0x%x: %s" % (img.get("name"), fault - base, atos(img, fault)))
             out = subprocess.run(["otool", "-l", img["path"]], capture_output=True, text=True).stdout
-            seg = None
+            sect = seg = None
             for line in out.splitlines():
                 w = line.split()
+                if w[:1] == ["sectname"]: sect = w[1]
                 if w[:1] == ["segname"]: seg = w[1]
-                if w[:1] == ["vmaddr"]: start = int(w[1], 16)
-                if w[:1] == ["vmsize"] and seg and start <= fault - img["base"] < start + int(w[1], 16):
-                    print("  in segment", seg)
-                    seg = None
+                if w[:1] == ["addr"]: start = int(w[1], 16)
+                if w[:1] == ["size"] and sect and start <= fault - base < start + int(w[1], 16):
+                    print("  in section", seg, sect)
+            nm = subprocess.run(["nm", "-n", img["path"]], capture_output=True, text=True).stdout.splitlines()
+            prev = None
+            for line in nm:
+                w = line.split()
+                if len(w) == 3 and int(w[0], 16) > fault - base:
+                    break
+                if len(w) == 3: prev = line
+            print("  nearest symbol below:", prev)
 except Exception as e:
     print("  (fault address: %s)" % e)
 PY
