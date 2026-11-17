@@ -1,0 +1,14 @@
+# Maquina factory preset
+# the effects of S1Vave factory sound 52
+voice = bl101_fx
+name = Modulated Hall
+category = Reverb
+tags = long
+chorus_mode = Type 4
+dly_level = 82
+dly_time = 116
+dly_feedback = 68
+rev_level = 68
+rev_time = 127
+rev_type = Modulated
+rev_predelay = 100

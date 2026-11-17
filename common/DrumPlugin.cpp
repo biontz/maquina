@@ -22,6 +22,10 @@
 #include "KlongHost.hpp"
 #elif MAQUINA_ACIDA
 #include "AcidaHost.hpp"
+#elif MAQUINA_BL101
+#include "Bl101Host.hpp"
+#elif MAQUINA_LA50
+#include "La50Host.hpp"
 #else
 #include "EngineHost.hpp"
 #endif
@@ -48,6 +52,10 @@ using Engine = maquina::KlangHost; // Maquina Klang: the Mutable Instruments Pla
 using Engine = maquina::KlongHost; // Maquina Klong / Klong FX: the Mutable Instruments Rings
 #elif MAQUINA_ACIDA
 using Engine = maquina::AcidaHost; // Maquina Acida / Acida FX: OpenRB-338's 303 and effects
+#elif MAQUINA_BL101
+using Engine = maquina::Bl101Host; // Maquina BL-101 / BL-101 FX: S1Vave's synth and effects
+#elif MAQUINA_LA50
+using Engine = maquina::La50Host; // Maquina LA-50: LA synthesis playing D-50 patches
 #else
 using Engine = maquina::EngineHost;  // the LXR-02 firmware engine
 #endif
@@ -112,12 +120,26 @@ static const char* const kAcidaPageNames[8] = { "Synth", "Play", "", "", "", "",
 static const char* const kAcidaPageSymbols[8] = { "synth", "play", "", "", "", "", "", "mix" };
 static const char* const kAcidaFxPageNames[8] = { "Distortion", "PCF", "Compressor", "Delay", "", "", "", "Mix" };
 static const char* const kAcidaFxPageSymbols[8] = { "dist", "pcf", "comp", "delay", "", "", "", "mix" };
+// Maquina BL-101 / BL-101 FX pages (tools/gen_params.py BL101_*PAGE_TITLES)
+static const char* const kBl101PageNames[10] = { "Modulator", "VCO", "Source Mixer", "VCF", "Envelope",
+                                                 "Voice", "Chord", "Mix", "Draw", "Chop" };
+static const char* const kBl101PageSymbols[10] = { "modulator", "vco", "mixer", "vcf", "env",
+                                                   "voice", "chord", "mix", "draw", "chop" };
+static const char* const kBl101FxPageNames[8] = { "Chorus", "Delay", "Reverb", "Lo-Fi", "", "", "", "Mix" };
+static const char* const kBl101FxPageSymbols[8] = { "chorus", "delay", "reverb", "lofi", "", "", "", "mix" };
+// Maquina LA-50 pages (tools/gen_params.py LA50_PAGE_TITLES)
+static const char* const kLa50PageNames[8] = { "Patch", "Upper Common", "Upper Partial 1", "Upper Partial 2",
+                                               "Lower Common", "Lower Partial 1", "Lower Partial 2", "Mix" };
+static const char* const kLa50PageSymbols[8] = { "patch", "upper", "upper_p1", "upper_p2", "lower", "lower_p1",
+                                                 "lower_p2", "mix" };
 static bool isDredrum() { return voiceDef().voice == maquina::kDredrumVoice; }
 static bool isPlethora() { return voiceDef().voice == maquina::kPlethoraVoice; }
 static bool isOneiroi() { return maquina::isOneiroi(voiceDef().voice); }
 static bool isKlang() { return voiceDef().voice == maquina::kKlangVoice; }
 static bool isKlong() { return maquina::isKlong(voiceDef().voice); }
 static bool isAcida() { return maquina::isAcida(voiceDef().voice); }
+static bool isBl101() { return maquina::isBl101(voiceDef().voice); }
+static bool isLa50() { return maquina::isLa50(voiceDef().voice); }
 
 // Noise seed: differs per instance (like the hardware RNG) unless
 // MAQUINA_RNG_SEED is set, which makes renders reproducible for tests.
@@ -169,6 +191,15 @@ protected:
         if (voiceDef().voice == maquina::kAcidaFxVoice)
             return "Distortion, PCF filter, compressor and tempo delay from OpenRB-338, a reimplementation of "
                    "the ReBirth RB-338 engine (unofficial; not affiliated with Reason Studios or Roland).";
+        if (isLa50())
+            return "LA-synthesis synth that plays D-50 patches (import .syx banks): two tones of two partials, "
+                   "synth waves after Munt's LA32 model, chorus, EQ, reverb (unofficial; not affiliated with Roland).";
+        if (voiceDef().voice == maquina::kBl101FxVoice)
+            return "Chorus, ping-pong delay, plate reverb and lo-fi slot from the S1Vave firmware by Andrew GG "
+                   "(unofficial; not affiliated with its author or with Roland).";
+        if (isBl101())
+            return "8-voice analog-modelling mono/poly synth from the S1Vave firmware by Andrew GG, with its "
+                   "OSC DRAW and OSC CHOP (unofficial; not affiliated with its author or with Roland).";
         if (isAcida())
             return "Acid bass line voice from OpenRB-338's 303, a bit-exact reimplementation of the ReBirth "
                    "RB-338 engine (unofficial; not affiliated with Reason Studios or Roland).";
@@ -183,6 +214,8 @@ protected:
                : isOneiroi()  ? "https://github.com/Befaco/Oneiroi"
                : isKlang() || isKlong() ? "https://github.com/pichenettes/eurorack"
                : isAcida()    ? "https://github.com/pingw33n/openrb-338"
+               : isBl101()    ? "https://github.com/AndrewGG88/S1Vave"
+               : isLa50()     ? "https://github.com/ngeiswei/dsynkant"
                               : "https://github.com/erica-synths/lxr-desktop-app";
     }
     const char* getLicense() const override { return "GPL-3.0-only"; }
@@ -200,6 +233,17 @@ protected:
             const bool fx = voiceDef().voice == maquina::kAcidaFxVoice;
             group.name = (fx ? kAcidaFxPageNames : kAcidaPageNames)[page & 7];
             group.symbol = (fx ? kAcidaFxPageSymbols : kAcidaPageSymbols)[page & 7];
+            return;
+        }
+        if (isLa50()) {
+            group.name = kLa50PageNames[page & 7];
+            group.symbol = kLa50PageSymbols[page & 7];
+            return;
+        }
+        if (isBl101()) {
+            const bool fx = voiceDef().voice == maquina::kBl101FxVoice;
+            group.name = fx ? kBl101FxPageNames[page & 7] : kBl101PageNames[page % 10];
+            group.symbol = fx ? kBl101FxPageSymbols[page & 7] : kBl101PageSymbols[page % 10];
             return;
         }
         if (isKlang() || isKlong()) {
@@ -368,6 +412,19 @@ protected:
 
         for (uint32_t i = 0; i < midiEventCount; ++i) {
             const MidiEvent& ev = midiEvents[i];
+#if MAQUINA_LA50
+            // Maquina LA-50: channels (Separate key modes), channel aftertouch
+            if (ev.size == 2 && (ev.data[0] & 0xF0) == 0xD0) {
+                fEngine.aftertouch(ev.frame, ev.data[1]);
+                continue;
+            }
+            if (ev.size == 3 && (ev.data[0] & 0xE0) == 0x80) {
+                const uint8_t ch = ev.data[0] & 0x0F;
+                if ((ev.data[0] & 0xF0) == 0x90 && ev.data[2] != 0) fEngine.noteOn(ev.frame, ev.data[1], ev.data[2], ch);
+                else fEngine.noteOff(ev.frame, ev.data[1], ch);
+                continue;
+            }
+#endif
             if (ev.size != 3)
                 continue;
             const uint8_t status = ev.data[0] & 0xF0;
@@ -375,10 +432,17 @@ protected:
                 fEngine.noteOn(ev.frame, ev.data[1], ev.data[2]);
             else if (status == 0x80 || status == 0x90)
                 fEngine.noteOff(ev.frame, ev.data[1]);
+#if MAQUINA_BL101 || MAQUINA_LA50
+            // Maquina BL-101 / LA-50: the bender, the mod wheel (vibrato), sustain, all notes off
+            else if (status == 0xE0)
+                fEngine.pitchBend(ev.frame, int32_t(ev.data[1] | (ev.data[2] << 7)) - 8192);
+            else if (status == 0xB0)
+                fEngine.controlChange(ev.frame, ev.data[1], ev.data[2]);
+#endif
         }
 #endif
 
-#if (MAQUINA_ONEIROI || MAQUINA_KLONG || MAQUINA_ACIDA) && DISTRHO_PLUGIN_NUM_INPUTS == 2
+#if (MAQUINA_ONEIROI || MAQUINA_KLONG || MAQUINA_ACIDA || MAQUINA_BL101) && DISTRHO_PLUGIN_NUM_INPUTS == 2
         fEngine.process(inputs[0], inputs[1], outputs[0], outputs[1], frames);
 #else
         (void)inputs;

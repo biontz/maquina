@@ -1,0 +1,14 @@
+# Maquina factory preset
+# the effects of S1Vave factory sound 57
+voice = bl101_fx
+name = Triplet Plate Chorus
+category = Chain
+tags = modulated
+chorus_mode = Type 1
+dly_level = 87
+dly_time = 108
+dly_feedback = 88
+rev_level = 80
+rev_time = 93
+rev_type = Plate
+rev_predelay = 64

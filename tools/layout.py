@@ -6,6 +6,8 @@
   euro-modules/dredrum/   Dredrum
   mutable-instruments/    Mutable Instruments: klang/ (Plaits), klong/ (Rings: klong + klong_fx)
   openrb/acida/           OpenRB-338 (ReBirth RB-338 reimplementation): acida + acida_fx
+  s1vave/bl101/           S1Vave (SH-101-style firmware): bl101 + bl101_fx
+  lasynth/la50/           LA synthesis playing D-50 patches (dsynkant + Munt): la50
 
 each with engine/, third_party/, plugins/<plugin>/ and presets/<voice>/.
 """
@@ -21,6 +23,8 @@ DREDRUM = os.path.join(ROOT, "euro-modules", "dredrum")
 KLANG = os.path.join(ROOT, "mutable-instruments", "klang")
 KLONG = os.path.join(ROOT, "mutable-instruments", "klong")
 ACIDA = os.path.join(ROOT, "openrb", "acida")
+BL101 = os.path.join(ROOT, "s1vave", "bl101")
+LA50 = os.path.join(ROOT, "lasynth", "la50")
 
 LXR_FW = os.path.join(DRUM02, "third_party", "lxr-firmware")
 
@@ -33,6 +37,8 @@ MODULE_OF = {
     "klang": KLANG,
     "klong": KLONG, "klong_fx": KLONG,
     "acida": ACIDA, "acida_fx": ACIDA,
+    "bl101": BL101, "bl101_fx": BL101,
+    "la50": LA50,
 }
 
 

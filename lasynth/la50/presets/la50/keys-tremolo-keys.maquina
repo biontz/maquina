@@ -1,0 +1,32 @@
+# Maquina preset (LA-50)
+# our design (synth partials only)
+voice = la50
+name = Tremolo Keys
+category = Keys
+tags = modulated
+u_p1_wg_waveform = Square
+u_p1_wg_pw = 10
+u_p1_wg_pw_lfo = +2
+u_p1_tvf_cutoff = 55
+u_p1_tvf_t2 = 55
+u_p1_tva_t2 = 70
+u_p1_tva_sus = 40
+u_p2_wg_coarse = 24
+u_p2_wg_pw_lfo = +2
+u_p2_tvf_cutoff = 70
+u_p2_tvf_env_depth = 30
+u_p2_tva_level = 60
+u_p2_tva_t5 = 30
+u_p2_tva_sus = 0
+u_structure = 2
+u_lfo1_rate = 60
+u_lfo1_delay = 30
+u_lfo2_rate = 30
+u_lfo3_rate = 20
+u_chorus_type = Tremolo
+u_chorus_rate = 33
+u_chorus_depth = 25
+u_chorus_balance = 70
+u_partial_balance = 35
+patch_reverb_type = Medium Room
+patch_total_volume = 85

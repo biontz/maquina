@@ -35,7 +35,7 @@ struct RandGroup {
     const char* title; // label in the editor
     bool defLock;
     uint8_t defMin, defMax; // %
-    const char* symbols[16];
+    const char* symbols[20];
 };
 
 static const RandGroup kRandGroups[] = {
@@ -106,15 +106,61 @@ static const RandGroup kRandGroups[] = {
     { "xcomp", "COMP", false, 0, 100, { "comp_amount", "comp_threshold" } },
     { "xdelay", "DELAY", false, 0, 100, { "delay_steps", "delay_mode", "delay_feedback", "delay_pan", "delay_send" } },
     { "xswitch", "SWITCHES", true, 0, 100, { "dist_on", "pcf_on", "comp_on", "delay_on" } },
+    // Maquina BL-101 (the panel's sections; tuning, voicing, DRAW, CHOP and the
+    // level locked: they change the key, the playing or the patch's character)
+    { "bmod", "LFO", false, 0, 100,
+      { "modulator_rate", "modulator_wave", "modulator_sync", "modulator_fast", "modulator_trig" } },
+    { "bvco", "VCO", false, 0, 100, { "vco_mod", "vco_pw", "vco_pwm_src" } },
+    { "bmixer", "MIXER", false, 0, 100,
+      { "mix_pulse", "mix_saw", "mix_sub", "mix_sub_type", "mix_noise", "mix_noise_type" } },
+    { "bvcf", "VCF", false, 20, 100, { "vcf_freq", "vcf_res", "vcf_env", "vcf_mod", "vcf_kybd" } },
+    { "benv", "ENV", false, 0, 80,
+      { "adsr_attack", "adsr_decay", "adsr_sustain", "adsr_release", "vca_mode", "env_trigger" } },
+    { "btune", "TUNE", true, 0, 100, { "vco_range", "vco_fine", "transpose" } },
+    { "bvoice", "VOICE", true, 0, 100,
+      { "voice_mode", "porta_mode", "porta_time", "bend_vco", "bend_vcf", "stereo_spread", "unison_detune",
+        "chord2_on", "chord2_shift", "chord3_on", "chord3_shift", "chord4_on", "chord4_shift" } },
+    { "bdraw", "DRAW", true, 0, 100,
+      { "draw_mode", "draw_mult", "draw_1", "draw_2", "draw_3", "draw_4", "draw_5", "draw_6", "draw_7", "draw_8",
+        "draw_9", "draw_10", "draw_11", "draw_12", "draw_13", "draw_14", "draw_15", "draw_16" } },
+    { "bchop", "CHOP", true, 0, 100,
+      { "chop_overtone", "chop_comb", "chop_mask_sqr", "chop_mask_saw", "chop_mask_sub", "chop_mask_noise",
+        "chop_bits_sqr_lo", "chop_bits_sqr_hi", "chop_bits_saw_lo", "chop_bits_saw_hi", "chop_bits_sub_lo",
+        "chop_bits_sub_hi", "chop_bits_noise_lo", "chop_bits_noise_hi" } },
+    { "blevel", "LEVEL", true, 60, 100, { "patch_level" } },
+    // Maquina BL-101 FX
+    { "fchorus", "CHORUS", false, 0, 100, { "chorus_mode" } },
+    { "fdelay", "DELAY", false, 0, 100, { "dly_level", "dly_time", "dly_feedback", "dly_sync" } },
+    { "freverb", "REVERB", false, 0, 100, { "rev_level", "rev_time", "rev_type", "rev_predelay" } },
+    { "flofi", "LO-FI", true, 0, 100, { "lofi_mode", "lofi_amount", "lofi_mix" } },
+    // Maquina LA-50 ("x*": every symbol starting with x). The first group a
+    // symbol matches is its group, so EFFECTS comes before PATCH.
+    { "lwg", "WG", false, 0, 100, { "u_p1_wg_*", "u_p2_wg_*", "l_p1_wg_*", "l_p2_wg_*" } },
+    { "ltvf", "TVF", false, 15, 100, { "u_p1_tvf_*", "u_p2_tvf_*", "l_p1_tvf_*", "l_p2_tvf_*" } },
+    { "ltva", "TVA", false, 0, 100, { "u_p1_tva_*", "u_p2_tva_*", "l_p1_tva_*", "l_p2_tva_*" } },
+    { "lmod", "P-ENV/LFO", false, 0, 100, { "u_penv_*", "l_penv_*", "u_pmod_*", "l_pmod_*", "u_lfo*", "l_lfo*" } },
+    { "lstruct", "STRUCTURE", true, 0, 100,
+      { "u_structure", "l_structure", "u_partial_*", "l_partial_*" } },
+    { "lfx", "EFFECTS", true, 0, 100,
+      { "u_eq_*", "l_eq_*", "u_chorus_*", "l_chorus_*", "patch_reverb_*", "patch_output_mode" } },
+    { "lpatch", "PATCH", true, 0, 100, { "patch_*" } },
 };
 constexpr int kNumRandGroups = int(sizeof(kRandGroups) / sizeof(kRandGroups[0]));
 
 // does the voice have any parameter of group g (cymbal/hihat: no pitch EG)
+// a group's symbol pattern: exact, or "prefix*"
+inline bool symbolMatches(const char* pattern, const char* symbol)
+{
+    const size_t n = std::strlen(pattern);
+    if (n && pattern[n - 1] == '*') return std::strncmp(pattern, symbol, n - 1) == 0;
+    return std::strcmp(pattern, symbol) == 0;
+}
+
 inline bool randGroupUsed(const VoiceDef& d, int g)
 {
     for (const char* sym : kRandGroups[g].symbols)
         for (uint32_t i = 0; sym && i < d.numParams; ++i)
-            if (!std::strcmp(d.params[i].symbol, sym)) return true;
+            if (symbolMatches(sym, d.params[i].symbol)) return true;
     return false;
 }
 
@@ -136,7 +182,7 @@ inline int randGroupOf(const char* symbol)
 {
     for (int g = 0; g < kNumRandGroups; ++g)
         for (const char* sym : kRandGroups[g].symbols)
-            if (sym && !std::strcmp(sym, symbol)) return g;
+            if (sym && symbolMatches(sym, symbol)) return g;
     return -1;
 }
 

@@ -1,0 +1,12 @@
+# Maquina factory preset
+# the effects of S1Vave factory sound 24
+voice = bl101_fx
+name = Ambience
+category = Reverb
+tags = short
+dly_level = 41
+dly_time = 116
+dly_feedback = 68
+rev_level = 67
+rev_time = 54
+rev_type = Ambience

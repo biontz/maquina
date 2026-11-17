@@ -1,0 +1,11 @@
+# Maquina factory preset
+# the effects of S1Vave factory sound 59
+voice = bl101_fx
+name = Chorus Echo
+category = Chorus
+tags = modulated
+chorus_mode = Type 4
+dly_level = 83
+dly_time = 116
+dly_feedback = 68
+rev_level = 0

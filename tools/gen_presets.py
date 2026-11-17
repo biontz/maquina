@@ -29,7 +29,7 @@ PRESETS_HPP = os.path.join(COMMON, "Presets.hpp")
 RANDOM_HPP = os.path.join(COMMON, "Randomizer.hpp")
 OUT_HPP = os.path.join(COMMON, "FactoryPresets.generated.hpp")
 VOICES = ["kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora", "oneiroi", "oneiroi_fx",
-          "klang", "klong", "klong_fx", "acida", "acida_fx"]
+          "klang", "klong", "klong_fx", "acida", "acida_fx", "bl101", "bl101_fx", "la50"]
 
 
 def c_str(s):
@@ -73,8 +73,12 @@ def load_meta():
     r = open(RANDOM_HPP).read()
     r = r[r.index("kRandGroups[] = {"):]
     r = r[:r.index("\n};")]
-    sound = set(re.findall(r'"(\w+)"', r))  # group symbols (+ keys/titles, harmless)
+    sound = set(re.findall(r'"(\w+\*?)"', r))  # group symbols (+ keys/titles, harmless); "x*" = prefix
     return cats, tags, sound
+
+
+def is_sound(sym, sound):
+    return sym in sound or any(p.endswith("*") and sym.startswith(p[:-1]) for p in sound)
 
 
 def parse(path, params, cats, tags, sound):
@@ -97,7 +101,7 @@ def parse(path, params, cats, tags, sound):
         if p is None:
             errors.append(f"{path}:{n}: unknown parameter {k}")
             continue
-        if k not in sound:
+        if not is_sound(k, sound):
             errors.append(f"{path}:{n}: {k} is a trigger setting, not part of a preset")
             continue
         if p["labels"] and p["kind"] != "Int" and v in p["labels"]:

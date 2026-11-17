@@ -1,8 +1,8 @@
 // preset_measure - render one hit of a voice with given settings through the
 // plugin's engine host (EngineHost for the LXR voices, DredrumHost,
-// PlethoraHost, KlangHost, KlongHost, AcidaHost; 44140 Hz output, velocity 127,
+// PlethoraHost, KlangHost, KlongHost, AcidaHost, Bl101Host; 44140 Hz output, velocity 127,
 // note 60 (held); Klong FX: a click into its input instead of the note; Acida
-// FX: a 0.4 s 110 Hz saw at -6 dBFS) and report
+// FX / BL-101 FX: a 0.4 s 110 Hz saw at -6 dBFS) and report
 // what it sounds like in numbers, since presets are designed without ears:
 //   peak / RMS, length to -40 dB, pitch at the start and after 150 ms
 //   (autocorrelation), brightness (zero-crossing rate, spectral centroid).
@@ -25,6 +25,8 @@
 #include "KlangHost.hpp"
 #include "KlongHost.hpp"
 #include "AcidaHost.hpp"
+#include "Bl101Host.hpp"
+#include "La50Host.hpp"
 #include "ExtraParams.hpp"
 #include "VoiceTables.generated.hpp"
 
@@ -150,6 +152,14 @@ int main(int argc, char** argv)
         AcidaHost host(d, 7);
         return measure(host, d, settings, wav);
     }
+    if (isBl101(d.voice)) {
+        Bl101Host host(d, 7);
+        return measure(host, d, settings, wav);
+    }
+    if (isLa50(d.voice)) {
+        La50Host host(d, 7);
+        return measure(host, d, settings, wav);
+    }
     EngineHost host(d, 7);
     return measure(host, d, settings, wav);
 }
@@ -182,11 +192,12 @@ static int measure(Host& host, const VoiceDef& d, const std::vector<std::pair<st
         noise = noise * 1664525u + 1013904223u;
         in[i] = 0.8f * (float(noise >> 8) / 8388608.f - 1.f);
     }
-    if (d.voice == kAcidaFxVoice)
+    if (d.voice == kAcidaFxVoice || d.voice == kBl101FxVoice)
         for (size_t i = 0; i < size_t(kRate * 0.4); ++i) in[i] = 0.5f * (2.f * std::fmod(float(i) * 110.f / float(kRate), 1.f) - 1.f);
     for (size_t pos = 0; pos < total; pos += block) {
         const uint32_t n = uint32_t(std::min(block, total - pos));
-        if constexpr (std::is_same_v<Host, KlongHost> || std::is_same_v<Host, AcidaHost>)
+        if constexpr (std::is_same_v<Host, KlongHost> || std::is_same_v<Host, AcidaHost> ||
+                      std::is_same_v<Host, Bl101Host>)
             host.process(in.data() + pos, in.data() + pos, L.data() + pos, R.data() + pos, n);
         else
             host.process(L.data() + pos, R.data() + pos, n);

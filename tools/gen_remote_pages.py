@@ -16,16 +16,17 @@ import os
 import re
 import sys
 
-from pages import clap_pages
+from pages import OFF_PAGE, clap_pages
 
 from layout import COMMON, ROOT
 TABLES = os.path.join(COMMON, "VoiceTables.generated.hpp")
 EXTRA = os.path.join(COMMON, "ExtraParams.hpp")
 OUT_HPP = os.path.join(COMMON, "RemotePages.generated.hpp")
 VOICES = ["kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora", "oneiroi",
-          "oneiroi_fx", "klang", "klong", "klong_fx", "acida", "acida_fx"]  # order of k_voices / MAQUINA_VOICE_INDEX
+          "oneiroi_fx", "klang", "klong", "klong_fx", "acida", "acida_fx", "bl101", "bl101_fx", "la50"]  # order of k_voices / MAQUINA_VOICE_INDEX
 EXTRA_SYMBOLS = {v: {"note_pitch", "gain"} for v in VOICES}
-for v in ("dredrum", "plethora", "oneiroi", "oneiroi_fx", "klang", "klong", "klong_fx", "acida", "acida_fx"):
+for v in ("dredrum", "plethora", "oneiroi", "oneiroi_fx", "klang", "klong", "klong_fx", "acida", "acida_fx",
+          "bl101", "bl101_fx", "la50"):
     EXTRA_SYMBOLS[v] = {"gain"}  # numExtraParams() == 1
 
 
@@ -72,7 +73,7 @@ def main():
             slots = ", ".join(f'"{c}"' for c in controls)
             out.append(f'    {{ "{title}", {{ {slots} }} }},')
         out.append("};")
-        missing = symbols[voice] - placed
+        missing = symbols[voice] - placed - OFF_PAGE.get(voice, set())
         if missing:
             print(f"{voice}: parameters on no page: {sorted(missing)}")
             errors += 1

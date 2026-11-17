@@ -1,0 +1,11761 @@
+{
+  "schema": 1,
+  "id": "maquina-la50",
+  "uri": "urn:maquina:la50",
+  "title": "Maquina LA50",
+  "provider": "parameter-bank",
+  "bank_format": "json",
+  "extensions": [
+    ".json"
+  ],
+  "parameters": [
+    {
+      "index": 5,
+      "symbol": "u_p1_wg_coarse",
+      "name": "U1 COARSE",
+      "default": 0,
+      "min": -36,
+      "max": 36,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 6,
+      "symbol": "u_p1_wg_fine",
+      "name": "U1 FINE",
+      "default": 0,
+      "min": -50,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 7,
+      "symbol": "u_p1_wg_keyfollow",
+      "name": "U1 PCHKF",
+      "default": 11,
+      "min": 0,
+      "max": 16,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "-1"
+        ],
+        [
+          1,
+          "-1/2"
+        ],
+        [
+          2,
+          "-1/4"
+        ],
+        [
+          3,
+          "0"
+        ],
+        [
+          4,
+          "1/8"
+        ],
+        [
+          5,
+          "1/4"
+        ],
+        [
+          6,
+          "3/8"
+        ],
+        [
+          7,
+          "1/2"
+        ],
+        [
+          8,
+          "5/8"
+        ],
+        [
+          9,
+          "3/4"
+        ],
+        [
+          10,
+          "7/8"
+        ],
+        [
+          11,
+          "1"
+        ],
+        [
+          12,
+          "5/4"
+        ],
+        [
+          13,
+          "3/2"
+        ],
+        [
+          14,
+          "2"
+        ],
+        [
+          15,
+          "S1"
+        ],
+        [
+          16,
+          "S2"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 8,
+      "symbol": "u_p1_wg_lfo_mode",
+      "name": "U1 LFOMD",
+      "default": 1,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "+"
+        ],
+        [
+          2,
+          "-"
+        ],
+        [
+          3,
+          "A&L"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 9,
+      "symbol": "u_p1_wg_penv_mode",
+      "name": "U1 PENVMD",
+      "default": 1,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "+"
+        ],
+        [
+          2,
+          "-"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 10,
+      "symbol": "u_p1_wg_bend_mode",
+      "name": "U1 BENDMD",
+      "default": 2,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "KF"
+        ],
+        [
+          2,
+          "NORMAL"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 11,
+      "symbol": "u_p1_wg_waveform",
+      "name": "U1 WAVE",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "SQUARE"
+        ],
+        [
+          1,
+          "SAW"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 12,
+      "symbol": "u_p1_wg_pcm_wave",
+      "name": "U1 PCM",
+      "default": 0,
+      "min": 0,
+      "max": 99,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "MARIMBA"
+        ],
+        [
+          1,
+          "VIBRAPHONE"
+        ],
+        [
+          2,
+          "XYLOPHONE 1"
+        ],
+        [
+          3,
+          "XYLOPHONE 2"
+        ],
+        [
+          4,
+          "LOG BASS"
+        ],
+        [
+          5,
+          "HAMMER"
+        ],
+        [
+          6,
+          "JAPANESE DRUM"
+        ],
+        [
+          7,
+          "KALIMBA"
+        ],
+        [
+          8,
+          "PLUCK 1"
+        ],
+        [
+          9,
+          "CHINK"
+        ],
+        [
+          10,
+          "AGOGO"
+        ],
+        [
+          11,
+          "TRIANGLE"
+        ],
+        [
+          12,
+          "BELLS"
+        ],
+        [
+          13,
+          "NAIL FILE"
+        ],
+        [
+          14,
+          "PICK"
+        ],
+        [
+          15,
+          "LOW PIANO"
+        ],
+        [
+          16,
+          "MID PIANO"
+        ],
+        [
+          17,
+          "HIGH PIANO"
+        ],
+        [
+          18,
+          "HARPSICHORD"
+        ],
+        [
+          19,
+          "HARP"
+        ],
+        [
+          20,
+          "ORGAN PERCUSSION"
+        ],
+        [
+          21,
+          "STEEL STRINGS"
+        ],
+        [
+          22,
+          "NYLON STRINGS"
+        ],
+        [
+          23,
+          "ELECTRIC GUITAR 1"
+        ],
+        [
+          24,
+          "ELECTRIC GUITAR 2"
+        ],
+        [
+          25,
+          "DIRTY GUITAR"
+        ],
+        [
+          26,
+          "PICK BASS"
+        ],
+        [
+          27,
+          "POP BASS"
+        ],
+        [
+          28,
+          "THUMP"
+        ],
+        [
+          29,
+          "UPRIGHT BASS"
+        ],
+        [
+          30,
+          "CLARINET"
+        ],
+        [
+          31,
+          "BREATH"
+        ],
+        [
+          32,
+          "STEAMER"
+        ],
+        [
+          33,
+          "HIGH FLUTE"
+        ],
+        [
+          34,
+          "LOW FLUTE"
+        ],
+        [
+          35,
+          "GUIRO"
+        ],
+        [
+          36,
+          "INDIAN FLUTE"
+        ],
+        [
+          37,
+          "FLUTE HARMONICS"
+        ],
+        [
+          38,
+          "LIPS 1"
+        ],
+        [
+          39,
+          "LIPS 2"
+        ],
+        [
+          40,
+          "TRUMPET"
+        ],
+        [
+          41,
+          "TROMBONES"
+        ],
+        [
+          42,
+          "CONTRABASS"
+        ],
+        [
+          43,
+          "CELLO"
+        ],
+        [
+          44,
+          "VIOLIN BOW"
+        ],
+        [
+          45,
+          "VIOLINS"
+        ],
+        [
+          46,
+          "PIZZICATO"
+        ],
+        [
+          47,
+          "DRAWBARS LP"
+        ],
+        [
+          48,
+          "HIGH ORGAN LP"
+        ],
+        [
+          49,
+          "LOW ORGAN LP"
+        ],
+        [
+          50,
+          "E.PIANO LP 1"
+        ],
+        [
+          51,
+          "E.PIANO LP 2"
+        ],
+        [
+          52,
+          "CLAVI LP"
+        ],
+        [
+          53,
+          "HARPSICHORD LP"
+        ],
+        [
+          54,
+          "E.BASS LP 1"
+        ],
+        [
+          55,
+          "AC.BASS LP"
+        ],
+        [
+          56,
+          "E.BASS LP 2"
+        ],
+        [
+          57,
+          "E.BASS LP 3"
+        ],
+        [
+          58,
+          "E.GUITAR LP"
+        ],
+        [
+          59,
+          "CELLO LP"
+        ],
+        [
+          60,
+          "VIOLIN LP"
+        ],
+        [
+          61,
+          "REED LP"
+        ],
+        [
+          62,
+          "SAX LP 1"
+        ],
+        [
+          63,
+          "SAX LP 2"
+        ],
+        [
+          64,
+          "AAH LP"
+        ],
+        [
+          65,
+          "OOH LP"
+        ],
+        [
+          66,
+          "MALE LP 1"
+        ],
+        [
+          67,
+          "SPECTRUM 1"
+        ],
+        [
+          68,
+          "SPECTRUM 2"
+        ],
+        [
+          69,
+          "SPECTRUM 3"
+        ],
+        [
+          70,
+          "SPECTRUM 4"
+        ],
+        [
+          71,
+          "SPECTRUM 5"
+        ],
+        [
+          72,
+          "SPECTRUM 6"
+        ],
+        [
+          73,
+          "SPECTRUM 7"
+        ],
+        [
+          74,
+          "MALE LP 2"
+        ],
+        [
+          75,
+          "NOISE LP"
+        ],
+        [
+          76,
+          "LOOP 01"
+        ],
+        [
+          77,
+          "LOOP 02"
+        ],
+        [
+          78,
+          "LOOP 03"
+        ],
+        [
+          79,
+          "LOOP 04"
+        ],
+        [
+          80,
+          "LOOP 05"
+        ],
+        [
+          81,
+          "LOOP 06"
+        ],
+        [
+          82,
+          "LOOP 07"
+        ],
+        [
+          83,
+          "LOOP 08"
+        ],
+        [
+          84,
+          "LOOP 09"
+        ],
+        [
+          85,
+          "LOOP 10"
+        ],
+        [
+          86,
+          "LOOP 11"
+        ],
+        [
+          87,
+          "LOOP 12"
+        ],
+        [
+          88,
+          "LOOP 13"
+        ],
+        [
+          89,
+          "LOOP 14"
+        ],
+        [
+          90,
+          "LOOP 15"
+        ],
+        [
+          91,
+          "LOOP 16"
+        ],
+        [
+          92,
+          "LOOP 17"
+        ],
+        [
+          93,
+          "LOOP 18"
+        ],
+        [
+          94,
+          "LOOP 19"
+        ],
+        [
+          95,
+          "LOOP 20"
+        ],
+        [
+          96,
+          "LOOP 21"
+        ],
+        [
+          97,
+          "LOOP 22"
+        ],
+        [
+          98,
+          "LOOP 23"
+        ],
+        [
+          99,
+          "LOOP 24"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 13,
+      "symbol": "u_p1_wg_pw",
+      "name": "U1 PW",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 14,
+      "symbol": "u_p1_wg_pw_velo",
+      "name": "U1 PWVELO",
+      "default": 0,
+      "min": -7,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 15,
+      "symbol": "u_p1_wg_pw_lfo",
+      "name": "U1 PWLFO",
+      "default": 0,
+      "min": 0,
+      "max": 5,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "+1"
+        ],
+        [
+          1,
+          "-1"
+        ],
+        [
+          2,
+          "+2"
+        ],
+        [
+          3,
+          "-2"
+        ],
+        [
+          4,
+          "+3"
+        ],
+        [
+          5,
+          "-3"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 16,
+      "symbol": "u_p1_wg_pw_lfo_depth",
+      "name": "U1 PWLFOD",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 17,
+      "symbol": "u_p1_wg_pw_after",
+      "name": "U1 PWAFTR",
+      "default": 0,
+      "min": -7,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 18,
+      "symbol": "u_p1_tvf_cutoff",
+      "name": "U1 CUTOFF",
+      "default": 60,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 19,
+      "symbol": "u_p1_tvf_reso",
+      "name": "U1 RESO",
+      "default": 0,
+      "min": 0,
+      "max": 30,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 20,
+      "symbol": "u_p1_tvf_keyfollow",
+      "name": "U1 FKF",
+      "default": 11,
+      "min": 0,
+      "max": 14,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "-1"
+        ],
+        [
+          1,
+          "-1/2"
+        ],
+        [
+          2,
+          "-1/4"
+        ],
+        [
+          3,
+          "0"
+        ],
+        [
+          4,
+          "1/8"
+        ],
+        [
+          5,
+          "1/4"
+        ],
+        [
+          6,
+          "3/8"
+        ],
+        [
+          7,
+          "1/2"
+        ],
+        [
+          8,
+          "5/8"
+        ],
+        [
+          9,
+          "3/4"
+        ],
+        [
+          10,
+          "7/8"
+        ],
+        [
+          11,
+          "1"
+        ],
+        [
+          12,
+          "5/4"
+        ],
+        [
+          13,
+          "3/2"
+        ],
+        [
+          14,
+          "2"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 21,
+      "symbol": "u_p1_tvf_bias_point",
+      "name": "U1 FBIASP",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "<A1"
+        ],
+        [
+          1,
+          "<A#1"
+        ],
+        [
+          2,
+          "<B1"
+        ],
+        [
+          3,
+          "<C2"
+        ],
+        [
+          4,
+          "<C#2"
+        ],
+        [
+          5,
+          "<D2"
+        ],
+        [
+          6,
+          "<D#2"
+        ],
+        [
+          7,
+          "<E2"
+        ],
+        [
+          8,
+          "<F2"
+        ],
+        [
+          9,
+          "<F#2"
+        ],
+        [
+          10,
+          "<G2"
+        ],
+        [
+          11,
+          "<G#2"
+        ],
+        [
+          12,
+          "<A2"
+        ],
+        [
+          13,
+          "<A#2"
+        ],
+        [
+          14,
+          "<B2"
+        ],
+        [
+          15,
+          "<C3"
+        ],
+        [
+          16,
+          "<C#3"
+        ],
+        [
+          17,
+          "<D3"
+        ],
+        [
+          18,
+          "<D#3"
+        ],
+        [
+          19,
+          "<E3"
+        ],
+        [
+          20,
+          "<F3"
+        ],
+        [
+          21,
+          "<F#3"
+        ],
+        [
+          22,
+          "<G3"
+        ],
+        [
+          23,
+          "<G#3"
+        ],
+        [
+          24,
+          "<A3"
+        ],
+        [
+          25,
+          "<A#3"
+        ],
+        [
+          26,
+          "<B3"
+        ],
+        [
+          27,
+          "<C4"
+        ],
+        [
+          28,
+          "<C#4"
+        ],
+        [
+          29,
+          "<D4"
+        ],
+        [
+          30,
+          "<D#4"
+        ],
+        [
+          31,
+          "<E4"
+        ],
+        [
+          32,
+          "<F4"
+        ],
+        [
+          33,
+          "<F#4"
+        ],
+        [
+          34,
+          "<G4"
+        ],
+        [
+          35,
+          "<G#4"
+        ],
+        [
+          36,
+          "<A4"
+        ],
+        [
+          37,
+          "<A#4"
+        ],
+        [
+          38,
+          "<B4"
+        ],
+        [
+          39,
+          "<C5"
+        ],
+        [
+          40,
+          "<C#5"
+        ],
+        [
+          41,
+          "<D5"
+        ],
+        [
+          42,
+          "<D#5"
+        ],
+        [
+          43,
+          "<E5"
+        ],
+        [
+          44,
+          "<F5"
+        ],
+        [
+          45,
+          "<F#5"
+        ],
+        [
+          46,
+          "<G5"
+        ],
+        [
+          47,
+          "<G#5"
+        ],
+        [
+          48,
+          "<A5"
+        ],
+        [
+          49,
+          "<A#5"
+        ],
+        [
+          50,
+          "<B5"
+        ],
+        [
+          51,
+          "<C6"
+        ],
+        [
+          52,
+          "<C#6"
+        ],
+        [
+          53,
+          "<D6"
+        ],
+        [
+          54,
+          "<D#6"
+        ],
+        [
+          55,
+          "<E6"
+        ],
+        [
+          56,
+          "<F6"
+        ],
+        [
+          57,
+          "<F#6"
+        ],
+        [
+          58,
+          "<G6"
+        ],
+        [
+          59,
+          "<G#6"
+        ],
+        [
+          60,
+          "<A6"
+        ],
+        [
+          61,
+          "<A#6"
+        ],
+        [
+          62,
+          "<B6"
+        ],
+        [
+          63,
+          "<C7"
+        ],
+        [
+          64,
+          ">A1"
+        ],
+        [
+          65,
+          ">A#1"
+        ],
+        [
+          66,
+          ">B1"
+        ],
+        [
+          67,
+          ">C2"
+        ],
+        [
+          68,
+          ">C#2"
+        ],
+        [
+          69,
+          ">D2"
+        ],
+        [
+          70,
+          ">D#2"
+        ],
+        [
+          71,
+          ">E2"
+        ],
+        [
+          72,
+          ">F2"
+        ],
+        [
+          73,
+          ">F#2"
+        ],
+        [
+          74,
+          ">G2"
+        ],
+        [
+          75,
+          ">G#2"
+        ],
+        [
+          76,
+          ">A2"
+        ],
+        [
+          77,
+          ">A#2"
+        ],
+        [
+          78,
+          ">B2"
+        ],
+        [
+          79,
+          ">C3"
+        ],
+        [
+          80,
+          ">C#3"
+        ],
+        [
+          81,
+          ">D3"
+        ],
+        [
+          82,
+          ">D#3"
+        ],
+        [
+          83,
+          ">E3"
+        ],
+        [
+          84,
+          ">F3"
+        ],
+        [
+          85,
+          ">F#3"
+        ],
+        [
+          86,
+          ">G3"
+        ],
+        [
+          87,
+          ">G#3"
+        ],
+        [
+          88,
+          ">A3"
+        ],
+        [
+          89,
+          ">A#3"
+        ],
+        [
+          90,
+          ">B3"
+        ],
+        [
+          91,
+          ">C4"
+        ],
+        [
+          92,
+          ">C#4"
+        ],
+        [
+          93,
+          ">D4"
+        ],
+        [
+          94,
+          ">D#4"
+        ],
+        [
+          95,
+          ">E4"
+        ],
+        [
+          96,
+          ">F4"
+        ],
+        [
+          97,
+          ">F#4"
+        ],
+        [
+          98,
+          ">G4"
+        ],
+        [
+          99,
+          ">G#4"
+        ],
+        [
+          100,
+          ">A4"
+        ],
+        [
+          101,
+          ">A#4"
+        ],
+        [
+          102,
+          ">B4"
+        ],
+        [
+          103,
+          ">C5"
+        ],
+        [
+          104,
+          ">C#5"
+        ],
+        [
+          105,
+          ">D5"
+        ],
+        [
+          106,
+          ">D#5"
+        ],
+        [
+          107,
+          ">E5"
+        ],
+        [
+          108,
+          ">F5"
+        ],
+        [
+          109,
+          ">F#5"
+        ],
+        [
+          110,
+          ">G5"
+        ],
+        [
+          111,
+          ">G#5"
+        ],
+        [
+          112,
+          ">A5"
+        ],
+        [
+          113,
+          ">A#5"
+        ],
+        [
+          114,
+          ">B5"
+        ],
+        [
+          115,
+          ">C6"
+        ],
+        [
+          116,
+          ">C#6"
+        ],
+        [
+          117,
+          ">D6"
+        ],
+        [
+          118,
+          ">D#6"
+        ],
+        [
+          119,
+          ">E6"
+        ],
+        [
+          120,
+          ">F6"
+        ],
+        [
+          121,
+          ">F#6"
+        ],
+        [
+          122,
+          ">G6"
+        ],
+        [
+          123,
+          ">G#6"
+        ],
+        [
+          124,
+          ">A6"
+        ],
+        [
+          125,
+          ">A#6"
+        ],
+        [
+          126,
+          ">B6"
+        ],
+        [
+          127,
+          ">C7"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 22,
+      "symbol": "u_p1_tvf_bias_level",
+      "name": "U1 FBIASL",
+      "default": 0,
+      "min": -7,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 23,
+      "symbol": "u_p1_tvf_env_depth",
+      "name": "U1 FENVD",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 24,
+      "symbol": "u_p1_tvf_env_velo",
+      "name": "U1 FENVVE",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 25,
+      "symbol": "u_p1_tvf_env_dkf",
+      "name": "U1 FEDKF",
+      "default": 0,
+      "min": 0,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 26,
+      "symbol": "u_p1_tvf_env_tkf",
+      "name": "U1 FETKF",
+      "default": 0,
+      "min": 0,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 27,
+      "symbol": "u_p1_tvf_t1",
+      "name": "U1 FT1",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 28,
+      "symbol": "u_p1_tvf_t2",
+      "name": "U1 FT2",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 29,
+      "symbol": "u_p1_tvf_t3",
+      "name": "U1 FT3",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 30,
+      "symbol": "u_p1_tvf_t4",
+      "name": "U1 FT4",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 31,
+      "symbol": "u_p1_tvf_t5",
+      "name": "U1 FT5",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 32,
+      "symbol": "u_p1_tvf_l1",
+      "name": "U1 FL1",
+      "default": 100,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 33,
+      "symbol": "u_p1_tvf_l2",
+      "name": "U1 FL2",
+      "default": 60,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 34,
+      "symbol": "u_p1_tvf_l3",
+      "name": "U1 FL3",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 35,
+      "symbol": "u_p1_tvf_sus",
+      "name": "U1 FSUSL",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 36,
+      "symbol": "u_p1_tvf_end",
+      "name": "U1 FENDL",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "0"
+        ],
+        [
+          1,
+          "100"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 37,
+      "symbol": "u_p1_tvf_lfo",
+      "name": "U1 FLFO",
+      "default": 0,
+      "min": 0,
+      "max": 5,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "+1"
+        ],
+        [
+          1,
+          "-1"
+        ],
+        [
+          2,
+          "+2"
+        ],
+        [
+          3,
+          "-2"
+        ],
+        [
+          4,
+          "+3"
+        ],
+        [
+          5,
+          "-3"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 38,
+      "symbol": "u_p1_tvf_lfo_depth",
+      "name": "U1 FLFOD",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 39,
+      "symbol": "u_p1_tvf_after",
+      "name": "U1 FAFTR",
+      "default": 0,
+      "min": -7,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 40,
+      "symbol": "u_p1_tva_level",
+      "name": "U1 LEVEL",
+      "default": 90,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 41,
+      "symbol": "u_p1_tva_velo",
+      "name": "U1 AVELO",
+      "default": 10,
+      "min": -50,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 42,
+      "symbol": "u_p1_tva_bias_point",
+      "name": "U1 ABIASP",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "<A1"
+        ],
+        [
+          1,
+          "<A#1"
+        ],
+        [
+          2,
+          "<B1"
+        ],
+        [
+          3,
+          "<C2"
+        ],
+        [
+          4,
+          "<C#2"
+        ],
+        [
+          5,
+          "<D2"
+        ],
+        [
+          6,
+          "<D#2"
+        ],
+        [
+          7,
+          "<E2"
+        ],
+        [
+          8,
+          "<F2"
+        ],
+        [
+          9,
+          "<F#2"
+        ],
+        [
+          10,
+          "<G2"
+        ],
+        [
+          11,
+          "<G#2"
+        ],
+        [
+          12,
+          "<A2"
+        ],
+        [
+          13,
+          "<A#2"
+        ],
+        [
+          14,
+          "<B2"
+        ],
+        [
+          15,
+          "<C3"
+        ],
+        [
+          16,
+          "<C#3"
+        ],
+        [
+          17,
+          "<D3"
+        ],
+        [
+          18,
+          "<D#3"
+        ],
+        [
+          19,
+          "<E3"
+        ],
+        [
+          20,
+          "<F3"
+        ],
+        [
+          21,
+          "<F#3"
+        ],
+        [
+          22,
+          "<G3"
+        ],
+        [
+          23,
+          "<G#3"
+        ],
+        [
+          24,
+          "<A3"
+        ],
+        [
+          25,
+          "<A#3"
+        ],
+        [
+          26,
+          "<B3"
+        ],
+        [
+          27,
+          "<C4"
+        ],
+        [
+          28,
+          "<C#4"
+        ],
+        [
+          29,
+          "<D4"
+        ],
+        [
+          30,
+          "<D#4"
+        ],
+        [
+          31,
+          "<E4"
+        ],
+        [
+          32,
+          "<F4"
+        ],
+        [
+          33,
+          "<F#4"
+        ],
+        [
+          34,
+          "<G4"
+        ],
+        [
+          35,
+          "<G#4"
+        ],
+        [
+          36,
+          "<A4"
+        ],
+        [
+          37,
+          "<A#4"
+        ],
+        [
+          38,
+          "<B4"
+        ],
+        [
+          39,
+          "<C5"
+        ],
+        [
+          40,
+          "<C#5"
+        ],
+        [
+          41,
+          "<D5"
+        ],
+        [
+          42,
+          "<D#5"
+        ],
+        [
+          43,
+          "<E5"
+        ],
+        [
+          44,
+          "<F5"
+        ],
+        [
+          45,
+          "<F#5"
+        ],
+        [
+          46,
+          "<G5"
+        ],
+        [
+          47,
+          "<G#5"
+        ],
+        [
+          48,
+          "<A5"
+        ],
+        [
+          49,
+          "<A#5"
+        ],
+        [
+          50,
+          "<B5"
+        ],
+        [
+          51,
+          "<C6"
+        ],
+        [
+          52,
+          "<C#6"
+        ],
+        [
+          53,
+          "<D6"
+        ],
+        [
+          54,
+          "<D#6"
+        ],
+        [
+          55,
+          "<E6"
+        ],
+        [
+          56,
+          "<F6"
+        ],
+        [
+          57,
+          "<F#6"
+        ],
+        [
+          58,
+          "<G6"
+        ],
+        [
+          59,
+          "<G#6"
+        ],
+        [
+          60,
+          "<A6"
+        ],
+        [
+          61,
+          "<A#6"
+        ],
+        [
+          62,
+          "<B6"
+        ],
+        [
+          63,
+          "<C7"
+        ],
+        [
+          64,
+          ">A1"
+        ],
+        [
+          65,
+          ">A#1"
+        ],
+        [
+          66,
+          ">B1"
+        ],
+        [
+          67,
+          ">C2"
+        ],
+        [
+          68,
+          ">C#2"
+        ],
+        [
+          69,
+          ">D2"
+        ],
+        [
+          70,
+          ">D#2"
+        ],
+        [
+          71,
+          ">E2"
+        ],
+        [
+          72,
+          ">F2"
+        ],
+        [
+          73,
+          ">F#2"
+        ],
+        [
+          74,
+          ">G2"
+        ],
+        [
+          75,
+          ">G#2"
+        ],
+        [
+          76,
+          ">A2"
+        ],
+        [
+          77,
+          ">A#2"
+        ],
+        [
+          78,
+          ">B2"
+        ],
+        [
+          79,
+          ">C3"
+        ],
+        [
+          80,
+          ">C#3"
+        ],
+        [
+          81,
+          ">D3"
+        ],
+        [
+          82,
+          ">D#3"
+        ],
+        [
+          83,
+          ">E3"
+        ],
+        [
+          84,
+          ">F3"
+        ],
+        [
+          85,
+          ">F#3"
+        ],
+        [
+          86,
+          ">G3"
+        ],
+        [
+          87,
+          ">G#3"
+        ],
+        [
+          88,
+          ">A3"
+        ],
+        [
+          89,
+          ">A#3"
+        ],
+        [
+          90,
+          ">B3"
+        ],
+        [
+          91,
+          ">C4"
+        ],
+        [
+          92,
+          ">C#4"
+        ],
+        [
+          93,
+          ">D4"
+        ],
+        [
+          94,
+          ">D#4"
+        ],
+        [
+          95,
+          ">E4"
+        ],
+        [
+          96,
+          ">F4"
+        ],
+        [
+          97,
+          ">F#4"
+        ],
+        [
+          98,
+          ">G4"
+        ],
+        [
+          99,
+          ">G#4"
+        ],
+        [
+          100,
+          ">A4"
+        ],
+        [
+          101,
+          ">A#4"
+        ],
+        [
+          102,
+          ">B4"
+        ],
+        [
+          103,
+          ">C5"
+        ],
+        [
+          104,
+          ">C#5"
+        ],
+        [
+          105,
+          ">D5"
+        ],
+        [
+          106,
+          ">D#5"
+        ],
+        [
+          107,
+          ">E5"
+        ],
+        [
+          108,
+          ">F5"
+        ],
+        [
+          109,
+          ">F#5"
+        ],
+        [
+          110,
+          ">G5"
+        ],
+        [
+          111,
+          ">G#5"
+        ],
+        [
+          112,
+          ">A5"
+        ],
+        [
+          113,
+          ">A#5"
+        ],
+        [
+          114,
+          ">B5"
+        ],
+        [
+          115,
+          ">C6"
+        ],
+        [
+          116,
+          ">C#6"
+        ],
+        [
+          117,
+          ">D6"
+        ],
+        [
+          118,
+          ">D#6"
+        ],
+        [
+          119,
+          ">E6"
+        ],
+        [
+          120,
+          ">F6"
+        ],
+        [
+          121,
+          ">F#6"
+        ],
+        [
+          122,
+          ">G6"
+        ],
+        [
+          123,
+          ">G#6"
+        ],
+        [
+          124,
+          ">A6"
+        ],
+        [
+          125,
+          ">A#6"
+        ],
+        [
+          126,
+          ">B6"
+        ],
+        [
+          127,
+          ">C7"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 43,
+      "symbol": "u_p1_tva_bias_level",
+      "name": "U1 ABIASL",
+      "default": 0,
+      "min": -12,
+      "max": 0,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 44,
+      "symbol": "u_p1_tva_t1",
+      "name": "U1 AT1",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 45,
+      "symbol": "u_p1_tva_t2",
+      "name": "U1 AT2",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 46,
+      "symbol": "u_p1_tva_t3",
+      "name": "U1 AT3",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 47,
+      "symbol": "u_p1_tva_t4",
+      "name": "U1 AT4",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 48,
+      "symbol": "u_p1_tva_t5",
+      "name": "U1 AT5",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 49,
+      "symbol": "u_p1_tva_l1",
+      "name": "U1 AL1",
+      "default": 100,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 50,
+      "symbol": "u_p1_tva_l2",
+      "name": "U1 AL2",
+      "default": 90,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 51,
+      "symbol": "u_p1_tva_l3",
+      "name": "U1 AL3",
+      "default": 85,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 52,
+      "symbol": "u_p1_tva_sus",
+      "name": "U1 ASUSL",
+      "default": 80,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 53,
+      "symbol": "u_p1_tva_end",
+      "name": "U1 AENDL",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "0"
+        ],
+        [
+          1,
+          "100"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 54,
+      "symbol": "u_p1_tva_velo_follow",
+      "name": "U1 AVELOF",
+      "default": 0,
+      "min": 0,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 55,
+      "symbol": "u_p1_tva_tkf",
+      "name": "U1 ATKF",
+      "default": 0,
+      "min": 0,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 56,
+      "symbol": "u_p1_tva_lfo",
+      "name": "U1 ALFO",
+      "default": 0,
+      "min": 0,
+      "max": 5,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "+1"
+        ],
+        [
+          1,
+          "-1"
+        ],
+        [
+          2,
+          "+2"
+        ],
+        [
+          3,
+          "-2"
+        ],
+        [
+          4,
+          "+3"
+        ],
+        [
+          5,
+          "-3"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 57,
+      "symbol": "u_p1_tva_lfo_depth",
+      "name": "U1 ALFOD",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 58,
+      "symbol": "u_p1_tva_after",
+      "name": "U1 AAFTR",
+      "default": 0,
+      "min": -7,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 59,
+      "symbol": "u_p2_wg_coarse",
+      "name": "U2 COARSE",
+      "default": 0,
+      "min": -36,
+      "max": 36,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 60,
+      "symbol": "u_p2_wg_fine",
+      "name": "U2 FINE",
+      "default": 0,
+      "min": -50,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 61,
+      "symbol": "u_p2_wg_keyfollow",
+      "name": "U2 PCHKF",
+      "default": 11,
+      "min": 0,
+      "max": 16,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "-1"
+        ],
+        [
+          1,
+          "-1/2"
+        ],
+        [
+          2,
+          "-1/4"
+        ],
+        [
+          3,
+          "0"
+        ],
+        [
+          4,
+          "1/8"
+        ],
+        [
+          5,
+          "1/4"
+        ],
+        [
+          6,
+          "3/8"
+        ],
+        [
+          7,
+          "1/2"
+        ],
+        [
+          8,
+          "5/8"
+        ],
+        [
+          9,
+          "3/4"
+        ],
+        [
+          10,
+          "7/8"
+        ],
+        [
+          11,
+          "1"
+        ],
+        [
+          12,
+          "5/4"
+        ],
+        [
+          13,
+          "3/2"
+        ],
+        [
+          14,
+          "2"
+        ],
+        [
+          15,
+          "S1"
+        ],
+        [
+          16,
+          "S2"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 62,
+      "symbol": "u_p2_wg_lfo_mode",
+      "name": "U2 LFOMD",
+      "default": 1,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "+"
+        ],
+        [
+          2,
+          "-"
+        ],
+        [
+          3,
+          "A&L"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 63,
+      "symbol": "u_p2_wg_penv_mode",
+      "name": "U2 PENVMD",
+      "default": 1,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "+"
+        ],
+        [
+          2,
+          "-"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 64,
+      "symbol": "u_p2_wg_bend_mode",
+      "name": "U2 BENDMD",
+      "default": 2,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "KF"
+        ],
+        [
+          2,
+          "NORMAL"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 65,
+      "symbol": "u_p2_wg_waveform",
+      "name": "U2 WAVE",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "SQUARE"
+        ],
+        [
+          1,
+          "SAW"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 66,
+      "symbol": "u_p2_wg_pcm_wave",
+      "name": "U2 PCM",
+      "default": 0,
+      "min": 0,
+      "max": 99,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "MARIMBA"
+        ],
+        [
+          1,
+          "VIBRAPHONE"
+        ],
+        [
+          2,
+          "XYLOPHONE 1"
+        ],
+        [
+          3,
+          "XYLOPHONE 2"
+        ],
+        [
+          4,
+          "LOG BASS"
+        ],
+        [
+          5,
+          "HAMMER"
+        ],
+        [
+          6,
+          "JAPANESE DRUM"
+        ],
+        [
+          7,
+          "KALIMBA"
+        ],
+        [
+          8,
+          "PLUCK 1"
+        ],
+        [
+          9,
+          "CHINK"
+        ],
+        [
+          10,
+          "AGOGO"
+        ],
+        [
+          11,
+          "TRIANGLE"
+        ],
+        [
+          12,
+          "BELLS"
+        ],
+        [
+          13,
+          "NAIL FILE"
+        ],
+        [
+          14,
+          "PICK"
+        ],
+        [
+          15,
+          "LOW PIANO"
+        ],
+        [
+          16,
+          "MID PIANO"
+        ],
+        [
+          17,
+          "HIGH PIANO"
+        ],
+        [
+          18,
+          "HARPSICHORD"
+        ],
+        [
+          19,
+          "HARP"
+        ],
+        [
+          20,
+          "ORGAN PERCUSSION"
+        ],
+        [
+          21,
+          "STEEL STRINGS"
+        ],
+        [
+          22,
+          "NYLON STRINGS"
+        ],
+        [
+          23,
+          "ELECTRIC GUITAR 1"
+        ],
+        [
+          24,
+          "ELECTRIC GUITAR 2"
+        ],
+        [
+          25,
+          "DIRTY GUITAR"
+        ],
+        [
+          26,
+          "PICK BASS"
+        ],
+        [
+          27,
+          "POP BASS"
+        ],
+        [
+          28,
+          "THUMP"
+        ],
+        [
+          29,
+          "UPRIGHT BASS"
+        ],
+        [
+          30,
+          "CLARINET"
+        ],
+        [
+          31,
+          "BREATH"
+        ],
+        [
+          32,
+          "STEAMER"
+        ],
+        [
+          33,
+          "HIGH FLUTE"
+        ],
+        [
+          34,
+          "LOW FLUTE"
+        ],
+        [
+          35,
+          "GUIRO"
+        ],
+        [
+          36,
+          "INDIAN FLUTE"
+        ],
+        [
+          37,
+          "FLUTE HARMONICS"
+        ],
+        [
+          38,
+          "LIPS 1"
+        ],
+        [
+          39,
+          "LIPS 2"
+        ],
+        [
+          40,
+          "TRUMPET"
+        ],
+        [
+          41,
+          "TROMBONES"
+        ],
+        [
+          42,
+          "CONTRABASS"
+        ],
+        [
+          43,
+          "CELLO"
+        ],
+        [
+          44,
+          "VIOLIN BOW"
+        ],
+        [
+          45,
+          "VIOLINS"
+        ],
+        [
+          46,
+          "PIZZICATO"
+        ],
+        [
+          47,
+          "DRAWBARS LP"
+        ],
+        [
+          48,
+          "HIGH ORGAN LP"
+        ],
+        [
+          49,
+          "LOW ORGAN LP"
+        ],
+        [
+          50,
+          "E.PIANO LP 1"
+        ],
+        [
+          51,
+          "E.PIANO LP 2"
+        ],
+        [
+          52,
+          "CLAVI LP"
+        ],
+        [
+          53,
+          "HARPSICHORD LP"
+        ],
+        [
+          54,
+          "E.BASS LP 1"
+        ],
+        [
+          55,
+          "AC.BASS LP"
+        ],
+        [
+          56,
+          "E.BASS LP 2"
+        ],
+        [
+          57,
+          "E.BASS LP 3"
+        ],
+        [
+          58,
+          "E.GUITAR LP"
+        ],
+        [
+          59,
+          "CELLO LP"
+        ],
+        [
+          60,
+          "VIOLIN LP"
+        ],
+        [
+          61,
+          "REED LP"
+        ],
+        [
+          62,
+          "SAX LP 1"
+        ],
+        [
+          63,
+          "SAX LP 2"
+        ],
+        [
+          64,
+          "AAH LP"
+        ],
+        [
+          65,
+          "OOH LP"
+        ],
+        [
+          66,
+          "MALE LP 1"
+        ],
+        [
+          67,
+          "SPECTRUM 1"
+        ],
+        [
+          68,
+          "SPECTRUM 2"
+        ],
+        [
+          69,
+          "SPECTRUM 3"
+        ],
+        [
+          70,
+          "SPECTRUM 4"
+        ],
+        [
+          71,
+          "SPECTRUM 5"
+        ],
+        [
+          72,
+          "SPECTRUM 6"
+        ],
+        [
+          73,
+          "SPECTRUM 7"
+        ],
+        [
+          74,
+          "MALE LP 2"
+        ],
+        [
+          75,
+          "NOISE LP"
+        ],
+        [
+          76,
+          "LOOP 01"
+        ],
+        [
+          77,
+          "LOOP 02"
+        ],
+        [
+          78,
+          "LOOP 03"
+        ],
+        [
+          79,
+          "LOOP 04"
+        ],
+        [
+          80,
+          "LOOP 05"
+        ],
+        [
+          81,
+          "LOOP 06"
+        ],
+        [
+          82,
+          "LOOP 07"
+        ],
+        [
+          83,
+          "LOOP 08"
+        ],
+        [
+          84,
+          "LOOP 09"
+        ],
+        [
+          85,
+          "LOOP 10"
+        ],
+        [
+          86,
+          "LOOP 11"
+        ],
+        [
+          87,
+          "LOOP 12"
+        ],
+        [
+          88,
+          "LOOP 13"
+        ],
+        [
+          89,
+          "LOOP 14"
+        ],
+        [
+          90,
+          "LOOP 15"
+        ],
+        [
+          91,
+          "LOOP 16"
+        ],
+        [
+          92,
+          "LOOP 17"
+        ],
+        [
+          93,
+          "LOOP 18"
+        ],
+        [
+          94,
+          "LOOP 19"
+        ],
+        [
+          95,
+          "LOOP 20"
+        ],
+        [
+          96,
+          "LOOP 21"
+        ],
+        [
+          97,
+          "LOOP 22"
+        ],
+        [
+          98,
+          "LOOP 23"
+        ],
+        [
+          99,
+          "LOOP 24"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 67,
+      "symbol": "u_p2_wg_pw",
+      "name": "U2 PW",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 68,
+      "symbol": "u_p2_wg_pw_velo",
+      "name": "U2 PWVELO",
+      "default": 0,
+      "min": -7,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 69,
+      "symbol": "u_p2_wg_pw_lfo",
+      "name": "U2 PWLFO",
+      "default": 0,
+      "min": 0,
+      "max": 5,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "+1"
+        ],
+        [
+          1,
+          "-1"
+        ],
+        [
+          2,
+          "+2"
+        ],
+        [
+          3,
+          "-2"
+        ],
+        [
+          4,
+          "+3"
+        ],
+        [
+          5,
+          "-3"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 70,
+      "symbol": "u_p2_wg_pw_lfo_depth",
+      "name": "U2 PWLFOD",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 71,
+      "symbol": "u_p2_wg_pw_after",
+      "name": "U2 PWAFTR",
+      "default": 0,
+      "min": -7,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 72,
+      "symbol": "u_p2_tvf_cutoff",
+      "name": "U2 CUTOFF",
+      "default": 55,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 73,
+      "symbol": "u_p2_tvf_reso",
+      "name": "U2 RESO",
+      "default": 0,
+      "min": 0,
+      "max": 30,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 74,
+      "symbol": "u_p2_tvf_keyfollow",
+      "name": "U2 FKF",
+      "default": 11,
+      "min": 0,
+      "max": 14,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "-1"
+        ],
+        [
+          1,
+          "-1/2"
+        ],
+        [
+          2,
+          "-1/4"
+        ],
+        [
+          3,
+          "0"
+        ],
+        [
+          4,
+          "1/8"
+        ],
+        [
+          5,
+          "1/4"
+        ],
+        [
+          6,
+          "3/8"
+        ],
+        [
+          7,
+          "1/2"
+        ],
+        [
+          8,
+          "5/8"
+        ],
+        [
+          9,
+          "3/4"
+        ],
+        [
+          10,
+          "7/8"
+        ],
+        [
+          11,
+          "1"
+        ],
+        [
+          12,
+          "5/4"
+        ],
+        [
+          13,
+          "3/2"
+        ],
+        [
+          14,
+          "2"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 75,
+      "symbol": "u_p2_tvf_bias_point",
+      "name": "U2 FBIASP",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "<A1"
+        ],
+        [
+          1,
+          "<A#1"
+        ],
+        [
+          2,
+          "<B1"
+        ],
+        [
+          3,
+          "<C2"
+        ],
+        [
+          4,
+          "<C#2"
+        ],
+        [
+          5,
+          "<D2"
+        ],
+        [
+          6,
+          "<D#2"
+        ],
+        [
+          7,
+          "<E2"
+        ],
+        [
+          8,
+          "<F2"
+        ],
+        [
+          9,
+          "<F#2"
+        ],
+        [
+          10,
+          "<G2"
+        ],
+        [
+          11,
+          "<G#2"
+        ],
+        [
+          12,
+          "<A2"
+        ],
+        [
+          13,
+          "<A#2"
+        ],
+        [
+          14,
+          "<B2"
+        ],
+        [
+          15,
+          "<C3"
+        ],
+        [
+          16,
+          "<C#3"
+        ],
+        [
+          17,
+          "<D3"
+        ],
+        [
+          18,
+          "<D#3"
+        ],
+        [
+          19,
+          "<E3"
+        ],
+        [
+          20,
+          "<F3"
+        ],
+        [
+          21,
+          "<F#3"
+        ],
+        [
+          22,
+          "<G3"
+        ],
+        [
+          23,
+          "<G#3"
+        ],
+        [
+          24,
+          "<A3"
+        ],
+        [
+          25,
+          "<A#3"
+        ],
+        [
+          26,
+          "<B3"
+        ],
+        [
+          27,
+          "<C4"
+        ],
+        [
+          28,
+          "<C#4"
+        ],
+        [
+          29,
+          "<D4"
+        ],
+        [
+          30,
+          "<D#4"
+        ],
+        [
+          31,
+          "<E4"
+        ],
+        [
+          32,
+          "<F4"
+        ],
+        [
+          33,
+          "<F#4"
+        ],
+        [
+          34,
+          "<G4"
+        ],
+        [
+          35,
+          "<G#4"
+        ],
+        [
+          36,
+          "<A4"
+        ],
+        [
+          37,
+          "<A#4"
+        ],
+        [
+          38,
+          "<B4"
+        ],
+        [
+          39,
+          "<C5"
+        ],
+        [
+          40,
+          "<C#5"
+        ],
+        [
+          41,
+          "<D5"
+        ],
+        [
+          42,
+          "<D#5"
+        ],
+        [
+          43,
+          "<E5"
+        ],
+        [
+          44,
+          "<F5"
+        ],
+        [
+          45,
+          "<F#5"
+        ],
+        [
+          46,
+          "<G5"
+        ],
+        [
+          47,
+          "<G#5"
+        ],
+        [
+          48,
+          "<A5"
+        ],
+        [
+          49,
+          "<A#5"
+        ],
+        [
+          50,
+          "<B5"
+        ],
+        [
+          51,
+          "<C6"
+        ],
+        [
+          52,
+          "<C#6"
+        ],
+        [
+          53,
+          "<D6"
+        ],
+        [
+          54,
+          "<D#6"
+        ],
+        [
+          55,
+          "<E6"
+        ],
+        [
+          56,
+          "<F6"
+        ],
+        [
+          57,
+          "<F#6"
+        ],
+        [
+          58,
+          "<G6"
+        ],
+        [
+          59,
+          "<G#6"
+        ],
+        [
+          60,
+          "<A6"
+        ],
+        [
+          61,
+          "<A#6"
+        ],
+        [
+          62,
+          "<B6"
+        ],
+        [
+          63,
+          "<C7"
+        ],
+        [
+          64,
+          ">A1"
+        ],
+        [
+          65,
+          ">A#1"
+        ],
+        [
+          66,
+          ">B1"
+        ],
+        [
+          67,
+          ">C2"
+        ],
+        [
+          68,
+          ">C#2"
+        ],
+        [
+          69,
+          ">D2"
+        ],
+        [
+          70,
+          ">D#2"
+        ],
+        [
+          71,
+          ">E2"
+        ],
+        [
+          72,
+          ">F2"
+        ],
+        [
+          73,
+          ">F#2"
+        ],
+        [
+          74,
+          ">G2"
+        ],
+        [
+          75,
+          ">G#2"
+        ],
+        [
+          76,
+          ">A2"
+        ],
+        [
+          77,
+          ">A#2"
+        ],
+        [
+          78,
+          ">B2"
+        ],
+        [
+          79,
+          ">C3"
+        ],
+        [
+          80,
+          ">C#3"
+        ],
+        [
+          81,
+          ">D3"
+        ],
+        [
+          82,
+          ">D#3"
+        ],
+        [
+          83,
+          ">E3"
+        ],
+        [
+          84,
+          ">F3"
+        ],
+        [
+          85,
+          ">F#3"
+        ],
+        [
+          86,
+          ">G3"
+        ],
+        [
+          87,
+          ">G#3"
+        ],
+        [
+          88,
+          ">A3"
+        ],
+        [
+          89,
+          ">A#3"
+        ],
+        [
+          90,
+          ">B3"
+        ],
+        [
+          91,
+          ">C4"
+        ],
+        [
+          92,
+          ">C#4"
+        ],
+        [
+          93,
+          ">D4"
+        ],
+        [
+          94,
+          ">D#4"
+        ],
+        [
+          95,
+          ">E4"
+        ],
+        [
+          96,
+          ">F4"
+        ],
+        [
+          97,
+          ">F#4"
+        ],
+        [
+          98,
+          ">G4"
+        ],
+        [
+          99,
+          ">G#4"
+        ],
+        [
+          100,
+          ">A4"
+        ],
+        [
+          101,
+          ">A#4"
+        ],
+        [
+          102,
+          ">B4"
+        ],
+        [
+          103,
+          ">C5"
+        ],
+        [
+          104,
+          ">C#5"
+        ],
+        [
+          105,
+          ">D5"
+        ],
+        [
+          106,
+          ">D#5"
+        ],
+        [
+          107,
+          ">E5"
+        ],
+        [
+          108,
+          ">F5"
+        ],
+        [
+          109,
+          ">F#5"
+        ],
+        [
+          110,
+          ">G5"
+        ],
+        [
+          111,
+          ">G#5"
+        ],
+        [
+          112,
+          ">A5"
+        ],
+        [
+          113,
+          ">A#5"
+        ],
+        [
+          114,
+          ">B5"
+        ],
+        [
+          115,
+          ">C6"
+        ],
+        [
+          116,
+          ">C#6"
+        ],
+        [
+          117,
+          ">D6"
+        ],
+        [
+          118,
+          ">D#6"
+        ],
+        [
+          119,
+          ">E6"
+        ],
+        [
+          120,
+          ">F6"
+        ],
+        [
+          121,
+          ">F#6"
+        ],
+        [
+          122,
+          ">G6"
+        ],
+        [
+          123,
+          ">G#6"
+        ],
+        [
+          124,
+          ">A6"
+        ],
+        [
+          125,
+          ">A#6"
+        ],
+        [
+          126,
+          ">B6"
+        ],
+        [
+          127,
+          ">C7"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 76,
+      "symbol": "u_p2_tvf_bias_level",
+      "name": "U2 FBIASL",
+      "default": 0,
+      "min": -7,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 77,
+      "symbol": "u_p2_tvf_env_depth",
+      "name": "U2 FENVD",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 78,
+      "symbol": "u_p2_tvf_env_velo",
+      "name": "U2 FENVVE",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 79,
+      "symbol": "u_p2_tvf_env_dkf",
+      "name": "U2 FEDKF",
+      "default": 0,
+      "min": 0,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 80,
+      "symbol": "u_p2_tvf_env_tkf",
+      "name": "U2 FETKF",
+      "default": 0,
+      "min": 0,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 81,
+      "symbol": "u_p2_tvf_t1",
+      "name": "U2 FT1",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 82,
+      "symbol": "u_p2_tvf_t2",
+      "name": "U2 FT2",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 83,
+      "symbol": "u_p2_tvf_t3",
+      "name": "U2 FT3",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 84,
+      "symbol": "u_p2_tvf_t4",
+      "name": "U2 FT4",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 85,
+      "symbol": "u_p2_tvf_t5",
+      "name": "U2 FT5",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 86,
+      "symbol": "u_p2_tvf_l1",
+      "name": "U2 FL1",
+      "default": 100,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 87,
+      "symbol": "u_p2_tvf_l2",
+      "name": "U2 FL2",
+      "default": 60,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 88,
+      "symbol": "u_p2_tvf_l3",
+      "name": "U2 FL3",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 89,
+      "symbol": "u_p2_tvf_sus",
+      "name": "U2 FSUSL",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 90,
+      "symbol": "u_p2_tvf_end",
+      "name": "U2 FENDL",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "0"
+        ],
+        [
+          1,
+          "100"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 91,
+      "symbol": "u_p2_tvf_lfo",
+      "name": "U2 FLFO",
+      "default": 0,
+      "min": 0,
+      "max": 5,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "+1"
+        ],
+        [
+          1,
+          "-1"
+        ],
+        [
+          2,
+          "+2"
+        ],
+        [
+          3,
+          "-2"
+        ],
+        [
+          4,
+          "+3"
+        ],
+        [
+          5,
+          "-3"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 92,
+      "symbol": "u_p2_tvf_lfo_depth",
+      "name": "U2 FLFOD",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 93,
+      "symbol": "u_p2_tvf_after",
+      "name": "U2 FAFTR",
+      "default": 0,
+      "min": -7,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 94,
+      "symbol": "u_p2_tva_level",
+      "name": "U2 LEVEL",
+      "default": 75,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 95,
+      "symbol": "u_p2_tva_velo",
+      "name": "U2 AVELO",
+      "default": 10,
+      "min": -50,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 96,
+      "symbol": "u_p2_tva_bias_point",
+      "name": "U2 ABIASP",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "<A1"
+        ],
+        [
+          1,
+          "<A#1"
+        ],
+        [
+          2,
+          "<B1"
+        ],
+        [
+          3,
+          "<C2"
+        ],
+        [
+          4,
+          "<C#2"
+        ],
+        [
+          5,
+          "<D2"
+        ],
+        [
+          6,
+          "<D#2"
+        ],
+        [
+          7,
+          "<E2"
+        ],
+        [
+          8,
+          "<F2"
+        ],
+        [
+          9,
+          "<F#2"
+        ],
+        [
+          10,
+          "<G2"
+        ],
+        [
+          11,
+          "<G#2"
+        ],
+        [
+          12,
+          "<A2"
+        ],
+        [
+          13,
+          "<A#2"
+        ],
+        [
+          14,
+          "<B2"
+        ],
+        [
+          15,
+          "<C3"
+        ],
+        [
+          16,
+          "<C#3"
+        ],
+        [
+          17,
+          "<D3"
+        ],
+        [
+          18,
+          "<D#3"
+        ],
+        [
+          19,
+          "<E3"
+        ],
+        [
+          20,
+          "<F3"
+        ],
+        [
+          21,
+          "<F#3"
+        ],
+        [
+          22,
+          "<G3"
+        ],
+        [
+          23,
+          "<G#3"
+        ],
+        [
+          24,
+          "<A3"
+        ],
+        [
+          25,
+          "<A#3"
+        ],
+        [
+          26,
+          "<B3"
+        ],
+        [
+          27,
+          "<C4"
+        ],
+        [
+          28,
+          "<C#4"
+        ],
+        [
+          29,
+          "<D4"
+        ],
+        [
+          30,
+          "<D#4"
+        ],
+        [
+          31,
+          "<E4"
+        ],
+        [
+          32,
+          "<F4"
+        ],
+        [
+          33,
+          "<F#4"
+        ],
+        [
+          34,
+          "<G4"
+        ],
+        [
+          35,
+          "<G#4"
+        ],
+        [
+          36,
+          "<A4"
+        ],
+        [
+          37,
+          "<A#4"
+        ],
+        [
+          38,
+          "<B4"
+        ],
+        [
+          39,
+          "<C5"
+        ],
+        [
+          40,
+          "<C#5"
+        ],
+        [
+          41,
+          "<D5"
+        ],
+        [
+          42,
+          "<D#5"
+        ],
+        [
+          43,
+          "<E5"
+        ],
+        [
+          44,
+          "<F5"
+        ],
+        [
+          45,
+          "<F#5"
+        ],
+        [
+          46,
+          "<G5"
+        ],
+        [
+          47,
+          "<G#5"
+        ],
+        [
+          48,
+          "<A5"
+        ],
+        [
+          49,
+          "<A#5"
+        ],
+        [
+          50,
+          "<B5"
+        ],
+        [
+          51,
+          "<C6"
+        ],
+        [
+          52,
+          "<C#6"
+        ],
+        [
+          53,
+          "<D6"
+        ],
+        [
+          54,
+          "<D#6"
+        ],
+        [
+          55,
+          "<E6"
+        ],
+        [
+          56,
+          "<F6"
+        ],
+        [
+          57,
+          "<F#6"
+        ],
+        [
+          58,
+          "<G6"
+        ],
+        [
+          59,
+          "<G#6"
+        ],
+        [
+          60,
+          "<A6"
+        ],
+        [
+          61,
+          "<A#6"
+        ],
+        [
+          62,
+          "<B6"
+        ],
+        [
+          63,
+          "<C7"
+        ],
+        [
+          64,
+          ">A1"
+        ],
+        [
+          65,
+          ">A#1"
+        ],
+        [
+          66,
+          ">B1"
+        ],
+        [
+          67,
+          ">C2"
+        ],
+        [
+          68,
+          ">C#2"
+        ],
+        [
+          69,
+          ">D2"
+        ],
+        [
+          70,
+          ">D#2"
+        ],
+        [
+          71,
+          ">E2"
+        ],
+        [
+          72,
+          ">F2"
+        ],
+        [
+          73,
+          ">F#2"
+        ],
+        [
+          74,
+          ">G2"
+        ],
+        [
+          75,
+          ">G#2"
+        ],
+        [
+          76,
+          ">A2"
+        ],
+        [
+          77,
+          ">A#2"
+        ],
+        [
+          78,
+          ">B2"
+        ],
+        [
+          79,
+          ">C3"
+        ],
+        [
+          80,
+          ">C#3"
+        ],
+        [
+          81,
+          ">D3"
+        ],
+        [
+          82,
+          ">D#3"
+        ],
+        [
+          83,
+          ">E3"
+        ],
+        [
+          84,
+          ">F3"
+        ],
+        [
+          85,
+          ">F#3"
+        ],
+        [
+          86,
+          ">G3"
+        ],
+        [
+          87,
+          ">G#3"
+        ],
+        [
+          88,
+          ">A3"
+        ],
+        [
+          89,
+          ">A#3"
+        ],
+        [
+          90,
+          ">B3"
+        ],
+        [
+          91,
+          ">C4"
+        ],
+        [
+          92,
+          ">C#4"
+        ],
+        [
+          93,
+          ">D4"
+        ],
+        [
+          94,
+          ">D#4"
+        ],
+        [
+          95,
+          ">E4"
+        ],
+        [
+          96,
+          ">F4"
+        ],
+        [
+          97,
+          ">F#4"
+        ],
+        [
+          98,
+          ">G4"
+        ],
+        [
+          99,
+          ">G#4"
+        ],
+        [
+          100,
+          ">A4"
+        ],
+        [
+          101,
+          ">A#4"
+        ],
+        [
+          102,
+          ">B4"
+        ],
+        [
+          103,
+          ">C5"
+        ],
+        [
+          104,
+          ">C#5"
+        ],
+        [
+          105,
+          ">D5"
+        ],
+        [
+          106,
+          ">D#5"
+        ],
+        [
+          107,
+          ">E5"
+        ],
+        [
+          108,
+          ">F5"
+        ],
+        [
+          109,
+          ">F#5"
+        ],
+        [
+          110,
+          ">G5"
+        ],
+        [
+          111,
+          ">G#5"
+        ],
+        [
+          112,
+          ">A5"
+        ],
+        [
+          113,
+          ">A#5"
+        ],
+        [
+          114,
+          ">B5"
+        ],
+        [
+          115,
+          ">C6"
+        ],
+        [
+          116,
+          ">C#6"
+        ],
+        [
+          117,
+          ">D6"
+        ],
+        [
+          118,
+          ">D#6"
+        ],
+        [
+          119,
+          ">E6"
+        ],
+        [
+          120,
+          ">F6"
+        ],
+        [
+          121,
+          ">F#6"
+        ],
+        [
+          122,
+          ">G6"
+        ],
+        [
+          123,
+          ">G#6"
+        ],
+        [
+          124,
+          ">A6"
+        ],
+        [
+          125,
+          ">A#6"
+        ],
+        [
+          126,
+          ">B6"
+        ],
+        [
+          127,
+          ">C7"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 97,
+      "symbol": "u_p2_tva_bias_level",
+      "name": "U2 ABIASL",
+      "default": 0,
+      "min": -12,
+      "max": 0,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 98,
+      "symbol": "u_p2_tva_t1",
+      "name": "U2 AT1",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 99,
+      "symbol": "u_p2_tva_t2",
+      "name": "U2 AT2",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 100,
+      "symbol": "u_p2_tva_t3",
+      "name": "U2 AT3",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 101,
+      "symbol": "u_p2_tva_t4",
+      "name": "U2 AT4",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 102,
+      "symbol": "u_p2_tva_t5",
+      "name": "U2 AT5",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 103,
+      "symbol": "u_p2_tva_l1",
+      "name": "U2 AL1",
+      "default": 100,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 104,
+      "symbol": "u_p2_tva_l2",
+      "name": "U2 AL2",
+      "default": 90,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 105,
+      "symbol": "u_p2_tva_l3",
+      "name": "U2 AL3",
+      "default": 85,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 106,
+      "symbol": "u_p2_tva_sus",
+      "name": "U2 ASUSL",
+      "default": 80,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 107,
+      "symbol": "u_p2_tva_end",
+      "name": "U2 AENDL",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "0"
+        ],
+        [
+          1,
+          "100"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 108,
+      "symbol": "u_p2_tva_velo_follow",
+      "name": "U2 AVELOF",
+      "default": 0,
+      "min": 0,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 109,
+      "symbol": "u_p2_tva_tkf",
+      "name": "U2 ATKF",
+      "default": 0,
+      "min": 0,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 110,
+      "symbol": "u_p2_tva_lfo",
+      "name": "U2 ALFO",
+      "default": 0,
+      "min": 0,
+      "max": 5,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "+1"
+        ],
+        [
+          1,
+          "-1"
+        ],
+        [
+          2,
+          "+2"
+        ],
+        [
+          3,
+          "-2"
+        ],
+        [
+          4,
+          "+3"
+        ],
+        [
+          5,
+          "-3"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 111,
+      "symbol": "u_p2_tva_lfo_depth",
+      "name": "U2 ALFOD",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 112,
+      "symbol": "u_p2_tva_after",
+      "name": "U2 AAFTR",
+      "default": 0,
+      "min": -7,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 113,
+      "symbol": "u_structure",
+      "name": "U STRUCT",
+      "default": 0,
+      "min": 0,
+      "max": 6,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "1"
+        ],
+        [
+          1,
+          "2"
+        ],
+        [
+          2,
+          "3"
+        ],
+        [
+          3,
+          "4"
+        ],
+        [
+          4,
+          "5"
+        ],
+        [
+          5,
+          "6"
+        ],
+        [
+          6,
+          "7"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 114,
+      "symbol": "u_penv_velo",
+      "name": "U PENVVE",
+      "default": 0,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 115,
+      "symbol": "u_penv_tkf",
+      "name": "U PENVTKF",
+      "default": 0,
+      "min": 0,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 116,
+      "symbol": "u_penv_t1",
+      "name": "U PT1",
+      "default": 0,
+      "min": 0,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 117,
+      "symbol": "u_penv_t2",
+      "name": "U PT2",
+      "default": 0,
+      "min": 0,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 118,
+      "symbol": "u_penv_t3",
+      "name": "U PT3",
+      "default": 0,
+      "min": 0,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 119,
+      "symbol": "u_penv_t4",
+      "name": "U PT4",
+      "default": 0,
+      "min": 0,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 120,
+      "symbol": "u_penv_l0",
+      "name": "U PL0",
+      "default": 0,
+      "min": -50,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 121,
+      "symbol": "u_penv_l1",
+      "name": "U PL1",
+      "default": 0,
+      "min": -50,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 122,
+      "symbol": "u_penv_l2",
+      "name": "U PL2",
+      "default": 0,
+      "min": -50,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 123,
+      "symbol": "u_penv_sus",
+      "name": "U PSUSL",
+      "default": 0,
+      "min": -50,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 124,
+      "symbol": "u_penv_end",
+      "name": "U PENDL",
+      "default": 0,
+      "min": -50,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 125,
+      "symbol": "u_pmod_lfo",
+      "name": "U PMODLFO",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 126,
+      "symbol": "u_pmod_lever",
+      "name": "U PMODLEV",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 127,
+      "symbol": "u_pmod_after",
+      "name": "U PMODAFT",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 128,
+      "symbol": "u_lfo1_wave",
+      "name": "U L1WAVE",
+      "default": 0,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "TRI"
+        ],
+        [
+          1,
+          "SAW"
+        ],
+        [
+          2,
+          "SQUARE"
+        ],
+        [
+          3,
+          "RANDOM"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 129,
+      "symbol": "u_lfo1_rate",
+      "name": "U L1RATE",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 130,
+      "symbol": "u_lfo1_delay",
+      "name": "U L1DLY",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 131,
+      "symbol": "u_lfo1_sync",
+      "name": "U L1SYNC",
+      "default": 0,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "ON"
+        ],
+        [
+          2,
+          "KEY"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 132,
+      "symbol": "u_lfo2_wave",
+      "name": "U L2WAVE",
+      "default": 0,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "TRI"
+        ],
+        [
+          1,
+          "SAW"
+        ],
+        [
+          2,
+          "SQUARE"
+        ],
+        [
+          3,
+          "RANDOM"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 133,
+      "symbol": "u_lfo2_rate",
+      "name": "U L2RATE",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 134,
+      "symbol": "u_lfo2_delay",
+      "name": "U L2DLY",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 135,
+      "symbol": "u_lfo2_sync",
+      "name": "U L2SYNC",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "ON"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 136,
+      "symbol": "u_lfo3_wave",
+      "name": "U L3WAVE",
+      "default": 0,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "TRI"
+        ],
+        [
+          1,
+          "SAW"
+        ],
+        [
+          2,
+          "SQUARE"
+        ],
+        [
+          3,
+          "RANDOM"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 137,
+      "symbol": "u_lfo3_rate",
+      "name": "U L3RATE",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 138,
+      "symbol": "u_lfo3_delay",
+      "name": "U L3DLY",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 139,
+      "symbol": "u_lfo3_sync",
+      "name": "U L3SYNC",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "ON"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 140,
+      "symbol": "u_eq_low_freq",
+      "name": "U LOEQF",
+      "default": 0,
+      "min": 0,
+      "max": 15,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "63"
+        ],
+        [
+          1,
+          "75"
+        ],
+        [
+          2,
+          "88"
+        ],
+        [
+          3,
+          "105"
+        ],
+        [
+          4,
+          "125"
+        ],
+        [
+          5,
+          "150"
+        ],
+        [
+          6,
+          "175"
+        ],
+        [
+          7,
+          "210"
+        ],
+        [
+          8,
+          "250"
+        ],
+        [
+          9,
+          "300"
+        ],
+        [
+          10,
+          "350"
+        ],
+        [
+          11,
+          "420"
+        ],
+        [
+          12,
+          "500"
+        ],
+        [
+          13,
+          "600"
+        ],
+        [
+          14,
+          "700"
+        ],
+        [
+          15,
+          "840"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 141,
+      "symbol": "u_eq_low_gain",
+      "name": "U LOEQG",
+      "default": 0,
+      "min": -12,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 142,
+      "symbol": "u_eq_high_freq",
+      "name": "U HIEQF",
+      "default": 21,
+      "min": 0,
+      "max": 21,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "250"
+        ],
+        [
+          1,
+          "300"
+        ],
+        [
+          2,
+          "350"
+        ],
+        [
+          3,
+          "420"
+        ],
+        [
+          4,
+          "500"
+        ],
+        [
+          5,
+          "600"
+        ],
+        [
+          6,
+          "700"
+        ],
+        [
+          7,
+          "840"
+        ],
+        [
+          8,
+          "1.0K"
+        ],
+        [
+          9,
+          "1.2K"
+        ],
+        [
+          10,
+          "1.4K"
+        ],
+        [
+          11,
+          "1.7K"
+        ],
+        [
+          12,
+          "2.0K"
+        ],
+        [
+          13,
+          "2.4K"
+        ],
+        [
+          14,
+          "2.8K"
+        ],
+        [
+          15,
+          "3.4K"
+        ],
+        [
+          16,
+          "4.0K"
+        ],
+        [
+          17,
+          "4.8K"
+        ],
+        [
+          18,
+          "5.7K"
+        ],
+        [
+          19,
+          "6.7K"
+        ],
+        [
+          20,
+          "8.0K"
+        ],
+        [
+          21,
+          "9.5K"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 143,
+      "symbol": "u_eq_high_q",
+      "name": "U HIEQQ",
+      "default": 3,
+      "min": 0,
+      "max": 8,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "0.3"
+        ],
+        [
+          1,
+          "0.5"
+        ],
+        [
+          2,
+          "0.7"
+        ],
+        [
+          3,
+          "1.0"
+        ],
+        [
+          4,
+          "1.4"
+        ],
+        [
+          5,
+          "2.0"
+        ],
+        [
+          6,
+          "3.0"
+        ],
+        [
+          7,
+          "4.2"
+        ],
+        [
+          8,
+          "6.0"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 144,
+      "symbol": "u_eq_high_gain",
+      "name": "U HIEQG",
+      "default": 0,
+      "min": -12,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 145,
+      "symbol": "u_chorus_type",
+      "name": "U CHTYPE",
+      "default": 0,
+      "min": 0,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "CHORUS 1"
+        ],
+        [
+          1,
+          "CHORUS 2"
+        ],
+        [
+          2,
+          "FLANGER 1"
+        ],
+        [
+          3,
+          "FLANGER 2"
+        ],
+        [
+          4,
+          "FB CHORUS"
+        ],
+        [
+          5,
+          "TREMOLO"
+        ],
+        [
+          6,
+          "CHOR TREM"
+        ],
+        [
+          7,
+          "DIMENSION"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 146,
+      "symbol": "u_chorus_rate",
+      "name": "U CHRATE",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 147,
+      "symbol": "u_chorus_depth",
+      "name": "U CHDEPTH",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 148,
+      "symbol": "u_chorus_balance",
+      "name": "U CHBAL",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 149,
+      "symbol": "u_partial_mute",
+      "name": "U PMUTE",
+      "default": 3,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "BOTH OFF"
+        ],
+        [
+          1,
+          "P1 ON"
+        ],
+        [
+          2,
+          "P2 ON"
+        ],
+        [
+          3,
+          "BOTH ON"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 150,
+      "symbol": "u_partial_balance",
+      "name": "U PBAL",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 151,
+      "symbol": "l_p1_wg_coarse",
+      "name": "L1 COARSE",
+      "default": 0,
+      "min": -36,
+      "max": 36,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 152,
+      "symbol": "l_p1_wg_fine",
+      "name": "L1 FINE",
+      "default": 0,
+      "min": -50,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 153,
+      "symbol": "l_p1_wg_keyfollow",
+      "name": "L1 PCHKF",
+      "default": 11,
+      "min": 0,
+      "max": 16,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "-1"
+        ],
+        [
+          1,
+          "-1/2"
+        ],
+        [
+          2,
+          "-1/4"
+        ],
+        [
+          3,
+          "0"
+        ],
+        [
+          4,
+          "1/8"
+        ],
+        [
+          5,
+          "1/4"
+        ],
+        [
+          6,
+          "3/8"
+        ],
+        [
+          7,
+          "1/2"
+        ],
+        [
+          8,
+          "5/8"
+        ],
+        [
+          9,
+          "3/4"
+        ],
+        [
+          10,
+          "7/8"
+        ],
+        [
+          11,
+          "1"
+        ],
+        [
+          12,
+          "5/4"
+        ],
+        [
+          13,
+          "3/2"
+        ],
+        [
+          14,
+          "2"
+        ],
+        [
+          15,
+          "S1"
+        ],
+        [
+          16,
+          "S2"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 154,
+      "symbol": "l_p1_wg_lfo_mode",
+      "name": "L1 LFOMD",
+      "default": 1,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "+"
+        ],
+        [
+          2,
+          "-"
+        ],
+        [
+          3,
+          "A&L"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 155,
+      "symbol": "l_p1_wg_penv_mode",
+      "name": "L1 PENVMD",
+      "default": 1,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "+"
+        ],
+        [
+          2,
+          "-"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 156,
+      "symbol": "l_p1_wg_bend_mode",
+      "name": "L1 BENDMD",
+      "default": 2,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "KF"
+        ],
+        [
+          2,
+          "NORMAL"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 157,
+      "symbol": "l_p1_wg_waveform",
+      "name": "L1 WAVE",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "SQUARE"
+        ],
+        [
+          1,
+          "SAW"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 158,
+      "symbol": "l_p1_wg_pcm_wave",
+      "name": "L1 PCM",
+      "default": 0,
+      "min": 0,
+      "max": 99,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "MARIMBA"
+        ],
+        [
+          1,
+          "VIBRAPHONE"
+        ],
+        [
+          2,
+          "XYLOPHONE 1"
+        ],
+        [
+          3,
+          "XYLOPHONE 2"
+        ],
+        [
+          4,
+          "LOG BASS"
+        ],
+        [
+          5,
+          "HAMMER"
+        ],
+        [
+          6,
+          "JAPANESE DRUM"
+        ],
+        [
+          7,
+          "KALIMBA"
+        ],
+        [
+          8,
+          "PLUCK 1"
+        ],
+        [
+          9,
+          "CHINK"
+        ],
+        [
+          10,
+          "AGOGO"
+        ],
+        [
+          11,
+          "TRIANGLE"
+        ],
+        [
+          12,
+          "BELLS"
+        ],
+        [
+          13,
+          "NAIL FILE"
+        ],
+        [
+          14,
+          "PICK"
+        ],
+        [
+          15,
+          "LOW PIANO"
+        ],
+        [
+          16,
+          "MID PIANO"
+        ],
+        [
+          17,
+          "HIGH PIANO"
+        ],
+        [
+          18,
+          "HARPSICHORD"
+        ],
+        [
+          19,
+          "HARP"
+        ],
+        [
+          20,
+          "ORGAN PERCUSSION"
+        ],
+        [
+          21,
+          "STEEL STRINGS"
+        ],
+        [
+          22,
+          "NYLON STRINGS"
+        ],
+        [
+          23,
+          "ELECTRIC GUITAR 1"
+        ],
+        [
+          24,
+          "ELECTRIC GUITAR 2"
+        ],
+        [
+          25,
+          "DIRTY GUITAR"
+        ],
+        [
+          26,
+          "PICK BASS"
+        ],
+        [
+          27,
+          "POP BASS"
+        ],
+        [
+          28,
+          "THUMP"
+        ],
+        [
+          29,
+          "UPRIGHT BASS"
+        ],
+        [
+          30,
+          "CLARINET"
+        ],
+        [
+          31,
+          "BREATH"
+        ],
+        [
+          32,
+          "STEAMER"
+        ],
+        [
+          33,
+          "HIGH FLUTE"
+        ],
+        [
+          34,
+          "LOW FLUTE"
+        ],
+        [
+          35,
+          "GUIRO"
+        ],
+        [
+          36,
+          "INDIAN FLUTE"
+        ],
+        [
+          37,
+          "FLUTE HARMONICS"
+        ],
+        [
+          38,
+          "LIPS 1"
+        ],
+        [
+          39,
+          "LIPS 2"
+        ],
+        [
+          40,
+          "TRUMPET"
+        ],
+        [
+          41,
+          "TROMBONES"
+        ],
+        [
+          42,
+          "CONTRABASS"
+        ],
+        [
+          43,
+          "CELLO"
+        ],
+        [
+          44,
+          "VIOLIN BOW"
+        ],
+        [
+          45,
+          "VIOLINS"
+        ],
+        [
+          46,
+          "PIZZICATO"
+        ],
+        [
+          47,
+          "DRAWBARS LP"
+        ],
+        [
+          48,
+          "HIGH ORGAN LP"
+        ],
+        [
+          49,
+          "LOW ORGAN LP"
+        ],
+        [
+          50,
+          "E.PIANO LP 1"
+        ],
+        [
+          51,
+          "E.PIANO LP 2"
+        ],
+        [
+          52,
+          "CLAVI LP"
+        ],
+        [
+          53,
+          "HARPSICHORD LP"
+        ],
+        [
+          54,
+          "E.BASS LP 1"
+        ],
+        [
+          55,
+          "AC.BASS LP"
+        ],
+        [
+          56,
+          "E.BASS LP 2"
+        ],
+        [
+          57,
+          "E.BASS LP 3"
+        ],
+        [
+          58,
+          "E.GUITAR LP"
+        ],
+        [
+          59,
+          "CELLO LP"
+        ],
+        [
+          60,
+          "VIOLIN LP"
+        ],
+        [
+          61,
+          "REED LP"
+        ],
+        [
+          62,
+          "SAX LP 1"
+        ],
+        [
+          63,
+          "SAX LP 2"
+        ],
+        [
+          64,
+          "AAH LP"
+        ],
+        [
+          65,
+          "OOH LP"
+        ],
+        [
+          66,
+          "MALE LP 1"
+        ],
+        [
+          67,
+          "SPECTRUM 1"
+        ],
+        [
+          68,
+          "SPECTRUM 2"
+        ],
+        [
+          69,
+          "SPECTRUM 3"
+        ],
+        [
+          70,
+          "SPECTRUM 4"
+        ],
+        [
+          71,
+          "SPECTRUM 5"
+        ],
+        [
+          72,
+          "SPECTRUM 6"
+        ],
+        [
+          73,
+          "SPECTRUM 7"
+        ],
+        [
+          74,
+          "MALE LP 2"
+        ],
+        [
+          75,
+          "NOISE LP"
+        ],
+        [
+          76,
+          "LOOP 01"
+        ],
+        [
+          77,
+          "LOOP 02"
+        ],
+        [
+          78,
+          "LOOP 03"
+        ],
+        [
+          79,
+          "LOOP 04"
+        ],
+        [
+          80,
+          "LOOP 05"
+        ],
+        [
+          81,
+          "LOOP 06"
+        ],
+        [
+          82,
+          "LOOP 07"
+        ],
+        [
+          83,
+          "LOOP 08"
+        ],
+        [
+          84,
+          "LOOP 09"
+        ],
+        [
+          85,
+          "LOOP 10"
+        ],
+        [
+          86,
+          "LOOP 11"
+        ],
+        [
+          87,
+          "LOOP 12"
+        ],
+        [
+          88,
+          "LOOP 13"
+        ],
+        [
+          89,
+          "LOOP 14"
+        ],
+        [
+          90,
+          "LOOP 15"
+        ],
+        [
+          91,
+          "LOOP 16"
+        ],
+        [
+          92,
+          "LOOP 17"
+        ],
+        [
+          93,
+          "LOOP 18"
+        ],
+        [
+          94,
+          "LOOP 19"
+        ],
+        [
+          95,
+          "LOOP 20"
+        ],
+        [
+          96,
+          "LOOP 21"
+        ],
+        [
+          97,
+          "LOOP 22"
+        ],
+        [
+          98,
+          "LOOP 23"
+        ],
+        [
+          99,
+          "LOOP 24"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 159,
+      "symbol": "l_p1_wg_pw",
+      "name": "L1 PW",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 160,
+      "symbol": "l_p1_wg_pw_velo",
+      "name": "L1 PWVELO",
+      "default": 0,
+      "min": -7,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 161,
+      "symbol": "l_p1_wg_pw_lfo",
+      "name": "L1 PWLFO",
+      "default": 0,
+      "min": 0,
+      "max": 5,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "+1"
+        ],
+        [
+          1,
+          "-1"
+        ],
+        [
+          2,
+          "+2"
+        ],
+        [
+          3,
+          "-2"
+        ],
+        [
+          4,
+          "+3"
+        ],
+        [
+          5,
+          "-3"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 162,
+      "symbol": "l_p1_wg_pw_lfo_depth",
+      "name": "L1 PWLFOD",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 163,
+      "symbol": "l_p1_wg_pw_after",
+      "name": "L1 PWAFTR",
+      "default": 0,
+      "min": -7,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 164,
+      "symbol": "l_p1_tvf_cutoff",
+      "name": "L1 CUTOFF",
+      "default": 60,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 165,
+      "symbol": "l_p1_tvf_reso",
+      "name": "L1 RESO",
+      "default": 0,
+      "min": 0,
+      "max": 30,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 166,
+      "symbol": "l_p1_tvf_keyfollow",
+      "name": "L1 FKF",
+      "default": 11,
+      "min": 0,
+      "max": 14,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "-1"
+        ],
+        [
+          1,
+          "-1/2"
+        ],
+        [
+          2,
+          "-1/4"
+        ],
+        [
+          3,
+          "0"
+        ],
+        [
+          4,
+          "1/8"
+        ],
+        [
+          5,
+          "1/4"
+        ],
+        [
+          6,
+          "3/8"
+        ],
+        [
+          7,
+          "1/2"
+        ],
+        [
+          8,
+          "5/8"
+        ],
+        [
+          9,
+          "3/4"
+        ],
+        [
+          10,
+          "7/8"
+        ],
+        [
+          11,
+          "1"
+        ],
+        [
+          12,
+          "5/4"
+        ],
+        [
+          13,
+          "3/2"
+        ],
+        [
+          14,
+          "2"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 167,
+      "symbol": "l_p1_tvf_bias_point",
+      "name": "L1 FBIASP",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "<A1"
+        ],
+        [
+          1,
+          "<A#1"
+        ],
+        [
+          2,
+          "<B1"
+        ],
+        [
+          3,
+          "<C2"
+        ],
+        [
+          4,
+          "<C#2"
+        ],
+        [
+          5,
+          "<D2"
+        ],
+        [
+          6,
+          "<D#2"
+        ],
+        [
+          7,
+          "<E2"
+        ],
+        [
+          8,
+          "<F2"
+        ],
+        [
+          9,
+          "<F#2"
+        ],
+        [
+          10,
+          "<G2"
+        ],
+        [
+          11,
+          "<G#2"
+        ],
+        [
+          12,
+          "<A2"
+        ],
+        [
+          13,
+          "<A#2"
+        ],
+        [
+          14,
+          "<B2"
+        ],
+        [
+          15,
+          "<C3"
+        ],
+        [
+          16,
+          "<C#3"
+        ],
+        [
+          17,
+          "<D3"
+        ],
+        [
+          18,
+          "<D#3"
+        ],
+        [
+          19,
+          "<E3"
+        ],
+        [
+          20,
+          "<F3"
+        ],
+        [
+          21,
+          "<F#3"
+        ],
+        [
+          22,
+          "<G3"
+        ],
+        [
+          23,
+          "<G#3"
+        ],
+        [
+          24,
+          "<A3"
+        ],
+        [
+          25,
+          "<A#3"
+        ],
+        [
+          26,
+          "<B3"
+        ],
+        [
+          27,
+          "<C4"
+        ],
+        [
+          28,
+          "<C#4"
+        ],
+        [
+          29,
+          "<D4"
+        ],
+        [
+          30,
+          "<D#4"
+        ],
+        [
+          31,
+          "<E4"
+        ],
+        [
+          32,
+          "<F4"
+        ],
+        [
+          33,
+          "<F#4"
+        ],
+        [
+          34,
+          "<G4"
+        ],
+        [
+          35,
+          "<G#4"
+        ],
+        [
+          36,
+          "<A4"
+        ],
+        [
+          37,
+          "<A#4"
+        ],
+        [
+          38,
+          "<B4"
+        ],
+        [
+          39,
+          "<C5"
+        ],
+        [
+          40,
+          "<C#5"
+        ],
+        [
+          41,
+          "<D5"
+        ],
+        [
+          42,
+          "<D#5"
+        ],
+        [
+          43,
+          "<E5"
+        ],
+        [
+          44,
+          "<F5"
+        ],
+        [
+          45,
+          "<F#5"
+        ],
+        [
+          46,
+          "<G5"
+        ],
+        [
+          47,
+          "<G#5"
+        ],
+        [
+          48,
+          "<A5"
+        ],
+        [
+          49,
+          "<A#5"
+        ],
+        [
+          50,
+          "<B5"
+        ],
+        [
+          51,
+          "<C6"
+        ],
+        [
+          52,
+          "<C#6"
+        ],
+        [
+          53,
+          "<D6"
+        ],
+        [
+          54,
+          "<D#6"
+        ],
+        [
+          55,
+          "<E6"
+        ],
+        [
+          56,
+          "<F6"
+        ],
+        [
+          57,
+          "<F#6"
+        ],
+        [
+          58,
+          "<G6"
+        ],
+        [
+          59,
+          "<G#6"
+        ],
+        [
+          60,
+          "<A6"
+        ],
+        [
+          61,
+          "<A#6"
+        ],
+        [
+          62,
+          "<B6"
+        ],
+        [
+          63,
+          "<C7"
+        ],
+        [
+          64,
+          ">A1"
+        ],
+        [
+          65,
+          ">A#1"
+        ],
+        [
+          66,
+          ">B1"
+        ],
+        [
+          67,
+          ">C2"
+        ],
+        [
+          68,
+          ">C#2"
+        ],
+        [
+          69,
+          ">D2"
+        ],
+        [
+          70,
+          ">D#2"
+        ],
+        [
+          71,
+          ">E2"
+        ],
+        [
+          72,
+          ">F2"
+        ],
+        [
+          73,
+          ">F#2"
+        ],
+        [
+          74,
+          ">G2"
+        ],
+        [
+          75,
+          ">G#2"
+        ],
+        [
+          76,
+          ">A2"
+        ],
+        [
+          77,
+          ">A#2"
+        ],
+        [
+          78,
+          ">B2"
+        ],
+        [
+          79,
+          ">C3"
+        ],
+        [
+          80,
+          ">C#3"
+        ],
+        [
+          81,
+          ">D3"
+        ],
+        [
+          82,
+          ">D#3"
+        ],
+        [
+          83,
+          ">E3"
+        ],
+        [
+          84,
+          ">F3"
+        ],
+        [
+          85,
+          ">F#3"
+        ],
+        [
+          86,
+          ">G3"
+        ],
+        [
+          87,
+          ">G#3"
+        ],
+        [
+          88,
+          ">A3"
+        ],
+        [
+          89,
+          ">A#3"
+        ],
+        [
+          90,
+          ">B3"
+        ],
+        [
+          91,
+          ">C4"
+        ],
+        [
+          92,
+          ">C#4"
+        ],
+        [
+          93,
+          ">D4"
+        ],
+        [
+          94,
+          ">D#4"
+        ],
+        [
+          95,
+          ">E4"
+        ],
+        [
+          96,
+          ">F4"
+        ],
+        [
+          97,
+          ">F#4"
+        ],
+        [
+          98,
+          ">G4"
+        ],
+        [
+          99,
+          ">G#4"
+        ],
+        [
+          100,
+          ">A4"
+        ],
+        [
+          101,
+          ">A#4"
+        ],
+        [
+          102,
+          ">B4"
+        ],
+        [
+          103,
+          ">C5"
+        ],
+        [
+          104,
+          ">C#5"
+        ],
+        [
+          105,
+          ">D5"
+        ],
+        [
+          106,
+          ">D#5"
+        ],
+        [
+          107,
+          ">E5"
+        ],
+        [
+          108,
+          ">F5"
+        ],
+        [
+          109,
+          ">F#5"
+        ],
+        [
+          110,
+          ">G5"
+        ],
+        [
+          111,
+          ">G#5"
+        ],
+        [
+          112,
+          ">A5"
+        ],
+        [
+          113,
+          ">A#5"
+        ],
+        [
+          114,
+          ">B5"
+        ],
+        [
+          115,
+          ">C6"
+        ],
+        [
+          116,
+          ">C#6"
+        ],
+        [
+          117,
+          ">D6"
+        ],
+        [
+          118,
+          ">D#6"
+        ],
+        [
+          119,
+          ">E6"
+        ],
+        [
+          120,
+          ">F6"
+        ],
+        [
+          121,
+          ">F#6"
+        ],
+        [
+          122,
+          ">G6"
+        ],
+        [
+          123,
+          ">G#6"
+        ],
+        [
+          124,
+          ">A6"
+        ],
+        [
+          125,
+          ">A#6"
+        ],
+        [
+          126,
+          ">B6"
+        ],
+        [
+          127,
+          ">C7"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 168,
+      "symbol": "l_p1_tvf_bias_level",
+      "name": "L1 FBIASL",
+      "default": 0,
+      "min": -7,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 169,
+      "symbol": "l_p1_tvf_env_depth",
+      "name": "L1 FENVD",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 170,
+      "symbol": "l_p1_tvf_env_velo",
+      "name": "L1 FENVVE",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 171,
+      "symbol": "l_p1_tvf_env_dkf",
+      "name": "L1 FEDKF",
+      "default": 0,
+      "min": 0,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 172,
+      "symbol": "l_p1_tvf_env_tkf",
+      "name": "L1 FETKF",
+      "default": 0,
+      "min": 0,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 173,
+      "symbol": "l_p1_tvf_t1",
+      "name": "L1 FT1",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 174,
+      "symbol": "l_p1_tvf_t2",
+      "name": "L1 FT2",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 175,
+      "symbol": "l_p1_tvf_t3",
+      "name": "L1 FT3",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 176,
+      "symbol": "l_p1_tvf_t4",
+      "name": "L1 FT4",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 177,
+      "symbol": "l_p1_tvf_t5",
+      "name": "L1 FT5",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 178,
+      "symbol": "l_p1_tvf_l1",
+      "name": "L1 FL1",
+      "default": 100,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 179,
+      "symbol": "l_p1_tvf_l2",
+      "name": "L1 FL2",
+      "default": 60,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 180,
+      "symbol": "l_p1_tvf_l3",
+      "name": "L1 FL3",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 181,
+      "symbol": "l_p1_tvf_sus",
+      "name": "L1 FSUSL",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 182,
+      "symbol": "l_p1_tvf_end",
+      "name": "L1 FENDL",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "0"
+        ],
+        [
+          1,
+          "100"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 183,
+      "symbol": "l_p1_tvf_lfo",
+      "name": "L1 FLFO",
+      "default": 0,
+      "min": 0,
+      "max": 5,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "+1"
+        ],
+        [
+          1,
+          "-1"
+        ],
+        [
+          2,
+          "+2"
+        ],
+        [
+          3,
+          "-2"
+        ],
+        [
+          4,
+          "+3"
+        ],
+        [
+          5,
+          "-3"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 184,
+      "symbol": "l_p1_tvf_lfo_depth",
+      "name": "L1 FLFOD",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 185,
+      "symbol": "l_p1_tvf_after",
+      "name": "L1 FAFTR",
+      "default": 0,
+      "min": -7,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 186,
+      "symbol": "l_p1_tva_level",
+      "name": "L1 LEVEL",
+      "default": 90,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 187,
+      "symbol": "l_p1_tva_velo",
+      "name": "L1 AVELO",
+      "default": 10,
+      "min": -50,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 188,
+      "symbol": "l_p1_tva_bias_point",
+      "name": "L1 ABIASP",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "<A1"
+        ],
+        [
+          1,
+          "<A#1"
+        ],
+        [
+          2,
+          "<B1"
+        ],
+        [
+          3,
+          "<C2"
+        ],
+        [
+          4,
+          "<C#2"
+        ],
+        [
+          5,
+          "<D2"
+        ],
+        [
+          6,
+          "<D#2"
+        ],
+        [
+          7,
+          "<E2"
+        ],
+        [
+          8,
+          "<F2"
+        ],
+        [
+          9,
+          "<F#2"
+        ],
+        [
+          10,
+          "<G2"
+        ],
+        [
+          11,
+          "<G#2"
+        ],
+        [
+          12,
+          "<A2"
+        ],
+        [
+          13,
+          "<A#2"
+        ],
+        [
+          14,
+          "<B2"
+        ],
+        [
+          15,
+          "<C3"
+        ],
+        [
+          16,
+          "<C#3"
+        ],
+        [
+          17,
+          "<D3"
+        ],
+        [
+          18,
+          "<D#3"
+        ],
+        [
+          19,
+          "<E3"
+        ],
+        [
+          20,
+          "<F3"
+        ],
+        [
+          21,
+          "<F#3"
+        ],
+        [
+          22,
+          "<G3"
+        ],
+        [
+          23,
+          "<G#3"
+        ],
+        [
+          24,
+          "<A3"
+        ],
+        [
+          25,
+          "<A#3"
+        ],
+        [
+          26,
+          "<B3"
+        ],
+        [
+          27,
+          "<C4"
+        ],
+        [
+          28,
+          "<C#4"
+        ],
+        [
+          29,
+          "<D4"
+        ],
+        [
+          30,
+          "<D#4"
+        ],
+        [
+          31,
+          "<E4"
+        ],
+        [
+          32,
+          "<F4"
+        ],
+        [
+          33,
+          "<F#4"
+        ],
+        [
+          34,
+          "<G4"
+        ],
+        [
+          35,
+          "<G#4"
+        ],
+        [
+          36,
+          "<A4"
+        ],
+        [
+          37,
+          "<A#4"
+        ],
+        [
+          38,
+          "<B4"
+        ],
+        [
+          39,
+          "<C5"
+        ],
+        [
+          40,
+          "<C#5"
+        ],
+        [
+          41,
+          "<D5"
+        ],
+        [
+          42,
+          "<D#5"
+        ],
+        [
+          43,
+          "<E5"
+        ],
+        [
+          44,
+          "<F5"
+        ],
+        [
+          45,
+          "<F#5"
+        ],
+        [
+          46,
+          "<G5"
+        ],
+        [
+          47,
+          "<G#5"
+        ],
+        [
+          48,
+          "<A5"
+        ],
+        [
+          49,
+          "<A#5"
+        ],
+        [
+          50,
+          "<B5"
+        ],
+        [
+          51,
+          "<C6"
+        ],
+        [
+          52,
+          "<C#6"
+        ],
+        [
+          53,
+          "<D6"
+        ],
+        [
+          54,
+          "<D#6"
+        ],
+        [
+          55,
+          "<E6"
+        ],
+        [
+          56,
+          "<F6"
+        ],
+        [
+          57,
+          "<F#6"
+        ],
+        [
+          58,
+          "<G6"
+        ],
+        [
+          59,
+          "<G#6"
+        ],
+        [
+          60,
+          "<A6"
+        ],
+        [
+          61,
+          "<A#6"
+        ],
+        [
+          62,
+          "<B6"
+        ],
+        [
+          63,
+          "<C7"
+        ],
+        [
+          64,
+          ">A1"
+        ],
+        [
+          65,
+          ">A#1"
+        ],
+        [
+          66,
+          ">B1"
+        ],
+        [
+          67,
+          ">C2"
+        ],
+        [
+          68,
+          ">C#2"
+        ],
+        [
+          69,
+          ">D2"
+        ],
+        [
+          70,
+          ">D#2"
+        ],
+        [
+          71,
+          ">E2"
+        ],
+        [
+          72,
+          ">F2"
+        ],
+        [
+          73,
+          ">F#2"
+        ],
+        [
+          74,
+          ">G2"
+        ],
+        [
+          75,
+          ">G#2"
+        ],
+        [
+          76,
+          ">A2"
+        ],
+        [
+          77,
+          ">A#2"
+        ],
+        [
+          78,
+          ">B2"
+        ],
+        [
+          79,
+          ">C3"
+        ],
+        [
+          80,
+          ">C#3"
+        ],
+        [
+          81,
+          ">D3"
+        ],
+        [
+          82,
+          ">D#3"
+        ],
+        [
+          83,
+          ">E3"
+        ],
+        [
+          84,
+          ">F3"
+        ],
+        [
+          85,
+          ">F#3"
+        ],
+        [
+          86,
+          ">G3"
+        ],
+        [
+          87,
+          ">G#3"
+        ],
+        [
+          88,
+          ">A3"
+        ],
+        [
+          89,
+          ">A#3"
+        ],
+        [
+          90,
+          ">B3"
+        ],
+        [
+          91,
+          ">C4"
+        ],
+        [
+          92,
+          ">C#4"
+        ],
+        [
+          93,
+          ">D4"
+        ],
+        [
+          94,
+          ">D#4"
+        ],
+        [
+          95,
+          ">E4"
+        ],
+        [
+          96,
+          ">F4"
+        ],
+        [
+          97,
+          ">F#4"
+        ],
+        [
+          98,
+          ">G4"
+        ],
+        [
+          99,
+          ">G#4"
+        ],
+        [
+          100,
+          ">A4"
+        ],
+        [
+          101,
+          ">A#4"
+        ],
+        [
+          102,
+          ">B4"
+        ],
+        [
+          103,
+          ">C5"
+        ],
+        [
+          104,
+          ">C#5"
+        ],
+        [
+          105,
+          ">D5"
+        ],
+        [
+          106,
+          ">D#5"
+        ],
+        [
+          107,
+          ">E5"
+        ],
+        [
+          108,
+          ">F5"
+        ],
+        [
+          109,
+          ">F#5"
+        ],
+        [
+          110,
+          ">G5"
+        ],
+        [
+          111,
+          ">G#5"
+        ],
+        [
+          112,
+          ">A5"
+        ],
+        [
+          113,
+          ">A#5"
+        ],
+        [
+          114,
+          ">B5"
+        ],
+        [
+          115,
+          ">C6"
+        ],
+        [
+          116,
+          ">C#6"
+        ],
+        [
+          117,
+          ">D6"
+        ],
+        [
+          118,
+          ">D#6"
+        ],
+        [
+          119,
+          ">E6"
+        ],
+        [
+          120,
+          ">F6"
+        ],
+        [
+          121,
+          ">F#6"
+        ],
+        [
+          122,
+          ">G6"
+        ],
+        [
+          123,
+          ">G#6"
+        ],
+        [
+          124,
+          ">A6"
+        ],
+        [
+          125,
+          ">A#6"
+        ],
+        [
+          126,
+          ">B6"
+        ],
+        [
+          127,
+          ">C7"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 189,
+      "symbol": "l_p1_tva_bias_level",
+      "name": "L1 ABIASL",
+      "default": 0,
+      "min": -12,
+      "max": 0,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 190,
+      "symbol": "l_p1_tva_t1",
+      "name": "L1 AT1",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 191,
+      "symbol": "l_p1_tva_t2",
+      "name": "L1 AT2",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 192,
+      "symbol": "l_p1_tva_t3",
+      "name": "L1 AT3",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 193,
+      "symbol": "l_p1_tva_t4",
+      "name": "L1 AT4",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 194,
+      "symbol": "l_p1_tva_t5",
+      "name": "L1 AT5",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 195,
+      "symbol": "l_p1_tva_l1",
+      "name": "L1 AL1",
+      "default": 100,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 196,
+      "symbol": "l_p1_tva_l2",
+      "name": "L1 AL2",
+      "default": 90,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 197,
+      "symbol": "l_p1_tva_l3",
+      "name": "L1 AL3",
+      "default": 85,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 198,
+      "symbol": "l_p1_tva_sus",
+      "name": "L1 ASUSL",
+      "default": 80,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 199,
+      "symbol": "l_p1_tva_end",
+      "name": "L1 AENDL",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "0"
+        ],
+        [
+          1,
+          "100"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 200,
+      "symbol": "l_p1_tva_velo_follow",
+      "name": "L1 AVELOF",
+      "default": 0,
+      "min": 0,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 201,
+      "symbol": "l_p1_tva_tkf",
+      "name": "L1 ATKF",
+      "default": 0,
+      "min": 0,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 202,
+      "symbol": "l_p1_tva_lfo",
+      "name": "L1 ALFO",
+      "default": 0,
+      "min": 0,
+      "max": 5,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "+1"
+        ],
+        [
+          1,
+          "-1"
+        ],
+        [
+          2,
+          "+2"
+        ],
+        [
+          3,
+          "-2"
+        ],
+        [
+          4,
+          "+3"
+        ],
+        [
+          5,
+          "-3"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 203,
+      "symbol": "l_p1_tva_lfo_depth",
+      "name": "L1 ALFOD",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 204,
+      "symbol": "l_p1_tva_after",
+      "name": "L1 AAFTR",
+      "default": 0,
+      "min": -7,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 205,
+      "symbol": "l_p2_wg_coarse",
+      "name": "L2 COARSE",
+      "default": 0,
+      "min": -36,
+      "max": 36,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 206,
+      "symbol": "l_p2_wg_fine",
+      "name": "L2 FINE",
+      "default": 0,
+      "min": -50,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 207,
+      "symbol": "l_p2_wg_keyfollow",
+      "name": "L2 PCHKF",
+      "default": 11,
+      "min": 0,
+      "max": 16,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "-1"
+        ],
+        [
+          1,
+          "-1/2"
+        ],
+        [
+          2,
+          "-1/4"
+        ],
+        [
+          3,
+          "0"
+        ],
+        [
+          4,
+          "1/8"
+        ],
+        [
+          5,
+          "1/4"
+        ],
+        [
+          6,
+          "3/8"
+        ],
+        [
+          7,
+          "1/2"
+        ],
+        [
+          8,
+          "5/8"
+        ],
+        [
+          9,
+          "3/4"
+        ],
+        [
+          10,
+          "7/8"
+        ],
+        [
+          11,
+          "1"
+        ],
+        [
+          12,
+          "5/4"
+        ],
+        [
+          13,
+          "3/2"
+        ],
+        [
+          14,
+          "2"
+        ],
+        [
+          15,
+          "S1"
+        ],
+        [
+          16,
+          "S2"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 208,
+      "symbol": "l_p2_wg_lfo_mode",
+      "name": "L2 LFOMD",
+      "default": 1,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "+"
+        ],
+        [
+          2,
+          "-"
+        ],
+        [
+          3,
+          "A&L"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 209,
+      "symbol": "l_p2_wg_penv_mode",
+      "name": "L2 PENVMD",
+      "default": 1,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "+"
+        ],
+        [
+          2,
+          "-"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 210,
+      "symbol": "l_p2_wg_bend_mode",
+      "name": "L2 BENDMD",
+      "default": 2,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "KF"
+        ],
+        [
+          2,
+          "NORMAL"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 211,
+      "symbol": "l_p2_wg_waveform",
+      "name": "L2 WAVE",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "SQUARE"
+        ],
+        [
+          1,
+          "SAW"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 212,
+      "symbol": "l_p2_wg_pcm_wave",
+      "name": "L2 PCM",
+      "default": 0,
+      "min": 0,
+      "max": 99,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "MARIMBA"
+        ],
+        [
+          1,
+          "VIBRAPHONE"
+        ],
+        [
+          2,
+          "XYLOPHONE 1"
+        ],
+        [
+          3,
+          "XYLOPHONE 2"
+        ],
+        [
+          4,
+          "LOG BASS"
+        ],
+        [
+          5,
+          "HAMMER"
+        ],
+        [
+          6,
+          "JAPANESE DRUM"
+        ],
+        [
+          7,
+          "KALIMBA"
+        ],
+        [
+          8,
+          "PLUCK 1"
+        ],
+        [
+          9,
+          "CHINK"
+        ],
+        [
+          10,
+          "AGOGO"
+        ],
+        [
+          11,
+          "TRIANGLE"
+        ],
+        [
+          12,
+          "BELLS"
+        ],
+        [
+          13,
+          "NAIL FILE"
+        ],
+        [
+          14,
+          "PICK"
+        ],
+        [
+          15,
+          "LOW PIANO"
+        ],
+        [
+          16,
+          "MID PIANO"
+        ],
+        [
+          17,
+          "HIGH PIANO"
+        ],
+        [
+          18,
+          "HARPSICHORD"
+        ],
+        [
+          19,
+          "HARP"
+        ],
+        [
+          20,
+          "ORGAN PERCUSSION"
+        ],
+        [
+          21,
+          "STEEL STRINGS"
+        ],
+        [
+          22,
+          "NYLON STRINGS"
+        ],
+        [
+          23,
+          "ELECTRIC GUITAR 1"
+        ],
+        [
+          24,
+          "ELECTRIC GUITAR 2"
+        ],
+        [
+          25,
+          "DIRTY GUITAR"
+        ],
+        [
+          26,
+          "PICK BASS"
+        ],
+        [
+          27,
+          "POP BASS"
+        ],
+        [
+          28,
+          "THUMP"
+        ],
+        [
+          29,
+          "UPRIGHT BASS"
+        ],
+        [
+          30,
+          "CLARINET"
+        ],
+        [
+          31,
+          "BREATH"
+        ],
+        [
+          32,
+          "STEAMER"
+        ],
+        [
+          33,
+          "HIGH FLUTE"
+        ],
+        [
+          34,
+          "LOW FLUTE"
+        ],
+        [
+          35,
+          "GUIRO"
+        ],
+        [
+          36,
+          "INDIAN FLUTE"
+        ],
+        [
+          37,
+          "FLUTE HARMONICS"
+        ],
+        [
+          38,
+          "LIPS 1"
+        ],
+        [
+          39,
+          "LIPS 2"
+        ],
+        [
+          40,
+          "TRUMPET"
+        ],
+        [
+          41,
+          "TROMBONES"
+        ],
+        [
+          42,
+          "CONTRABASS"
+        ],
+        [
+          43,
+          "CELLO"
+        ],
+        [
+          44,
+          "VIOLIN BOW"
+        ],
+        [
+          45,
+          "VIOLINS"
+        ],
+        [
+          46,
+          "PIZZICATO"
+        ],
+        [
+          47,
+          "DRAWBARS LP"
+        ],
+        [
+          48,
+          "HIGH ORGAN LP"
+        ],
+        [
+          49,
+          "LOW ORGAN LP"
+        ],
+        [
+          50,
+          "E.PIANO LP 1"
+        ],
+        [
+          51,
+          "E.PIANO LP 2"
+        ],
+        [
+          52,
+          "CLAVI LP"
+        ],
+        [
+          53,
+          "HARPSICHORD LP"
+        ],
+        [
+          54,
+          "E.BASS LP 1"
+        ],
+        [
+          55,
+          "AC.BASS LP"
+        ],
+        [
+          56,
+          "E.BASS LP 2"
+        ],
+        [
+          57,
+          "E.BASS LP 3"
+        ],
+        [
+          58,
+          "E.GUITAR LP"
+        ],
+        [
+          59,
+          "CELLO LP"
+        ],
+        [
+          60,
+          "VIOLIN LP"
+        ],
+        [
+          61,
+          "REED LP"
+        ],
+        [
+          62,
+          "SAX LP 1"
+        ],
+        [
+          63,
+          "SAX LP 2"
+        ],
+        [
+          64,
+          "AAH LP"
+        ],
+        [
+          65,
+          "OOH LP"
+        ],
+        [
+          66,
+          "MALE LP 1"
+        ],
+        [
+          67,
+          "SPECTRUM 1"
+        ],
+        [
+          68,
+          "SPECTRUM 2"
+        ],
+        [
+          69,
+          "SPECTRUM 3"
+        ],
+        [
+          70,
+          "SPECTRUM 4"
+        ],
+        [
+          71,
+          "SPECTRUM 5"
+        ],
+        [
+          72,
+          "SPECTRUM 6"
+        ],
+        [
+          73,
+          "SPECTRUM 7"
+        ],
+        [
+          74,
+          "MALE LP 2"
+        ],
+        [
+          75,
+          "NOISE LP"
+        ],
+        [
+          76,
+          "LOOP 01"
+        ],
+        [
+          77,
+          "LOOP 02"
+        ],
+        [
+          78,
+          "LOOP 03"
+        ],
+        [
+          79,
+          "LOOP 04"
+        ],
+        [
+          80,
+          "LOOP 05"
+        ],
+        [
+          81,
+          "LOOP 06"
+        ],
+        [
+          82,
+          "LOOP 07"
+        ],
+        [
+          83,
+          "LOOP 08"
+        ],
+        [
+          84,
+          "LOOP 09"
+        ],
+        [
+          85,
+          "LOOP 10"
+        ],
+        [
+          86,
+          "LOOP 11"
+        ],
+        [
+          87,
+          "LOOP 12"
+        ],
+        [
+          88,
+          "LOOP 13"
+        ],
+        [
+          89,
+          "LOOP 14"
+        ],
+        [
+          90,
+          "LOOP 15"
+        ],
+        [
+          91,
+          "LOOP 16"
+        ],
+        [
+          92,
+          "LOOP 17"
+        ],
+        [
+          93,
+          "LOOP 18"
+        ],
+        [
+          94,
+          "LOOP 19"
+        ],
+        [
+          95,
+          "LOOP 20"
+        ],
+        [
+          96,
+          "LOOP 21"
+        ],
+        [
+          97,
+          "LOOP 22"
+        ],
+        [
+          98,
+          "LOOP 23"
+        ],
+        [
+          99,
+          "LOOP 24"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 213,
+      "symbol": "l_p2_wg_pw",
+      "name": "L2 PW",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 214,
+      "symbol": "l_p2_wg_pw_velo",
+      "name": "L2 PWVELO",
+      "default": 0,
+      "min": -7,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 215,
+      "symbol": "l_p2_wg_pw_lfo",
+      "name": "L2 PWLFO",
+      "default": 0,
+      "min": 0,
+      "max": 5,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "+1"
+        ],
+        [
+          1,
+          "-1"
+        ],
+        [
+          2,
+          "+2"
+        ],
+        [
+          3,
+          "-2"
+        ],
+        [
+          4,
+          "+3"
+        ],
+        [
+          5,
+          "-3"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 216,
+      "symbol": "l_p2_wg_pw_lfo_depth",
+      "name": "L2 PWLFOD",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 217,
+      "symbol": "l_p2_wg_pw_after",
+      "name": "L2 PWAFTR",
+      "default": 0,
+      "min": -7,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 218,
+      "symbol": "l_p2_tvf_cutoff",
+      "name": "L2 CUTOFF",
+      "default": 60,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 219,
+      "symbol": "l_p2_tvf_reso",
+      "name": "L2 RESO",
+      "default": 0,
+      "min": 0,
+      "max": 30,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 220,
+      "symbol": "l_p2_tvf_keyfollow",
+      "name": "L2 FKF",
+      "default": 11,
+      "min": 0,
+      "max": 14,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "-1"
+        ],
+        [
+          1,
+          "-1/2"
+        ],
+        [
+          2,
+          "-1/4"
+        ],
+        [
+          3,
+          "0"
+        ],
+        [
+          4,
+          "1/8"
+        ],
+        [
+          5,
+          "1/4"
+        ],
+        [
+          6,
+          "3/8"
+        ],
+        [
+          7,
+          "1/2"
+        ],
+        [
+          8,
+          "5/8"
+        ],
+        [
+          9,
+          "3/4"
+        ],
+        [
+          10,
+          "7/8"
+        ],
+        [
+          11,
+          "1"
+        ],
+        [
+          12,
+          "5/4"
+        ],
+        [
+          13,
+          "3/2"
+        ],
+        [
+          14,
+          "2"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 221,
+      "symbol": "l_p2_tvf_bias_point",
+      "name": "L2 FBIASP",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "<A1"
+        ],
+        [
+          1,
+          "<A#1"
+        ],
+        [
+          2,
+          "<B1"
+        ],
+        [
+          3,
+          "<C2"
+        ],
+        [
+          4,
+          "<C#2"
+        ],
+        [
+          5,
+          "<D2"
+        ],
+        [
+          6,
+          "<D#2"
+        ],
+        [
+          7,
+          "<E2"
+        ],
+        [
+          8,
+          "<F2"
+        ],
+        [
+          9,
+          "<F#2"
+        ],
+        [
+          10,
+          "<G2"
+        ],
+        [
+          11,
+          "<G#2"
+        ],
+        [
+          12,
+          "<A2"
+        ],
+        [
+          13,
+          "<A#2"
+        ],
+        [
+          14,
+          "<B2"
+        ],
+        [
+          15,
+          "<C3"
+        ],
+        [
+          16,
+          "<C#3"
+        ],
+        [
+          17,
+          "<D3"
+        ],
+        [
+          18,
+          "<D#3"
+        ],
+        [
+          19,
+          "<E3"
+        ],
+        [
+          20,
+          "<F3"
+        ],
+        [
+          21,
+          "<F#3"
+        ],
+        [
+          22,
+          "<G3"
+        ],
+        [
+          23,
+          "<G#3"
+        ],
+        [
+          24,
+          "<A3"
+        ],
+        [
+          25,
+          "<A#3"
+        ],
+        [
+          26,
+          "<B3"
+        ],
+        [
+          27,
+          "<C4"
+        ],
+        [
+          28,
+          "<C#4"
+        ],
+        [
+          29,
+          "<D4"
+        ],
+        [
+          30,
+          "<D#4"
+        ],
+        [
+          31,
+          "<E4"
+        ],
+        [
+          32,
+          "<F4"
+        ],
+        [
+          33,
+          "<F#4"
+        ],
+        [
+          34,
+          "<G4"
+        ],
+        [
+          35,
+          "<G#4"
+        ],
+        [
+          36,
+          "<A4"
+        ],
+        [
+          37,
+          "<A#4"
+        ],
+        [
+          38,
+          "<B4"
+        ],
+        [
+          39,
+          "<C5"
+        ],
+        [
+          40,
+          "<C#5"
+        ],
+        [
+          41,
+          "<D5"
+        ],
+        [
+          42,
+          "<D#5"
+        ],
+        [
+          43,
+          "<E5"
+        ],
+        [
+          44,
+          "<F5"
+        ],
+        [
+          45,
+          "<F#5"
+        ],
+        [
+          46,
+          "<G5"
+        ],
+        [
+          47,
+          "<G#5"
+        ],
+        [
+          48,
+          "<A5"
+        ],
+        [
+          49,
+          "<A#5"
+        ],
+        [
+          50,
+          "<B5"
+        ],
+        [
+          51,
+          "<C6"
+        ],
+        [
+          52,
+          "<C#6"
+        ],
+        [
+          53,
+          "<D6"
+        ],
+        [
+          54,
+          "<D#6"
+        ],
+        [
+          55,
+          "<E6"
+        ],
+        [
+          56,
+          "<F6"
+        ],
+        [
+          57,
+          "<F#6"
+        ],
+        [
+          58,
+          "<G6"
+        ],
+        [
+          59,
+          "<G#6"
+        ],
+        [
+          60,
+          "<A6"
+        ],
+        [
+          61,
+          "<A#6"
+        ],
+        [
+          62,
+          "<B6"
+        ],
+        [
+          63,
+          "<C7"
+        ],
+        [
+          64,
+          ">A1"
+        ],
+        [
+          65,
+          ">A#1"
+        ],
+        [
+          66,
+          ">B1"
+        ],
+        [
+          67,
+          ">C2"
+        ],
+        [
+          68,
+          ">C#2"
+        ],
+        [
+          69,
+          ">D2"
+        ],
+        [
+          70,
+          ">D#2"
+        ],
+        [
+          71,
+          ">E2"
+        ],
+        [
+          72,
+          ">F2"
+        ],
+        [
+          73,
+          ">F#2"
+        ],
+        [
+          74,
+          ">G2"
+        ],
+        [
+          75,
+          ">G#2"
+        ],
+        [
+          76,
+          ">A2"
+        ],
+        [
+          77,
+          ">A#2"
+        ],
+        [
+          78,
+          ">B2"
+        ],
+        [
+          79,
+          ">C3"
+        ],
+        [
+          80,
+          ">C#3"
+        ],
+        [
+          81,
+          ">D3"
+        ],
+        [
+          82,
+          ">D#3"
+        ],
+        [
+          83,
+          ">E3"
+        ],
+        [
+          84,
+          ">F3"
+        ],
+        [
+          85,
+          ">F#3"
+        ],
+        [
+          86,
+          ">G3"
+        ],
+        [
+          87,
+          ">G#3"
+        ],
+        [
+          88,
+          ">A3"
+        ],
+        [
+          89,
+          ">A#3"
+        ],
+        [
+          90,
+          ">B3"
+        ],
+        [
+          91,
+          ">C4"
+        ],
+        [
+          92,
+          ">C#4"
+        ],
+        [
+          93,
+          ">D4"
+        ],
+        [
+          94,
+          ">D#4"
+        ],
+        [
+          95,
+          ">E4"
+        ],
+        [
+          96,
+          ">F4"
+        ],
+        [
+          97,
+          ">F#4"
+        ],
+        [
+          98,
+          ">G4"
+        ],
+        [
+          99,
+          ">G#4"
+        ],
+        [
+          100,
+          ">A4"
+        ],
+        [
+          101,
+          ">A#4"
+        ],
+        [
+          102,
+          ">B4"
+        ],
+        [
+          103,
+          ">C5"
+        ],
+        [
+          104,
+          ">C#5"
+        ],
+        [
+          105,
+          ">D5"
+        ],
+        [
+          106,
+          ">D#5"
+        ],
+        [
+          107,
+          ">E5"
+        ],
+        [
+          108,
+          ">F5"
+        ],
+        [
+          109,
+          ">F#5"
+        ],
+        [
+          110,
+          ">G5"
+        ],
+        [
+          111,
+          ">G#5"
+        ],
+        [
+          112,
+          ">A5"
+        ],
+        [
+          113,
+          ">A#5"
+        ],
+        [
+          114,
+          ">B5"
+        ],
+        [
+          115,
+          ">C6"
+        ],
+        [
+          116,
+          ">C#6"
+        ],
+        [
+          117,
+          ">D6"
+        ],
+        [
+          118,
+          ">D#6"
+        ],
+        [
+          119,
+          ">E6"
+        ],
+        [
+          120,
+          ">F6"
+        ],
+        [
+          121,
+          ">F#6"
+        ],
+        [
+          122,
+          ">G6"
+        ],
+        [
+          123,
+          ">G#6"
+        ],
+        [
+          124,
+          ">A6"
+        ],
+        [
+          125,
+          ">A#6"
+        ],
+        [
+          126,
+          ">B6"
+        ],
+        [
+          127,
+          ">C7"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 222,
+      "symbol": "l_p2_tvf_bias_level",
+      "name": "L2 FBIASL",
+      "default": 0,
+      "min": -7,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 223,
+      "symbol": "l_p2_tvf_env_depth",
+      "name": "L2 FENVD",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 224,
+      "symbol": "l_p2_tvf_env_velo",
+      "name": "L2 FENVVE",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 225,
+      "symbol": "l_p2_tvf_env_dkf",
+      "name": "L2 FEDKF",
+      "default": 0,
+      "min": 0,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 226,
+      "symbol": "l_p2_tvf_env_tkf",
+      "name": "L2 FETKF",
+      "default": 0,
+      "min": 0,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 227,
+      "symbol": "l_p2_tvf_t1",
+      "name": "L2 FT1",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 228,
+      "symbol": "l_p2_tvf_t2",
+      "name": "L2 FT2",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 229,
+      "symbol": "l_p2_tvf_t3",
+      "name": "L2 FT3",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 230,
+      "symbol": "l_p2_tvf_t4",
+      "name": "L2 FT4",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 231,
+      "symbol": "l_p2_tvf_t5",
+      "name": "L2 FT5",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 232,
+      "symbol": "l_p2_tvf_l1",
+      "name": "L2 FL1",
+      "default": 100,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 233,
+      "symbol": "l_p2_tvf_l2",
+      "name": "L2 FL2",
+      "default": 60,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 234,
+      "symbol": "l_p2_tvf_l3",
+      "name": "L2 FL3",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 235,
+      "symbol": "l_p2_tvf_sus",
+      "name": "L2 FSUSL",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 236,
+      "symbol": "l_p2_tvf_end",
+      "name": "L2 FENDL",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "0"
+        ],
+        [
+          1,
+          "100"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 237,
+      "symbol": "l_p2_tvf_lfo",
+      "name": "L2 FLFO",
+      "default": 0,
+      "min": 0,
+      "max": 5,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "+1"
+        ],
+        [
+          1,
+          "-1"
+        ],
+        [
+          2,
+          "+2"
+        ],
+        [
+          3,
+          "-2"
+        ],
+        [
+          4,
+          "+3"
+        ],
+        [
+          5,
+          "-3"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 238,
+      "symbol": "l_p2_tvf_lfo_depth",
+      "name": "L2 FLFOD",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 239,
+      "symbol": "l_p2_tvf_after",
+      "name": "L2 FAFTR",
+      "default": 0,
+      "min": -7,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 240,
+      "symbol": "l_p2_tva_level",
+      "name": "L2 LEVEL",
+      "default": 90,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 241,
+      "symbol": "l_p2_tva_velo",
+      "name": "L2 AVELO",
+      "default": 10,
+      "min": -50,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 242,
+      "symbol": "l_p2_tva_bias_point",
+      "name": "L2 ABIASP",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "<A1"
+        ],
+        [
+          1,
+          "<A#1"
+        ],
+        [
+          2,
+          "<B1"
+        ],
+        [
+          3,
+          "<C2"
+        ],
+        [
+          4,
+          "<C#2"
+        ],
+        [
+          5,
+          "<D2"
+        ],
+        [
+          6,
+          "<D#2"
+        ],
+        [
+          7,
+          "<E2"
+        ],
+        [
+          8,
+          "<F2"
+        ],
+        [
+          9,
+          "<F#2"
+        ],
+        [
+          10,
+          "<G2"
+        ],
+        [
+          11,
+          "<G#2"
+        ],
+        [
+          12,
+          "<A2"
+        ],
+        [
+          13,
+          "<A#2"
+        ],
+        [
+          14,
+          "<B2"
+        ],
+        [
+          15,
+          "<C3"
+        ],
+        [
+          16,
+          "<C#3"
+        ],
+        [
+          17,
+          "<D3"
+        ],
+        [
+          18,
+          "<D#3"
+        ],
+        [
+          19,
+          "<E3"
+        ],
+        [
+          20,
+          "<F3"
+        ],
+        [
+          21,
+          "<F#3"
+        ],
+        [
+          22,
+          "<G3"
+        ],
+        [
+          23,
+          "<G#3"
+        ],
+        [
+          24,
+          "<A3"
+        ],
+        [
+          25,
+          "<A#3"
+        ],
+        [
+          26,
+          "<B3"
+        ],
+        [
+          27,
+          "<C4"
+        ],
+        [
+          28,
+          "<C#4"
+        ],
+        [
+          29,
+          "<D4"
+        ],
+        [
+          30,
+          "<D#4"
+        ],
+        [
+          31,
+          "<E4"
+        ],
+        [
+          32,
+          "<F4"
+        ],
+        [
+          33,
+          "<F#4"
+        ],
+        [
+          34,
+          "<G4"
+        ],
+        [
+          35,
+          "<G#4"
+        ],
+        [
+          36,
+          "<A4"
+        ],
+        [
+          37,
+          "<A#4"
+        ],
+        [
+          38,
+          "<B4"
+        ],
+        [
+          39,
+          "<C5"
+        ],
+        [
+          40,
+          "<C#5"
+        ],
+        [
+          41,
+          "<D5"
+        ],
+        [
+          42,
+          "<D#5"
+        ],
+        [
+          43,
+          "<E5"
+        ],
+        [
+          44,
+          "<F5"
+        ],
+        [
+          45,
+          "<F#5"
+        ],
+        [
+          46,
+          "<G5"
+        ],
+        [
+          47,
+          "<G#5"
+        ],
+        [
+          48,
+          "<A5"
+        ],
+        [
+          49,
+          "<A#5"
+        ],
+        [
+          50,
+          "<B5"
+        ],
+        [
+          51,
+          "<C6"
+        ],
+        [
+          52,
+          "<C#6"
+        ],
+        [
+          53,
+          "<D6"
+        ],
+        [
+          54,
+          "<D#6"
+        ],
+        [
+          55,
+          "<E6"
+        ],
+        [
+          56,
+          "<F6"
+        ],
+        [
+          57,
+          "<F#6"
+        ],
+        [
+          58,
+          "<G6"
+        ],
+        [
+          59,
+          "<G#6"
+        ],
+        [
+          60,
+          "<A6"
+        ],
+        [
+          61,
+          "<A#6"
+        ],
+        [
+          62,
+          "<B6"
+        ],
+        [
+          63,
+          "<C7"
+        ],
+        [
+          64,
+          ">A1"
+        ],
+        [
+          65,
+          ">A#1"
+        ],
+        [
+          66,
+          ">B1"
+        ],
+        [
+          67,
+          ">C2"
+        ],
+        [
+          68,
+          ">C#2"
+        ],
+        [
+          69,
+          ">D2"
+        ],
+        [
+          70,
+          ">D#2"
+        ],
+        [
+          71,
+          ">E2"
+        ],
+        [
+          72,
+          ">F2"
+        ],
+        [
+          73,
+          ">F#2"
+        ],
+        [
+          74,
+          ">G2"
+        ],
+        [
+          75,
+          ">G#2"
+        ],
+        [
+          76,
+          ">A2"
+        ],
+        [
+          77,
+          ">A#2"
+        ],
+        [
+          78,
+          ">B2"
+        ],
+        [
+          79,
+          ">C3"
+        ],
+        [
+          80,
+          ">C#3"
+        ],
+        [
+          81,
+          ">D3"
+        ],
+        [
+          82,
+          ">D#3"
+        ],
+        [
+          83,
+          ">E3"
+        ],
+        [
+          84,
+          ">F3"
+        ],
+        [
+          85,
+          ">F#3"
+        ],
+        [
+          86,
+          ">G3"
+        ],
+        [
+          87,
+          ">G#3"
+        ],
+        [
+          88,
+          ">A3"
+        ],
+        [
+          89,
+          ">A#3"
+        ],
+        [
+          90,
+          ">B3"
+        ],
+        [
+          91,
+          ">C4"
+        ],
+        [
+          92,
+          ">C#4"
+        ],
+        [
+          93,
+          ">D4"
+        ],
+        [
+          94,
+          ">D#4"
+        ],
+        [
+          95,
+          ">E4"
+        ],
+        [
+          96,
+          ">F4"
+        ],
+        [
+          97,
+          ">F#4"
+        ],
+        [
+          98,
+          ">G4"
+        ],
+        [
+          99,
+          ">G#4"
+        ],
+        [
+          100,
+          ">A4"
+        ],
+        [
+          101,
+          ">A#4"
+        ],
+        [
+          102,
+          ">B4"
+        ],
+        [
+          103,
+          ">C5"
+        ],
+        [
+          104,
+          ">C#5"
+        ],
+        [
+          105,
+          ">D5"
+        ],
+        [
+          106,
+          ">D#5"
+        ],
+        [
+          107,
+          ">E5"
+        ],
+        [
+          108,
+          ">F5"
+        ],
+        [
+          109,
+          ">F#5"
+        ],
+        [
+          110,
+          ">G5"
+        ],
+        [
+          111,
+          ">G#5"
+        ],
+        [
+          112,
+          ">A5"
+        ],
+        [
+          113,
+          ">A#5"
+        ],
+        [
+          114,
+          ">B5"
+        ],
+        [
+          115,
+          ">C6"
+        ],
+        [
+          116,
+          ">C#6"
+        ],
+        [
+          117,
+          ">D6"
+        ],
+        [
+          118,
+          ">D#6"
+        ],
+        [
+          119,
+          ">E6"
+        ],
+        [
+          120,
+          ">F6"
+        ],
+        [
+          121,
+          ">F#6"
+        ],
+        [
+          122,
+          ">G6"
+        ],
+        [
+          123,
+          ">G#6"
+        ],
+        [
+          124,
+          ">A6"
+        ],
+        [
+          125,
+          ">A#6"
+        ],
+        [
+          126,
+          ">B6"
+        ],
+        [
+          127,
+          ">C7"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 243,
+      "symbol": "l_p2_tva_bias_level",
+      "name": "L2 ABIASL",
+      "default": 0,
+      "min": -12,
+      "max": 0,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 244,
+      "symbol": "l_p2_tva_t1",
+      "name": "L2 AT1",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 245,
+      "symbol": "l_p2_tva_t2",
+      "name": "L2 AT2",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 246,
+      "symbol": "l_p2_tva_t3",
+      "name": "L2 AT3",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 247,
+      "symbol": "l_p2_tva_t4",
+      "name": "L2 AT4",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 248,
+      "symbol": "l_p2_tva_t5",
+      "name": "L2 AT5",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 249,
+      "symbol": "l_p2_tva_l1",
+      "name": "L2 AL1",
+      "default": 100,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 250,
+      "symbol": "l_p2_tva_l2",
+      "name": "L2 AL2",
+      "default": 90,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 251,
+      "symbol": "l_p2_tva_l3",
+      "name": "L2 AL3",
+      "default": 85,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 252,
+      "symbol": "l_p2_tva_sus",
+      "name": "L2 ASUSL",
+      "default": 80,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 253,
+      "symbol": "l_p2_tva_end",
+      "name": "L2 AENDL",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "0"
+        ],
+        [
+          1,
+          "100"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 254,
+      "symbol": "l_p2_tva_velo_follow",
+      "name": "L2 AVELOF",
+      "default": 0,
+      "min": 0,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 255,
+      "symbol": "l_p2_tva_tkf",
+      "name": "L2 ATKF",
+      "default": 0,
+      "min": 0,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 256,
+      "symbol": "l_p2_tva_lfo",
+      "name": "L2 ALFO",
+      "default": 0,
+      "min": 0,
+      "max": 5,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "+1"
+        ],
+        [
+          1,
+          "-1"
+        ],
+        [
+          2,
+          "+2"
+        ],
+        [
+          3,
+          "-2"
+        ],
+        [
+          4,
+          "+3"
+        ],
+        [
+          5,
+          "-3"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 257,
+      "symbol": "l_p2_tva_lfo_depth",
+      "name": "L2 ALFOD",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 258,
+      "symbol": "l_p2_tva_after",
+      "name": "L2 AAFTR",
+      "default": 0,
+      "min": -7,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 259,
+      "symbol": "l_structure",
+      "name": "L STRUCT",
+      "default": 0,
+      "min": 0,
+      "max": 6,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "1"
+        ],
+        [
+          1,
+          "2"
+        ],
+        [
+          2,
+          "3"
+        ],
+        [
+          3,
+          "4"
+        ],
+        [
+          4,
+          "5"
+        ],
+        [
+          5,
+          "6"
+        ],
+        [
+          6,
+          "7"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 260,
+      "symbol": "l_penv_velo",
+      "name": "L PENVVE",
+      "default": 0,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 261,
+      "symbol": "l_penv_tkf",
+      "name": "L PENVTKF",
+      "default": 0,
+      "min": 0,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 262,
+      "symbol": "l_penv_t1",
+      "name": "L PT1",
+      "default": 0,
+      "min": 0,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 263,
+      "symbol": "l_penv_t2",
+      "name": "L PT2",
+      "default": 0,
+      "min": 0,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 264,
+      "symbol": "l_penv_t3",
+      "name": "L PT3",
+      "default": 0,
+      "min": 0,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 265,
+      "symbol": "l_penv_t4",
+      "name": "L PT4",
+      "default": 0,
+      "min": 0,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 266,
+      "symbol": "l_penv_l0",
+      "name": "L PL0",
+      "default": 0,
+      "min": -50,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 267,
+      "symbol": "l_penv_l1",
+      "name": "L PL1",
+      "default": 0,
+      "min": -50,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 268,
+      "symbol": "l_penv_l2",
+      "name": "L PL2",
+      "default": 0,
+      "min": -50,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 269,
+      "symbol": "l_penv_sus",
+      "name": "L PSUSL",
+      "default": 0,
+      "min": -50,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 270,
+      "symbol": "l_penv_end",
+      "name": "L PENDL",
+      "default": 0,
+      "min": -50,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 271,
+      "symbol": "l_pmod_lfo",
+      "name": "L PMODLFO",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 272,
+      "symbol": "l_pmod_lever",
+      "name": "L PMODLEV",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 273,
+      "symbol": "l_pmod_after",
+      "name": "L PMODAFT",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 274,
+      "symbol": "l_lfo1_wave",
+      "name": "L L1WAVE",
+      "default": 0,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "TRI"
+        ],
+        [
+          1,
+          "SAW"
+        ],
+        [
+          2,
+          "SQUARE"
+        ],
+        [
+          3,
+          "RANDOM"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 275,
+      "symbol": "l_lfo1_rate",
+      "name": "L L1RATE",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 276,
+      "symbol": "l_lfo1_delay",
+      "name": "L L1DLY",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 277,
+      "symbol": "l_lfo1_sync",
+      "name": "L L1SYNC",
+      "default": 0,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "ON"
+        ],
+        [
+          2,
+          "KEY"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 278,
+      "symbol": "l_lfo2_wave",
+      "name": "L L2WAVE",
+      "default": 0,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "TRI"
+        ],
+        [
+          1,
+          "SAW"
+        ],
+        [
+          2,
+          "SQUARE"
+        ],
+        [
+          3,
+          "RANDOM"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 279,
+      "symbol": "l_lfo2_rate",
+      "name": "L L2RATE",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 280,
+      "symbol": "l_lfo2_delay",
+      "name": "L L2DLY",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 281,
+      "symbol": "l_lfo2_sync",
+      "name": "L L2SYNC",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "ON"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 282,
+      "symbol": "l_lfo3_wave",
+      "name": "L L3WAVE",
+      "default": 0,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "TRI"
+        ],
+        [
+          1,
+          "SAW"
+        ],
+        [
+          2,
+          "SQUARE"
+        ],
+        [
+          3,
+          "RANDOM"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 283,
+      "symbol": "l_lfo3_rate",
+      "name": "L L3RATE",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 284,
+      "symbol": "l_lfo3_delay",
+      "name": "L L3DLY",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 285,
+      "symbol": "l_lfo3_sync",
+      "name": "L L3SYNC",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "ON"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 286,
+      "symbol": "l_eq_low_freq",
+      "name": "L LOEQF",
+      "default": 0,
+      "min": 0,
+      "max": 15,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "63"
+        ],
+        [
+          1,
+          "75"
+        ],
+        [
+          2,
+          "88"
+        ],
+        [
+          3,
+          "105"
+        ],
+        [
+          4,
+          "125"
+        ],
+        [
+          5,
+          "150"
+        ],
+        [
+          6,
+          "175"
+        ],
+        [
+          7,
+          "210"
+        ],
+        [
+          8,
+          "250"
+        ],
+        [
+          9,
+          "300"
+        ],
+        [
+          10,
+          "350"
+        ],
+        [
+          11,
+          "420"
+        ],
+        [
+          12,
+          "500"
+        ],
+        [
+          13,
+          "600"
+        ],
+        [
+          14,
+          "700"
+        ],
+        [
+          15,
+          "840"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 287,
+      "symbol": "l_eq_low_gain",
+      "name": "L LOEQG",
+      "default": 0,
+      "min": -12,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 288,
+      "symbol": "l_eq_high_freq",
+      "name": "L HIEQF",
+      "default": 21,
+      "min": 0,
+      "max": 21,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "250"
+        ],
+        [
+          1,
+          "300"
+        ],
+        [
+          2,
+          "350"
+        ],
+        [
+          3,
+          "420"
+        ],
+        [
+          4,
+          "500"
+        ],
+        [
+          5,
+          "600"
+        ],
+        [
+          6,
+          "700"
+        ],
+        [
+          7,
+          "840"
+        ],
+        [
+          8,
+          "1.0K"
+        ],
+        [
+          9,
+          "1.2K"
+        ],
+        [
+          10,
+          "1.4K"
+        ],
+        [
+          11,
+          "1.7K"
+        ],
+        [
+          12,
+          "2.0K"
+        ],
+        [
+          13,
+          "2.4K"
+        ],
+        [
+          14,
+          "2.8K"
+        ],
+        [
+          15,
+          "3.4K"
+        ],
+        [
+          16,
+          "4.0K"
+        ],
+        [
+          17,
+          "4.8K"
+        ],
+        [
+          18,
+          "5.7K"
+        ],
+        [
+          19,
+          "6.7K"
+        ],
+        [
+          20,
+          "8.0K"
+        ],
+        [
+          21,
+          "9.5K"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 289,
+      "symbol": "l_eq_high_q",
+      "name": "L HIEQQ",
+      "default": 3,
+      "min": 0,
+      "max": 8,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "0.3"
+        ],
+        [
+          1,
+          "0.5"
+        ],
+        [
+          2,
+          "0.7"
+        ],
+        [
+          3,
+          "1.0"
+        ],
+        [
+          4,
+          "1.4"
+        ],
+        [
+          5,
+          "2.0"
+        ],
+        [
+          6,
+          "3.0"
+        ],
+        [
+          7,
+          "4.2"
+        ],
+        [
+          8,
+          "6.0"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 290,
+      "symbol": "l_eq_high_gain",
+      "name": "L HIEQG",
+      "default": 0,
+      "min": -12,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 291,
+      "symbol": "l_chorus_type",
+      "name": "L CHTYPE",
+      "default": 0,
+      "min": 0,
+      "max": 7,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "CHORUS 1"
+        ],
+        [
+          1,
+          "CHORUS 2"
+        ],
+        [
+          2,
+          "FLANGER 1"
+        ],
+        [
+          3,
+          "FLANGER 2"
+        ],
+        [
+          4,
+          "FB CHORUS"
+        ],
+        [
+          5,
+          "TREMOLO"
+        ],
+        [
+          6,
+          "CHOR TREM"
+        ],
+        [
+          7,
+          "DIMENSION"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 292,
+      "symbol": "l_chorus_rate",
+      "name": "L CHRATE",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 293,
+      "symbol": "l_chorus_depth",
+      "name": "L CHDEPTH",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 294,
+      "symbol": "l_chorus_balance",
+      "name": "L CHBAL",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 295,
+      "symbol": "l_partial_mute",
+      "name": "L PMUTE",
+      "default": 0,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "BOTH OFF"
+        ],
+        [
+          1,
+          "P1 ON"
+        ],
+        [
+          2,
+          "P2 ON"
+        ],
+        [
+          3,
+          "BOTH ON"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 296,
+      "symbol": "l_partial_balance",
+      "name": "L PBAL",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 297,
+      "symbol": "patch_key_mode",
+      "name": "KEYMODE",
+      "default": 0,
+      "min": 0,
+      "max": 8,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "WHOLE"
+        ],
+        [
+          1,
+          "DUAL"
+        ],
+        [
+          2,
+          "SPLIT"
+        ],
+        [
+          3,
+          "SEPARATE"
+        ],
+        [
+          4,
+          "WHOLE-S"
+        ],
+        [
+          5,
+          "DUAL-S"
+        ],
+        [
+          6,
+          "SPLIT-US"
+        ],
+        [
+          7,
+          "SPLIT-LS"
+        ],
+        [
+          8,
+          "SEPARATE-S"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 298,
+      "symbol": "patch_split_point",
+      "name": "SPLIT",
+      "default": 24,
+      "min": 0,
+      "max": 60,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "C2"
+        ],
+        [
+          1,
+          "C#2"
+        ],
+        [
+          2,
+          "D2"
+        ],
+        [
+          3,
+          "D#2"
+        ],
+        [
+          4,
+          "E2"
+        ],
+        [
+          5,
+          "F2"
+        ],
+        [
+          6,
+          "F#2"
+        ],
+        [
+          7,
+          "G2"
+        ],
+        [
+          8,
+          "G#2"
+        ],
+        [
+          9,
+          "A2"
+        ],
+        [
+          10,
+          "A#2"
+        ],
+        [
+          11,
+          "B2"
+        ],
+        [
+          12,
+          "C3"
+        ],
+        [
+          13,
+          "C#3"
+        ],
+        [
+          14,
+          "D3"
+        ],
+        [
+          15,
+          "D#3"
+        ],
+        [
+          16,
+          "E3"
+        ],
+        [
+          17,
+          "F3"
+        ],
+        [
+          18,
+          "F#3"
+        ],
+        [
+          19,
+          "G3"
+        ],
+        [
+          20,
+          "G#3"
+        ],
+        [
+          21,
+          "A3"
+        ],
+        [
+          22,
+          "A#3"
+        ],
+        [
+          23,
+          "B3"
+        ],
+        [
+          24,
+          "C4"
+        ],
+        [
+          25,
+          "C#4"
+        ],
+        [
+          26,
+          "D4"
+        ],
+        [
+          27,
+          "D#4"
+        ],
+        [
+          28,
+          "E4"
+        ],
+        [
+          29,
+          "F4"
+        ],
+        [
+          30,
+          "F#4"
+        ],
+        [
+          31,
+          "G4"
+        ],
+        [
+          32,
+          "G#4"
+        ],
+        [
+          33,
+          "A4"
+        ],
+        [
+          34,
+          "A#4"
+        ],
+        [
+          35,
+          "B4"
+        ],
+        [
+          36,
+          "C5"
+        ],
+        [
+          37,
+          "C#5"
+        ],
+        [
+          38,
+          "D5"
+        ],
+        [
+          39,
+          "D#5"
+        ],
+        [
+          40,
+          "E5"
+        ],
+        [
+          41,
+          "F5"
+        ],
+        [
+          42,
+          "F#5"
+        ],
+        [
+          43,
+          "G5"
+        ],
+        [
+          44,
+          "G#5"
+        ],
+        [
+          45,
+          "A5"
+        ],
+        [
+          46,
+          "A#5"
+        ],
+        [
+          47,
+          "B5"
+        ],
+        [
+          48,
+          "C6"
+        ],
+        [
+          49,
+          "C#6"
+        ],
+        [
+          50,
+          "D6"
+        ],
+        [
+          51,
+          "D#6"
+        ],
+        [
+          52,
+          "E6"
+        ],
+        [
+          53,
+          "F6"
+        ],
+        [
+          54,
+          "F#6"
+        ],
+        [
+          55,
+          "G6"
+        ],
+        [
+          56,
+          "G#6"
+        ],
+        [
+          57,
+          "A6"
+        ],
+        [
+          58,
+          "A#6"
+        ],
+        [
+          59,
+          "B6"
+        ],
+        [
+          60,
+          "C7"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 299,
+      "symbol": "patch_porta_mode",
+      "name": "PORTAMD",
+      "default": 2,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "U"
+        ],
+        [
+          1,
+          "L"
+        ],
+        [
+          2,
+          "UL"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 300,
+      "symbol": "patch_hold_mode",
+      "name": "HOLDMD",
+      "default": 2,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "U"
+        ],
+        [
+          1,
+          "L"
+        ],
+        [
+          2,
+          "UL"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 301,
+      "symbol": "patch_u_key_shift",
+      "name": "UKEYSH",
+      "default": 0,
+      "min": -24,
+      "max": 24,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 302,
+      "symbol": "patch_l_key_shift",
+      "name": "LKEYSH",
+      "default": 0,
+      "min": -24,
+      "max": 24,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 303,
+      "symbol": "patch_u_fine",
+      "name": "UFINE",
+      "default": 0,
+      "min": -50,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 304,
+      "symbol": "patch_l_fine",
+      "name": "LFINE",
+      "default": 0,
+      "min": -50,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 305,
+      "symbol": "patch_bender_range",
+      "name": "BENDRNG",
+      "default": 2,
+      "min": 0,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 306,
+      "symbol": "patch_after_bend",
+      "name": "AFTBEND",
+      "default": 0,
+      "min": -12,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 307,
+      "symbol": "patch_porta_time",
+      "name": "PORTAT",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 308,
+      "symbol": "patch_output_mode",
+      "name": "OUTMODE",
+      "default": 0,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "1"
+        ],
+        [
+          1,
+          "2"
+        ],
+        [
+          2,
+          "3"
+        ],
+        [
+          3,
+          "4"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 309,
+      "symbol": "patch_reverb_type",
+      "name": "REVTYPE",
+      "default": 1,
+      "min": 0,
+      "max": 31,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "SMALL HALL"
+        ],
+        [
+          1,
+          "MEDIUM HALL"
+        ],
+        [
+          2,
+          "LARGE HALL"
+        ],
+        [
+          3,
+          "CHAPEL"
+        ],
+        [
+          4,
+          "BOX"
+        ],
+        [
+          5,
+          "SMALL METAL ROOM"
+        ],
+        [
+          6,
+          "SMALL ROOM"
+        ],
+        [
+          7,
+          "MEDIUM ROOM"
+        ],
+        [
+          8,
+          "MEDIUM LARGE ROOM"
+        ],
+        [
+          9,
+          "LARGE ROOM"
+        ],
+        [
+          10,
+          "SINGLE DELAY 102MS"
+        ],
+        [
+          11,
+          "CROSS DELAY 180MS"
+        ],
+        [
+          12,
+          "CROSS DELAY 224MS"
+        ],
+        [
+          13,
+          "CROSS DELAY 148-296MS"
+        ],
+        [
+          14,
+          "SHORT GATE 200MS"
+        ],
+        [
+          15,
+          "LONG GATE 480MS"
+        ],
+        [
+          16,
+          "BRIGHT HALL"
+        ],
+        [
+          17,
+          "LARGE CAVE"
+        ],
+        [
+          18,
+          "STEEL PAN"
+        ],
+        [
+          19,
+          "DELAY 248MS"
+        ],
+        [
+          20,
+          "DELAY 338MS"
+        ],
+        [
+          21,
+          "CROSS DELAY 157MS"
+        ],
+        [
+          22,
+          "CROSS DELAY 252MS"
+        ],
+        [
+          23,
+          "CROSS DELAY 274-137MS"
+        ],
+        [
+          24,
+          "GATE REVERB"
+        ],
+        [
+          25,
+          "REVERSE GATE 360MS"
+        ],
+        [
+          26,
+          "REVERSE GATE 480MS"
+        ],
+        [
+          27,
+          "SHORT SLAP BACK"
+        ],
+        [
+          28,
+          "MEDIUM SLAP BACK"
+        ],
+        [
+          29,
+          "LONG SLAP BACK"
+        ],
+        [
+          30,
+          "TWISTED SPACE"
+        ],
+        [
+          31,
+          "SPACE"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 310,
+      "symbol": "patch_reverb_balance",
+      "name": "REVBAL",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 311,
+      "symbol": "patch_total_volume",
+      "name": "VOLUME",
+      "default": 80,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 312,
+      "symbol": "patch_tone_balance",
+      "name": "TONEBAL",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 313,
+      "symbol": "patch_chase_mode",
+      "name": "CHASEMD",
+      "default": 0,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "UL"
+        ],
+        [
+          1,
+          "ULL"
+        ],
+        [
+          2,
+          "ULU"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 314,
+      "symbol": "patch_chase_level",
+      "name": "CHASEL",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 315,
+      "symbol": "patch_chase_time",
+      "name": "CHASET",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 316,
+      "symbol": "gain",
+      "name": "GAIN",
+      "default": 0,
+      "min": -24,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    }
+  ],
+  "pages": [
+    {
+      "title": "PATCH",
+      "controls": [
+        "@bank",
+        "@patch",
+        "patch_key_mode",
+        "patch_tone_balance",
+        "patch_reverb_type",
+        "patch_reverb_balance",
+        "patch_total_volume",
+        "gain"
+      ]
+    },
+    {
+      "title": "UPPER TVF",
+      "controls": [
+        "u_p1_tvf_cutoff",
+        "u_p1_tvf_reso",
+        "u_p1_tvf_env_depth",
+        "u_p1_tvf_lfo_depth",
+        "u_p2_tvf_cutoff",
+        "u_p2_tvf_reso",
+        "u_p2_tvf_env_depth",
+        "u_p2_tvf_lfo_depth"
+      ]
+    },
+    {
+      "title": "UPPER TVF ENV",
+      "controls": [
+        "u_p1_tvf_t1",
+        "u_p1_tvf_t2",
+        "u_p1_tvf_sus",
+        "u_p1_tvf_t5",
+        "u_p2_tvf_t1",
+        "u_p2_tvf_t2",
+        "u_p2_tvf_sus",
+        "u_p2_tvf_t5"
+      ]
+    },
+    {
+      "title": "UPPER TVA ENV",
+      "controls": [
+        "u_p1_tva_t1",
+        "u_p1_tva_t2",
+        "u_p1_tva_sus",
+        "u_p1_tva_t5",
+        "u_p2_tva_t1",
+        "u_p2_tva_t2",
+        "u_p2_tva_sus",
+        "u_p2_tva_t5"
+      ]
+    },
+    {
+      "title": "UPPER WG",
+      "controls": [
+        "u_p1_wg_waveform",
+        "u_p1_wg_pcm_wave",
+        "u_p1_wg_pw",
+        "u_p1_tva_level",
+        "u_p2_wg_waveform",
+        "u_p2_wg_pcm_wave",
+        "u_p2_wg_pw",
+        "u_p2_tva_level"
+      ]
+    },
+    {
+      "title": "UPPER COMMON",
+      "controls": [
+        "u_structure",
+        "u_partial_balance",
+        "u_partial_mute",
+        "u_lfo1_rate",
+        "u_pmod_lfo",
+        "u_chorus_type",
+        "u_chorus_balance",
+        "u_lfo1_wave"
+      ]
+    },
+    {
+      "title": "LOWER TVF",
+      "controls": [
+        "l_p1_tvf_cutoff",
+        "l_p1_tvf_reso",
+        "l_p1_tvf_env_depth",
+        "l_p1_tvf_lfo_depth",
+        "l_p2_tvf_cutoff",
+        "l_p2_tvf_reso",
+        "l_p2_tvf_env_depth",
+        "l_p2_tvf_lfo_depth"
+      ]
+    },
+    {
+      "title": "LOWER TVF ENV",
+      "controls": [
+        "l_p1_tvf_t1",
+        "l_p1_tvf_t2",
+        "l_p1_tvf_sus",
+        "l_p1_tvf_t5",
+        "l_p2_tvf_t1",
+        "l_p2_tvf_t2",
+        "l_p2_tvf_sus",
+        "l_p2_tvf_t5"
+      ]
+    },
+    {
+      "title": "LOWER TVA ENV",
+      "controls": [
+        "l_p1_tva_t1",
+        "l_p1_tva_t2",
+        "l_p1_tva_sus",
+        "l_p1_tva_t5",
+        "l_p2_tva_t1",
+        "l_p2_tva_t2",
+        "l_p2_tva_sus",
+        "l_p2_tva_t5"
+      ]
+    },
+    {
+      "title": "LOWER WG",
+      "controls": [
+        "l_p1_wg_waveform",
+        "l_p1_wg_pcm_wave",
+        "l_p1_wg_pw",
+        "l_p1_tva_level",
+        "l_p2_wg_waveform",
+        "l_p2_wg_pcm_wave",
+        "l_p2_wg_pw",
+        "l_p2_tva_level"
+      ]
+    },
+    {
+      "title": "LOWER COMMON",
+      "controls": [
+        "l_structure",
+        "l_partial_balance",
+        "l_partial_mute",
+        "l_lfo1_rate",
+        "l_pmod_lfo",
+        "l_chorus_type",
+        "l_chorus_balance",
+        "l_lfo1_wave"
+      ]
+    },
+    {
+      "title": "PLAY",
+      "controls": [
+        "patch_split_point",
+        "patch_bender_range",
+        "patch_after_bend",
+        "patch_porta_time",
+        "patch_porta_mode",
+        "patch_hold_mode",
+        "patch_u_key_shift",
+        "patch_l_key_shift"
+      ]
+    }
+  ],
+  "quirks": [
+    "LA synthesis playing D-50 patches: Upper / Lower tone, 2 partials each (synth waves, PCM stand-ins).",
+    "Pages: the main knobs per tone; the full D-50 parameter set is in the desktop editor.",
+    "Import .syx banks in the desktop editor; they arrive here as presets."
+  ]
+}

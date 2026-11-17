@@ -1,0 +1,10 @@
+# Maquina factory preset
+# the effects of S1Vave factory sound 15
+voice = bl101_fx
+name = Slap Repeats
+category = Delay
+tags = short
+dly_level = 88
+dly_time = 52
+dly_feedback = 105
+rev_level = 79

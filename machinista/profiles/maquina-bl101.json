@@ -1,0 +1,1256 @@
+{
+  "schema": 1,
+  "id": "maquina-bl101",
+  "uri": "urn:maquina:bl101",
+  "title": "Maquina BL101",
+  "provider": "parameter-bank",
+  "bank_format": "json",
+  "extensions": [
+    ".json"
+  ],
+  "parameters": [
+    {
+      "index": 5,
+      "symbol": "modulator_rate",
+      "name": "LFO RATE",
+      "default": 60,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 6,
+      "symbol": "modulator_wave",
+      "name": "LFO WAVE",
+      "default": 2,
+      "min": 0,
+      "max": 5,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "SAW"
+        ],
+        [
+          1,
+          "INV SAW"
+        ],
+        [
+          2,
+          "TRIANGLE"
+        ],
+        [
+          3,
+          "SQUARE"
+        ],
+        [
+          4,
+          "RANDOM"
+        ],
+        [
+          5,
+          "NOISE"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 7,
+      "symbol": "modulator_sync",
+      "name": "LFO SYNC",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    },
+    {
+      "index": 8,
+      "symbol": "modulator_fast",
+      "name": "LFO FAST",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    },
+    {
+      "index": 9,
+      "symbol": "modulator_trig",
+      "name": "KEY TRIG",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    },
+    {
+      "index": 10,
+      "symbol": "vco_mod",
+      "name": "VCO MOD",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 11,
+      "symbol": "vco_range",
+      "name": "RANGE",
+      "default": 3,
+      "min": 0,
+      "max": 5,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "64'"
+        ],
+        [
+          1,
+          "32'"
+        ],
+        [
+          2,
+          "16'"
+        ],
+        [
+          3,
+          "8'"
+        ],
+        [
+          4,
+          "4'"
+        ],
+        [
+          5,
+          "2'"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 12,
+      "symbol": "vco_pw",
+      "name": "PULSE W",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 13,
+      "symbol": "vco_pwm_src",
+      "name": "PWM SRC",
+      "default": 1,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "ENV"
+        ],
+        [
+          1,
+          "MANUAL"
+        ],
+        [
+          2,
+          "LFO"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 14,
+      "symbol": "vco_fine",
+      "name": "FINE",
+      "default": 0,
+      "min": -64,
+      "max": 63,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 15,
+      "symbol": "mix_pulse",
+      "name": "PULSE",
+      "default": 100,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 16,
+      "symbol": "mix_saw",
+      "name": "SAW",
+      "default": 110,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 17,
+      "symbol": "mix_sub",
+      "name": "SUB",
+      "default": 80,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 18,
+      "symbol": "mix_sub_type",
+      "name": "SUB TYPE",
+      "default": 2,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "-2 PULSE"
+        ],
+        [
+          1,
+          "-2 OCT"
+        ],
+        [
+          2,
+          "-1 OCT"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 19,
+      "symbol": "mix_noise",
+      "name": "NOISE",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 20,
+      "symbol": "mix_noise_type",
+      "name": "NOISE TYP",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "PINK"
+        ],
+        [
+          1,
+          "WHITE"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 21,
+      "symbol": "vcf_freq",
+      "name": "CUTOFF",
+      "default": 85,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 22,
+      "symbol": "vcf_res",
+      "name": "RESO",
+      "default": 25,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 23,
+      "symbol": "vcf_env",
+      "name": "VCF ENV",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 24,
+      "symbol": "vcf_mod",
+      "name": "VCF MOD",
+      "default": 0,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 25,
+      "symbol": "vcf_kybd",
+      "name": "KYBD",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 26,
+      "symbol": "vca_mode",
+      "name": "VCA",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "GATE"
+        ],
+        [
+          1,
+          "ENV"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 27,
+      "symbol": "env_trigger",
+      "name": "ENV TRIG",
+      "default": 2,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "LFO"
+        ],
+        [
+          1,
+          "GATE"
+        ],
+        [
+          2,
+          "GATE+TRIG"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 28,
+      "symbol": "adsr_attack",
+      "name": "ATTACK",
+      "default": 5,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 29,
+      "symbol": "adsr_decay",
+      "name": "DECAY",
+      "default": 65,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 30,
+      "symbol": "adsr_sustain",
+      "name": "SUSTAIN",
+      "default": 80,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 31,
+      "symbol": "adsr_release",
+      "name": "RELEASE",
+      "default": 45,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 32,
+      "symbol": "voice_mode",
+      "name": "VOICING",
+      "default": 2,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "MONO"
+        ],
+        [
+          1,
+          "UNISON"
+        ],
+        [
+          2,
+          "POLY"
+        ],
+        [
+          3,
+          "CHORD"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 33,
+      "symbol": "porta_mode",
+      "name": "PORTA",
+      "default": 0,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "ON"
+        ],
+        [
+          2,
+          "AUTO"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 34,
+      "symbol": "porta_time",
+      "name": "PORTA T",
+      "default": 30,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 35,
+      "symbol": "transpose",
+      "name": "TRANSPOSE",
+      "default": 0,
+      "min": -60,
+      "max": 60,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 36,
+      "symbol": "bend_vco",
+      "name": "BEND VCO",
+      "default": 2,
+      "min": 0,
+      "max": 24,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 37,
+      "symbol": "bend_vcf",
+      "name": "BEND VCF",
+      "default": 2,
+      "min": 0,
+      "max": 24,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 38,
+      "symbol": "stereo_spread",
+      "name": "SPREAD",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 39,
+      "symbol": "unison_detune",
+      "name": "DETUNE",
+      "default": 0,
+      "min": 0,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 40,
+      "symbol": "chord2_on",
+      "name": "CHORD 2",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    },
+    {
+      "index": 41,
+      "symbol": "chord2_shift",
+      "name": "SHIFT 2",
+      "default": 0,
+      "min": -12,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 42,
+      "symbol": "chord3_on",
+      "name": "CHORD 3",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    },
+    {
+      "index": 43,
+      "symbol": "chord3_shift",
+      "name": "SHIFT 3",
+      "default": 0,
+      "min": -12,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 44,
+      "symbol": "chord4_on",
+      "name": "CHORD 4",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    },
+    {
+      "index": 45,
+      "symbol": "chord4_shift",
+      "name": "SHIFT 4",
+      "default": 0,
+      "min": -12,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 46,
+      "symbol": "patch_level",
+      "name": "LEVEL",
+      "default": 100,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 47,
+      "symbol": "draw_mode",
+      "name": "DRAW",
+      "default": 0,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "OFF"
+        ],
+        [
+          1,
+          "STEP"
+        ],
+        [
+          2,
+          "SLOPE"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 48,
+      "symbol": "draw_mult",
+      "name": "MULTIPLY",
+      "default": 1,
+      "min": 1,
+      "max": 32,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 49,
+      "symbol": "draw_1",
+      "name": "DRAW 1",
+      "default": -112,
+      "min": -128,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 50,
+      "symbol": "draw_2",
+      "name": "DRAW 2",
+      "default": -96,
+      "min": -128,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 51,
+      "symbol": "draw_3",
+      "name": "DRAW 3",
+      "default": -80,
+      "min": -128,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 52,
+      "symbol": "draw_4",
+      "name": "DRAW 4",
+      "default": -64,
+      "min": -128,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 53,
+      "symbol": "draw_5",
+      "name": "DRAW 5",
+      "default": -48,
+      "min": -128,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 54,
+      "symbol": "draw_6",
+      "name": "DRAW 6",
+      "default": -32,
+      "min": -128,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 55,
+      "symbol": "draw_7",
+      "name": "DRAW 7",
+      "default": -16,
+      "min": -128,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 56,
+      "symbol": "draw_8",
+      "name": "DRAW 8",
+      "default": 0,
+      "min": -128,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 57,
+      "symbol": "draw_9",
+      "name": "DRAW 9",
+      "default": 16,
+      "min": -128,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 58,
+      "symbol": "draw_10",
+      "name": "DRAW 10",
+      "default": 32,
+      "min": -128,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 59,
+      "symbol": "draw_11",
+      "name": "DRAW 11",
+      "default": 48,
+      "min": -128,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 60,
+      "symbol": "draw_12",
+      "name": "DRAW 12",
+      "default": 64,
+      "min": -128,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 61,
+      "symbol": "draw_13",
+      "name": "DRAW 13",
+      "default": 80,
+      "min": -128,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 62,
+      "symbol": "draw_14",
+      "name": "DRAW 14",
+      "default": 96,
+      "min": -128,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 63,
+      "symbol": "draw_15",
+      "name": "DRAW 15",
+      "default": 112,
+      "min": -128,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 64,
+      "symbol": "draw_16",
+      "name": "DRAW 16",
+      "default": -128,
+      "min": -128,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 65,
+      "symbol": "chop_overtone",
+      "name": "OVERTONE",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 66,
+      "symbol": "chop_comb",
+      "name": "COMB",
+      "default": 1,
+      "min": 1,
+      "max": 32,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 67,
+      "symbol": "chop_mask_sqr",
+      "name": "PULSE MSK",
+      "default": 1,
+      "min": 0,
+      "max": 6,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "CUSTOM"
+        ],
+        [
+          1,
+          "ALL"
+        ],
+        [
+          2,
+          "ODD"
+        ],
+        [
+          3,
+          "EVEN"
+        ],
+        [
+          4,
+          "1 OF 4"
+        ],
+        [
+          5,
+          "4 OF 4"
+        ],
+        [
+          6,
+          "OFF"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 68,
+      "symbol": "chop_mask_saw",
+      "name": "SAW MSK",
+      "default": 1,
+      "min": 0,
+      "max": 6,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "CUSTOM"
+        ],
+        [
+          1,
+          "ALL"
+        ],
+        [
+          2,
+          "ODD"
+        ],
+        [
+          3,
+          "EVEN"
+        ],
+        [
+          4,
+          "1 OF 4"
+        ],
+        [
+          5,
+          "4 OF 4"
+        ],
+        [
+          6,
+          "OFF"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 69,
+      "symbol": "chop_mask_sub",
+      "name": "SUB MSK",
+      "default": 1,
+      "min": 0,
+      "max": 6,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "CUSTOM"
+        ],
+        [
+          1,
+          "ALL"
+        ],
+        [
+          2,
+          "ODD"
+        ],
+        [
+          3,
+          "EVEN"
+        ],
+        [
+          4,
+          "1 OF 4"
+        ],
+        [
+          5,
+          "4 OF 4"
+        ],
+        [
+          6,
+          "OFF"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 70,
+      "symbol": "chop_mask_noise",
+      "name": "NOISE MSK",
+      "default": 1,
+      "min": 0,
+      "max": 6,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "CUSTOM"
+        ],
+        [
+          1,
+          "ALL"
+        ],
+        [
+          2,
+          "ODD"
+        ],
+        [
+          3,
+          "EVEN"
+        ],
+        [
+          4,
+          "1 OF 4"
+        ],
+        [
+          5,
+          "4 OF 4"
+        ],
+        [
+          6,
+          "OFF"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 71,
+      "symbol": "chop_bits_sqr_lo",
+      "name": "PLS LO",
+      "default": 255,
+      "min": 0,
+      "max": 255,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 72,
+      "symbol": "chop_bits_sqr_hi",
+      "name": "PLS HI",
+      "default": 255,
+      "min": 0,
+      "max": 255,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 73,
+      "symbol": "chop_bits_saw_lo",
+      "name": "SAW LO",
+      "default": 255,
+      "min": 0,
+      "max": 255,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 74,
+      "symbol": "chop_bits_saw_hi",
+      "name": "SAW HI",
+      "default": 255,
+      "min": 0,
+      "max": 255,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 75,
+      "symbol": "chop_bits_sub_lo",
+      "name": "SUB LO",
+      "default": 255,
+      "min": 0,
+      "max": 255,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 76,
+      "symbol": "chop_bits_sub_hi",
+      "name": "SUB HI",
+      "default": 255,
+      "min": 0,
+      "max": 255,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 77,
+      "symbol": "chop_bits_noise_lo",
+      "name": "NOI LO",
+      "default": 255,
+      "min": 0,
+      "max": 255,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 78,
+      "symbol": "chop_bits_noise_hi",
+      "name": "NOI HI",
+      "default": 255,
+      "min": 0,
+      "max": 255,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 79,
+      "symbol": "gain",
+      "name": "GAIN",
+      "default": 0,
+      "min": -24,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    }
+  ],
+  "pages": [
+    {
+      "title": "MOD / VCO",
+      "controls": [
+        "@bank",
+        "@patch",
+        "modulator_rate",
+        "modulator_wave",
+        "vco_mod",
+        "vco_range",
+        "vco_pw",
+        "vco_pwm_src"
+      ]
+    },
+    {
+      "title": "MIXER",
+      "controls": [
+        "mix_pulse",
+        "mix_saw",
+        "mix_sub",
+        "mix_sub_type",
+        "mix_noise",
+        "mix_noise_type",
+        "vco_fine",
+        "patch_level"
+      ]
+    },
+    {
+      "title": "VCF / VCA",
+      "controls": [
+        "vcf_freq",
+        "vcf_res",
+        "vcf_env",
+        "vcf_mod",
+        "vcf_kybd",
+        "vca_mode",
+        "env_trigger",
+        "gain"
+      ]
+    },
+    {
+      "title": "ENV / LFO",
+      "controls": [
+        "adsr_attack",
+        "adsr_decay",
+        "adsr_sustain",
+        "adsr_release",
+        "modulator_sync",
+        "modulator_fast",
+        "modulator_trig",
+        "porta_time"
+      ]
+    },
+    {
+      "title": "VOICE",
+      "controls": [
+        "voice_mode",
+        "porta_mode",
+        "porta_time",
+        "transpose",
+        "bend_vco",
+        "bend_vcf",
+        "stereo_spread",
+        "unison_detune"
+      ]
+    },
+    {
+      "title": "CHORD",
+      "controls": [
+        "chord2_on",
+        "chord2_shift",
+        "chord3_on",
+        "chord3_shift",
+        "chord4_on",
+        "chord4_shift",
+        "voice_mode",
+        "transpose"
+      ]
+    },
+    {
+      "title": "DRAW 1-8",
+      "controls": [
+        "draw_1",
+        "draw_2",
+        "draw_3",
+        "draw_4",
+        "draw_5",
+        "draw_6",
+        "draw_7",
+        "draw_8"
+      ]
+    },
+    {
+      "title": "DRAW 9-16",
+      "controls": [
+        "draw_9",
+        "draw_10",
+        "draw_11",
+        "draw_12",
+        "draw_13",
+        "draw_14",
+        "draw_15",
+        "draw_16"
+      ]
+    },
+    {
+      "title": "CHOP",
+      "controls": [
+        "chop_overtone",
+        "chop_comb",
+        "chop_mask_sqr",
+        "chop_mask_saw",
+        "chop_mask_sub",
+        "chop_mask_noise",
+        "draw_mode",
+        "draw_mult"
+      ]
+    }
+  ],
+  "quirks": [
+    "8-voice analog-modelling synth from the S1Vave firmware: VCO (pulse, saw, sub, noise), 4-pole VCF, ADSR.",
+    "VOICING MONO / UNISON / POLY / CHORD; DRAW 1-16 shape the drawn wave (DRAW STEP / SLOPE),",
+    "CHOP slices each source by its mask (Custom masks come with presets)."
+  ]
+}

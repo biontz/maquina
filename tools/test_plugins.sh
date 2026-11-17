@@ -59,7 +59,8 @@ PY
 # Output gain (ExtraParams.hpp, every plugin): +6 / -12 dB scale the whole
 # output (the parameter is set before the first block, so no ramp)
 echo "== gain"
-for n in kick tom snare cymbal hihat dredrum plethora oneiroi oneiroi-fx klang klong klong-fx acida acida-fx; do
+for n in kick tom snare cymbal hihat dredrum plethora oneiroi oneiroi-fx klang klong klong-fx acida acida-fx \
+        bl-101 bl-101-fx la-50; do
     for g in 0 6 -12; do
         $QEMU "$TOOLS/lv2_render" urn:maquina:$n 48000 2 "$OUT/$n-gain$g.wav" gain=$g >/dev/null
     done
@@ -71,7 +72,7 @@ def rms(n, g):
     return math.sqrt(sum(x * x for x in a) / len(a))
 ok = True
 for n in ("kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora", "oneiroi", "oneiroi-fx", "klang",
-          "klong", "klong-fx", "acida", "acida-fx"):
+          "klong", "klong-fx", "acida", "acida-fx", "bl-101", "bl-101-fx", "la-50"):
     dbs = [20 * math.log10(rms(n, g) / rms(n, 0)) for g in (6, -12)]
     good = abs(dbs[0] - 6) < 0.05 and abs(dbs[1] + 12) < 0.05
     ok &= good
@@ -215,6 +216,29 @@ for rate in 44100 48000 96000; do
     for n in acida acida-fx; do
         $QEMU "$TOOLS/lv2_render" urn:maquina:$n $rate 3 "$OUT/$n-$rate.wav" | sed 's/^/  /' || fail=1
     done
+done
+
+# Maquina BL-101 / BL-101 FX: engine fidelity (bit-exact with the S1Vave
+# firmware) and the host's behaviour are tools/bl101_test; here the built
+# plugins: isolation, sample rates, the FX processing its input
+echo "== bl-101"
+$QEMU "$TOOLS/lv2_render" urn:maquina:bl-101 48000 3 "$OUT/bl-101-twin.wav" --twin \
+    twin:vcf_freq=20 twin:voice_mode=0 twin:draw_mode=2 twin:chop_overtone=150 twin:chop_mask_saw=2 \
+    | sed -n 's/^  twin/  twin/p' || fail=1
+$QEMU "$TOOLS/lv2_render" urn:maquina:bl-101-fx 48000 3 "$OUT/bl-101-fx-twin.wav" --twin \
+    twin:chorus_mode=3 twin:dly_level=100 twin:lofi_amount=50 | sed -n 's/^  twin/  twin/p' || fail=1
+for rate in 44100 48000 96000; do
+    for n in bl-101 bl-101-fx; do
+        $QEMU "$TOOLS/lv2_render" urn:maquina:$n $rate 3 "$OUT/$n-$rate.wav" | sed 's/^/  /' || fail=1
+    done
+done
+
+# Maquina LA-50: behaviour is tools/la50_test; here the built plugin: isolation, sample rates
+echo "== la-50"
+$QEMU "$TOOLS/lv2_render" urn:maquina:la-50 48000 3 "$OUT/la-50-twin.wav" --twin \
+    twin:u_p1_tvf_cutoff=20 twin:u_structure=1 twin:patch_key_mode=1 | sed -n 's/^  twin/  twin/p' || fail=1
+for rate in 44100 48000 96000; do
+    $QEMU "$TOOLS/lv2_render" urn:maquina:la-50 $rate 3 "$OUT/la-50-$rate.wav" | sed 's/^/  /' || fail=1
 done
 
 [ $fail -eq 0 ] && echo "test_plugins: PASSED" || { echo "test_plugins: FAILED"; exit 1; }

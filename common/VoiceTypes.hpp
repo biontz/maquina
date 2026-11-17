@@ -40,6 +40,9 @@ constexpr uint8_t kKlongVoice = 21;     // Maquina Klong (mutable-instruments/kl
 constexpr uint8_t kKlongFxVoice = 22;   // Maquina Klong FX (the same, excited by the audio input)
 constexpr uint8_t kAcidaVoice = 23;     // Maquina Acida (openrb/acida/engine/, OpenRB-338's 303)
 constexpr uint8_t kAcidaFxVoice = 24;   // Maquina Acida FX (OpenRB-338's distortion, PCF, compressor, delay)
+constexpr uint8_t kBl101Voice = 25;     // Maquina BL-101 (s1vave/bl101/engine/, S1Vave's synth)
+constexpr uint8_t kBl101FxVoice = 26;   // Maquina BL-101 FX (S1Vave's chorus, delay, reverb, lo-fi)
+constexpr uint8_t kLa50Voice = 27;      // Maquina LA-50 (lasynth/la50/engine/, LA synthesis playing D-50 patches)
 // the LXR-02 voices (EngineHost); everything else is a Maquina port of another device
 inline bool isLxrVoice(uint8_t voice) { return voice < kDredrumVoice; }
 inline bool isOneiroi(uint8_t voice) { return voice == kOneiroiVoice || voice == kOneiroiFxVoice; }
@@ -47,6 +50,8 @@ inline bool isKlong(uint8_t voice) { return voice == kKlongVoice || voice == kKl
 // the Mutable Instruments ports (Maquina Klang, Klong, Klong FX)
 inline bool isMutable(uint8_t voice) { return voice == kKlangVoice || isKlong(voice); }
 inline bool isAcida(uint8_t voice) { return voice == kAcidaVoice || voice == kAcidaFxVoice; }
+inline bool isBl101(uint8_t voice) { return voice == kBl101Voice || voice == kBl101FxVoice; }
+inline bool isLa50(uint8_t voice) { return voice == kLa50Voice; }
 // voices built from 3 channels/oscillators with their own random ROLL/RND
 // switches; no extra (LXR) parameters
 inline bool hasChannels(uint8_t voice) { return voice == kDredrumVoice || voice == kPlethoraVoice; }
@@ -54,7 +59,7 @@ inline bool hasChannels(uint8_t voice) { return voice == kDredrumVoice || voice 
 struct VoiceDef {
     const char* id;
     const char* name;
-    uint8_t voice;        // engine voice slot (LxrVoice), or kDredrumVoice ... kAcidaFxVoice
+    uint8_t voice;        // engine voice slot (LxrVoice), or kDredrumVoice ... kLa50Voice
     const VoiceParam* params;
     uint32_t numParams;
 };

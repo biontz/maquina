@@ -93,6 +93,35 @@ static const ClapRemotePage k_acida_fx_remote_pages[] = {
     { "PCF / COMP", { "dist_on", "pcf_on", "pcf_wave", "pcf_mode", "comp_on", "comp_amount", "comp_threshold", "gain" } },
     { "DELAY", { "delay_on", "delay_send", "delay_steps", "delay_mode", "delay_feedback", "delay_pan", "dist_amount", "pcf_freq" } },
 };
+static const ClapRemotePage k_bl101_remote_pages[] = {
+    { "MOD / VCO", { "modulator_rate", "modulator_wave", "vco_mod", "vco_range", "vco_pw", "vco_pwm_src", "modulator_sync", "modulator_fast" } },
+    { "MIXER", { "mix_pulse", "mix_saw", "mix_sub", "mix_sub_type", "mix_noise", "mix_noise_type", "vco_fine", "patch_level" } },
+    { "VCF / VCA", { "vcf_freq", "vcf_res", "vcf_env", "vcf_mod", "vcf_kybd", "vca_mode", "env_trigger", "gain" } },
+    { "ENV / LFO", { "adsr_attack", "adsr_decay", "adsr_sustain", "adsr_release", "modulator_sync", "modulator_fast", "modulator_trig", "porta_time" } },
+    { "VOICE", { "voice_mode", "porta_mode", "porta_time", "transpose", "bend_vco", "bend_vcf", "stereo_spread", "unison_detune" } },
+    { "CHORD", { "chord2_on", "chord2_shift", "chord3_on", "chord3_shift", "chord4_on", "chord4_shift", "voice_mode", "transpose" } },
+    { "DRAW 1-8", { "draw_1", "draw_2", "draw_3", "draw_4", "draw_5", "draw_6", "draw_7", "draw_8" } },
+    { "DRAW 9-16", { "draw_9", "draw_10", "draw_11", "draw_12", "draw_13", "draw_14", "draw_15", "draw_16" } },
+    { "CHOP", { "chop_overtone", "chop_comb", "chop_mask_sqr", "chop_mask_saw", "chop_mask_sub", "chop_mask_noise", "draw_mode", "draw_mult" } },
+};
+static const ClapRemotePage k_bl101_fx_remote_pages[] = {
+    { "CHORUS / DELAY", { "chorus_mode", "dly_level", "dly_time", "dly_feedback", "dly_sync", "lofi_mode", "rev_level", "rev_type" } },
+    { "REVERB / LO-FI", { "rev_level", "rev_time", "rev_type", "rev_predelay", "lofi_amount", "lofi_mix", "lofi_mode", "gain" } },
+};
+static const ClapRemotePage k_la50_remote_pages[] = {
+    { "PATCH", { "patch_key_mode", "patch_tone_balance", "patch_reverb_type", "patch_reverb_balance", "patch_total_volume", "gain", "u_p1_tvf_cutoff", "l_p1_tvf_cutoff" } },
+    { "UPPER TVF", { "u_p1_tvf_cutoff", "u_p1_tvf_reso", "u_p1_tvf_env_depth", "u_p1_tvf_lfo_depth", "u_p2_tvf_cutoff", "u_p2_tvf_reso", "u_p2_tvf_env_depth", "u_p2_tvf_lfo_depth" } },
+    { "UPPER TVF ENV", { "u_p1_tvf_t1", "u_p1_tvf_t2", "u_p1_tvf_sus", "u_p1_tvf_t5", "u_p2_tvf_t1", "u_p2_tvf_t2", "u_p2_tvf_sus", "u_p2_tvf_t5" } },
+    { "UPPER TVA ENV", { "u_p1_tva_t1", "u_p1_tva_t2", "u_p1_tva_sus", "u_p1_tva_t5", "u_p2_tva_t1", "u_p2_tva_t2", "u_p2_tva_sus", "u_p2_tva_t5" } },
+    { "UPPER WG", { "u_p1_wg_waveform", "u_p1_wg_pcm_wave", "u_p1_wg_pw", "u_p1_tva_level", "u_p2_wg_waveform", "u_p2_wg_pcm_wave", "u_p2_wg_pw", "u_p2_tva_level" } },
+    { "UPPER COMMON", { "u_structure", "u_partial_balance", "u_partial_mute", "u_lfo1_rate", "u_pmod_lfo", "u_chorus_type", "u_chorus_balance", "u_lfo1_wave" } },
+    { "LOWER TVF", { "l_p1_tvf_cutoff", "l_p1_tvf_reso", "l_p1_tvf_env_depth", "l_p1_tvf_lfo_depth", "l_p2_tvf_cutoff", "l_p2_tvf_reso", "l_p2_tvf_env_depth", "l_p2_tvf_lfo_depth" } },
+    { "LOWER TVF ENV", { "l_p1_tvf_t1", "l_p1_tvf_t2", "l_p1_tvf_sus", "l_p1_tvf_t5", "l_p2_tvf_t1", "l_p2_tvf_t2", "l_p2_tvf_sus", "l_p2_tvf_t5" } },
+    { "LOWER TVA ENV", { "l_p1_tva_t1", "l_p1_tva_t2", "l_p1_tva_sus", "l_p1_tva_t5", "l_p2_tva_t1", "l_p2_tva_t2", "l_p2_tva_sus", "l_p2_tva_t5" } },
+    { "LOWER WG", { "l_p1_wg_waveform", "l_p1_wg_pcm_wave", "l_p1_wg_pw", "l_p1_tva_level", "l_p2_wg_waveform", "l_p2_wg_pcm_wave", "l_p2_wg_pw", "l_p2_tva_level" } },
+    { "LOWER COMMON", { "l_structure", "l_partial_balance", "l_partial_mute", "l_lfo1_rate", "l_pmod_lfo", "l_chorus_type", "l_chorus_balance", "l_lfo1_wave" } },
+    { "PLAY", { "patch_split_point", "patch_bender_range", "patch_after_bend", "patch_porta_time", "patch_porta_mode", "patch_hold_mode", "patch_u_key_shift", "patch_l_key_shift" } },
+};
 
 static const ClapRemotePages k_remote_pages[] = {
     { k_kick_remote_pages, sizeof(k_kick_remote_pages) / sizeof(k_kick_remote_pages[0]) },
@@ -109,4 +138,7 @@ static const ClapRemotePages k_remote_pages[] = {
     { k_klong_fx_remote_pages, sizeof(k_klong_fx_remote_pages) / sizeof(k_klong_fx_remote_pages[0]) },
     { k_acida_remote_pages, sizeof(k_acida_remote_pages) / sizeof(k_acida_remote_pages[0]) },
     { k_acida_fx_remote_pages, sizeof(k_acida_fx_remote_pages) / sizeof(k_acida_fx_remote_pages[0]) },
+    { k_bl101_remote_pages, sizeof(k_bl101_remote_pages) / sizeof(k_bl101_remote_pages[0]) },
+    { k_bl101_fx_remote_pages, sizeof(k_bl101_fx_remote_pages) / sizeof(k_bl101_fx_remote_pages[0]) },
+    { k_la50_remote_pages, sizeof(k_la50_remote_pages) / sizeof(k_la50_remote_pages[0]) },
 };

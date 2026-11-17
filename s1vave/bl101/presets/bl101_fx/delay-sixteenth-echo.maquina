@@ -1,0 +1,13 @@
+# Maquina factory preset
+# the effects of S1Vave factory sound 11
+voice = bl101_fx
+name = Sixteenth Echo
+category = Delay
+tags = short
+dly_level = 40
+dly_time = 76
+dly_feedback = 40
+rev_level = 97
+rev_time = 127
+rev_type = Modulated
+rev_predelay = 10

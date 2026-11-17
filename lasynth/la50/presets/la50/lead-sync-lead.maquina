@@ -1,0 +1,34 @@
+# Maquina preset (LA-50)
+# our design (synth partials only)
+voice = la50
+name = Sync Lead
+category = Lead
+tags = bright
+u_p1_wg_pw_lfo = +2
+u_p1_tvf_cutoff = 50
+u_p1_tvf_reso = 22
+u_p1_tvf_env_depth = 55
+u_p1_tvf_t2 = 50
+u_p1_tvf_sus = 40
+u_p1_tva_t5 = 30
+u_p1_tva_sus = 90
+u_p2_wg_fine = 10
+u_p2_wg_pw = 60
+u_p2_wg_pw_lfo = +2
+u_p2_tvf_reso = 10
+u_p2_tvf_env_depth = 45
+u_p2_tva_level = 80
+u_p2_tva_t5 = 30
+u_p2_tva_sus = 90
+u_pmod_lfo = 20
+u_lfo1_rate = 62
+u_lfo1_delay = 45
+u_lfo2_rate = 30
+u_lfo3_rate = 20
+u_chorus_rate = 40
+u_chorus_depth = 69
+u_chorus_balance = 20
+patch_key_mode = Whole-S
+patch_porta_time = 25
+patch_reverb_type = Delay 248ms
+patch_total_volume = 85

@@ -505,6 +505,188 @@ def acida_params(fx):
     return params, [pg for pg in pages if pg["controls"]]
 
 
+# Maquina BL-101 + BL-101 FX (S1Vave's engine): s1vave/bl101/
+BL101_VOICE = 25
+BL101_FX_VOICE = 26
+# BL-101: the SH-101-style panel sections; BL-101 FX: the effects
+# (common/DrumPlugin.cpp kBl101PageNames / kBl101FxPageNames)
+BL101_PAGE_TITLES = {0: "MODULATOR", 1: "VCO", 2: "SOURCE MIXER", 3: "VCF", 4: "ENV", 5: "VOICE", 6: "CHORD",
+                     7: "MIX", 8: "DRAW", 9: "CHOP"}
+BL101_FX_PAGE_TITLES = {0: "CHORUS", 1: "DELAY", 2: "REVERB", 3: "LO-FI", 7: "MIX"}
+BL101_PARAMS_H = os.path.join(ROOT, "s1vave", "bl101", "third_party", "s1vave", "firmware", "src", "obv_params.h")
+# VoiceParam::fwPar of the parameters that are not patch bytes (Bl101Host.cpp)
+BL101_DRAW_BASE = 100      # + step 0..15: the OSC DRAW table (byte - 128) * 256
+BL101_MASK_BASE = 200      # + source 0..3: the chop mask selector
+BL101_BITS_LO_BASE = 210   # + source: the Custom mask, low byte
+BL101_BITS_HI_BASE = 220   # + source: high byte
+BL101_MASK_LABELS = ["Custom", "All", "Odd", "Even", "1 of 4", "4 of 4", "Off"]  # Bl101Dsp.hpp kChopMaskPresets
+
+
+def bl101_firmware_params():
+    """P_* name -> (index, max, default) from the vendored obv_params.h"""
+    src = open(BL101_PARAMS_H, encoding="utf-8").read()
+    body = src[src.index("enum {"):src.index("NPARAM")]
+    names = re.findall(r"^\s*(P_[A-Z0-9_]+),", body, re.M)
+    consts = {}
+    for grp in re.findall(r"enum\s*\{([^}]*)\}", src):
+        items = [x.strip() for x in grp.split(",") if x.strip() and not x.strip().startswith("/")]
+        if items and not items[0].startswith("P_") and not items[0].startswith("K_"):
+            for i, it in enumerate(items):
+                it = it.split("=")[0].strip()
+                if re.fullmatch(r"[A-Z_0-9]+", it):
+                    consts.setdefault(it, i)
+    out = {}
+    for m in re.finditer(r"\[(P_[A-Z0-9_]+)\]\s*=\s*\{\"[^\"]*\",\s*([^,]+),\s*([^,]+),", src):
+        def val(x):
+            x = x.strip()
+            if x == "NPOLY_MODE - 1":
+                return 3
+            return int(x) if re.fullmatch(r"-?\d+", x) else consts[x]
+        out[m.group(1)] = (names.index(m.group(1)), val(m.group(2)), val(m.group(3)))
+    if len(out) != len(names):
+        sys.exit("bl101: could not read every PDEF entry of obv_params.h")
+    return out
+
+
+def bl101_params(fx):
+    """Maquina BL-101 / BL-101 FX parameters: S1Vave's patch bytes (fwPar = the
+    firmware's P_* index, ranges and defaults from its PDEF table), plus the
+    OSC DRAW table and the CHOP masks (fwPar BL101_*_BASE + n)."""
+    fw = bl101_firmware_params()
+    params = []
+    onoff = ["Off", "On"]
+
+    def p(symbol, short, page, kind_, pname=None, labels=None, offset=0, fwmin=0, fwmax=None, default=None,
+          par=None):
+        if pname is not None:
+            idx, mx, df = fw[pname]
+            par = idx
+            fwmax = mx if fwmax is None else fwmax
+            default = df if default is None else default
+        if kind_ == "Enum" and labels and len(labels) != fwmax + 1:
+            sys.exit(f"bl101: {symbol}: {len(labels)} labels for 0..{fwmax}")
+        params.append(dict(symbol=symbol, name=short, short=short, page=page, kind=kind_, fwmax=fwmax,
+                           offset=offset, labels=labels, default=default, fwmin=fwmin, par=str(par),
+                           modtargets=None))
+
+    if not fx:
+        # MODULATOR (the LFO)
+        p("modulator_rate", "LFO Rate", 0, "Int", "P_LFO_RATE")
+        p("modulator_wave", "LFO Wave", 0, "Enum", "P_LFO_WAVE",
+          ["Saw", "Inv Saw", "Triangle", "Square", "Random", "Noise"])
+        p("modulator_sync", "LFO Sync", 0, "Toggle", "P_LFO_SYNC", onoff)
+        p("modulator_fast", "LFO Fast", 0, "Toggle", "P_LFO_MODE", onoff)
+        p("modulator_trig", "Key Trig", 0, "Toggle", "P_LFO_TRIG", onoff)
+        # VCO
+        p("vco_mod", "VCO Mod", 1, "Int", "P_LFO_PITCH")
+        p("vco_range", "Range", 1, "Enum", "P_RANGE", ["64'", "32'", "16'", "8'", "4'", "2'"])
+        p("vco_pw", "Pulse W", 1, "Int", "P_PWM_DEPTH")
+        p("vco_pwm_src", "PWM Src", 1, "Enum", "P_PWM_SRC", ["Env", "Manual", "LFO"])
+        p("vco_fine", "Fine", 1, "Int", "P_FINE_TUNE", offset=-64)
+        # SOURCE MIXER
+        p("mix_pulse", "Pulse", 2, "Int", "P_PULSE_LVL")
+        p("mix_saw", "Saw", 2, "Int", "P_SAW_LVL")
+        p("mix_sub", "Sub", 2, "Int", "P_SUB_LVL")
+        p("mix_sub_type", "Sub Type", 2, "Enum", "P_SUB_TYPE", ["-2 Pulse", "-2 Oct", "-1 Oct"])
+        p("mix_noise", "Noise", 2, "Int", "P_NOISE_LVL")
+        p("mix_noise_type", "Noise Typ", 2, "Enum", "P_NOISE_MODE", ["Pink", "White"])
+        # VCF
+        p("vcf_freq", "Cutoff", 3, "Int", "P_CUTOFF")
+        p("vcf_res", "Reso", 3, "Int", "P_RESO")
+        p("vcf_env", "VCF Env", 3, "Int", "P_FENV_AMT")
+        p("vcf_mod", "VCF Mod", 3, "Int", "P_FLFO_AMT")
+        p("vcf_kybd", "Kybd", 3, "Int", "P_KEYTRK")
+        # VCA + ENV
+        p("vca_mode", "VCA", 4, "Enum", "P_AMP_MODE", ["Gate", "Env"])
+        p("env_trigger", "Env Trig", 4, "Enum", "P_ENV_TRG", ["LFO", "Gate", "Gate+Trig"])
+        p("adsr_attack", "Attack", 4, "Int", "P_ATTACK")
+        p("adsr_decay", "Decay", 4, "Int", "P_DECAY")
+        p("adsr_sustain", "Sustain", 4, "Int", "P_SUSTAIN")
+        p("adsr_release", "Release", 4, "Int", "P_RELEASE")
+        # VOICE
+        p("voice_mode", "Voicing", 5, "Enum", "P_POLY_MODE", ["Mono", "Unison", "Poly", "Chord"])
+        p("porta_mode", "Porta", 5, "Enum", "P_PORTA_MODE", ["Off", "On", "Auto"])
+        p("porta_time", "Porta T", 5, "Int", "P_PORTA_TIME")
+        p("transpose", "Transpose", 5, "Int", "P_TRANSPOSE", offset=-64, fwmin=4)
+        p("bend_vco", "Bend VCO", 5, "Int", "P_OSC_BEND")
+        p("bend_vcf", "Bend VCF", 5, "Int", "P_FLT_BEND")
+        p("stereo_spread", "Spread", 5, "Int", "P_SPREAD")
+        p("unison_detune", "Detune", 5, "Int", "P_DETUNE")
+        # CHORD (voices 2..4 of Chord voicing)
+        for v in (2, 3, 4):
+            p(f"chord{v}_on", f"Chord {v}", 6, "Toggle", f"P_CHORD_SW{v}", onoff)
+            p(f"chord{v}_shift", f"Shift {v}", 6, "Int", f"P_CHORD_KS{v}", offset=-12)
+        # MIX
+        p("patch_level", "Level", 7, "Int", "P_VOLUME")
+        # DRAW: mode, multiply (shown 1..32), the 16 steps (shown -128..127 = int16 / 256;
+        # the INIT ramp's last step wraps to -128, as on the firmware)
+        p("draw_mode", "Draw", 8, "Enum", "P_DRAW_SW", ["Off", "Step", "Slope"])
+        p("draw_mult", "Multiply", 8, "Int", "P_DRAW_MULT", offset=1)
+        for k in range(16):
+            init = (k - 7) * 16
+            init = init - 256 if init > 127 else init
+            p(f"draw_{k + 1}", f"Draw {k + 1}", 8, "Int", offset=-128, fwmax=255, default=init + 128,
+              par=BL101_DRAW_BASE + k)
+        # CHOP: overtone, comb (shown 1..32), a mask per source + its Custom bits
+        p("chop_overtone", "Overtone", 9, "Int", "P_CHOP_OVTN")
+        p("chop_comb", "Comb", 9, "Int", "P_CHOP_COMB", offset=1)
+        for k, (src, short) in enumerate((("sqr", "Pulse"), ("saw", "Saw"), ("sub", "Sub"), ("noise", "Noise"))):
+            p(f"chop_mask_{src}", f"{short} Msk", 9, "Enum", labels=BL101_MASK_LABELS, fwmax=6, default=1,
+              par=BL101_MASK_BASE + k)
+        for k, (src, short) in enumerate((("sqr", "Pls"), ("saw", "Saw"), ("sub", "Sub"), ("noise", "Noi"))):
+            p(f"chop_bits_{src}_lo", f"{short} Lo", 9, "Int", fwmax=255, default=255, par=BL101_BITS_LO_BASE + k)
+            p(f"chop_bits_{src}_hi", f"{short} Hi", 9, "Int", fwmax=255, default=255, par=BL101_BITS_HI_BASE + k)
+    else:
+        p("chorus_mode", "Chorus", 0, "Enum", "P_CHO_MODE", ["Off", "Type 1", "Type 2", "Type 3", "Type 4"])
+        p("dly_level", "Dly Level", 1, "Int", "P_DLY_LVL")
+        p("dly_time", "Dly Time", 1, "Int", "P_DLY_TIME")
+        p("dly_feedback", "Dly Fdbk", 1, "Int", "P_DLY_FB")
+        p("dly_sync", "Dly Sync", 1, "Toggle", "P_DLY_SYNC", onoff)
+        # (the firmware's 0: an inserted BL-101 FX that does nothing; a little reverb instead)
+        p("rev_level", "Rev Level", 2, "Int", "P_REV_LVL", default=40)
+        p("rev_time", "Rev Time", 2, "Int", "P_REV_TIME")
+        p("rev_type", "Rev Type", 2, "Enum", "P_REV_TYPE",
+          ["Ambience", "Room", "Hall 1", "Hall 2", "Plate", "Spring", "Modulated"])
+        p("rev_predelay", "Pre-Delay", 2, "Int", "P_REV_PRE")
+        p("lofi_mode", "Lo-Fi", 3, "Enum", "P_FX_MODE", ["Reduce", "Distort"])
+        p("lofi_amount", "Lo-Fi Amt", 3, "Int", "P_FX_AMT")
+        p("lofi_mix", "Lo-Fi Mix", 3, "Int", "P_FX_MIX")
+    for q in params:
+        if len(q["short"]) > MAX_SHORT_NAME:
+            sys.exit(f"bl101: '{q['short']}' is longer than {MAX_SHORT_NAME} characters")
+        if not (q["fwmin"] <= q["default"] <= q["fwmax"]):
+            sys.exit(f"bl101: {q['symbol']}: default {q['default']} outside {q['fwmin']}..{q['fwmax']}")
+        if q["kind"] == "Int":
+            q["default"] += q["offset"]  # the table's defaults are shown values
+    titles = BL101_FX_PAGE_TITLES if fx else BL101_PAGE_TITLES
+    pages = [dict(title=t, controls=[q["symbol"] for q in params if q["page"] == i])
+             for i, t in sorted(titles.items())]
+    return params, [pg for pg in pages if pg["controls"]]
+
+
+# Maquina LA-50 (an LA synth playing D-50 patches): lasynth/la50/
+LA50_VOICE = 27
+# port groups (common/DrumPlugin.cpp kLa50PageNames)
+LA50_PAGE_TITLES = {0: "PATCH", 1: "UPPER COMMON", 2: "UPPER PARTIAL 1", 3: "UPPER PARTIAL 2", 4: "LOWER COMMON",
+                    5: "LOWER PARTIAL 1", 6: "LOWER PARTIAL 2", 7: "MIX"}
+
+
+def la50_params():
+    """Maquina LA-50 parameters: the D-50 patch's bytes (tools/la50_layout.py); fwPar = the byte's index in the
+    448-byte patch"""
+    import la50_layout
+    params = []
+    for q in la50_layout.params():
+        kind = q["kind"]
+        params.append(dict(symbol=q["symbol"], name=q["short"], short=q["short"], page=la50_layout.page_of(q["block_index"]),
+                           kind=kind, fwmax=q["max"], fwmin=0, offset=q["shown"] if kind == "Int" else 0,
+                           labels=q["labels"], default=q["default"] + (q["shown"] if kind == "Int" else 0),
+                           par=str(q["byte"]), modtargets=None))
+    pages = [dict(title=t, controls=[q["symbol"] for q in params if q["page"] == i])
+             for i, t in sorted(LA50_PAGE_TITLES.items())]
+    return params, [pg for pg in pages if pg["controls"]]
+
+
 NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 
 
@@ -784,6 +966,14 @@ def main():
         a_params, a_pages = acida_params(fx)
         plugins_out.append(dict(id=aid, name=aname, voice=avoice, params=a_params))
         layout[aid] = dict(name=aname, pages=a_pages)
+    for bid, bname, bvoice, fx in (("bl101", "BL-101", BL101_VOICE, False),
+                                   ("bl101_fx", "BL-101 FX", BL101_FX_VOICE, True)):
+        b_params, b_pages = bl101_params(fx)
+        plugins_out.append(dict(id=bid, name=bname, voice=bvoice, params=b_params))
+        layout[bid] = dict(name=bname, pages=b_pages)
+    l_params, l_pages = la50_params()
+    plugins_out.append(dict(id="la50", name="LA-50", voice=LA50_VOICE, params=l_params))
+    layout["la50"] = dict(name="LA-50", pages=l_pages)
 
     write_header(plugins_out)
     os.makedirs(os.path.join(ROOT, "machinista"), exist_ok=True)
@@ -800,7 +990,7 @@ def cstr(s):
 
 def write_header(plugins):
     o = []
-    o.append("// GENERATED by tools/gen_params.py from the LXR firmware UI tables (+ Dredrum, Plethora, Oneiroi, Klang, Klong, Acida). Do not edit.")
+    o.append("// GENERATED by tools/gen_params.py from the LXR firmware UI tables (+ Dredrum, Plethora, Oneiroi, Klang, Klong, Acida, BL-101, LA-50). Do not edit.")
     o.append("// SPDX-License-Identifier: GPL-3.0-only")
     o.append("#pragma once")
     o.append("#include \"VoiceTypes.hpp\"")

@@ -1,0 +1,12 @@
+# Maquina factory preset
+# the effects of S1Vave factory sound 25, changed
+voice = bl101_fx
+name = Drive
+category = Lo-Fi
+tags = dirty
+dly_time = 116
+dly_feedback = 68
+rev_level = 0
+lofi_mode = Distort
+lofi_amount = 60
+lofi_mix = 70

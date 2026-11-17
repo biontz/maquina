@@ -1,0 +1,11 @@
+# Maquina factory preset
+# the effects of S1Vave factory sound 25, changed
+voice = bl101_fx
+name = Rate Crush
+category = Lo-Fi
+tags = lo-fi, dirty
+dly_time = 116
+dly_feedback = 68
+rev_level = 0
+lofi_amount = 55
+lofi_mix = 100

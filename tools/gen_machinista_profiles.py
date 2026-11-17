@@ -20,7 +20,7 @@ import os
 import re
 import sys
 
-from pages import MACHINISTA_PAGES, PAGES  # page layouts, shared with gen_remote_pages.py
+from pages import MACHINISTA_PAGES, OFF_PAGE, PAGES  # page layouts, shared with gen_remote_pages.py
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -36,6 +36,8 @@ BUNDLES = {
     "klang": "MaquinaKlang",
     "klong": "MaquinaKlong",  # Klong FX: an effect, as Oneiroi FX
     "acida": "MaquinaAcida",  # Acida FX: an effect, as Oneiroi FX
+    "bl101": "MaquinaBL101",  # BL-101 FX: an effect, as Oneiroi FX
+    "la50": "MaquinaLA50",
 }
 
 PORT_RE = re.compile(
@@ -106,6 +108,16 @@ QUIRKS = {
         "Velocity >= ACC VEL accents a note; a note played while another is held slides to it.",
         "ENGINE 2.0 / VINTAGE: ReBirth 2's and ReBirth 1's 303 sound.",
     ],
+    "la50": [
+        "LA synthesis playing D-50 patches: Upper / Lower tone, 2 partials each (synth waves, PCM stand-ins).",
+        "Pages: the main knobs per tone; the full D-50 parameter set is in the desktop editor.",
+        "Import .syx banks in the desktop editor; they arrive here as presets.",
+    ],
+    "bl101": [
+        "8-voice analog-modelling synth from the S1Vave firmware: VCO (pulse, saw, sub, noise), 4-pole VCF, ADSR.",
+        "VOICING MONO / UNISON / POLY / CHORD; DRAW 1-16 shape the drawn wave (DRAW STEP / SLOPE),",
+        "CHOP slices each source by its mask (Custom masks come with presets).",
+    ],
 }
 
 
@@ -137,7 +149,7 @@ def main():
                     errors += 1
                 placed.add(c)
             pages.append(dict(title=title, controls=controls))
-        missing = symbols - placed
+        missing = symbols - placed - OFF_PAGE.get(pid, set())
         if missing:
             print(f"{pid}: parameters on no page: {sorted(missing)}")
             errors += 1

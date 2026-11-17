@@ -22,7 +22,8 @@ typedef struct { const ClapRemotePage* pages; uint32_t count; } ClapRemotePages;
 #include "../../common/RemotePages.generated.hpp"
 
 static const char* const kVoices[] = { "kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora", "oneiroi",
-                                       "oneiroi_fx", "klang", "klong", "klong_fx", "acida", "acida_fx" }; // k_voices order
+                                       "oneiroi_fx", "klang", "klong", "klong_fx", "acida", "acida_fx", "bl101",
+                                       "bl101_fx", "la50" }; // k_voices order
 
 static const void* host_get_extension(const clap_host_t* h, const char* id) { (void)h; (void)id; return NULL; }
 static void host_noop(const clap_host_t* h) { (void)h; }
@@ -58,6 +59,9 @@ static int check(const char* path)
         snprintf(id, sizeof id, "org.maquina.%s", kVoices[v]);
         for (char* c = id; *c; ++c)
             if (*c == '_') *c = '-'; /* voice oneiroi_fx = CLAP id org.maquina.oneiroi-fx */
+        if (!strncmp(kVoices[v], "bl101", 5)) /* voice bl101 = CLAP id org.maquina.bl-101 */
+            snprintf(id, sizeof id, "org.maquina.bl-101%s", kVoices[v][5] ? "-fx" : "");
+        if (!strcmp(kVoices[v], "la50")) snprintf(id, sizeof id, "org.maquina.la-50");
         if (!strcmp(desc->id, id)) voice = v;
     }
     int bad = 0;

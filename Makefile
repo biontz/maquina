@@ -24,6 +24,8 @@ engine:
 	$(MAKE) -C drum02/engine
 	$(MAKE) -C mutable-instruments
 	$(MAKE) -C openrb
+	$(MAKE) -C s1vave
+	$(MAKE) -C lasynth
 
 # local fixes to the DPF submodule (patches/dpf/*.patch), applied once;
 # a patch that is already applied is skipped
@@ -58,6 +60,13 @@ MUTABLE_TEST_FLAGS = -O2 -std=gnu++17 -DTEST -w $(EURORACK_INCLUDES) $(MAQUINA_I
 ACIDA_TEST_FLAGS := -O2 -std=gnu++17 -ffp-contract=off $(MAQUINA_INCLUDES) tools/acida_test/acida_test.cpp \
 	$(ACIDA_DIR)/plugins/acida/Engine.cpp
 ACIDA_SCENARIOS := $(sort $(wildcard tools/acida_ref/scenarios/*.txt))
+# Maquina BL-101 / BL-101 FX: the port (libbl101.a) against S1Vave's firmware engine
+# compiled for this computer (tools/bl101_ref) + Bl101Host's behaviour
+BL101_TEST_FLAGS := -O2 -std=gnu++17 -fwrapv $(MAQUINA_INCLUDES) -Itools/bl101_ref tools/bl101_test/bl101_test.cpp \
+	$(BL101_DIR)/plugins/bl101/Engine.cpp
+BL101_SCENARIOS := $(sort $(wildcard tools/bl101_ref/scenarios/*.txt))
+# Maquina LA-50: behaviour checks + the C++ .syx reader against tools/d50_syx.py
+LA50_TEST_FLAGS := -O2 -std=gnu++17 $(MAQUINA_INCLUDES) tools/la50_test/la50_test.cpp $(LA50_DIR)/plugins/la50/Engine.cpp
 tools: ENGINE_DIR := build/engine
 test-aarch64: ENGINE_DIR := build/engine-aarch64
 
@@ -77,6 +86,8 @@ tools: engine
 		befaco/plethora/plugins/plethora/Engine.cpp $(EURORACK_INCLUDES) $(KLANG_DIR)/plugins/klang/Engine.cpp \
 		$(KLONG_DIR)/plugins/klong/Engine.cpp build/engine/libklang.a build/engine/libklong.a \
 		$(ACIDA_DIR)/plugins/acida/Engine.cpp build/engine/libacida.a \
+		$(BL101_DIR)/plugins/bl101/Engine.cpp build/engine/libbl101.a \
+		$(LA50_DIR)/plugins/la50/Engine.cpp build/engine/liblasynth.a \
 		-lm -o build/tools/preset_measure
 	$(CC) -O1 -std=gnu11 -Idpf/distrho/src tools/clap_latency_check/clap_latency_check.c \
 		-ldl -o build/tools/clap_latency_check
@@ -86,6 +97,8 @@ tools: engine
 	$(CXX) $(ONEIROI_FLAGS) tools/oneiroi_test/oneiroi_test.cpp -o build/tools/oneiroi_test
 	$(CXX) $(MUTABLE_TEST_FLAGS) -o build/tools/mutable_test
 	$(CXX) $(ACIDA_TEST_FLAGS) build/engine/libacida.a -o build/tools/acida_test
+	$(CXX) $(BL101_TEST_FLAGS) build/engine/libbl101.a -o build/tools/bl101_test
+	$(CXX) $(LA50_TEST_FLAGS) build/engine/liblasynth.a -o build/tools/la50_test
 
 # engine fidelity + isolation, state completeness, resampler quality, GUI
 # defaults, randomizer rules, LV2 validation, every plugin rendered through a real
@@ -107,6 +120,8 @@ test: all tools
 	build/tools/mutable_test
 	build/tools/mutable_test --mutate | tail -n 1
 	build/tools/acida_test --host
+	$(MAKE) --no-print-directory bl101-check
+	$(MAKE) --no-print-directory la50-check
 	@if command -v cargo >/dev/null; then $(MAKE) --no-print-directory acida-check; \
 	else echo "acida-check: SKIPPED (needs cargo for the Rust reference)"; fi
 	@if command -v avr-gcc >/dev/null && [ -e /usr/include/simavr/sim_avr.h ]; then \
@@ -130,6 +145,37 @@ acida-check: acida-ref
 	build/tools/acida_test build/acida_ref/out $(ACIDA_SCENARIOS)
 	@if build/tools/acida_test --mutate build/acida_ref/out $(firstword $(ACIDA_SCENARIOS)) >/dev/null; then \
 		echo "acida-check: --mutate was not detected"; exit 1; else echo "acida-check: --mutate detected"; fi
+
+# Maquina BL-101 / BL-101 FX: the reference output of S1Vave's own firmware engine
+# (unmodified, built for this computer) for every scenario
+bl101-ref:
+	@mkdir -p build/tools build/bl101_ref/out
+	$(CC) -O2 -std=gnu11 -fwrapv -ffp-contract=off -w $(S1VAVE_INCLUDES) -Itools/bl101_ref \
+		tools/bl101_ref/bl101_ref.c -o build/tools/bl101_ref
+	@for s in $(BL101_SCENARIOS); do \
+		build/tools/bl101_ref $$s build/bl101_ref/out/$$(basename $$s .txt).raw || exit 1; \
+	done
+
+# the C++ port == the firmware, bit for bit (also in uneven host-sized blocks),
+# the check notices a 1-step change, and Bl101Host's behaviour
+bl101-check: bl101-ref
+	build/tools/bl101_test build/bl101_ref/out $(BL101_SCENARIOS)
+	build/tools/bl101_test --blocks build/bl101_ref/out $(BL101_SCENARIOS) | tail -n 1
+	@if build/tools/bl101_test --mutate build/bl101_ref/out $(firstword $(BL101_SCENARIOS)) >/dev/null; then \
+		echo "bl101-check: --mutate was not detected"; exit 1; else echo "bl101-check: --mutate detected"; fi
+	build/tools/bl101_test --host
+
+# Maquina LA-50: the engine's behaviour, and the C++ and Python .syx readers agree
+# on a 64-patch bank (random values, out-of-range bytes)
+la50-check:
+	build/tools/la50_test
+	@mkdir -p build/la50
+	python3 tools/la50_test/make_bank.py build/la50/test-bank.syx
+	build/tools/la50_test --dump build/la50/test-bank.syx > build/la50/cpp.txt
+	python3 tools/la50_test/syx_dump.py build/la50/test-bank.syx > build/la50/py.txt
+	@if cmp -s build/la50/cpp.txt build/la50/py.txt && [ $$(wc -l < build/la50/cpp.txt) -eq 64 ]; then \
+		echo "la50-check: C++ and Python read the bank alike (64 patches)"; \
+	else echo "la50-check: the .syx readers differ"; exit 1; fi
 
 # Maquina Oneiroi: OneiroiCore == the module's Oneiroi.h (bit-exact), and the
 # check notices a 1-ulp change
@@ -179,6 +225,8 @@ aarch64: $(SYSROOT_A64)/usr/lib/aarch64-linux-gnu/libc.so dpf-patches
 	$(MAKE) -C drum02/engine $(A64_ENV) ENGINE_BUILD=$(CURDIR)/build/engine-aarch64
 	$(MAKE) -C mutable-instruments $(A64_ENV) ENGINE_BUILD=$(CURDIR)/build/engine-aarch64
 	$(MAKE) -C openrb $(A64_ENV) ENGINE_BUILD=$(CURDIR)/build/engine-aarch64
+	$(MAKE) -C s1vave $(A64_ENV) ENGINE_BUILD=$(CURDIR)/build/engine-aarch64
+	$(MAKE) -C lasynth $(A64_ENV) ENGINE_BUILD=$(CURDIR)/build/engine-aarch64
 	@for p in $(PLUGIN_DIRS); do $(MAKE) -C $$p $(A64_ENV) TARGETS="lv2_dsp clap vst3" || exit 1; done
 	clang $(A64_FLAGS) dpf/utils/lv2-ttl-generator/lv2_ttl_generator.c -ldl -o build/aarch64/lv2_ttl_generator
 	@for b in bin-aarch64/*.lv2; do \
@@ -202,6 +250,12 @@ test-aarch64: aarch64
 		$(QEMU_A64) build/tools-aarch64/acida_test --tables build/acida_ref/out/tables.f32 && \
 		$(QEMU_A64) build/tools-aarch64/acida_test build/acida_ref/out $(ACIDA_SCENARIOS); \
 	else echo "acida-check (aarch64): SKIPPED (needs cargo for the Rust reference)"; fi
+	clang++ $(A64_FLAGS) $(BL101_TEST_FLAGS) build/engine-aarch64/libbl101.a -o build/tools-aarch64/bl101_test
+	$(MAKE) --no-print-directory bl101-ref
+	$(QEMU_A64) build/tools-aarch64/bl101_test build/bl101_ref/out $(BL101_SCENARIOS)
+	$(QEMU_A64) build/tools-aarch64/bl101_test --host
+	clang++ $(A64_FLAGS) $(LA50_TEST_FLAGS) build/engine-aarch64/liblasynth.a -o build/tools-aarch64/la50_test
+	$(QEMU_A64) build/tools-aarch64/la50_test
 
 # ---------------------------------------------------------------------------
 # macOS (on a Mac; CI: .github/workflows/macos.yml): universal CLAP + VST3
@@ -235,6 +289,8 @@ macos-x86_64 macos-arm64: macos-%: dpf-patches
 	$(MAKE) -C drum02/engine $(call macos_env,$*) ENGINE_BUILD=$(CURDIR)/build/engine-macos-$*
 	$(MAKE) -C mutable-instruments $(call macos_env,$*) ENGINE_BUILD=$(CURDIR)/build/engine-macos-$*
 	$(MAKE) -C openrb $(call macos_env,$*) ENGINE_BUILD=$(CURDIR)/build/engine-macos-$*
+	$(MAKE) -C s1vave $(call macos_env,$*) ENGINE_BUILD=$(CURDIR)/build/engine-macos-$*
+	$(MAKE) -C lasynth $(call macos_env,$*) ENGINE_BUILD=$(CURDIR)/build/engine-macos-$*
 	@for p in $(MACOS_PLUGINS); do $(MAKE) -C $$p $(call macos_env,$*) TARGETS="clap vst3" || exit 1; done
 
 macos: $(MACOS_ARCHS:%=macos-%)
@@ -280,8 +336,10 @@ clean:
 	$(MAKE) -C drum02/engine clean
 	$(MAKE) -C mutable-instruments clean
 	$(MAKE) -C openrb clean
+	$(MAKE) -C s1vave clean
+	$(MAKE) -C lasynth clean
 	$(MAKE) clean -C dpf/utils/lv2-ttl-generator
 	rm -rf bin build bin-macos bin-macos-* dist
 
 .PHONY: presets all engine dpf-patches plugins gen tools test install clean aarch64 test-aarch64 dredrum-flash dredrum-check \
-	oneiroi-check acida-ref acida-check macos macos-test macos-dist macos-dmg
+	oneiroi-check acida-ref acida-check bl101-ref bl101-check la50-check macos macos-test macos-dist macos-dmg

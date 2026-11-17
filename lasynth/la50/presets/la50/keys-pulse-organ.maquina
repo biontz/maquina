@@ -1,0 +1,31 @@
+# Maquina preset (LA-50)
+# our design (synth partials only)
+voice = la50
+name = Pulse Organ
+category = Keys
+tags = clean
+u_p1_wg_waveform = Square
+u_p1_wg_pw_lfo = +2
+u_p1_tvf_cutoff = 65
+u_p1_tvf_env_depth = 0
+u_p1_tva_t2 = 0
+u_p1_tva_t5 = 8
+u_p1_tva_sus = 100
+u_p2_wg_coarse = 12
+u_p2_wg_pw_lfo = +2
+u_p2_tvf_cutoff = 70
+u_p2_tvf_env_depth = 0
+u_p2_tva_t2 = 0
+u_p2_tva_t5 = 8
+u_p2_tva_sus = 100
+u_lfo1_rate = 60
+u_lfo1_delay = 30
+u_lfo2_rate = 30
+u_lfo3_rate = 20
+u_chorus_type = Chor Trem
+u_chorus_rate = 51
+u_chorus_depth = 66
+u_chorus_balance = 55
+patch_reverb_type = Small Hall
+patch_reverb_balance = 25
+patch_total_volume = 85

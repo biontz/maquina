@@ -144,6 +144,58 @@ PAGES["acida_fx"] = [
     ("DELAY", ["delay_on", "delay_send", "delay_steps", "delay_mode", "delay_feedback", "delay_pan", "dist_amount",
                "pcf_freq"]),
 ]
+# Maquina BL-101: the panel's sections in its order (MODULATOR, VCO, SOURCE
+# MIXER, VCF, VCA, ENV), then voicing, chord memory, the DRAW steps (one
+# encoder per step) and CHOP (a mask selector per source)
+PAGES["bl101"] = [
+    ("MOD / VCO", ["@bank", "@patch", "modulator_rate", "modulator_wave", "vco_mod", "vco_range", "vco_pw",
+                   "vco_pwm_src"]),
+    ("MIXER", ["mix_pulse", "mix_saw", "mix_sub", "mix_sub_type", "mix_noise", "mix_noise_type", "vco_fine",
+               "patch_level"]),
+    ("VCF / VCA", ["vcf_freq", "vcf_res", "vcf_env", "vcf_mod", "vcf_kybd", "vca_mode", "env_trigger", "gain"]),
+    ("ENV / LFO", ["adsr_attack", "adsr_decay", "adsr_sustain", "adsr_release", "modulator_sync",
+                   "modulator_fast", "modulator_trig", "porta_time"]),
+    ("VOICE", ["voice_mode", "porta_mode", "porta_time", "transpose", "bend_vco", "bend_vcf", "stereo_spread",
+               "unison_detune"]),
+    ("CHORD", ["chord2_on", "chord2_shift", "chord3_on", "chord3_shift", "chord4_on", "chord4_shift", "voice_mode",
+               "transpose"]),
+    ("DRAW 1-8", [f"draw_{k}" for k in range(1, 9)]),
+    ("DRAW 9-16", [f"draw_{k}" for k in range(9, 17)]),
+    ("CHOP", ["chop_overtone", "chop_comb", "chop_mask_sqr", "chop_mask_saw", "chop_mask_sub", "chop_mask_noise",
+              "draw_mode", "draw_mult"]),
+]
+# Maquina BL-101 FX
+PAGES["bl101_fx"] = [
+    ("CHORUS / DELAY", ["@bank", "@patch", "chorus_mode", "dly_level", "dly_time", "dly_feedback", "dly_sync",
+                        "lofi_mode"]),
+    ("REVERB / LO-FI", ["rev_level", "rev_time", "rev_type", "rev_predelay", "lofi_amount", "lofi_mix", "lofi_mode",
+                        "gain"]),
+]
+
+# Maquina LA-50: per tone the sound's main knobs (partial 1 / 2 side by side), then the patch;
+# everything else (D-50 detail) is edited in the editor: OFF_PAGE["la50"]
+def _la50_tone(t, name):
+    return [
+        (f"{name} TVF", [f"{t}_p1_tvf_cutoff", f"{t}_p1_tvf_reso", f"{t}_p1_tvf_env_depth", f"{t}_p1_tvf_lfo_depth",
+                         f"{t}_p2_tvf_cutoff", f"{t}_p2_tvf_reso", f"{t}_p2_tvf_env_depth", f"{t}_p2_tvf_lfo_depth"]),
+        (f"{name} TVF ENV", [f"{t}_p1_tvf_t1", f"{t}_p1_tvf_t2", f"{t}_p1_tvf_sus", f"{t}_p1_tvf_t5",
+                             f"{t}_p2_tvf_t1", f"{t}_p2_tvf_t2", f"{t}_p2_tvf_sus", f"{t}_p2_tvf_t5"]),
+        (f"{name} TVA ENV", [f"{t}_p1_tva_t1", f"{t}_p1_tva_t2", f"{t}_p1_tva_sus", f"{t}_p1_tva_t5",
+                             f"{t}_p2_tva_t1", f"{t}_p2_tva_t2", f"{t}_p2_tva_sus", f"{t}_p2_tva_t5"]),
+        (f"{name} WG", [f"{t}_p1_wg_waveform", f"{t}_p1_wg_pcm_wave", f"{t}_p1_wg_pw", f"{t}_p1_tva_level",
+                        f"{t}_p2_wg_waveform", f"{t}_p2_wg_pcm_wave", f"{t}_p2_wg_pw", f"{t}_p2_tva_level"]),
+        (f"{name} COMMON", [f"{t}_structure", f"{t}_partial_balance", f"{t}_partial_mute", f"{t}_lfo1_rate",
+                            f"{t}_pmod_lfo", f"{t}_chorus_type", f"{t}_chorus_balance", f"{t}_lfo1_wave"]),
+    ]
+
+
+PAGES["la50"] = [
+    ("PATCH", ["@bank", "@patch", "patch_key_mode", "patch_tone_balance", "patch_reverb_type", "patch_reverb_balance",
+               "patch_total_volume", "gain"]),
+] + _la50_tone("u", "UPPER") + _la50_tone("l", "LOWER") + [
+    ("PLAY", ["patch_split_point", "patch_bender_range", "patch_after_bend", "patch_porta_time", "patch_porta_mode",
+              "patch_hold_mode", "patch_u_key_shift", "patch_l_key_shift"]),
+]
 
 # Machinista profiles that differ from PAGES: only these pages, and the
 # profile (and its preset banks) only holds the parameters on them; the rest
@@ -154,6 +206,13 @@ MACHINISTA_PAGES = {
         ("A", ["@bank", "@patch", "a_algo", "a_x", "a_y", "a_ftype", "a_cutoff", "a_reso"]),
         ("A ENV", ["a_attack", "a_decay", "a_level", "a_mute", "trig_mode", "a_x", "a_y", "gain"]),
     ],
+}
+
+# parameters deliberately on no page: Maquina BL-101's Custom CHOP mask bytes
+# (presets carry them; the editor's grid edits them, an encoder can't)
+OFF_PAGE = {
+    "bl101": {f"chop_bits_{s}_{h}" for s in ("sqr", "saw", "sub", "noise") for h in ("lo", "hi")},
+    "la50": None,  # filled below: everything not on PAGES["la50"]
 }
 
 # parameters taking the "@bank"/"@patch" slots on CLAP pages (hosts browse presets themselves)
@@ -172,7 +231,19 @@ CLAP_FILL = {
     "klong_fx": ["coarse", "note_source"],
     "acida": ["waveform", "gain"],
     "acida_fx": ["dist_on", "pcf_on"],
+    "bl101": ["modulator_sync", "modulator_fast"],
+    "bl101_fx": ["rev_level", "rev_type"],
+    "la50": ["u_p1_tvf_cutoff", "l_p1_tvf_cutoff"],
 }
+
+
+def _la50_off_page():
+    import la50_layout
+    on = {c for _, controls in PAGES["la50"] for c in controls}
+    return {p["symbol"] for p in la50_layout.params()} - on
+
+
+OFF_PAGE["la50"] = _la50_off_page()
 
 
 def clap_pages(voice):

@@ -1,0 +1,12 @@
+# Maquina factory preset
+# the effects of S1Vave factory sound 8
+voice = bl101_fx
+name = Dotted Hall
+category = Chain
+tags = long
+dly_level = 100
+dly_time = 116
+dly_feedback = 94
+rev_level = 119
+rev_time = 115
+rev_type = Hall 2

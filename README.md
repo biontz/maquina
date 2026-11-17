@@ -1,6 +1,6 @@
 # Maquina
 
-Fourteen instrument and effect plugins, each built from the open-source code of a
+Seventeen instrument and effect plugins, each built from the open-source code of a
 hardware instrument (or, for Acida, of a classic software one):
 
 * **Kick, Tom, Snare, Cymbal, HiHat**: the drum voices of the Erica
@@ -31,6 +31,20 @@ hardware instrument (or, for Acida, of a classic software one):
   Acida is the 303 played by MIDI notes (accent by velocity, slide by
   overlapping notes); Acida FX is the distortion, PCF filter, compressor and
   tempo delay on an audio track.
+* **BL-101** and **BL-101 FX**: the synth and the effects of
+  [S1Vave](https://github.com/AndrewGG88/S1Vave) by Andrew GG, a firmware
+  for the M-VAVE FM-1 that models a classic one-oscillator analog monosynth
+  (and its recent compact successor), extended to 8 voices. BL-101 is the
+  synth (VCO with pulse, saw, sub and noise, 4-pole VCF, ADSR, LFO; Mono,
+  Unison, Poly and Chord voicing; S1Vave's OSC DRAW and OSC CHOP) with a
+  panel of sliders laid out like the original's; BL-101 FX is its chorus,
+  ping-pong delay, plate reverb and lo-fi slot on an audio track.
+* **LA-50**: an LA-synthesis synth that plays **D-50 patches**: import a
+  D-50 `.syx` bank and its patches become presets. Built from
+  [dsynkant](https://github.com/ngeiswei/dsynkant)'s D-50 patch model and
+  [Munt](https://github.com/munt/munt)'s model of the LA32 chip (the MT-32's
+  LA synthesis); the rest is written from the D-50 manuals. Its editor follows
+  the PG-1000 programmer. Not a verified D-50 clone (see below).
 
 Formats: **LV2, CLAP, VST3** and a JACK standalone (via [DPF](https://github.com/DISTRHO/DPF)).
 Platforms: Linux x86_64 and Raspberry Pi OS 64-bit (aarch64); macOS/Windows later.
@@ -46,6 +60,11 @@ Platforms: Linux x86_64 and Raspberry Pi OS 64-bit (aarch64); macOS/Windows late
 > Acida is not affiliated with OpenRB-338's author, Reason Studios
 > (ReBirth) or Roland; "ReBirth" and "TB-303" are trademarks of their owners
 > and are not used in the plugins' names.
+> BL-101 is not affiliated with S1Vave's author (Andrew GG), M-VAVE or
+> Roland; S1Vave's name and logo are its author's and are not used in the
+> plugins (the logo is not included), nor are Roland's model names.
+> LA-50 is not affiliated with Roland; "D-50" is used only to say which patch
+> format it reads. Roland's PCM waves and factory patches are not included.
 
 ## How it stays close to the hardware
 
@@ -218,6 +237,63 @@ The engine is a C++ port of OpenRB-338's Rust engine
   level 100, master 100) and is clamped to ReBirth's 16-bit range; that leaves
   about 10 dB of headroom (Gain adds up to +12 dB).
 
+### BL-101
+
+S1Vave's engine is integer arithmetic only (Q15 audio, Q24 envelopes, Q8
+semitones), so it can be matched exactly:
+
+* **Bit-exact port.** `s1vave/bl101/engine/Bl101Dsp.cpp` is the firmware's
+  `obv_engine.h` and `obv_fx.h` line by line, with its globals as members of
+  one engine per plugin instance; the DSP primitives, parameter table, factory
+  sounds and generated tables are the vendored files themselves
+  (`s1vave/bl101/third_party/s1vave`, see its `MAQUINA.md`). `tools/bl101_ref`
+  compiles the **unmodified** firmware engine for the computer and runs scenario
+  scripts on it (every voicing, LFO wave, PWM source, sub type, DRAW / CHOP
+  setting, envelope mode, bend / mod wheel / sustain, all 64 factory sounds,
+  random parameter fuzzing, every effect); `tools/bl101_test` runs them on the
+  port and requires the same output bit for bit, also in uneven host-sized
+  blocks (`make bl101-check`, part of `make test`).
+* **Same rate and blocks:** 44100 Hz, the synth in the firmware's 16-frame
+  control blocks, resampled from and to the host rate.
+* **Same factory sounds.** The 64 factory presets are the firmware's 64
+  sounds converted (`tools/s1vave_presets.py`); `bl101_test --host` checks that
+  each one, loaded into the plugin, plays exactly as the firmware's.
+* **Same level.** BL-101's output is the firmware's output stage with its
+  effects off (patch volume, softclip); BL-101 FX ends with the firmware's
+  softclip. Chaining the two passes the dry sound through that softclip once
+  more than the firmware does (a small difference only on loud peaks).
+
+### LA-50
+
+Unlike the other plugins, LA-50 has **no reference to be bit-exact with**:
+dsynkant has no sound engine, and there is no open D-50 emulation. What it is:
+
+* **Patches:** the D-50's own format, 448 bytes per patch (Upper / Lower tone,
+  each a common block and 2 partials, plus the patch block), read from SysEx
+  (DT1 and DAT messages: single patches and bank dumps). The plugin's 311
+  parameters are those bytes. `tools/la50_layout.py` holds the layout (from the
+  D-50 MIDI Implementation); `tools/d50_syx.py` and the plugin read files alike
+  (`make la50-check`).
+* **Partials:** Munt's LA32 wave generator, unmodified but for one marked
+  setter: the synth waves with pulse width, the cutoff / resonance done inside
+  the wave generator, PCM playback, ring modulation per partial pair.
+* **Envelopes:** Munt's TVA / TVF logic (MT-32, the same 0-100 scales) with
+  the D-50's end levels; key / velocity / bias scaling as on the LA32. The release
+  rate and the time key / velocity follow are as the D-50's program ROM (v2.22) sets
+  them (read from its code; no Roland code or data included).
+* **Written from the manuals:** the 7 structures, the pitch envelope, the 3
+  LFOs per tone and their routing, key modes (Whole, Dual, Split, Separate and
+  the solo variants), tone balance, portamento, hold, bender, aftertouch; the
+  EQ, chorus (8 types) and reverb (32 types) are our own algorithms.
+* **PCM waves:** Roland's ROM is not included. The 100 waves are built-in
+  stand-ins made here (struck, plucked, blown and noise onsets for 1-47, loops
+  for 48-100), so imported patches that use PCM partials sound recognisable,
+  not authentic. Loading a user's own wave ROM dump is not supported yet.
+* 32 kHz (the LA32's rate), 16 voices of 2 partials (a Dual or Split note of
+  both tones takes 2).
+* `lasynth/la50/docs/D50-REFERENCE.md`: what is published about the D-50 (reviews,
+  teardown, MAME) next to what LA-50 does for each point.
+
 ## Using the plugins
 
 The drum and percussion voices (LXR, Dredrum, Plethora) first; Oneiroi has
@@ -373,6 +449,51 @@ its own section below.
   1..32 in sixteenths or triplets at the host tempo.
 * The output is clamped to +-1, as ReBirth's 16-bit output.
 * Latency (48 kHz: Acida 107, Acida FX 139 frames) is reported to the host.
+
+**BL-101 / BL-101 FX**
+
+* **BL-101** plays MIDI notes with 8 voices: **Voicing** Mono (legato,
+  last-note priority), Unison (4 voices, Detune adds spread), Poly, or Chord
+  (voices 2-4 at their Shift, each on/off). **Porta** On glides between
+  notes, Auto only when playing legato.
+* **MIDI:** pitch bend (Bend VCO / Bend VCF set the range in semitones), mod
+  wheel (CC 1: the firmware's vibrato from the LFO), sustain (CC 64), all
+  notes off (CC 120 / 123). Notes take effect at the engine's 16-frame
+  blocks (0.36 ms). LFO Sync follows the host tempo (Rate picks the note
+  value); Env Trig LFO retriggers the envelope every LFO cycle.
+* **OSC DRAW** replaces the pulse wave with the 16 drawn steps (Step: as
+  drawn, Slope: smoothed), repeated Multiply times per cycle. **OSC CHOP**
+  slices each source into Comb segments per cycle; the mask (16 slices) says
+  which pass and Overtone how much the others are cut (above 100: inverted).
+  Each source's mask is one of the firmware's six (All, Odd, Even, 1 of 4,
+  4 of 4, Off) or Custom (the factory sounds' own masks, edited in the CHOP
+  grid). CHOP fades out between 900 Hz and 1.1 kHz, as on the firmware.
+* **BL-101 FX:** chorus (Type 1-4), ping-pong delay (Sync: note values of
+  the host tempo, else 1-740 ms), plate reverb (7 types, pre-delay) and the
+  lo-fi slot (Reduce: sample-rate and bit reduction; Distort), then the
+  firmware's softclip. Reverb Level starts at 40 (the firmware's 0 would make
+  a fresh insert do nothing).
+* BL-101's level is the firmware's: about -20 dBFS for one note of the Init
+  sound (Gain adds up to +12 dB).
+* Latency (48 kHz: BL-101 55, BL-101 FX 139 frames) is reported to the host.
+
+**LA-50**
+
+* **IMPORT .SYX** (editor, left panel): every patch of a D-50 SysEx file
+  (a bank dump or a single patch) is written as a user preset, category
+  "Imported", named "NN Patchname (file)". A single patch loads at once.
+* The editor is laid out like the PG-1000: each slider has a partial function
+  (top label), a common function (orange, below) and some a patch function
+  (red). **PARTIAL SELECT** (U1, U2, L1, L2), **COMMON SELECT** (Upper,
+  Lower) and **PATCH** choose what the sliders edit; the LCD shows the patch,
+  the selection and the last value. P1 / P2 switch the selected tone's
+  partials on and off.
+* MIDI: notes (Separate key modes: channel 2 plays the Lower tone), pitch
+  bend, mod wheel (the lever's pitch modulation), channel aftertouch, CC 64
+  hold (Hold Mode: which tones), CC 65 portamento (Portamento Mode), CC 120 /
+  123. Chase is not implemented (it needs the D-50's panel switch).
+* Factory presets: 16 of our own (synth partials only).
+* Latency (48 kHz: 98 frames) is reported to the host.
 
 ### Parameters
 
@@ -574,6 +695,37 @@ rows, plus Input and Source.
 | Dly Pan | `delay_pan` | Delay › Pan | -64..63 |
 | Gain | `gain` | Mix › Gain | Output gain in dB (Maquina, not in presets) -24..12 |
 
+**BL-101** (74 + Gain parameters). Values are the firmware's 0..127 scales.
+
+| Host name | Symbol | Editor | Range |
+|---|---|---|---|
+| LFO Rate, LFO Wave | `modulator_rate`, `modulator_wave` | Modulator › Rate, Wave | 0..127; Saw, Inv Saw, Triangle, Square, Random, Noise |
+| LFO Sync, LFO Fast, Key Trig | `modulator_sync`, `modulator_fast`, `modulator_trig` | LFO Mode › Sync, Fast, Key Trig | Off, On |
+| VCO Mod, Range, Pulse W, PWM Src | `vco_mod`, `vco_range`, `vco_pw`, `vco_pwm_src` | VCO › Mod, Range, PW, PWM | 0..127; 64'..2'; 0..127; Env, Manual, LFO |
+| Pulse, Saw, Sub, Sub Type, Noise, Noise Typ | `mix_pulse`, `mix_saw`, `mix_sub`, `mix_sub_type`, `mix_noise`, `mix_noise_type` | Source Mixer | 0..127; -2 Pulse, -2 Oct, -1 Oct; Pink, White |
+| Cutoff, Reso, VCF Env, VCF Mod, Kybd | `vcf_freq`, `vcf_res`, `vcf_env`, `vcf_mod`, `vcf_kybd` | VCF › Freq, Res, Env, Mod, Kybd | 0..127 |
+| VCA | `vca_mode` | VCA | Gate, Env |
+| Env Trig, Attack, Decay, Sustain, Release | `env_trigger`, `adsr_attack`, `adsr_decay`, `adsr_sustain`, `adsr_release` | Env › Trigger, A, D, S, R | LFO, Gate, Gate+Trig; 0..127 |
+| Voicing, Porta, Porta T, Transpose | `voice_mode`, `porta_mode`, `porta_time`, `transpose` | Voice | Mono, Unison, Poly, Chord; Off, On, Auto; 0..127; -60..60 |
+| Fine, Bend VCO, Bend VCF, Spread, Detune | `vco_fine`, `bend_vco`, `bend_vcf`, `stereo_spread`, `unison_detune` | Control | -64..63 (x 0.19 semitones); 0..24; 0..24; 0..100; 0..50 cents |
+| Chord 2-4, Shift 2-4 | `chord2_on` .. `chord4_shift` | Chord | Off, On; -12..12 |
+| Level | `patch_level` | Mix › Level | 0..127 (patch volume) |
+| Draw, Multiply, Draw 1-16 | `draw_mode`, `draw_mult`, `draw_1` .. `draw_16` | Draw (bar editor) | Off, Step, Slope; 1..32; -128..127 |
+| Overtone, Comb | `chop_overtone`, `chop_comb` | Chop › Overtone, Comb | 0..200; 1..32 |
+| Pulse Msk .. Noise Msk | `chop_mask_sqr`, `chop_mask_saw`, `chop_mask_sub`, `chop_mask_noise` | Chop grid (name column) | Custom, All, Odd, Even, 1 of 4, 4 of 4, Off |
+| Pls Lo .. Noi Hi | `chop_bits_sqr_lo` .. `chop_bits_noise_hi` | Chop grid (cells) | 0..255: the Custom mask's bytes (on no remote page) |
+| Gain | `gain` | Mix › Gain | Output gain in dB (Maquina, not in presets) -24..12 |
+
+**BL-101 FX** (12 + Gain parameters).
+
+| Host name | Symbol | Editor | Range |
+|---|---|---|---|
+| Chorus | `chorus_mode` | Chorus › Mode | Off, Type 1..4 |
+| Dly Level, Dly Time, Dly Fdbk, Dly Sync | `dly_level`, `dly_time`, `dly_feedback`, `dly_sync` | Delay | 0..127 (Sync: 1/128 .. 1/4 in 16 steps); Off, On |
+| Rev Level, Rev Time, Rev Type, Pre-Delay | `rev_level`, `rev_time`, `rev_type`, `rev_predelay` | Reverb | 0..127; Ambience, Room, Hall 1, Hall 2, Plate, Spring, Modulated; 0..100 |
+| Lo-Fi, Lo-Fi Amt, Lo-Fi Mix | `lofi_mode`, `lofi_amount`, `lofi_mix` | Lo-Fi | Reduce, Distort; 0..100 (0 = off); 0..100 |
+| Gain | `gain` | Mix › Gain | Output gain in dB (Maquina, not in presets) -24..12 |
+
 #### Remote-control pages (CLAP)
 
 Bitwig and other CLAP hosts get these pages of 8 knobs; Machinista uses the
@@ -637,13 +789,23 @@ two knobs on the OSCILLATOR page.
 | Acida FX | DIST / PCF | Dist Amt · Dist Shp · PCF Freq · PCF Reso · PCF Amt · PCF Decay · Dist · PCF |
 |  | PCF / COMP | Dist · PCF · PCF Wave · PCF Mode · Comp · Comp Amt · Comp Thr · Gain |
 |  | DELAY | Delay · Dly Send · Dly Steps · Dly Mode · Dly Fdbk · Dly Pan · Dist Amt · PCF Freq |
+| BL-101 | MOD / VCO | LFO Rate · LFO Wave · VCO Mod · Range · Pulse W · PWM Src · LFO Sync · LFO Fast |
+|  | MIXER | Pulse · Saw · Sub · Sub Type · Noise · Noise Typ · Fine · Level |
+|  | VCF / VCA | Cutoff · Reso · VCF Env · VCF Mod · Kybd · VCA · Env Trig · Gain |
+|  | ENV / LFO | Attack · Decay · Sustain · Release · LFO Sync · LFO Fast · Key Trig · Porta T |
+|  | VOICE | Voicing · Porta · Porta T · Transpose · Bend VCO · Bend VCF · Spread · Detune |
+|  | CHORD | Chord 2 · Shift 2 · Chord 3 · Shift 3 · Chord 4 · Shift 4 · Voicing · Transpose |
+|  | DRAW 1-8, DRAW 9-16 | Draw 1 .. Draw 16 (one step per encoder) |
+|  | CHOP | Overtone · Comb · Pulse Msk · Saw Msk · Sub Msk · Noise Msk · Draw · Multiply |
+| BL-101 FX | CHORUS / DELAY | Chorus · Dly Level · Dly Time · Dly Fdbk · Dly Sync · Lo-Fi · Rev Level · Rev Type |
+|  | REVERB / LO-FI | Rev Level · Rev Time · Rev Type · Pre-Delay · Lo-Fi Amt · Lo-Fi Mix · Lo-Fi · Gain |
 
 On Machinista, Plethora has channel A only (pages A and A ENV, 12 parameters):
 B and C stay at Level 0, so they cost no CPU on the Pi.
 
 ### Editor
 
-Desktop builds have a NanoVG editor (flat, knob-first, three rows per voice).
+Desktop builds have a NanoVG editor (flat, knob-first, three or four rows per voice).
 The LV2 UI is a separate binary, so headless hosts never load it; the Pi build
 (`make aarch64`) has no GUI at all.
 
@@ -655,7 +817,30 @@ The LV2 UI is a separate binary, so headless hosts never load it; the Pi build
   current sound with a name, category and tags as a small text file in
   `~/.config/maquina/presets/<voice>/` (copy these between machines). A preset
   sets the sound only: Key Track (and Dredrum / Plethora Mode and Mutes) stay as they are.
-  The factory presets are also the plugin's host presets/programs.
+  The factory presets are also the plugin's host presets/programs. **INIT** resets the
+  sound to its defaults (the output gain stays).
+* **Preset library** (in the browser). The list is a striped table: name, category and
+  tags, a 1-5 star rating, and a pen and bin that show on hover or on the selected row.
+  * **Rating**: click a star to rate, the same star again to clear. The **Rated** category
+    lists the rated presets, best first.
+  * **Pen** edits the name (the file follows), category and tags; the sound stays as saved.
+    **Bin** deletes (two clicks; the second, red one confirms).
+  * **Factory presets** can be edited and deleted too: editing one saves your copy and
+    hides the original, deleting hides it. **RESTORE n FACTORY PRESETS** (bottom right)
+    brings them all back. The host's preset/program list keeps the originals.
+  * **Categories**: **+ CATEGORY** adds one. Select a category for its pen (rename) and
+    **x** (delete, two clicks; its presets move to User). The voice's own categories can be
+    renamed and deleted as well; All, User and Rated are fixed.
+  * **Tags**: **edit tags** at the end of the tag row: click a tag to rename it, its **x** to
+    delete it (removed from every preset), **+ TAG** to add one (32 at most).
+  * The SAVE / EDIT dialog has **+ CATEGORY**, **+ TAG** and **edit categories & tags** with
+    the same rename / delete (changes apply to the whole library).
+  * Files, next to the presets in the voice's preset folder: `categories.txt` and
+    `tags.txt` (`#all`, then the list), `ratings.txt` (`factory:<name>` or
+    `user:<file>`, then 1-5), `hidden.txt` (hidden factory presets) and `labelmap.txt`
+    (`cat`/`tag`, old, new; tab separated: renames and deletions applied to the factory
+    presets; your own preset files are rewritten instead). Copy the whole folder between
+    machines.
 * **Randomize**, the RANDOM panel at the bottom: **RANDOM** rolls a new
   sound, **BACK** returns to the sound before the first roll (any manual edit
   keeps the current one). Groups: OSC (incl. noise / FM / mod oscillators),
@@ -676,6 +861,15 @@ The LV2 UI is a separate binary, so headless hosts never load it; the Pi build
 * Amp / Pitch EG graphs are drawn from the firmware's own time and slope
   curves (real milliseconds). Drag the handles to set attack / decay /
   amount, drag the curve up/down for the slope.
+* **BL-101's panel** follows the original's layout in its top row: MODULATOR,
+  VCO, SOURCE MIXER, VCF, VCA, ENV, with vertical **sliders** (drag the cap,
+  Shift = fine, wheel, double-click resets) and **slide switches** (click a
+  position). Below: LFO modes, voicing, chord, control, mix; then the **DRAW**
+  editor (paint the 16 bars; the line shows Slope's smoothing) and the
+  **CHOP** grid (click / paint cells to edit a mask, which makes it Custom;
+  click or scroll a mask's name to step through the firmware's six).
+  Randomizer groups: LFO, VCO, MIXER, VCF, ENV; TUNE, VOICE, DRAW, CHOP and
+  LEVEL start locked.
 
 ## Building
 
@@ -755,7 +949,9 @@ only the factory presets that use channel A alone.
 Maquina Oneiroi has a Machinista profile (all parameters, 6 pages); Oneiroi
 FX does not (Machinista hosts instruments). Klang (3 pages) and Klong
 (2 pages) have profiles with all parameters; Klong FX does not. Acida has one
-(2 pages, all parameters); Acida FX does not. Not yet measured on a Pi: one
+(2 pages, all parameters); Acida FX does not. BL-101 has one (9 pages: the
+DRAW steps one per encoder, CHOP's masks as selectors; the Custom mask bytes
+come with the presets); BL-101 FX does not. Not yet measured on a Pi: one
 Oneiroi instance needs about 3 % of one x86 laptop core.
 
 ## Layout
@@ -790,12 +986,25 @@ openrb/                     OpenRB-338 (ReBirth RB-338 reimplementation); Makefi
   acida/                    Acida + Acida FX: engine/ (AcidaDsp: the bit-exact C++ port, AcidaHost),
                             plugins/acida(-fx), presets/acida(_fx)
     third_party/openrb-338/ orb-engine + rbs crates, the Rust reference (GPL-3.0-only; MAQUINA.md)
+s1vave/                     S1Vave (FM-1 firmware); Makefile builds libbl101.a
+  bl101/                    BL-101 + BL-101 FX: engine/ (Bl101Dsp: the bit-exact C++ port, Bl101Host),
+                            plugins/bl101(-fx), presets/bl101(_fx)
+    third_party/s1vave/     the firmware's sound engine headers, unmodified (GPL-3.0-only; MAQUINA.md)
+lasynth/                    LA synthesis; Makefile builds liblasynth.a
+  la50/                     LA-50: engine/ (La50Engine, La50Fx, La50Pcm, D50Sysex, La50Host),
+                            plugins/la50, presets/la50
+    third_party/dsynkant/   the D-50 patch model (reference, GPL-2.0-or-later; ../MAQUINA.md)
+    third_party/munt/       Munt's LA32 wave generator (LGPL-2.1-or-later; one marked setter)
 common/                     shared by all plugins: DPF plugin, editor, randomizer, presets, resamplers,
                             generated tables, plugin.mk, paths.mk (where everything lives)
 tools/                      generators, tests, aarch64 sysroot, dredrum_flash + dredrum_ref (AVR reference),
                             oneiroi_ref (engine fidelity) + oneiroi_test (behaviour, preset measuring),
                             mutable_test (Klang/Klong engine fidelity + behaviour),
-                            acida_ref (Rust reference, cargo) + acida_test (Acida bit-exactness + behaviour)
+                            acida_ref (Rust reference, cargo) + acida_test (Acida bit-exactness + behaviour),
+                            bl101_ref (the firmware, unmodified) + bl101_test (BL-101 bit-exactness + behaviour),
+                            s1vave_presets.py (the 64 factory sounds -> presets),
+                            la50_layout.py + d50_syx.py (D-50 patch format, .syx), la50_presets.py,
+                            la50_test (LA-50 behaviour + .syx readers)
 machinista/                 Machinista profiles + layout
 dpf/                        DPF submodule
 patches/dpf/                local DPF fixes (CLAP latency sync, CLAP remote-controls), applied by `make dpf-patches`
@@ -819,6 +1028,9 @@ Other included code, all compatible with GPL-3.0-only:
 | `befaco/oneiroi/third_party/owlprogram` (OwlProgram LibSource) | Rebel Technology and contributors | GPL-3.0 (`fastlog.c` GPL-2.0-or-later, `fastpow.c` BSD-style) |
 | `mutable-instruments/third_party/eurorack` (Plaits, Rings, stmlib) | Émilie Gillet (Mutable Instruments) | MIT |
 | `openrb/acida/third_party/openrb-338` (orb-engine, rbs), `openrb/acida/engine/AcidaDsp.*` (port of it) | pingw33n (OpenRB-338) | GPL-3.0-only |
+| `lasynth/la50/third_party/munt` (LA32 subset), `lasynth/la50/engine/La50Engine.cpp` (envelopes adapted from it) | Dean Beeler, Jerome Fisher, Sergey V. Mikayev (Munt) | LGPL-2.1-or-later |
+| `lasynth/la50/third_party/dsynkant` (patch model, reference) | Nil Geisweiller | GPL-2.0-or-later |
+| `s1vave/bl101/third_party/s1vave`, `s1vave/bl101/engine/Bl101Dsp.*` (port of it), BL-101 factory presets | Andrew GG (S1Vave), on zvenson's OberVave | GPL-3.0-only (logo and brand not included) |
 | `dpf` | DISTRHO | ISC |
 
 Befaco's own Noise Plethora firmware framework is licensed CC BY-NC-SA and is

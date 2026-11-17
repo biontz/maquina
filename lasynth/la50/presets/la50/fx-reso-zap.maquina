@@ -1,0 +1,27 @@
+# Maquina preset (LA-50)
+# our design (synth partials only)
+voice = la50
+name = Reso Zap
+category = FX
+tags = bright, short
+u_p1_wg_pw_lfo = +2
+u_p1_tvf_cutoff = 10
+u_p1_tvf_reso = 28
+u_p1_tvf_env_depth = 100
+u_p1_tvf_t2 = 20
+u_p1_tvf_t5 = 10
+u_p1_tvf_sus = 0
+u_p1_tva_t2 = 35
+u_p1_tva_t5 = 20
+u_p1_tva_sus = 0
+u_p2_tva_level = 0
+u_lfo1_rate = 60
+u_lfo1_delay = 30
+u_lfo2_rate = 30
+u_lfo3_rate = 20
+u_chorus_rate = 40
+u_chorus_depth = 69
+u_chorus_balance = 0
+patch_reverb_type = Short Slap Back
+patch_reverb_balance = 25
+patch_total_volume = 85

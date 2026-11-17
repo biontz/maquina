@@ -1,0 +1,10 @@
+# Maquina factory preset
+# the effects of S1Vave factory sound 7
+voice = bl101_fx
+name = Dotted Spring
+category = Chain
+tags = long
+dly_level = 115
+dly_time = 116
+dly_feedback = 68
+rev_level = 108
