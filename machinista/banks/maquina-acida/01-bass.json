@@ -1,0 +1,52 @@
+{
+ "schema": 1,
+ "uri": "urn:maquina:acida",
+ "name": "Bass",
+ "patches": [
+  {
+   "name": "Pluck Bass",
+   "controls": {
+    "tune": 0,
+    "cutoff": 35,
+    "resonance": 70,
+    "env_mod": 60,
+    "decay": 25,
+    "accent": 70,
+    "waveform": 0,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Round Bass",
+   "controls": {
+    "tune": 0,
+    "cutoff": 30,
+    "resonance": 40,
+    "env_mod": 30,
+    "decay": 70,
+    "accent": 50,
+    "waveform": 0,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Square Sub",
+   "controls": {
+    "tune": 0,
+    "cutoff": 22,
+    "resonance": 20,
+    "env_mod": 15,
+    "decay": 100,
+    "accent": 40,
+    "waveform": 1,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  }
+ ]
+}

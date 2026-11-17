@@ -55,6 +55,8 @@ static const VoiceCategories kPresetCategories[] = {
     { "klang", { "Bass", "Lead", "Pluck", "Keys", "Pad", "Chord", "Drum", "Noise", "FX" } },
     { "klong", { "Bell", "Pluck", "String", "Mallet", "Pad", "Drone", "FX" } },
     { "klong_fx", { "Resonant", "Strings", "Bells", "Space", "Drone", "FX" } },
+    { "acida", { "Bass", "Acid", "Lead", "Squelch", "Vintage", "FX" } },
+    { "acida_fx", { "Distortion", "Filter", "Delay", "Chain", "FX" } },
 };
 static const char* const kPresetTags[] = { "short", "long", "punchy", "boomy", "soft", "bright", "dark",
                                            "clean", "dirty", "metallic", "noisy", "pitched", "lo-fi",

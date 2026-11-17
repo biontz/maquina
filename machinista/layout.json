@@ -776,5 +776,73 @@
         ]
       }
     ]
+  },
+  "acida": {
+    "name": "Acida",
+    "pages": [
+      {
+        "title": "SYNTH",
+        "controls": [
+          "tune",
+          "cutoff",
+          "resonance",
+          "env_mod",
+          "decay",
+          "accent",
+          "waveform",
+          "engine"
+        ]
+      },
+      {
+        "title": "PLAY",
+        "controls": [
+          "accent_vel"
+        ]
+      }
+    ]
+  },
+  "acida_fx": {
+    "name": "Acida FX",
+    "pages": [
+      {
+        "title": "DIST",
+        "controls": [
+          "dist_on",
+          "dist_amount",
+          "dist_shape"
+        ]
+      },
+      {
+        "title": "PCF",
+        "controls": [
+          "pcf_on",
+          "pcf_freq",
+          "pcf_reso",
+          "pcf_amount",
+          "pcf_wave",
+          "pcf_decay",
+          "pcf_mode"
+        ]
+      },
+      {
+        "title": "COMP",
+        "controls": [
+          "comp_on",
+          "comp_amount",
+          "comp_threshold"
+        ]
+      },
+      {
+        "title": "DELAY",
+        "controls": [
+          "delay_on",
+          "delay_send",
+          "delay_steps",
+          "delay_mode",
+          "delay_feedback",
+          "delay_pan"
+        ]
+      }
+    ]
   }
 }

@@ -1,0 +1,37 @@
+{
+ "schema": 1,
+ "uri": "urn:maquina:acida",
+ "name": "FX",
+ "patches": [
+  {
+   "name": "Reso Drone",
+   "controls": {
+    "tune": 0,
+    "cutoff": 60,
+    "resonance": 125,
+    "env_mod": 0,
+    "decay": 127,
+    "accent": 30,
+    "waveform": 1,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Zap",
+   "controls": {
+    "tune": 0,
+    "cutoff": 0,
+    "resonance": 127,
+    "env_mod": 127,
+    "decay": 0,
+    "accent": 127,
+    "waveform": 0,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+# Maquina factory preset
+# design: low cutoff, little resonance: a plain bass
+voice = acida
+name = Round Bass
+category = Bass
+tags = soft, dark
+waveform = Saw
+engine = 2.0
+tune = 0
+cutoff = 30
+resonance = 40
+env_mod = 30
+decay = 70
+accent = 50

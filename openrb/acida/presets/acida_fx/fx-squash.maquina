@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: the compressor alone, hard
+voice = acida_fx
+name = Squash
+category = FX
+tags = punchy
+dist_on = Off
+pcf_on = Off
+comp_on = On
+delay_on = Off
+comp_amount = 120
+comp_threshold = 30

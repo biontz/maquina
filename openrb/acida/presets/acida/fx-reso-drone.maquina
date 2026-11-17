@@ -1,0 +1,14 @@
+# Maquina factory preset
+# design: the filter rings on a held note: endless decay, no envelope
+voice = acida
+name = Reso Drone
+category = FX
+tags = long, pitched
+waveform = Square
+engine = 2.0
+tune = 0
+cutoff = 60
+resonance = 125
+env_mod = 0
+decay = 127
+accent = 30

@@ -1,0 +1,37 @@
+{
+ "schema": 1,
+ "uri": "urn:maquina:acida",
+ "name": "Squelch",
+ "patches": [
+  {
+   "name": "Screamer",
+   "controls": {
+    "tune": 0,
+    "cutoff": 70,
+    "resonance": 127,
+    "env_mod": 110,
+    "decay": 70,
+    "accent": 127,
+    "waveform": 0,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Squelch Line",
+   "controls": {
+    "tune": 0,
+    "cutoff": 30,
+    "resonance": 120,
+    "env_mod": 100,
+    "decay": 50,
+    "accent": 110,
+    "waveform": 0,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  }
+ ]
+}

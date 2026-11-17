@@ -1,0 +1,14 @@
+# Maquina factory preset
+# design: ReBirth 1's 303 engine on a classic acid setting
+voice = acida
+name = Vintage Acid
+category = Vintage
+tags = modulated
+waveform = Saw
+engine = Vintage
+tune = 0
+cutoff = 45
+resonance = 105
+env_mod = 80
+decay = 60
+accent = 90

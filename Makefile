@@ -23,6 +23,7 @@ presets:
 engine:
 	$(MAKE) -C drum02/engine
 	$(MAKE) -C mutable-instruments
+	$(MAKE) -C openrb
 
 # local fixes to the DPF submodule (patches/dpf/*.patch), applied once;
 # a patch that is already applied is skipped
@@ -52,6 +53,11 @@ MUTABLE_TEST_SRCS := tools/mutable_test/mutable_test.cpp $(KLANG_DIR)/plugins/kl
 	$(KLONG_DIR)/plugins/klong/Engine.cpp
 MUTABLE_TEST_FLAGS = -O2 -std=gnu++17 -DTEST -w $(EURORACK_INCLUDES) $(MAQUINA_INCLUDES) $(MUTABLE_TEST_SRCS) \
 	$(ENGINE_DIR)/libklang.a $(ENGINE_DIR)/libklong.a
+# Maquina Acida / Acida FX: the port (libacida.a) against OpenRB-338's Rust
+# engine (tools/acida_ref, cargo) + AcidaHost's behaviour
+ACIDA_TEST_FLAGS := -O2 -std=gnu++17 -ffp-contract=off $(MAQUINA_INCLUDES) tools/acida_test/acida_test.cpp \
+	$(ACIDA_DIR)/plugins/acida/Engine.cpp
+ACIDA_SCENARIOS := $(sort $(wildcard tools/acida_ref/scenarios/*.txt))
 tools: ENGINE_DIR := build/engine
 test-aarch64: ENGINE_DIR := build/engine-aarch64
 
@@ -70,6 +76,7 @@ tools: engine
 		euro-modules/dredrum/engine/DredrumHost.cpp -x c++ euro-modules/dredrum/engine/dredrum_core.c -x none \
 		befaco/plethora/plugins/plethora/Engine.cpp $(EURORACK_INCLUDES) $(KLANG_DIR)/plugins/klang/Engine.cpp \
 		$(KLONG_DIR)/plugins/klong/Engine.cpp build/engine/libklang.a build/engine/libklong.a \
+		$(ACIDA_DIR)/plugins/acida/Engine.cpp build/engine/libacida.a \
 		-lm -o build/tools/preset_measure
 	$(CC) -O1 -std=gnu11 -Idpf/distrho/src tools/clap_latency_check/clap_latency_check.c \
 		-ldl -o build/tools/clap_latency_check
@@ -78,6 +85,7 @@ tools: engine
 	$(CXX) $(ONEIROI_FLAGS) tools/oneiroi_ref/oneiroi_ref.cpp -o build/tools/oneiroi_ref
 	$(CXX) $(ONEIROI_FLAGS) tools/oneiroi_test/oneiroi_test.cpp -o build/tools/oneiroi_test
 	$(CXX) $(MUTABLE_TEST_FLAGS) -o build/tools/mutable_test
+	$(CXX) $(ACIDA_TEST_FLAGS) build/engine/libacida.a -o build/tools/acida_test
 
 # engine fidelity + isolation, state completeness, resampler quality, GUI
 # defaults, randomizer rules, LV2 validation, every plugin rendered through a real
@@ -98,9 +106,30 @@ test: all tools
 	build/tools/oneiroi_test
 	build/tools/mutable_test
 	build/tools/mutable_test --mutate | tail -n 1
+	build/tools/acida_test --host
+	@if command -v cargo >/dev/null; then $(MAKE) --no-print-directory acida-check; \
+	else echo "acida-check: SKIPPED (needs cargo for the Rust reference)"; fi
 	@if command -v avr-gcc >/dev/null && [ -e /usr/include/simavr/sim_avr.h ]; then \
 		$(MAKE) --no-print-directory dredrum-check; \
 	else echo "dredrum-check: SKIPPED (needs avr-gcc + simavr)"; fi
+
+# Maquina Acida / Acida FX: the reference output of OpenRB-338's own Rust engine
+# for every scenario (tools/acida_ref; needs cargo, fetches the pinned libm crate)
+acida-ref:
+	cargo build --release --quiet --manifest-path tools/acida_ref/Cargo.toml --target-dir build/acida_ref
+	@mkdir -p build/acida_ref/out
+	build/acida_ref/release/acida_ref --tables build/acida_ref/out/tables.f32
+	@for s in $(ACIDA_SCENARIOS); do \
+		build/acida_ref/release/acida_ref $$s build/acida_ref/out/$$(basename $$s .txt).f32 || exit 1; \
+	done
+
+# the C++ port == the Rust engine, bit for bit (tables + scenarios), and the
+# check notices a 1-ulp change
+acida-check: acida-ref
+	build/tools/acida_test --tables build/acida_ref/out/tables.f32
+	build/tools/acida_test build/acida_ref/out $(ACIDA_SCENARIOS)
+	@if build/tools/acida_test --mutate build/acida_ref/out $(firstword $(ACIDA_SCENARIOS)) >/dev/null; then \
+		echo "acida-check: --mutate was not detected"; exit 1; else echo "acida-check: --mutate detected"; fi
 
 # Maquina Oneiroi: OneiroiCore == the module's Oneiroi.h (bit-exact), and the
 # check notices a 1-ulp change
@@ -149,6 +178,7 @@ $(SYSROOT_A64)/usr/lib/aarch64-linux-gnu/libc.so:
 aarch64: $(SYSROOT_A64)/usr/lib/aarch64-linux-gnu/libc.so dpf-patches
 	$(MAKE) -C drum02/engine $(A64_ENV) ENGINE_BUILD=$(CURDIR)/build/engine-aarch64
 	$(MAKE) -C mutable-instruments $(A64_ENV) ENGINE_BUILD=$(CURDIR)/build/engine-aarch64
+	$(MAKE) -C openrb $(A64_ENV) ENGINE_BUILD=$(CURDIR)/build/engine-aarch64
 	@for p in $(PLUGIN_DIRS); do $(MAKE) -C $$p $(A64_ENV) TARGETS="lv2_dsp clap vst3" || exit 1; done
 	clang $(A64_FLAGS) dpf/utils/lv2-ttl-generator/lv2_ttl_generator.c -ldl -o build/aarch64/lv2_ttl_generator
 	@for b in bin-aarch64/*.lv2; do \
@@ -165,6 +195,13 @@ test-aarch64: aarch64
 	$(QEMU_A64) build/tools-aarch64/oneiroi_test
 	clang++ $(A64_FLAGS) $(MUTABLE_TEST_FLAGS) -o build/tools-aarch64/mutable_test
 	$(QEMU_A64) build/tools-aarch64/mutable_test
+	clang++ $(A64_FLAGS) $(ACIDA_TEST_FLAGS) build/engine-aarch64/libacida.a -o build/tools-aarch64/acida_test
+	$(QEMU_A64) build/tools-aarch64/acida_test --host
+	@if command -v cargo >/dev/null; then \
+		$(MAKE) --no-print-directory acida-ref && \
+		$(QEMU_A64) build/tools-aarch64/acida_test --tables build/acida_ref/out/tables.f32 && \
+		$(QEMU_A64) build/tools-aarch64/acida_test build/acida_ref/out $(ACIDA_SCENARIOS); \
+	else echo "acida-check (aarch64): SKIPPED (needs cargo for the Rust reference)"; fi
 
 # ---------------------------------------------------------------------------
 # macOS (on a Mac; CI: .github/workflows/macos.yml): universal CLAP + VST3
@@ -197,6 +234,7 @@ MACOS_VERSION = $(shell git describe --tags --always)$(shell git diff --quiet --
 macos-x86_64 macos-arm64: macos-%: dpf-patches
 	$(MAKE) -C drum02/engine $(call macos_env,$*) ENGINE_BUILD=$(CURDIR)/build/engine-macos-$*
 	$(MAKE) -C mutable-instruments $(call macos_env,$*) ENGINE_BUILD=$(CURDIR)/build/engine-macos-$*
+	$(MAKE) -C openrb $(call macos_env,$*) ENGINE_BUILD=$(CURDIR)/build/engine-macos-$*
 	@for p in $(MACOS_PLUGINS); do $(MAKE) -C $$p $(call macos_env,$*) TARGETS="clap vst3" || exit 1; done
 
 macos: $(MACOS_ARCHS:%=macos-%)
@@ -241,8 +279,9 @@ macos-dmg:
 clean:
 	$(MAKE) -C drum02/engine clean
 	$(MAKE) -C mutable-instruments clean
+	$(MAKE) -C openrb clean
 	$(MAKE) clean -C dpf/utils/lv2-ttl-generator
 	rm -rf bin build bin-macos bin-macos-* dist
 
 .PHONY: presets all engine dpf-patches plugins gen tools test install clean aarch64 test-aarch64 dredrum-flash dredrum-check \
-	oneiroi-check macos macos-test macos-dist macos-dmg
+	oneiroi-check acida-ref acida-check macos macos-test macos-dist macos-dmg

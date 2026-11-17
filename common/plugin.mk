@@ -2,7 +2,8 @@
 # Set NAME and MAQUINA_VOICE_INDEX (and MAQUINA_DREDRUM = 1 for Maquina
 # Dredrum, MAQUINA_PLETHORA = 1 for Maquina Plethora, MAQUINA_ONEIROI = 1 for
 # Maquina Oneiroi / Oneiroi FX, MAQUINA_KLANG = 1 for Maquina Klang,
-# MAQUINA_KLONG = 1 for Maquina Klong / Klong FX), then include this file.
+# MAQUINA_KLONG = 1 for Maquina Klong / Klong FX, MAQUINA_ACIDA = 1 for Maquina
+# Acida / Acida FX), then include this file.
 
 # the repository root, from where this file is (plugins sit at different depths)
 MAQUINA_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))..)
@@ -31,7 +32,7 @@ FILES_DSP += Engine.cpp
 endif
 # Maquina Klang / Klong: the host with the Mutable headers in its own
 # translation unit; the Mutable code itself is libklang.a / libklong.a
-ifneq ($(MAQUINA_KLANG)$(MAQUINA_KLONG),)
+ifneq ($(MAQUINA_KLANG)$(MAQUINA_KLONG)$(MAQUINA_ACIDA),)
 FILES_DSP += Engine.cpp
 endif
 
@@ -69,6 +70,13 @@ ifeq ($(MAQUINA_KLONG),1)
 BUILD_CXX_FLAGS += -DMAQUINA_KLONG=1 $(EURORACK_INCLUDES)
 LINK_FLAGS += $(ENGINE_BUILD)/libklong.a
 $(lv2_dsp) $(clap) $(vst3) $(jack): $(ENGINE_BUILD)/libklong.a
+endif
+# MAQUINA_ACIDA=1: OpenRB-338's 303 / effects (AcidaHost); the DSP is libacida.a,
+# built bit-exact without -ffast-math (openrb/Makefile)
+ifeq ($(MAQUINA_ACIDA),1)
+BUILD_CXX_FLAGS += -DMAQUINA_ACIDA=1
+LINK_FLAGS += $(ENGINE_BUILD)/libacida.a
+$(lv2_dsp) $(clap) $(vst3) $(jack): $(ENGINE_BUILD)/libacida.a
 endif
 BUILD_CXX_FLAGS += -std=gnu++17 -DMAQUINA_VOICE_INDEX=$(MAQUINA_VOICE_INDEX) $(MAQUINA_INCLUDES)
 LINK_FLAGS += $(ENGINE_BUILD)/libmaquinaengine.a -lm

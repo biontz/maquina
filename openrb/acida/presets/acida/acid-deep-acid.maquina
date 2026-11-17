@@ -1,0 +1,14 @@
+# Maquina factory preset
+# design: closed filter, high resonance, slow decay: a low growl
+voice = acida
+name = Deep Acid
+category = Acid
+tags = dark, modulated
+waveform = Saw
+engine = 2.0
+tune = 0
+cutoff = 15
+resonance = 115
+env_mod = 70
+decay = 90
+accent = 80

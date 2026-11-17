@@ -1,7 +1,7 @@
 # Maquina
 
-Twelve instrument and effect plugins, each built from the open-source code of a
-hardware instrument:
+Fourteen instrument and effect plugins, each built from the open-source code of a
+hardware instrument (or, for Acida, of a classic software one):
 
 * **Kick, Tom, Snare, Cymbal, HiHat**: the drum voices of the Erica
   Synths LXR-02 drum machine
@@ -25,6 +25,12 @@ hardware instrument:
   resonator: modal, string and FM resonators (and the string-synth easter
   egg). Klong is played by MIDI notes with its internal exciter; Klong FX
   puts the resonator on an audio track, excited by the input.
+* **Acida** and **Acida FX**: the 303 bass line and the effects of
+  [OpenRB-338](https://github.com/pingw33n/openrb-338) by pingw33n, a
+  bit-exact reimplementation of the ReBirth RB-338 software synth's engine.
+  Acida is the 303 played by MIDI notes (accent by velocity, slide by
+  overlapping notes); Acida FX is the distortion, PCF filter, compressor and
+  tempo delay on an audio track.
 
 Formats: **LV2, CLAP, VST3** and a JACK standalone (via [DPF](https://github.com/DISTRHO/DPF)).
 Platforms: Linux x86_64 and Raspberry Pi OS 64-bit (aarch64); macOS/Windows later.
@@ -37,6 +43,9 @@ Platforms: Linux x86_64 and Raspberry Pi OS 64-bit (aarch64); macOS/Windows late
 > these names are used here only to say what each sound engine is based on.
 > As Mutable Instruments asks, the plugins built from its code have their own
 > names (Klang, Klong) rather than the modules'.
+> Acida is not affiliated with OpenRB-338's author, Reason Studios
+> (ReBirth) or Roland; "ReBirth" and "TB-303" are trademarks of their owners
+> and are not used in the plugins' names.
 
 ## How it stays close to the hardware
 
@@ -185,6 +194,30 @@ portable code path of Mutable's own desktop tests and of VCV Rack:
 * **Not reproduced:** the Arm-specific instructions stmlib uses on the
   modules (saturation, square root), replaced by its portable C++.
 
+### Acida
+
+The engine is a C++ port of OpenRB-338's Rust engine
+(`openrb/acida/third_party/openrb-338`, the `orb-engine` crate; see its
+`MAQUINA.md`), which itself reproduces ReBirth 2.01's output byte for byte:
+
+* **Bit-exact port.** `openrb/acida/engine/AcidaDsp.cpp` follows `tb303.rs`,
+  `dist.rs`, `pcf.rs`, `comp.rs`, `delay.rs` and the table builders operation
+  for operation (double arithmetic in the same order, a float rounding where
+  the Rust code stores one, no fused multiply-add: it is built as
+  `libacida.a` without `-ffast-math`). `tools/acida_ref` runs scenario scripts
+  (notes, slides, accents, both 303 engines, every PCF pattern, every
+  distortion shape, the compressor, the delay) on the Rust engine itself;
+  `tools/acida_test` runs them on the port and requires the same output bit
+  for bit, and the computed tables too (`make acida-check`, needs cargo).
+* **Same rate and blocks:** 44100 Hz in 64-frame blocks, resampled from and
+  to the host rate.
+* **Played like OpenRB's note mode.** ReBirth has no MIDI note input; OpenRB-338
+  adds one, and Acida uses it: notes, not the 16-step pattern sequencer
+  (which Acida does not have).
+* **Same level.** Acida's output is ReBirth's mixer at its defaults (channel
+  level 100, master 100) and is clamped to ReBirth's 16-bit range; that leaves
+  about 10 dB of headroom (Gain adds up to +12 dB).
+
 ## Using the plugins
 
 The drum and percussion voices (LXR, Dredrum, Plethora) first; Oneiroi has
@@ -321,6 +354,25 @@ its own section below.
   (both mixed, as with one jack on the module).
 * No FM / CV amounts: modulate any parameter with the host instead.
 * Latency (Klong FX, 48 kHz: 26 frames) is reported to the host.
+
+**Acida / Acida FX**
+
+* **Acida:** MIDI note 69 is A 440 at Tune 0 (Tune moves it -12..+12
+  semitones in ReBirth's steps). Velocity at or above **Acc Vel** (default
+  100, as in OpenRB) accents the note. A note played while another is held
+  **slides** to it without a new attack; the gate stays open while notes
+  are held, and releasing the newest note slides back to the one still held.
+  Notes take effect at the engine's 64-frame blocks (1.45 ms).
+* **Engine:** 2.0 (ReBirth 2's 303, the default) or Vintage (ReBirth 1's).
+* **Acida FX:** Distortion and PCF on each channel, then the Compressor
+  linked on both (as on ReBirth's master), then the Delay as a send: **Send**
+  feeds it the mono sum and its output is added to the dry signal, as in
+  ReBirth. Each has an on/off switch (Distortion is on by default).
+* **PCF Wave** 1..55 picks one of the PCF's 55 trigger patterns, which run in
+  time with the host transport (stopped: at the host tempo); **Delay Steps**
+  1..32 in sixteenths or triplets at the host tempo.
+* The output is clamped to +-1, as ReBirth's 16-bit output.
+* Latency (48 kHz: Acida 107, Acida FX 139 frames) is reported to the host.
 
 ### Parameters
 
@@ -495,6 +547,33 @@ rows, plus Input and Source.
 | Output | `output` | Mix › Output | Odd / Even, Mono (Maquina, not in presets) |
 | Gain | `gain` | Mix › Gain | Output gain in dB (Maquina, not in presets) -24..12 |
 
+**Acida** (9 + Gain parameters).
+
+| Host name | Symbol | Editor | Range |
+|---|---|---|---|
+| Wave | `waveform` | Synth › Wave | Saw, Square |
+| Tune | `tune` | Synth › Tune | -64..63 (ReBirth's knob: -12..+12 semitones) |
+| Cutoff, Resonance, Env Mod, Decay, Accent | `cutoff`, `resonance`, `env_mod`, `decay`, `accent` | Synth › Cutoff, Reso, Env Mod, Decay, Accent | 0..127 |
+| Engine | `engine` | Play › Engine | 2.0, Vintage |
+| Acc Vel | `accent_vel` | Play › Acc Vel | 1..127: velocity from which a note is accented (Maquina, not in presets) |
+| Gain | `gain` | Mix › Gain | Output gain in dB (Maquina, not in presets) -24..12 |
+
+**Acida FX** (19 + Gain parameters).
+
+| Host name | Symbol | Editor | Range |
+|---|---|---|---|
+| Dist, PCF, Comp, Delay | `dist_on`, `pcf_on`, `comp_on`, `delay_on` | On switch of each section | Off, On |
+| Dist Amt, Dist Shp | `dist_amount`, `dist_shape` | Distortion › Amount, Shape | 0..127 (shape 0: hard clip) |
+| PCF Mode | `pcf_mode` | PCF › Mode | Low Pass, Band Pass |
+| PCF Wave | `pcf_wave` | PCF › Wave | 1..55 (the trigger pattern) |
+| PCF Freq, PCF Reso, PCF Amt, PCF Decay | `pcf_freq`, `pcf_reso`, `pcf_amount`, `pcf_decay` | PCF › Freq, Reso, Amount, Decay | 0..127 |
+| Comp Amt, Comp Thr | `comp_amount`, `comp_threshold` | Compressor › Amount, Thresh | 0..127 |
+| Dly Mode | `delay_mode` | Delay › Mode | Triplets, 16ths |
+| Dly Steps | `delay_steps` | Delay › Steps | 1..32 |
+| Dly Send, Dly Fdbk | `delay_send`, `delay_feedback` | Delay › Send, Feedback | 0..127 |
+| Dly Pan | `delay_pan` | Delay › Pan | -64..63 |
+| Gain | `gain` | Mix › Gain | Output gain in dB (Maquina, not in presets) -24..12 |
+
 #### Remote-control pages (CLAP)
 
 Bitwig and other CLAP hosts get these pages of 8 knobs; Machinista uses the
@@ -553,6 +632,11 @@ two knobs on the OSCILLATOR page.
 |  | TUNE / MIX | Coarse · Fine · Output · Gain · Structure · Bright · Damping · Position |
 | Klong FX | RESONATOR | Coarse · Notes · Model · Poly · Structure · Bright · Damping · Position |
 |  | TUNE / MIX | Coarse · Fine · Notes · Output · Gain · Structure · Damping · Position |
+| Acida | SYNTH | Tune · Cutoff · Resonance · Env Mod · Decay · Accent · Wave · Gain |
+|  | WAVE / MIX | Wave · Engine · Acc Vel · Gain · Cutoff · Resonance · Env Mod · Decay |
+| Acida FX | DIST / PCF | Dist Amt · Dist Shp · PCF Freq · PCF Reso · PCF Amt · PCF Decay · Dist · PCF |
+|  | PCF / COMP | Dist · PCF · PCF Wave · PCF Mode · Comp · Comp Amt · Comp Thr · Gain |
+|  | DELAY | Delay · Dly Send · Dly Steps · Dly Mode · Dly Fdbk · Dly Pan · Dist Amt · PCF Freq |
 
 On Machinista, Plethora has channel A only (pages A and A ENV, 12 parameters):
 B and C stay at Level 0, so they cost no CPU on the Pi.
@@ -670,7 +754,8 @@ only the factory presets that use channel A alone.
 
 Maquina Oneiroi has a Machinista profile (all parameters, 6 pages); Oneiroi
 FX does not (Machinista hosts instruments). Klang (3 pages) and Klong
-(2 pages) have profiles with all parameters; Klong FX does not. Not yet measured on a Pi: one
+(2 pages) have profiles with all parameters; Klong FX does not. Acida has one
+(2 pages, all parameters); Acida FX does not. Not yet measured on a Pi: one
 Oneiroi instance needs about 3 % of one x86 laptop core.
 
 ## Layout
@@ -701,11 +786,16 @@ mutable-instruments/        Mutable Instruments (MIT code)
   klong/                    Klong + Klong FX (Rings): engine/ KlongHost, plugins/klong(-fx), presets/klong(_fx)
   third_party/eurorack/     Plaits + Rings DSP code and stmlib, unmodified (MIT; MAQUINA.md),
                             built as libklang.a / libklong.a (Makefile, eurorack.mk)
+openrb/                     OpenRB-338 (ReBirth RB-338 reimplementation); Makefile builds libacida.a
+  acida/                    Acida + Acida FX: engine/ (AcidaDsp: the bit-exact C++ port, AcidaHost),
+                            plugins/acida(-fx), presets/acida(_fx)
+    third_party/openrb-338/ orb-engine + rbs crates, the Rust reference (GPL-3.0-only; MAQUINA.md)
 common/                     shared by all plugins: DPF plugin, editor, randomizer, presets, resamplers,
                             generated tables, plugin.mk, paths.mk (where everything lives)
 tools/                      generators, tests, aarch64 sysroot, dredrum_flash + dredrum_ref (AVR reference),
                             oneiroi_ref (engine fidelity) + oneiroi_test (behaviour, preset measuring),
-                            mutable_test (Klang/Klong engine fidelity + behaviour)
+                            mutable_test (Klang/Klong engine fidelity + behaviour),
+                            acida_ref (Rust reference, cargo) + acida_test (Acida bit-exactness + behaviour)
 machinista/                 Machinista profiles + layout
 dpf/                        DPF submodule
 patches/dpf/                local DPF fixes (CLAP latency sync, CLAP remote-controls), applied by `make dpf-patches`
@@ -728,6 +818,7 @@ Other included code, all compatible with GPL-3.0-only:
 | `befaco/oneiroi/third_party/oneiroi`, `befaco/oneiroi/engine/OneiroiCore.h` | Roberto Noris (Befaco Oneiroi) | GPL-3.0-or-later |
 | `befaco/oneiroi/third_party/owlprogram` (OwlProgram LibSource) | Rebel Technology and contributors | GPL-3.0 (`fastlog.c` GPL-2.0-or-later, `fastpow.c` BSD-style) |
 | `mutable-instruments/third_party/eurorack` (Plaits, Rings, stmlib) | Émilie Gillet (Mutable Instruments) | MIT |
+| `openrb/acida/third_party/openrb-338` (orb-engine, rbs), `openrb/acida/engine/AcidaDsp.*` (port of it) | pingw33n (OpenRB-338) | GPL-3.0-only |
 | `dpf` | DISTRHO | ISC |
 
 Befaco's own Noise Plethora firmware framework is licensed CC BY-NC-SA and is

@@ -1,0 +1,67 @@
+{
+ "schema": 1,
+ "uri": "urn:maquina:acida",
+ "name": "Acid",
+ "patches": [
+  {
+   "name": "Classic Acid",
+   "controls": {
+    "tune": 0,
+    "cutoff": 45,
+    "resonance": 105,
+    "env_mod": 80,
+    "decay": 60,
+    "accent": 90,
+    "waveform": 0,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Deep Acid",
+   "controls": {
+    "tune": 0,
+    "cutoff": 15,
+    "resonance": 115,
+    "env_mod": 70,
+    "decay": 90,
+    "accent": 80,
+    "waveform": 0,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Long Acid",
+   "controls": {
+    "tune": 0,
+    "cutoff": 30,
+    "resonance": 100,
+    "env_mod": 110,
+    "decay": 115,
+    "accent": 70,
+    "waveform": 0,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Rubber Acid",
+   "controls": {
+    "tune": 0,
+    "cutoff": 40,
+    "resonance": 110,
+    "env_mod": 85,
+    "decay": 45,
+    "accent": 100,
+    "waveform": 1,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  }
+ ]
+}

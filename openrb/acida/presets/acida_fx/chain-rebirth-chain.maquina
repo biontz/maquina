@@ -1,0 +1,24 @@
+# Maquina factory preset
+# design: distortion, PCF, compressor and delay together
+voice = acida_fx
+name = Full Chain
+category = Chain
+tags = dirty, modulated
+dist_on = On
+pcf_on = On
+comp_on = On
+delay_on = On
+dist_amount = 60
+dist_shape = 30
+pcf_wave = 9
+pcf_mode = Low Pass
+pcf_freq = 60
+pcf_reso = 64
+pcf_amount = 50
+pcf_decay = 80
+comp_amount = 80
+comp_threshold = 50
+delay_steps = 3
+delay_mode = 16ths
+delay_feedback = 70
+delay_send = 90

@@ -20,6 +20,8 @@
 #include "KlangHost.hpp"
 #elif MAQUINA_KLONG
 #include "KlongHost.hpp"
+#elif MAQUINA_ACIDA
+#include "AcidaHost.hpp"
 #else
 #include "EngineHost.hpp"
 #endif
@@ -44,6 +46,8 @@ using Engine = maquina::OneiroiHost; // Maquina Oneiroi / Oneiroi FX: the Befaco
 using Engine = maquina::KlangHost; // Maquina Klang: the Mutable Instruments Plaits
 #elif MAQUINA_KLONG
 using Engine = maquina::KlongHost; // Maquina Klong / Klong FX: the Mutable Instruments Rings
+#elif MAQUINA_ACIDA
+using Engine = maquina::AcidaHost; // Maquina Acida / Acida FX: OpenRB-338's 303 and effects
 #else
 using Engine = maquina::EngineHost;  // the LXR-02 firmware engine
 #endif
@@ -103,11 +107,17 @@ static const char* const kOneiroiPageSymbols[10] = { "looper", "osc", "filter", 
 // page 1 is Klang's SOUND, Klong's RESONATOR)
 static const char* const kMutablePageNames[8] = { "Model", "Sound", "Envelope", "LPG", "", "", "", "Mix" };
 static const char* const kMutablePageSymbols[8] = { "model", "sound", "env", "lpg", "", "", "", "mix" };
+// Maquina Acida / Acida FX pages (tools/gen_params.py ACIDA_*PAGE_TITLES)
+static const char* const kAcidaPageNames[8] = { "Synth", "Play", "", "", "", "", "", "Mix" };
+static const char* const kAcidaPageSymbols[8] = { "synth", "play", "", "", "", "", "", "mix" };
+static const char* const kAcidaFxPageNames[8] = { "Distortion", "PCF", "Compressor", "Delay", "", "", "", "Mix" };
+static const char* const kAcidaFxPageSymbols[8] = { "dist", "pcf", "comp", "delay", "", "", "", "mix" };
 static bool isDredrum() { return voiceDef().voice == maquina::kDredrumVoice; }
 static bool isPlethora() { return voiceDef().voice == maquina::kPlethoraVoice; }
 static bool isOneiroi() { return maquina::isOneiroi(voiceDef().voice); }
 static bool isKlang() { return voiceDef().voice == maquina::kKlangVoice; }
 static bool isKlong() { return maquina::isKlong(voiceDef().voice); }
+static bool isAcida() { return maquina::isAcida(voiceDef().voice); }
 
 // Noise seed: differs per instance (like the hardware RNG) unless
 // MAQUINA_RNG_SEED is set, which makes renders reproducible for tests.
@@ -156,6 +166,12 @@ protected:
         if (isKlong())
             return "Resonator voice based on the Mutable Instruments Rings firmware: modal, string and FM "
                    "resonators played by notes (unofficial; not affiliated with Mutable Instruments).";
+        if (voiceDef().voice == maquina::kAcidaFxVoice)
+            return "Distortion, PCF filter, compressor and tempo delay from OpenRB-338, a reimplementation of "
+                   "the ReBirth RB-338 engine (unofficial; not affiliated with Reason Studios or Roland).";
+        if (isAcida())
+            return "Acid bass line voice from OpenRB-338's 303, a bit-exact reimplementation of the ReBirth "
+                   "RB-338 engine (unofficial; not affiliated with Reason Studios or Roland).";
         return "Drum voice from the LXR-02 firmware sound engine "
                "(unofficial; not affiliated with Erica Synths).";
     }
@@ -166,6 +182,7 @@ protected:
                : isPlethora() ? "https://github.com/VCVRack/Befaco"
                : isOneiroi()  ? "https://github.com/Befaco/Oneiroi"
                : isKlang() || isKlong() ? "https://github.com/pichenettes/eurorack"
+               : isAcida()    ? "https://github.com/pingw33n/openrb-338"
                               : "https://github.com/erica-synths/lxr-desktop-app";
     }
     const char* getLicense() const override { return "GPL-3.0-only"; }
@@ -177,6 +194,12 @@ protected:
         if (isOneiroi()) {
             group.name = kOneiroiPageNames[page % 10];
             group.symbol = kOneiroiPageSymbols[page % 10];
+            return;
+        }
+        if (isAcida()) {
+            const bool fx = voiceDef().voice == maquina::kAcidaFxVoice;
+            group.name = (fx ? kAcidaFxPageNames : kAcidaPageNames)[page & 7];
+            group.symbol = (fx ? kAcidaFxPageSymbols : kAcidaPageSymbols)[page & 7];
             return;
         }
         if (isKlang() || isKlong()) {
@@ -329,8 +352,9 @@ protected:
         const TimePosition& pos = getTimePosition();
         if (pos.bbt.valid && pos.bbt.beatsPerMinute > 0.0)
             fEngine.setTempo(pos.bbt.beatsPerMinute);
-#if MAQUINA_ONEIROI
-        // SYNC: the transport's position in beats (bar 1 beat 1 = 0)
+#if MAQUINA_ONEIROI || MAQUINA_ACIDA
+        // SYNC (Oneiroi) / the PCF's patterns (Acida FX): the transport's
+        // position in beats (bar 1 beat 1 = 0)
         if (pos.bbt.valid && pos.bbt.beatsPerMinute > 0.0 && pos.bbt.ticksPerBeat > 0.0) {
             const double beat = double(pos.bbt.bar - 1) * pos.bbt.beatsPerBar + double(pos.bbt.beat - 1) +
                                 pos.bbt.tick / pos.bbt.ticksPerBeat;
@@ -354,7 +378,7 @@ protected:
         }
 #endif
 
-#if (MAQUINA_ONEIROI || MAQUINA_KLONG) && DISTRHO_PLUGIN_NUM_INPUTS == 2
+#if (MAQUINA_ONEIROI || MAQUINA_KLONG || MAQUINA_ACIDA) && DISTRHO_PLUGIN_NUM_INPUTS == 2
         fEngine.process(inputs[0], inputs[1], outputs[0], outputs[1], frames);
 #else
         (void)inputs;

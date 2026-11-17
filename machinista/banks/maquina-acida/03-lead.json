@@ -1,0 +1,37 @@
+{
+ "schema": 1,
+ "uri": "urn:maquina:acida",
+ "name": "Lead",
+ "patches": [
+  {
+   "name": "Bright Lead",
+   "controls": {
+    "tune": 63,
+    "cutoff": 100,
+    "resonance": 60,
+    "env_mod": 40,
+    "decay": 110,
+    "accent": 60,
+    "waveform": 0,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Square Lead",
+   "controls": {
+    "tune": 63,
+    "cutoff": 80,
+    "resonance": 80,
+    "env_mod": 50,
+    "decay": 90,
+    "accent": 70,
+    "waveform": 1,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  }
+ ]
+}

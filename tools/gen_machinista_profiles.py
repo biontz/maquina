@@ -35,6 +35,7 @@ BUNDLES = {
     "oneiroi": "MaquinaOneiroi",  # Oneiroi FX: Machinista hosts instruments only
     "klang": "MaquinaKlang",
     "klong": "MaquinaKlong",  # Klong FX: an effect, as Oneiroi FX
+    "acida": "MaquinaAcida",  # Acida FX: an effect, as Oneiroi FX
 }
 
 PORT_RE = re.compile(
@@ -99,6 +100,11 @@ QUIRKS = {
         "Resonator based on Mutable Instruments Rings, played by its internal exciter: each note strums.",
         "POLY 1-4 voices; notes closer than 10 ms are strummed 10 ms apart (the module's strummer).",
         "MODEL PEACE ...: the string synth easter egg. Strings ring out: DAMPING sets how long.",
+    ],
+    "acida": [
+        "Acid bass line voice: OpenRB-338's 303 (a reimplementation of the ReBirth RB-338 engine).",
+        "Velocity >= ACC VEL accents a note; a note played while another is held slides to it.",
+        "ENGINE 2.0 / VINTAGE: ReBirth 2's and ReBirth 1's 303 sound.",
     ],
 }
 

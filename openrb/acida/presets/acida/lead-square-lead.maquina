@@ -1,0 +1,14 @@
+# Maquina factory preset
+# design: square an octave up, medium resonance
+voice = acida
+name = Square Lead
+category = Lead
+tags = bright, pitched
+waveform = Square
+engine = 2.0
+tune = 63
+cutoff = 80
+resonance = 80
+env_mod = 50
+decay = 90
+accent = 70

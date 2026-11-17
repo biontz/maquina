@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: the most folded shaper row, high drive
+voice = acida_fx
+name = Fuzz
+category = Distortion
+tags = dirty, bright
+dist_on = On
+pcf_on = Off
+comp_on = Off
+delay_on = Off
+dist_amount = 110
+dist_shape = 127

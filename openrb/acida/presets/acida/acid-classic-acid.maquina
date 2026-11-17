@@ -1,0 +1,14 @@
+# Maquina factory preset
+# design: the textbook acid setting: high resonance, envelope up
+voice = acida
+name = Classic Acid
+category = Acid
+tags = bright, modulated
+waveform = Saw
+engine = 2.0
+tune = 0
+cutoff = 45
+resonance = 105
+env_mod = 80
+decay = 60
+accent = 90

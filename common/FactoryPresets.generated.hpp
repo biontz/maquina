@@ -415,6 +415,60 @@ static const FactoryPreset k_klong_fx_presets[] = {
     { "FM Ring", "FX", "metallic, modulated", k_klong_fx_pv7, 5 },
 };
 
+static const PresetValue k_acida_pv0[] = { { 1, 35 }, { 2, 70 }, { 3, 60 }, { 4, 25 }, { 5, 70 } };
+static const PresetValue k_acida_pv1[] = { { 1, 30 }, { 2, 40 }, { 3, 30 }, { 4, 70 }, { 5, 50 } };
+static const PresetValue k_acida_pv2[] = { { 1, 22 }, { 2, 20 }, { 3, 15 }, { 5, 40 }, { 6, 1 } };
+static const PresetValue k_acida_pv3[] = { { 1, 45 }, { 2, 105 }, { 3, 80 }, { 4, 60 }, { 5, 90 } };
+static const PresetValue k_acida_pv4[] = { { 1, 15 }, { 2, 115 }, { 3, 70 }, { 4, 90 }, { 5, 80 } };
+static const PresetValue k_acida_pv5[] = { { 1, 30 }, { 2, 100 }, { 3, 110 }, { 4, 115 }, { 5, 70 } };
+static const PresetValue k_acida_pv6[] = { { 1, 40 }, { 2, 110 }, { 3, 85 }, { 4, 45 }, { 5, 100 }, { 6, 1 } };
+static const PresetValue k_acida_pv7[] = { { 0, 63 }, { 1, 100 }, { 2, 60 }, { 3, 40 }, { 4, 110 }, { 5, 60 } };
+static const PresetValue k_acida_pv8[] = { { 0, 63 }, { 1, 80 }, { 2, 80 }, { 3, 50 }, { 4, 90 }, { 5, 70 }, { 6, 1 } };
+static const PresetValue k_acida_pv9[] = { { 1, 70 }, { 2, 127 }, { 3, 110 }, { 4, 70 }, { 5, 127 } };
+static const PresetValue k_acida_pv10[] = { { 1, 30 }, { 2, 120 }, { 3, 100 }, { 4, 50 }, { 5, 110 } };
+static const PresetValue k_acida_pv11[] = { { 1, 45 }, { 2, 105 }, { 3, 80 }, { 4, 60 }, { 5, 90 }, { 7, 1 } };
+static const PresetValue k_acida_pv12[] = { { 1, 30 }, { 2, 50 }, { 3, 35 }, { 4, 75 }, { 5, 50 }, { 7, 1 } };
+static const PresetValue k_acida_pv13[] = { { 1, 60 }, { 2, 125 }, { 3, 0 }, { 4, 127 }, { 5, 30 }, { 6, 1 } };
+static const PresetValue k_acida_pv14[] = { { 1, 0 }, { 2, 127 }, { 3, 127 }, { 4, 0 }, { 5, 127 } };
+static const FactoryPreset k_acida_presets[] = {
+    { "Pluck Bass", "Bass", "short, punchy", k_acida_pv0, 5 },
+    { "Round Bass", "Bass", "soft, dark", k_acida_pv1, 5 },
+    { "Square Sub", "Bass", "dark, clean", k_acida_pv2, 5 },
+    { "Classic Acid", "Acid", "bright, modulated", k_acida_pv3, 5 },
+    { "Deep Acid", "Acid", "dark, modulated", k_acida_pv4, 5 },
+    { "Long Acid", "Acid", "long, modulated", k_acida_pv5, 5 },
+    { "Rubber Acid", "Acid", "punchy, modulated", k_acida_pv6, 6 },
+    { "Bright Lead", "Lead", "bright, long", k_acida_pv7, 6 },
+    { "Square Lead", "Lead", "bright, pitched", k_acida_pv8, 7 },
+    { "Screamer", "Squelch", "bright, dirty", k_acida_pv9, 5 },
+    { "Squelch Line", "Squelch", "bright, dirty", k_acida_pv10, 5 },
+    { "Vintage Acid", "Vintage", "modulated", k_acida_pv11, 6 },
+    { "Vintage Bass", "Vintage", "soft, dark", k_acida_pv12, 6 },
+    { "Reso Drone", "FX", "long, pitched", k_acida_pv13, 6 },
+    { "Zap", "FX", "short, bright", k_acida_pv14, 5 },
+};
+
+static const PresetValue k_acida_fx_pv0[] = { { 2, 40 } };
+static const PresetValue k_acida_fx_pv1[] = { { 1, 110 }, { 2, 127 } };
+static const PresetValue k_acida_fx_pv2[] = { { 1, 100 } };
+static const PresetValue k_acida_fx_pv3[] = { { 0, 0 }, { 3, 1 }, { 4, 40 }, { 5, 70 }, { 6, 90 }, { 7, 1 }, { 8, 40 } };
+static const PresetValue k_acida_fx_pv4[] = { { 0, 0 }, { 3, 1 }, { 4, 50 }, { 5, 90 }, { 6, 70 }, { 7, 14 }, { 8, 100 }, { 9, 1 } };
+static const PresetValue k_acida_fx_pv5[] = { { 0, 0 }, { 13, 1 }, { 18, 40 } };
+static const PresetValue k_acida_fx_pv6[] = { { 0, 0 }, { 13, 1 }, { 15, 2 }, { 16, 0 }, { 17, 90 }, { 18, -40 } };
+static const PresetValue k_acida_fx_pv7[] = { { 1, 60 }, { 2, 30 }, { 3, 1 }, { 4, 60 }, { 6, 50 }, { 7, 9 }, { 8, 80 }, { 10, 1 }, { 11, 80 }, { 12, 50 }, { 13, 1 }, { 14, 90 }, { 17, 70 } };
+static const PresetValue k_acida_fx_pv8[] = { { 0, 0 }, { 10, 1 }, { 11, 120 }, { 12, 30 } };
+static const FactoryPreset k_acida_fx_presets[] = {
+    { "Acid Drive", "Distortion", "dirty", k_acida_fx_pv0, 1 },
+    { "Fuzz", "Distortion", "dirty, bright", k_acida_fx_pv1, 2 },
+    { "Hard Clip", "Distortion", "dirty, punchy", k_acida_fx_pv2, 1 },
+    { "PCF Gate", "Filter", "modulated, short", k_acida_fx_pv3, 7 },
+    { "PCF Wah", "Filter", "modulated", k_acida_fx_pv4, 8 },
+    { "Dotted Echo", "Delay", "long", k_acida_fx_pv5, 3 },
+    { "Triplet Echo", "Delay", "long", k_acida_fx_pv6, 6 },
+    { "Full Chain", "Chain", "dirty, modulated", k_acida_fx_pv7, 13 },
+    { "Squash", "FX", "punchy", k_acida_fx_pv8, 4 },
+};
+
 struct VoicePresets { const FactoryPreset* presets; uint32_t count; };
 // in k_voices order
 static const VoicePresets k_factory_presets[] = {
@@ -430,6 +484,8 @@ static const VoicePresets k_factory_presets[] = {
     { k_klang_presets, 22 },
     { k_klong_presets, 13 },
     { k_klong_fx_presets, 8 },
+    { k_acida_presets, 15 },
+    { k_acida_fx_presets, 9 },
 };
 
 } // namespace maquina

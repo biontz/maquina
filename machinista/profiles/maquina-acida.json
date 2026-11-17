@@ -1,0 +1,178 @@
+{
+  "schema": 1,
+  "id": "maquina-acida",
+  "uri": "urn:maquina:acida",
+  "title": "Maquina Acida",
+  "provider": "parameter-bank",
+  "bank_format": "json",
+  "extensions": [
+    ".json"
+  ],
+  "parameters": [
+    {
+      "index": 5,
+      "symbol": "tune",
+      "name": "TUNE",
+      "default": 0,
+      "min": -64,
+      "max": 63,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 6,
+      "symbol": "cutoff",
+      "name": "CUTOFF",
+      "default": 20,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 7,
+      "symbol": "resonance",
+      "name": "RESONANCE",
+      "default": 90,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 8,
+      "symbol": "env_mod",
+      "name": "ENV MOD",
+      "default": 20,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 9,
+      "symbol": "decay",
+      "name": "DECAY",
+      "default": 100,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 10,
+      "symbol": "accent",
+      "name": "ACCENT",
+      "default": 64,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 11,
+      "symbol": "waveform",
+      "name": "WAVE",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "SAW"
+        ],
+        [
+          1,
+          "SQUARE"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 12,
+      "symbol": "engine",
+      "name": "ENGINE",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "2.0"
+        ],
+        [
+          1,
+          "VINTAGE"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 13,
+      "symbol": "accent_vel",
+      "name": "ACC VEL",
+      "default": 100,
+      "min": 1,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 14,
+      "symbol": "gain",
+      "name": "GAIN",
+      "default": 0,
+      "min": -24,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    }
+  ],
+  "pages": [
+    {
+      "title": "SYNTH",
+      "controls": [
+        "@bank",
+        "@patch",
+        "tune",
+        "cutoff",
+        "resonance",
+        "env_mod",
+        "decay",
+        "accent"
+      ]
+    },
+    {
+      "title": "WAVE / MIX",
+      "controls": [
+        "waveform",
+        "engine",
+        "accent_vel",
+        "gain",
+        "cutoff",
+        "resonance",
+        "env_mod",
+        "decay"
+      ]
+    }
+  ],
+  "quirks": [
+    "Acid bass line voice: OpenRB-338's 303 (a reimplementation of the ReBirth RB-338 engine).",
+    "Velocity >= ACC VEL accents a note; a note played while another is held slides to it.",
+    "ENGINE 2.0 / VINTAGE: ReBirth 2's and ReBirth 1's 303 sound."
+  ]
+}

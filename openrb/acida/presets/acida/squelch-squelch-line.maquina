@@ -1,0 +1,14 @@
+# Maquina factory preset
+# design: resonance near the top, big envelope and accent
+voice = acida
+name = Squelch Line
+category = Squelch
+tags = bright, dirty
+waveform = Saw
+engine = 2.0
+tune = 0
+cutoff = 30
+resonance = 120
+env_mod = 100
+decay = 50
+accent = 110

@@ -1,0 +1,11 @@
+# Maquina: the upstream workspace trimmed to the two crates vendored here
+# (see MAQUINA.md). Used only by tools/acida_ref, the bit-exact reference.
+[workspace]
+resolver = "3"
+members = ["crates/rbs", "crates/orb-engine"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "GPL-3.0-only"
+publish = false

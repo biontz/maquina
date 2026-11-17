@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: shape 0: the hard clipper
+voice = acida_fx
+name = Hard Clip
+category = Distortion
+tags = dirty, punchy
+dist_on = On
+pcf_on = Off
+comp_on = Off
+delay_on = Off
+dist_amount = 100
+dist_shape = 0

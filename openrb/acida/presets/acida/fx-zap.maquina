@@ -1,0 +1,14 @@
+# Maquina factory preset
+# design: closed filter, all envelope, no decay: a zap per note
+voice = acida
+name = Zap
+category = FX
+tags = short, bright
+waveform = Saw
+engine = 2.0
+tune = 0
+cutoff = 0
+resonance = 127
+env_mod = 127
+decay = 0
+accent = 127

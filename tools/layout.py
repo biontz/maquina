@@ -5,6 +5,7 @@
   befaco/oneiroi/         Befaco Oneiroi: oneiroi + oneiroi_fx
   euro-modules/dredrum/   Dredrum
   mutable-instruments/    Mutable Instruments: klang/ (Plaits), klong/ (Rings: klong + klong_fx)
+  openrb/acida/           OpenRB-338 (ReBirth RB-338 reimplementation): acida + acida_fx
 
 each with engine/, third_party/, plugins/<plugin>/ and presets/<voice>/.
 """
@@ -19,6 +20,7 @@ ONEIROI = os.path.join(ROOT, "befaco", "oneiroi")
 DREDRUM = os.path.join(ROOT, "euro-modules", "dredrum")
 KLANG = os.path.join(ROOT, "mutable-instruments", "klang")
 KLONG = os.path.join(ROOT, "mutable-instruments", "klong")
+ACIDA = os.path.join(ROOT, "openrb", "acida")
 
 LXR_FW = os.path.join(DRUM02, "third_party", "lxr-firmware")
 
@@ -30,6 +32,7 @@ MODULE_OF = {
     "oneiroi": ONEIROI, "oneiroi_fx": ONEIROI,
     "klang": KLANG,
     "klong": KLONG, "klong_fx": KLONG,
+    "acida": ACIDA, "acida_fx": ACIDA,
 }
 
 

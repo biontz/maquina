@@ -84,6 +84,15 @@ static const ClapRemotePage k_klong_fx_remote_pages[] = {
     { "RESONATOR", { "model", "polyphony", "structure", "brightness", "damping", "position", "coarse", "note_source" } },
     { "TUNE / MIX", { "coarse", "fine", "note_source", "output", "gain", "structure", "damping", "position" } },
 };
+static const ClapRemotePage k_acida_remote_pages[] = {
+    { "SYNTH", { "tune", "cutoff", "resonance", "env_mod", "decay", "accent", "waveform", "gain" } },
+    { "WAVE / MIX", { "waveform", "engine", "accent_vel", "gain", "cutoff", "resonance", "env_mod", "decay" } },
+};
+static const ClapRemotePage k_acida_fx_remote_pages[] = {
+    { "DIST / PCF", { "dist_amount", "dist_shape", "pcf_freq", "pcf_reso", "pcf_amount", "pcf_decay", "dist_on", "pcf_on" } },
+    { "PCF / COMP", { "dist_on", "pcf_on", "pcf_wave", "pcf_mode", "comp_on", "comp_amount", "comp_threshold", "gain" } },
+    { "DELAY", { "delay_on", "delay_send", "delay_steps", "delay_mode", "delay_feedback", "delay_pan", "dist_amount", "pcf_freq" } },
+};
 
 static const ClapRemotePages k_remote_pages[] = {
     { k_kick_remote_pages, sizeof(k_kick_remote_pages) / sizeof(k_kick_remote_pages[0]) },
@@ -98,4 +107,6 @@ static const ClapRemotePages k_remote_pages[] = {
     { k_klang_remote_pages, sizeof(k_klang_remote_pages) / sizeof(k_klang_remote_pages[0]) },
     { k_klong_remote_pages, sizeof(k_klong_remote_pages) / sizeof(k_klong_remote_pages[0]) },
     { k_klong_fx_remote_pages, sizeof(k_klong_fx_remote_pages) / sizeof(k_klong_fx_remote_pages[0]) },
+    { k_acida_remote_pages, sizeof(k_acida_remote_pages) / sizeof(k_acida_remote_pages[0]) },
+    { k_acida_fx_remote_pages, sizeof(k_acida_fx_remote_pages) / sizeof(k_acida_fx_remote_pages[0]) },
 };

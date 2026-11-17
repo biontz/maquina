@@ -1,0 +1,15 @@
+# Maquina factory preset
+# design: 2 triplet steps, panned left
+voice = acida_fx
+name = Triplet Echo
+category = Delay
+tags = long
+dist_on = Off
+pcf_on = Off
+comp_on = Off
+delay_on = On
+delay_steps = 2
+delay_mode = Triplets
+delay_feedback = 90
+delay_pan = -40
+delay_send = 100

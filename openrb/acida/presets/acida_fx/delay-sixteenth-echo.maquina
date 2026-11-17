@@ -1,0 +1,15 @@
+# Maquina factory preset
+# design: 3 sixteenths (a dotted eighth), panned right
+voice = acida_fx
+name = Dotted Echo
+category = Delay
+tags = long
+dist_on = Off
+pcf_on = Off
+comp_on = Off
+delay_on = On
+delay_steps = 3
+delay_mode = 16ths
+delay_feedback = 80
+delay_pan = 40
+delay_send = 100

@@ -1,0 +1,12 @@
+# Maquina factory preset
+# design: ReBirth's distortion, a soft shape at medium drive
+voice = acida_fx
+name = Acid Drive
+category = Distortion
+tags = dirty
+dist_on = On
+pcf_on = Off
+comp_on = Off
+delay_on = Off
+dist_amount = 70
+dist_shape = 40

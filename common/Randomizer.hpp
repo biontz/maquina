@@ -95,6 +95,17 @@ static const RandGroup kRandGroups[] = {
     { "rres", "RESONATOR", false, 0, 100, { "structure", "brightness", "damping", "position" } },
     { "rpoly", "POLY", true, 0, 100, { "polyphony" } },
     { "mtune", "TUNE", true, 0, 100, { "coarse", "fine", "key_track" } },
+    // Maquina Acida (Tune and the engine locked: they change the line's key / character)
+    { "afilter", "FILTER", false, 0, 100, { "cutoff", "resonance", "env_mod", "decay" } },
+    { "aaccent", "ACCENT", false, 0, 100, { "accent" } },
+    { "awave", "WAVE", false, 0, 100, { "waveform" } },
+    { "atune", "TUNE", true, 0, 100, { "tune", "engine" } },
+    // Maquina Acida FX (the on/off switches locked)
+    { "xdist", "DIST", false, 0, 100, { "dist_amount", "dist_shape" } },
+    { "xpcf", "PCF", false, 0, 100, { "pcf_freq", "pcf_reso", "pcf_amount", "pcf_wave", "pcf_decay", "pcf_mode" } },
+    { "xcomp", "COMP", false, 0, 100, { "comp_amount", "comp_threshold" } },
+    { "xdelay", "DELAY", false, 0, 100, { "delay_steps", "delay_mode", "delay_feedback", "delay_pan", "delay_send" } },
+    { "xswitch", "SWITCHES", true, 0, 100, { "dist_on", "pcf_on", "comp_on", "delay_on" } },
 };
 constexpr int kNumRandGroups = int(sizeof(kRandGroups) / sizeof(kRandGroups[0]));
 

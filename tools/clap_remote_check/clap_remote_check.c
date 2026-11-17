@@ -22,7 +22,7 @@ typedef struct { const ClapRemotePage* pages; uint32_t count; } ClapRemotePages;
 #include "../../common/RemotePages.generated.hpp"
 
 static const char* const kVoices[] = { "kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora", "oneiroi",
-                                       "oneiroi_fx", "klang", "klong", "klong_fx" }; // k_voices order
+                                       "oneiroi_fx", "klang", "klong", "klong_fx", "acida", "acida_fx" }; // k_voices order
 
 static const void* host_get_extension(const clap_host_t* h, const char* id) { (void)h; (void)id; return NULL; }
 static void host_noop(const clap_host_t* h) { (void)h; }

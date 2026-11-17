@@ -59,7 +59,7 @@ PY
 # Output gain (ExtraParams.hpp, every plugin): +6 / -12 dB scale the whole
 # output (the parameter is set before the first block, so no ramp)
 echo "== gain"
-for n in kick tom snare cymbal hihat dredrum plethora oneiroi oneiroi-fx klang klong klong-fx; do
+for n in kick tom snare cymbal hihat dredrum plethora oneiroi oneiroi-fx klang klong klong-fx acida acida-fx; do
     for g in 0 6 -12; do
         $QEMU "$TOOLS/lv2_render" urn:maquina:$n 48000 2 "$OUT/$n-gain$g.wav" gain=$g >/dev/null
     done
@@ -71,7 +71,7 @@ def rms(n, g):
     return math.sqrt(sum(x * x for x in a) / len(a))
 ok = True
 for n in ("kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora", "oneiroi", "oneiroi-fx", "klang",
-          "klong", "klong-fx"):
+          "klong", "klong-fx", "acida", "acida-fx"):
     dbs = [20 * math.log10(rms(n, g) / rms(n, 0)) for g in (6, -12)]
     good = abs(dbs[0] - 6) < 0.05 and abs(dbs[1] + 12) < 0.05
     ok &= good
@@ -199,6 +199,20 @@ $QEMU "$TOOLS/lv2_render" urn:maquina:klong-fx 48000 3 "$OUT/klong-fx-twin.wav" 
     twin:model=2 twin:damping=120 | sed -n 's/^  twin/  twin/p' || fail=1
 for rate in 44100 48000 96000; do
     for n in klang klong klong-fx; do
+        $QEMU "$TOOLS/lv2_render" urn:maquina:$n $rate 3 "$OUT/$n-$rate.wav" | sed 's/^/  /' || fail=1
+    done
+done
+
+# Maquina Acida / Acida FX: engine fidelity (bit-exact with OpenRB-338's Rust
+# engine) and the host's behaviour are tools/acida_test; here the built
+# plugins: isolation, sample rates, the FX processing its input
+echo "== acida"
+$QEMU "$TOOLS/lv2_render" urn:maquina:acida 48000 3 "$OUT/acida-twin.wav" --twin \
+    twin:cutoff=100 twin:resonance=127 twin:engine=1 | sed -n 's/^  twin/  twin/p' || fail=1
+$QEMU "$TOOLS/lv2_render" urn:maquina:acida-fx 48000 3 "$OUT/acida-fx-twin.wav" --twin \
+    twin:dist_shape=100 twin:delay_on=1 twin:pcf_on=1 | sed -n 's/^  twin/  twin/p' || fail=1
+for rate in 44100 48000 96000; do
+    for n in acida acida-fx; do
         $QEMU "$TOOLS/lv2_render" urn:maquina:$n $rate 3 "$OUT/$n-$rate.wav" | sed 's/^/  /' || fail=1
     done
 done

@@ -1,0 +1,14 @@
+# Maquina factory preset
+# design: short decay with some envelope: a plucked bass
+voice = acida
+name = Pluck Bass
+category = Bass
+tags = short, punchy
+waveform = Saw
+engine = 2.0
+tune = 0
+cutoff = 35
+resonance = 70
+env_mod = 60
+decay = 25
+accent = 70

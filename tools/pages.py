@@ -130,6 +130,20 @@ PAGES["klong_fx"] = [
     ("RESONATOR", ["@bank", "@patch", "model", "polyphony", "structure", "brightness", "damping", "position"]),
     ("TUNE / MIX", ["coarse", "fine", "note_source", "output", "gain", "structure", "damping", "position"]),
 ]
+# Maquina Acida: the 303's knobs on one page (the panel's order), then the switches
+PAGES["acida"] = [
+    ("SYNTH", ["@bank", "@patch", "tune", "cutoff", "resonance", "env_mod", "decay", "accent"]),
+    ("WAVE / MIX", ["waveform", "engine", "accent_vel", "gain", "cutoff", "resonance", "env_mod", "decay"]),
+]
+# Maquina Acida FX: the inserts, then the delay
+PAGES["acida_fx"] = [
+    ("DIST / PCF", ["@bank", "@patch", "dist_amount", "dist_shape", "pcf_freq", "pcf_reso", "pcf_amount",
+                    "pcf_decay"]),
+    ("PCF / COMP", ["dist_on", "pcf_on", "pcf_wave", "pcf_mode", "comp_on", "comp_amount", "comp_threshold",
+                    "gain"]),
+    ("DELAY", ["delay_on", "delay_send", "delay_steps", "delay_mode", "delay_feedback", "delay_pan", "dist_amount",
+               "pcf_freq"]),
+]
 
 # Machinista profiles that differ from PAGES: only these pages, and the
 # profile (and its preset banks) only holds the parameters on them; the rest
@@ -156,6 +170,8 @@ CLAP_FILL = {
     "klang": ["coarse", "fine"],
     "klong": ["coarse", "fine"],
     "klong_fx": ["coarse", "note_source"],
+    "acida": ["waveform", "gain"],
+    "acida_fx": ["dist_on", "pcf_on"],
 }
 
 

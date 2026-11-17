@@ -1,0 +1,16 @@
+# Maquina factory preset
+# design: PCF low pass on a sixteenth pattern, fast decay
+voice = acida_fx
+name = PCF Gate
+category = Filter
+tags = modulated, short
+dist_on = Off
+pcf_on = On
+comp_on = Off
+delay_on = Off
+pcf_wave = 1
+pcf_mode = Low Pass
+pcf_freq = 40
+pcf_reso = 70
+pcf_amount = 90
+pcf_decay = 40

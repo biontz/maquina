@@ -84,6 +84,8 @@ int main()
                                  : maquina::isOneiroi(d.voice) ? oneiroiPerformance
                                  // Klang / Klong: Output (page 7) and Klong FX's note source
                                  : maquina::isMutable(d.voice) ? p.page == 7 || !std::strcmp(p.symbol, "note_source")
+                                 // Acida: the accent threshold (how notes are played)
+                                 : maquina::isAcida(d.voice) ? !std::strcmp(p.symbol, "accent_vel")
                                  : maquina::hasChannels(d.voice)
                                      ? !std::strcmp(p.symbol, "trig_mode") || std::strstr(p.symbol, "_mute") != nullptr
                                      : p.page == 7;

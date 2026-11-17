@@ -1,0 +1,13 @@
+[package]
+name = "orb-engine"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+rbs = { path = "../rbs" }
+# The tables' transcendentals, pinned so the tables are the same everywhere (task-048).
+libm = "=0.2.16"
+
+# Maquina: [dev-dependencies] removed (the corpus tests and their crates are not vendored).

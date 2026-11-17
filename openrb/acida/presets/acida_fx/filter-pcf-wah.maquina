@@ -1,0 +1,16 @@
+# Maquina factory preset
+# design: PCF band pass, slow pattern
+voice = acida_fx
+name = PCF Wah
+category = Filter
+tags = modulated
+dist_on = Off
+pcf_on = On
+comp_on = Off
+delay_on = Off
+pcf_wave = 14
+pcf_mode = Band Pass
+pcf_freq = 50
+pcf_reso = 90
+pcf_amount = 70
+pcf_decay = 100

@@ -1,0 +1,14 @@
+# Maquina factory preset
+# design: long decay and full envelope: sweeping notes
+voice = acida
+name = Long Acid
+category = Acid
+tags = long, modulated
+waveform = Saw
+engine = 2.0
+tune = 0
+cutoff = 30
+resonance = 100
+env_mod = 110
+decay = 115
+accent = 70

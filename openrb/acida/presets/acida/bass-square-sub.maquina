@@ -1,0 +1,14 @@
+# Maquina factory preset
+# design: square through a closed filter, long decay
+voice = acida
+name = Square Sub
+category = Bass
+tags = dark, clean
+waveform = Square
+engine = 2.0
+tune = 0
+cutoff = 22
+resonance = 20
+env_mod = 15
+decay = 100
+accent = 40

@@ -1,0 +1,14 @@
+# Maquina factory preset
+# design: ReBirth 1's 303 engine as a round bass
+voice = acida
+name = Vintage Bass
+category = Vintage
+tags = soft, dark
+waveform = Saw
+engine = Vintage
+tune = 0
+cutoff = 30
+resonance = 50
+env_mod = 35
+decay = 75
+accent = 50

@@ -233,6 +233,22 @@ const SectionSpec kSections[] = {
     { "RESONATOR", GraphKind::None,
       { { "structure", "Structure" }, { "brightness", "Brightness" }, { "damping", "Damping" },
         { "position", "Position" } } },
+    // Maquina Acida (+ MIX: Gain)
+    { "SYNTH", GraphKind::None,
+      { { "waveform", "Wave" }, { "tune", "Tune" }, { "cutoff", "Cutoff" }, { "resonance", "Reso" },
+        { "env_mod", "Env Mod" }, { "decay", "Decay" }, { "accent", "Accent" } } },
+    { "PLAY", GraphKind::None, { { "engine", "Engine" }, { "accent_vel", "Acc Vel" } } },
+    // Maquina Acida FX (+ MIX: Gain)
+    { "DISTORTION", GraphKind::None,
+      { { "dist_on", "On" }, { "dist_amount", "Amount" }, { "dist_shape", "Shape" } } },
+    { "PCF", GraphKind::None,
+      { { "pcf_on", "On" }, { "pcf_mode", "Mode" }, { "pcf_wave", "Wave" }, { "pcf_freq", "Freq" },
+        { "pcf_reso", "Reso" }, { "pcf_amount", "Amount" }, { "pcf_decay", "Decay" } } },
+    { "COMPRESSOR", GraphKind::None,
+      { { "comp_on", "On" }, { "comp_amount", "Amount" }, { "comp_threshold", "Thresh" } } },
+    { "DELAY", GraphKind::None,
+      { { "delay_on", "On" }, { "delay_mode", "Mode" }, { "delay_steps", "Steps" }, { "delay_send", "Send" },
+        { "delay_feedback", "Feedback" }, { "delay_pan", "Pan" } } },
 };
 
 enum class CtlType { Knob, Select, Toggle };
@@ -362,8 +378,18 @@ Layout makeLayout()
         { "MODEL", "MIX" },
         { "RESONATOR" },
         {} };
+    static const char* const kAcidaRows[3][5] = {
+        { "SYNTH" },
+        { "PLAY", "MIX" },
+        {} };
+    static const char* const kAcidaFxRows[3][5] = {
+        { "DISTORTION", "COMPRESSOR", "MIX" },
+        { "PCF" },
+        { "DELAY" } };
     const uint8_t v = voiceDef().voice;
-    const char* const (*plan)[5] = v == maquina::kKlangVoice      ? kKlangRows
+    const char* const (*plan)[5] = v == maquina::kAcidaVoice      ? kAcidaRows
+                                   : v == maquina::kAcidaFxVoice  ? kAcidaFxRows
+                                   : v == maquina::kKlangVoice    ? kKlangRows
                                    : maquina::isKlong(v)          ? kKlongRows
                                    : maquina::isOneiroi(v)        ? kOneiroiRows
                                    : v == maquina::kPlethoraVoice ? kPlethoraRows
@@ -742,6 +768,7 @@ protected:
              : maquina::isOneiroi(voiceDef().voice)        ? "based on Befaco Oneiroi firmware  \xc2\xb7  unofficial"
              : voiceDef().voice == maquina::kKlangVoice    ? "based on Mutable Instruments Plaits  \xc2\xb7  unofficial"
              : maquina::isKlong(voiceDef().voice)          ? "based on Mutable Instruments Rings  \xc2\xb7  unofficial"
+             : maquina::isAcida(voiceDef().voice)          ? "based on OpenRB-338  \xc2\xb7  unofficial"
                                                            : "based on Erica Synths LXR-02 firmware  \xc2\xb7  unofficial",
              nullptr);
 

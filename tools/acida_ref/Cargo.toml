@@ -1,0 +1,16 @@
+# acida_ref - the bit-exact reference for Maquina Acida / Acida FX: runs a
+# scenario script (scenarios/*.txt) on OpenRB-338's own Rust engine (vendored in
+# openrb/acida/third_party/openrb-338) and writes the output samples (f32 LE).
+# tools/acida_test runs the same scripts on the C++ port and compares bit for bit.
+# Build: make acida-ref (cargo; target dir build/acida_ref).
+[package]
+name = "acida_ref"
+version = "0.1.0"
+edition = "2024"
+license = "GPL-3.0-only"
+publish = false
+
+[dependencies]
+orb-engine = { path = "../../openrb/acida/third_party/openrb-338/crates/orb-engine" }
+
+[workspace]

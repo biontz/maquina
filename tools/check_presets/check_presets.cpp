@@ -23,6 +23,7 @@ static std::string presetDir(const std::string& voice)
     else if (voice == "oneiroi" || voice == "oneiroi_fx") module = "befaco/oneiroi";
     else if (voice == "klang") module = "mutable-instruments/klang";
     else if (voice == "klong" || voice == "klong_fx") module = "mutable-instruments/klong";
+    else if (voice == "acida" || voice == "acida_fx") module = "openrb/acida";
     return module + "/presets/" + voice;
 }
 
