@@ -1,8 +1,8 @@
 # Maquina
 
-Made to run on a **Raspberry Pi with [Machinista](https://github.com/photogeen/machinista)**
-(a Maschine controller as a standalone groovebox; see [Machinista](#machinista) below), and
-just as much for use in a **DAW**. Tested in Bitwig Studio on Linux, and in Ableton Live and
+Made to run on **[Machinista](https://github.com/photogeen/machinista)**, software for the
+Raspberry Pi made for Native Instruments' Maschine controllers (see [Machinista](#machinista)
+below), and just as much for use in a **DAW**. Tested in Bitwig Studio on Linux, and in Ableton Live and
 Bitwig Studio on macOS. Not yet tested on the Pi.
 
 Seventeen instrument and effect plugins, each built from the open-source code of a
