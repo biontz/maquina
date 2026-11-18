@@ -1538,6 +1538,12 @@ protected:
     }
 
     // ---- small drawing helpers
+    // text(): an empty label draws nothing (DPF asserts on empty strings)
+    float text(float x, float y, const char* t, const char* end)
+    {
+        if (t == nullptr || t[0] == '\0' || t == end) return x;
+        return UI::text(x, y, t, end);
+    }
     float textWidth(const char* t)
     {
         if (t == nullptr || t[0] == '\0') return 0.f;
