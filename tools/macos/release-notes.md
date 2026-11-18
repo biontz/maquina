@@ -12,6 +12,15 @@ Eurorack modules and a classic software synth. What each plugin is and where it 
 
 ## Install
 
+Why Terminal? macOS marks everything downloaded from the internet as "quarantined".
+Apps and plugins from developers who pay Apple for a Developer ID and have their software
+checked by Apple ("notarized") pass that check. Maquina is free software and signed only
+"ad hoc", so macOS refuses to load the plugins and shows messages like "can't be opened"
+or "is damaged". The DAW then skips them or crashes on the scan. The line below
+installs the plugins and removes the quarantine mark from them (and only from them),
+without needing an admin password. It does what the installer in the disk image would do
+after the "Open Anyway" dialogs in System Settings, but in one step.
+
 Open the .dmg file(s), then paste this into Terminal (Cmd+Space, "Terminal"):
 
 ```
@@ -19,9 +28,8 @@ for v in /Volumes/Maquina*/; do MAQUINA_INSTALL_YES=1 sh "$v/Install Maquina.com
 ```
 
 Then restart your DAW or rescan plugins. Other ways (double-click, by hand, with an AI agent)
-are in `INSTALL-macOS.txt` and `INSTALL-with-AI.md` inside each disk image. The plugins are
-signed ad hoc, not by a registered Apple developer; the installer clears macOS's download
-quarantine. Ableton Live loads VST3 only. Logic and GarageBand (AU only) can't load them.
+are in `INSTALL-macOS.txt` and `INSTALL-with-AI.md` inside each disk image. Ableton Live loads
+VST3 only. Logic and GarageBand (AU only) can't load them.
 
 Linux (x86_64, Raspberry Pi) builds: from source, see the
 [README](https://github.com/biontz/maquina#building).
