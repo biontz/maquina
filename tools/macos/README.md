@@ -1,5 +1,11 @@
 # Maquina
 
+Made to run on **[Machinista](https://github.com/photogeen/machinista)**, software for the
+Raspberry Pi made for Native Instruments' Maschine controllers (see
+[Maquina on Machinista](https://github.com/biontz/maquina#machinista)), and just as much for
+use in a **DAW**. Tested in Bitwig Studio on Linux, and in Ableton Live and Bitwig Studio on
+macOS. Not yet tested on the Pi.
+
 Seventeen free instrument and effect plugins for macOS (CLAP + VST3, universal: Intel and
 Apple Silicon, macOS 10.15 or later). Each one is built from the open-source code of a
 hardware instrument, a Eurorack module or a classic software synth, so it sounds like the
