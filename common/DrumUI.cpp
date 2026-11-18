@@ -81,7 +81,8 @@ constexpr Rgb kDim { 0x80, 0x80, 0x80 };
 constexpr Rgb kLabel { 0xa8, 0xa8, 0xa8 }; // parameter labels + section titles: lighter than kDim, below kText
 constexpr Rgb kAccent { 0xff, 0x9f, 0x2e };
 
-Color col(Rgb c, int a = 255) { return Color(c.r, c.g, c.b, a); }
+// a: 0..255 (DPF's Color takes alpha as a float 0..1)
+Color col(Rgb c, int a = 255) { return Color(c.r, c.g, c.b, float(a) / 255.f); }
 
 // ---------------------------------------------------------------------------
 // firmware envelope models (SlopeEg2.c / Decay.c), for drawing only
@@ -1731,11 +1732,13 @@ protected:
         if (fTagEdit && numTags() < 32) {
             const bool adding = fTagInput && fTagEditIdx < 0;
             const float w = std::max(chipWidth(adding ? (fTagName + "|").c_str() : "+ TAG"), 40.f);
-            fn(17, 0, place(w), ty + 1, w, 18);
+            const float x0 = place(w); // before ty is read: place() may wrap
+            fn(17, 0, x0, ty + 1, w, 18);
         }
         {
             const float w = chipWidth(fTagEdit ? "done" : "edit tags");
-            fn(15, 0, place(w), ty + 1, w, 18);
+            const float x0 = place(w);
+            fn(15, 0, x0, ty + 1, w, 18);
         }
         fn(5, 0, g.rightX + g.rightW - 44, g.y + 31, 44, 18);
         const float ly = ty + 32;
@@ -2065,7 +2068,8 @@ protected:
         {
             const bool adding = fCatInput && fCatEditIdx < 0;
             const float w = std::max(chipWidth(adding ? (fCatName + "|").c_str() : "+ CATEGORY"), 60.f);
-            fn(5, 0, place(cx, cy, w), cy, w, 18);
+            const float x0 = place(cx, cy, w); // before cy is read: place() may wrap
+            fn(5, 0, x0, cy, w, 18);
         }
         float tx = fx, ty = cy + 32;
         fDlgTagsY = ty;
@@ -2080,12 +2084,14 @@ protected:
         if (numTags() < 32) {
             const bool adding = fTagInput && fTagEditIdx < 0;
             const float w = std::max(chipWidth(adding ? (fTagName + "|").c_str() : "+ TAG"), 40.f);
-            fn(6, 0, place(tx, ty, w), ty, w, 18);
+            const float x0 = place(tx, ty, w);
+            fn(6, 0, x0, ty, w, 18);
         }
         {
             const char* lbl = fDlgEdit ? "done" : "edit categories & tags";
             const float w = chipWidth(lbl);
-            fn(7, 0, place(tx, ty, w), ty, w, 18);
+            const float x0 = place(tx, ty, w);
+            fn(7, 0, x0, ty, w, 18);
         }
         fDlgContentH = ty + 18 - g.y;
         fn(3, 0, g.x + g.w - 16 - 80 - 8 - 80, g.y + g.h - 38, 80, 24);
