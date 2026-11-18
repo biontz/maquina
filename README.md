@@ -1,5 +1,10 @@
 # Maquina
 
+Made to run on a **Raspberry Pi with [Machinista](https://github.com/photogeen/machinista)**
+(a Maschine controller as a standalone groovebox; see [Machinista](#machinista) below), and
+just as much for use in a **DAW**. Tested in Bitwig Studio on Linux, and in Ableton Live and
+Bitwig Studio on macOS. Not yet tested on the Pi.
+
 Seventeen instrument and effect plugins, each built from the open-source code of a
 hardware instrument (or, for Acida, of a classic software one):
 
@@ -47,7 +52,8 @@ hardware instrument (or, for Acida, of a classic software one):
   the PG-1000 programmer. Not a verified D-50 clone (see below).
 
 Formats: **LV2, CLAP, VST3** and a JACK standalone (via [DPF](https://github.com/DISTRHO/DPF)).
-Platforms: Linux x86_64 and Raspberry Pi OS 64-bit (aarch64); macOS/Windows later.
+Platforms: Linux x86_64, Raspberry Pi OS 64-bit (aarch64) and macOS 10.15+ (universal: Intel +
+Apple Silicon, CLAP + VST3); Windows later.
 
 > Unofficial. Not affiliated with, endorsed by or supported by Erica Synths,
 > Befaco, VCV, Rebel Technology, Mutable Instruments or the Dredrum and
