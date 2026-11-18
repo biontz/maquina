@@ -41,6 +41,7 @@ plugins: engine dpf-patches
 ifneq ($(CROSS_COMPILING),true)
 gen: plugins dpf/utils/lv2_ttl_generator
 	@$(CURDIR)/dpf/utils/generate-ttl.sh
+	@python3 tools/lv2_preset_banks.py bin/*.lv2
 else
 gen:
 endif
@@ -232,6 +233,7 @@ aarch64: $(SYSROOT_A64)/usr/lib/aarch64-linux-gnu/libc.so dpf-patches
 	@for b in bin-aarch64/*.lv2; do \
 		(cd $$b && $(QEMU_A64) $(CURDIR)/build/aarch64/lv2_ttl_generator ./$$(ls *.so | head -n1)) || exit 1; \
 	done
+	python3 tools/lv2_preset_banks.py bin-aarch64/*.lv2
 
 test-aarch64: aarch64
 	$(MAKE) -C tools/render_ref CC="clang $(A64_FLAGS)" ENGINE_BUILD=$(CURDIR)/build/engine-aarch64 \

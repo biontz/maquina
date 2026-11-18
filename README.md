@@ -987,6 +987,29 @@ a 2x screen). It starts each standalone from `bin/` with an empty config
 directory and a factory preset (`MAQUINA_UI_PRESET=<preset name>`, a test hook of
 the editor), captures its window and closes it.
 
+### Zynthian
+
+[Zynthian](https://zynthian.org) hosts LV2 plugins with jalv on a Raspberry Pi 4/5. The
+aarch64 LV2 bundles (`make aarch64`) fit it by design; **not yet tested on a Zynthian**:
+
+* Built against Debian 12 (bookworm), so they run on bookworm- and trixie-based zynthianOS.
+  The features they need (URID map, options, worker), atom MIDI, audio and control ports
+  are all provided by jalv; the plugin state (preset name, randomizer settings) is saved
+  in Zynthian snapshots.
+* Controller pages: Zynthian pages 4 controls per port group, and the port groups are the
+  editor's sections (Oscillator, Amp EG ...). Selectors and switches show as lists and
+  toggles. Kick, Tom, Snare, Cymbal, HiHat: 11 pages; Dredrum, Plethora, Oneiroi FX: 10;
+  Oneiroi 14; Klang, Klong, Acida, the FX plugins: 3 to 7; **BL-101 24 and LA-50 82
+  pages**: those two are best played from presets on a Zynthian.
+* Presets: the factory presets are LV2 presets in **banks by category** (808, 909,
+  Acoustic ...; `tools/lv2_preset_banks.py` adds the banks after the TTL generator).
+* No native editor on the Pi: the aarch64 build has no LV2 UI, so Zynthian's VNC view
+  shows nothing; its own controller pages are the interface.
+
+Install: copy `bin-aarch64/Maquina*.lv2` to the Zynthian (e.g.
+`/zynthian/zynthian-my-plugins/lv2`), then in its web configuration: LV2 > "search for new
+plugins and presets", and enable the Maquina plugins.
+
 ### Machinista
 
 Controller profiles for [Machinista](https://github.com/photogeen/machinista)
