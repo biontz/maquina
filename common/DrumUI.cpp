@@ -27,6 +27,7 @@
 #include <cmath>
 #include <cstdio>
 #include <cstring>
+#include <strings.h>
 #include <random>
 #include <vector>
 #include <cstdlib>
@@ -1071,6 +1072,13 @@ protected:
     // ------------------------------------------------------------- drawing
     void onNanoDisplay() override
     {
+        // test hook (screenshots): MAQUINA_UI_PRESET=<factory preset name> loads it at the first draw
+        if (!fPresetHookDone) {
+            fPresetHookDone = true;
+            if (const char* want = std::getenv("MAQUINA_UI_PRESET"))
+                for (size_t i = 0; i < fPresets.size(); ++i)
+                    if (!fPresets[i].user && strcasecmp(fPresets[i].name.c_str(), want) == 0) { loadPreset(int(i)); break; }
+        }
         const float s = getWidth() / kWidth;
         scale(s, s);
 
@@ -4311,6 +4319,7 @@ private:
         return e && (!v || std::strcmp(e, v) == 0);
     }
     bool fBrowser = testHook();
+    bool fPresetHookDone = false;
     int fBrowseCat = testHook("edit") ? 1 : 0;                // 0 All, 1..n categories (the plugin's, then the user's), n+1 User, n+2 Rated
     std::vector<std::string> fHidden;  // hidden factory presets (hidden.txt)
     std::vector<std::pair<std::string, int>> fRatings; // "factory:<name>" / "user:<file>" -> 1..5 (ratings.txt)

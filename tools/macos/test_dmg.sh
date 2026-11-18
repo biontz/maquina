@@ -9,13 +9,17 @@ mnt=$(mktemp -d)
 home=$(mktemp -d)
 trap 'hdiutil detach "$mnt" -quiet || true; rm -rf "$home"' EXIT
 hdiutil attach -nobrowse -readonly -mountpoint "$mnt" "$dmg" >/dev/null
+docs_fail=0
+for f in README.md INSTALL-macOS.txt INSTALL-with-AI.md LICENSE "Install Maquina.command" screenshots/kick.png; do
+    [ -e "$mnt/$f" ] || { echo "missing in the image: $f"; docs_fail=1; }
+done
 want_clap=$(ls -d "$mnt"/CLAP/*.clap | wc -l | tr -d ' ')
 want_vst3=$(ls -d "$mnt"/VST3/*.vst3 | wc -l | tr -d ' ')
 HOME="$home" MAQUINA_INSTALL_YES=1 "$mnt/Install Maquina.command"
 plug="$home/Library/Audio/Plug-Ins"
 got_clap=$(ls -d "$plug"/CLAP/Maquina*.clap | wc -l | tr -d ' ')
 got_vst3=$(ls -d "$plug"/VST3/Maquina*.vst3 | wc -l | tr -d ' ')
-fail=0
+fail=$docs_fail
 [ "$got_clap" = "$want_clap" ] && [ "$got_vst3" = "$want_vst3" ] || { echo "installed $got_clap/$want_clap CLAP, $got_vst3/$want_vst3 VST3"; fail=1; }
 [ "$want_clap" -gt 0 ] || { echo "no plugins in the image"; fail=1; }
 if xattr -lr "$plug" | grep -q com.apple.quarantine; then echo "quarantine left"; fail=1; fi

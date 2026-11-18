@@ -70,6 +70,13 @@ Platforms: Linux x86_64 and Raspberry Pi OS 64-bit (aarch64); macOS/Windows late
 
 ### LXR voices (Kick, Tom, Snare, Cymbal, HiHat)
 
+![Maquina Kick](docs/screenshots/kick.png)
+
+<img src="docs/screenshots/tom.png" alt="Maquina Tom" width="49%">
+<img src="docs/screenshots/snare.png" alt="Maquina Snare" width="49%">
+<img src="docs/screenshots/cymbal.png" alt="Maquina Cymbal" width="49%">
+<img src="docs/screenshots/hihat.png" alt="Maquina HiHat" width="49%">
+
 The firmware's DSP code is compiled **unmodified** from `drum02/third_party/lxr-firmware`
 (pinned commit in `UPSTREAM_COMMIT`), with a small hardware shim
 (`drum02/engine/fw_shim`) in place of the STM32 HAL:
@@ -114,6 +121,8 @@ build (fused multiply-adds, libm) - x86 and Arm builds agree to ~90 dB.
 
 ### Dredrum
 
+![Maquina Dredrum](docs/screenshots/dredrum.png)
+
 The module runs on an ATmega48P at 20 MHz. Its sound engine
 (`euro-modules/dredrum/third_party/dredrum/trig` and `gate`, vendored unmodified) is ported to
 portable C in `euro-modules/dredrum/engine/dredrum_core.c`:
@@ -136,6 +145,8 @@ portable C in `euro-modules/dredrum/engine/dredrum_core.c`:
   Trig restarts the decay on each note, Gate holds it while the note is down.
 
 ### Plethora
+
+![Maquina Plethora](docs/screenshots/plethora.png)
 
 The algorithms and DSP come from the VCV Rack port of the Noise Plethora
 (`befaco/plethora/third_party/noise-plethora`, vendored unmodified at a pinned commit), with a
@@ -160,6 +171,10 @@ Not reproducible: the module's analog filter stage (the VCV port's digital
 filter model is used).
 
 ### Oneiroi
+
+![Maquina Oneiroi](docs/screenshots/oneiroi.png)
+
+![Maquina Oneiroi FX](docs/screenshots/oneiroi-fx.png)
 
 The engine is the module's own patch (`befaco/oneiroi/third_party/oneiroi`, patch 1.2.2,
 vendored at a pinned commit) with the parts of the OWL library it uses
@@ -190,6 +205,12 @@ bit for bit.
 
 ### Klang and Klong
 
+![Maquina Klang](docs/screenshots/klang.png)
+
+![Maquina Klong](docs/screenshots/klong.png)
+
+![Maquina Klong FX](docs/screenshots/klong-fx.png)
+
 The engines are Mutable Instruments' own DSP code, vendored unmodified
 (`mutable-instruments/third_party/eurorack`: Plaits firmware 1.2 and Rings,
 with stmlib; see its `MAQUINA.md`) and compiled with `TEST` defined, the
@@ -215,6 +236,10 @@ portable code path of Mutable's own desktop tests and of VCV Rack:
 
 ### Acida
 
+![Maquina Acida](docs/screenshots/acida.png)
+
+![Maquina Acida FX](docs/screenshots/acida-fx.png)
+
 The engine is a C++ port of OpenRB-338's Rust engine
 (`openrb/acida/third_party/openrb-338`, the `orb-engine` crate; see its
 `MAQUINA.md`), which itself reproduces ReBirth 2.01's output byte for byte:
@@ -238,6 +263,10 @@ The engine is a C++ port of OpenRB-338's Rust engine
   about 10 dB of headroom (Gain adds up to +12 dB).
 
 ### BL-101
+
+![Maquina BL-101](docs/screenshots/bl101.png)
+
+![Maquina BL-101 FX](docs/screenshots/bl101-fx.png)
 
 S1Vave's engine is integer arithmetic only (Q15 audio, Q24 envelopes, Q8
 semitones), so it can be matched exactly:
@@ -264,6 +293,8 @@ semitones), so it can be matched exactly:
   more than the firmware does (a small difference only on loud peaks).
 
 ### LA-50
+
+![Maquina LA-50](docs/screenshots/la50.png)
 
 Unlike the other plugins, LA-50 has **no reference to be bit-exact with**:
 dsynkant has no sound engine, and there is no open D-50 emulation. What it is:
@@ -933,6 +964,14 @@ Each arch is built on its own (`bin-macos-x86_64/`, `bin-macos-arm64/`) and
 quarantine: `xattr -dr com.apple.quarantine <bundle>`. User presets live in
 `~/Library/Application Support/Maquina/presets/`.
 
+### Screenshots
+
+`tools/screenshots.sh [plugin...]` retakes the editor screenshots in
+`docs/screenshots/` (Linux, Hyprland: `hyprctl`, `grim`, `jq`, ImageMagick; best on
+a 2x screen). It starts each standalone from `bin/` with an empty config
+directory and a factory preset (`MAQUINA_UI_PRESET=<preset name>`, a test hook of
+the editor), captures its window and closes it.
+
 ### Machinista
 
 Controller profiles for [Machinista](https://github.com/photogeen/machinista)
@@ -1004,6 +1043,7 @@ tools/                      generators, tests, aarch64 sysroot, dredrum_flash + 
                             bl101_ref (the firmware, unmodified) + bl101_test (BL-101 bit-exactness + behaviour),
                             s1vave_presets.py (the 64 factory sounds -> presets),
                             la50_layout.py + d50_syx.py (D-50 patch format, .syx), la50_presets.py,
+                            screenshots.sh (the editor screenshots in docs/screenshots; MAQUINA_UI_PRESET hook),
                             la50_test (LA-50 behaviour + .syx readers)
 machinista/                 Machinista profiles + layout
 dpf/                        DPF submodule

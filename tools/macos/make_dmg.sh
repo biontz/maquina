@@ -5,7 +5,9 @@
 #   Install Maquina.command   tools/macos/install.command
 #   CLAP/   Maquina*.clap
 #   VST3/   Maquina*.vst3
-#   INSTALL-macOS.txt
+#   README.md, INSTALL-macOS.txt, INSTALL-with-AI.md   tools/macos/
+#   LICENSE                                            the repository's
+#   screenshots/                                       docs/screenshots/ (README.md's images)
 # SPDX-License-Identifier: GPL-3.0-only
 set -e
 src=$1
@@ -24,7 +26,9 @@ for b in "$src"/*.clap "$src"/*.vst3; do
 done
 cp "$here/install.command" "$stage/Install Maquina.command"
 chmod +x "$stage/Install Maquina.command"
-cp "$here/INSTALL-macOS.txt" "$stage/"
+cp "$here/README.md" "$here/INSTALL-macOS.txt" "$here/INSTALL-with-AI.md" "$here/../../LICENSE" "$stage/"
+mkdir -p "$stage/screenshots"
+cp "$here/../../docs/screenshots/"*.png "$stage/screenshots/"
 
 rm -f "$out"
 hdiutil create -volname "$vol" -srcfolder "$stage" -fs HFS+ -format UDZO -ov "$out"

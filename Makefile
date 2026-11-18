@@ -322,7 +322,8 @@ macos-dist:
 	@mkdir -p dist
 	rm -f dist/Maquina-macOS-$(MACOS_VERSION).zip
 	cd bin-macos && zip -qry ../dist/Maquina-macOS-$(MACOS_VERSION).zip *.clap *.vst3
-	zip -qj dist/Maquina-macOS-$(MACOS_VERSION).zip tools/macos/INSTALL-macOS.txt
+	zip -qj dist/Maquina-macOS-$(MACOS_VERSION).zip tools/macos/README.md tools/macos/INSTALL-macOS.txt tools/macos/INSTALL-with-AI.md LICENSE
+	cd docs && zip -qr ../dist/Maquina-macOS-$(MACOS_VERSION).zip screenshots
 	@ls -l dist/
 
 # one universal disk image: the plugins, an installer script and the notes
