@@ -18,6 +18,23 @@ below cover all Maquina plugins; each one, singly or all as a set, is on the
 **Install:** see `INSTALL-macOS.txt` (Terminal, double-click or by hand) or
 `INSTALL-with-AI.md` (a prompt for an AI coding agent that installs and checks everything).
 
+Why Terminal? macOS marks everything downloaded from the internet as "quarantined".
+Apps and plugins from developers who pay Apple for a Developer ID and have their software
+checked by Apple ("notarized") pass that check. Maquina is free software and signed only
+"ad hoc", so macOS refuses to load the plugins and shows messages like "can't be opened"
+or "is damaged". The DAW then skips them or crashes on the scan. The line below
+installs the plugins and removes the quarantine mark from them (and only from them),
+without needing an admin password. It does what the installer in the disk image would do
+after the "Open Anyway" dialogs in System Settings, but in one step.
+
+Open the .dmg file(s), then paste this into Terminal (Cmd+Space, "Terminal"):
+
+```
+for v in /Volumes/Maquina*/; do MAQUINA_INSTALL_YES=1 sh "$v/Install Maquina.command"; done
+```
+
+Then restart your DAW or rescan plugins.
+
 Hosts: any CLAP or VST3 host, e.g. Bitwig Studio, Reaper, Cubase. **Ableton Live** loads
 VST3 only, so use the `.vst3` versions there. Logic and GarageBand need AU and can't load
 them.
