@@ -1,6 +1,7 @@
 Maquina for macOS - CLAP + VST3, universal (Intel + Apple Silicon), macOS 10.15 or later
 
 What the plugins are: README.md. Let an AI coding agent do it all: INSTALL-with-AI.md.
+All plugins, singly or as a set: https://github.com/biontz/maquina/releases
 
 The plugins are signed ad hoc, not by a registered Apple developer, so macOS blocks
 them until their download "quarantine" is cleared. All three ways below do that.
@@ -9,16 +10,18 @@ Quit your DAW (Bitwig, Live, Reaper...) first: a running DAW keeps the old plugi
 
 A. Terminal (recommended: no security dialogs)
 
-  1. Open the .dmg (double-click it, e.g. ~/Downloads/Maquina-<version>-macOS.dmg).
-     It appears as /Volumes/Maquina <version>.
+  1. Open the .dmg (double-click it, e.g. ~/Downloads/Maquina-<version>-macOS.dmg, or a
+     single plugin's Maquina-<Plugin>-<version>-macOS.dmg). It appears as
+     /Volumes/Maquina <version> or /Volumes/Maquina <Plugin> <version>. You can open
+     several Maquina disk images at once.
   2. Open Terminal: Cmd+Space, type Terminal, Return.
   3. Paste this line and press Return:
 
-       sh /Volumes/Maquina*/"Install Maquina.command"
+       for v in /Volumes/Maquina*/; do MAQUINA_INSTALL_YES=1 sh "$v/Install Maquina.command"; done
 
-     It copies every plugin to ~/Library/Audio/Plug-Ins/CLAP and VST3, replaces older
-     Maquina versions, clears the quarantine and lists what it installed.
-     (Only one Maquina disk image may be open; eject older ones first.)
+     It installs from every open Maquina disk image: copies the plugins to
+     ~/Library/Audio/Plug-Ins/CLAP and VST3, replaces older Maquina versions, clears the
+     quarantine and lists what it installed. (Eject disk images of older versions first.)
   4. Start your DAW and rescan plugins.
 
   The same, step by step, if you want to see each one:
@@ -30,7 +33,10 @@ A. Terminal (recommended: no security dialogs)
        xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/CLAP/Maquina*.clap
        xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/Maquina*.vst3
 
-  (The rm line removes old Maquina plugins only; your presets are elsewhere and stay.)
+  (/Volumes/Maquina* picks up every open Maquina disk image. The rm line removes ALL
+  installed Maquina plugins, so that only the ones from the open
+  disk images are left; skip it if you add single plugins to others you already have.
+  Your presets are elsewhere and stay.)
 
 
 B. Double-click the installer

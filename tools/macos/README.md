@@ -11,6 +11,10 @@ Apple Silicon, macOS 10.15 or later). Each one is built from the open-source cod
 hardware instrument, a Eurorack module or a classic software synth, so it sounds like the
 original, not like an imitation of it.
 
+**This disk image** holds the plugins in its `CLAP/` and `VST3/` folders. The descriptions
+below cover all Maquina plugins; each one, singly or all as a set, is on the
+[Releases page](https://github.com/biontz/maquina/releases).
+
 **Install:** see `INSTALL-macOS.txt` (Terminal, double-click or by hand) or
 `INSTALL-with-AI.md` (a prompt for an AI coding agent that installs and checks everything).
 

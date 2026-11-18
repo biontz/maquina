@@ -265,6 +265,7 @@ test-aarch64: aarch64
 #                      Silicon), universal binaries, signatures, exports
 #   make macos-dist    bin-macos/ -> dist/Maquina-macOS-<version>.zip
 #   make macos-dmg     bin-macos/ -> dist/Maquina-<version>-macOS.dmg (+ install test)
+#   make macos-dmg-each  one dmg per instrument (+ its FX): dist/Maquina-<Name>-<version>-macOS.dmg
 #
 # Each arch is a full build of its own (bin-macos-<arch>/, own engine library:
 # x86_64 gets the Arm float->int pass, arm64 compiles the firmware untouched);
@@ -333,6 +334,24 @@ macos-dmg:
 	tools/macos/make_dmg.sh bin-macos dist/Maquina-$(MACOS_VERSION)-macOS.dmg "Maquina $(MACOS_VERSION)"
 	tools/macos/test_dmg.sh dist/Maquina-$(MACOS_VERSION)-macOS.dmg
 
+# one small disk image per instrument, its FX version included (the GitHub release's
+# single downloads): dist/Maquina-<Name>-<version>-macOS.dmg, each with the installer,
+# the notes and an install test. Groups whose bundles are not in bin-macos/ are skipped.
+MACOS_DMG_GROUPS := Kick Tom Snare Cymbal HiHat Dredrum Plethora Oneiroi Klang Klong Acida BL101 LA50
+macos-dmg-each:
+	@mkdir -p dist build
+	@for g in $(MACOS_DMG_GROUPS); do \
+		[ -d bin-macos/Maquina$$g.clap ] || { echo "skip $$g (not built)"; continue; }; \
+		st=build/dmg-$$g; rm -rf $$st; mkdir -p $$st; \
+		for b in bin-macos/Maquina$$g.clap bin-macos/Maquina$$g.vst3 \
+		         bin-macos/Maquina$${g}FX.clap bin-macos/Maquina$${g}FX.vst3; do \
+			[ -d $$b ] && ditto $$b $$st/$$(basename $$b); \
+		done; \
+		tools/macos/make_dmg.sh $$st dist/Maquina-$$g-$(MACOS_VERSION)-macOS.dmg "Maquina $$g $(MACOS_VERSION)" || exit 1; \
+		tools/macos/test_dmg.sh dist/Maquina-$$g-$(MACOS_VERSION)-macOS.dmg || exit 1; \
+		rm -rf $$st; \
+	done
+
 clean:
 	$(MAKE) -C drum02/engine clean
 	$(MAKE) -C mutable-instruments clean
@@ -343,4 +362,4 @@ clean:
 	rm -rf bin build bin-macos bin-macos-* dist
 
 .PHONY: presets all engine dpf-patches plugins gen tools test install clean aarch64 test-aarch64 dredrum-flash dredrum-check \
-	oneiroi-check acida-ref acida-check bl101-ref bl101-check la50-check macos macos-test macos-dist macos-dmg
+	oneiroi-check acida-ref acida-check bl101-ref bl101-check la50-check macos macos-test macos-dist macos-dmg macos-dmg-each

@@ -5,6 +5,10 @@ Raspberry Pi made for Native Instruments' Maschine controllers (see [Machinista]
 below), and just as much for use in a **DAW**. Tested in Bitwig Studio on Linux, and in Ableton Live and
 Bitwig Studio on macOS. Not yet tested on the Pi.
 
+**Download (macOS):** [Releases](https://github.com/biontz/maquina/releases): all plugins in
+one disk image, or one per instrument (with its FX version). Linux and the Pi: build from
+source, see [Building](#building).
+
 Seventeen instrument and effect plugins, each built from the open-source code of a
 hardware instrument (or, for Acida, of a classic software one):
 
@@ -962,6 +966,7 @@ make macos          # MACOS_PLUGINS (default: all plugins) -> bin-macos/
 make macos-test     # CLAP checks for both archs, universal + signed + exports
 make macos-dist     # dist/Maquina-macOS-<version>.zip
 make macos-dmg      # dist/Maquina-<version>-macOS.dmg, then a test install into a temp HOME
+make macos-dmg-each # dist/Maquina-<Plugin>-<version>-macOS.dmg per instrument (+ its FX), each tested
 ```
 
 Each arch is built on its own (`bin-macos-x86_64/`, `bin-macos-arm64/`) and
@@ -969,6 +974,10 @@ Each arch is built on its own (`bin-macos-x86_64/`, `bin-macos-arm64/`) and
 `~/Library/Audio/Plug-Ins/CLAP` and `VST3`, then clear the download
 quarantine: `xattr -dr com.apple.quarantine <bundle>`. User presets live in
 `~/Library/Application Support/Maquina/presets/`.
+
+A `v*` tag (e.g. `git tag v0.1.0 && git push origin v0.1.0`) makes the macOS workflow
+publish a GitHub release with all disk images, the zip and `SHA256SUMS.txt`
+(notes: `tools/macos/release-notes.md` + GitHub's generated changelog).
 
 ### Screenshots
 
