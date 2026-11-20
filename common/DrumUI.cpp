@@ -59,8 +59,10 @@ const VoiceDef& voiceDef() { return maquina::k_voices[MAQUINA_VOICE_INDEX]; }
 // ---------------------------------------------------------------------------
 // look
 
-constexpr float kWidth = 1080.f;
-constexpr float kHeaderH = 30.f;
+#include "ui/Theme.hpp"
+
+constexpr float kWidth = theme().width;
+constexpr float kHeaderH = kNew ? kChromeHeaderH : 30.f;
 constexpr float kMargin = 8.f;
 constexpr float kGap = 6.f;
 constexpr float kTitleH = 18.f;
@@ -71,19 +73,23 @@ constexpr float kSelectW = 96.f;
 constexpr float kToggleW = 54.f;
 constexpr float kGraphW = 168.f;
 
-struct Rgb { int r, g, b; };
-constexpr Rgb kBg { 0x1c, 0x1c, 0x1c };
-constexpr Rgb kPanel { 0x26, 0x26, 0x26 };
-constexpr Rgb kBorder { 0x36, 0x36, 0x36 };
-constexpr Rgb kWell { 0x1a, 0x1a, 0x1a };
-constexpr Rgb kTrack { 0x45, 0x45, 0x45 };
-constexpr Rgb kText { 0xc8, 0xc8, 0xc8 };
-constexpr Rgb kDim { 0x80, 0x80, 0x80 };
-constexpr Rgb kLabel { 0xa8, 0xa8, 0xa8 }; // parameter labels + section titles: lighter than kDim, below kText
-constexpr Rgb kAccent { 0xff, 0x9f, 0x2e };
+// the classic palette; the new look's chrome tokens (Theme.hpp) for the browser, dialogs, popups
+constexpr Rgb kBg = kNew ? Rgb { 0x14, 0x15, 0x18 } : Rgb { 0x1c, 0x1c, 0x1c };
+constexpr Rgb kPanel = kNew ? kChromeBg : Rgb { 0x26, 0x26, 0x26 };
+constexpr Rgb kBorder = kNew ? kChromeBtnLine : Rgb { 0x36, 0x36, 0x36 };
+constexpr Rgb kWell = kNew ? kChromeWell : Rgb { 0x1a, 0x1a, 0x1a };
+constexpr Rgb kTrack = kNew ? Rgb { 0x2e, 0x34, 0x3d } : Rgb { 0x45, 0x45, 0x45 };
+constexpr Rgb kText = kNew ? kChromeText : Rgb { 0xc8, 0xc8, 0xc8 };
+constexpr Rgb kDim = kNew ? kChromeText2 : Rgb { 0x80, 0x80, 0x80 };
+// parameter labels + section titles: lighter than kDim, below kText
+constexpr Rgb kLabel = kNew ? Rgb { 0xc3, 0xca, 0xd3 } : Rgb { 0xa8, 0xa8, 0xa8 };
+constexpr Rgb kAccent = kNew ? theme().accent : Rgb { 0xff, 0x9f, 0x2e };
 
 // a: 0..255 (DPF's Color takes alpha as a float 0..1)
 Color col(Rgb c, int a = 255) { return Color(c.r, c.g, c.b, float(a) / 255.f); }
+
+#include "ui/Fonts.hpp"
+#include "ui/Controls.cpp"
 
 // ---------------------------------------------------------------------------
 // firmware envelope models (SlopeEg2.c / Decay.c), for drawing only
@@ -304,7 +310,11 @@ struct Ctl {
     uint32_t param;
     CtlType type;
     const char* label;
-    float x, y, w, h;   // cell
+    float x, y, w, h;   // cell (the new look: the hit area)
+    // the new look's fixed layouts (size > 0): the control's centre and size (knob
+    // diameter; a switch / selector: its body w x h around the centre), the label's
+    // bottom line and the value's centre line ('\n' in label: two lines)
+    float ax = 0, ay = 0, size = 0, bw = 0, bh = 0, labelY = 0, valueY = 0;
 };
 struct Graph {
     GraphKind kind;
@@ -424,6 +434,12 @@ struct La50Panel {
     Box pcmPrev, pcmName, pcmNext; // the PCM wave selector (row 1's free end)
 };
 
+// the new look's panel decorations: printed rules, the logo block
+struct Deco {
+    enum Kind { VRule, HRule, Logo } kind;
+    Box b;
+};
+
 struct Layout {
     std::vector<Section> sections;
     std::vector<Ctl> ctls;
@@ -431,7 +447,12 @@ struct Layout {
     RandPanel rand;
     La50Panel la50;
     float height = 400.f;
+    // the new look: the machine panel, the random drawer, decorations
+    Box panel {}, drawer {};
+    std::vector<Deco> decos;
 };
+
+void makeNewLayout(Layout& L); // ui/Layouts.cpp
 
 // the PG-1000's three rows (D-50 field names, tools/la50_layout.py)
 struct La50SlotSpec { const char* partial; const char* pLabel; const char* common; const char* cLabel;
@@ -608,6 +629,10 @@ float makeLa50(Layout& L, float y)
 Layout makeLayout()
 {
     Layout L;
+    if (kNew) {
+        makeNewLayout(L);
+        return L;
+    }
     struct Pending {
         const SectionSpec* spec;
         std::vector<std::pair<uint32_t, const char*>> items;
@@ -946,6 +971,8 @@ constexpr float kPrevX = kPresetX, kNameX = kPrevX + kArrowW + 2, kNextX = kName
 constexpr float kSaveX = kNextX + kArrowW + 8;
 constexpr float kInitW = 40.f, kInitX = kSaveX + kSaveW + 6;
 
+#include "ui/Layouts.cpp"
+
 } // namespace maquina_ui
 using namespace maquina_ui;
 
@@ -962,6 +989,7 @@ public:
           fHeight(layout().height)
     {
         loadSharedResources();
+        if (kNew) loadThemeFonts(*this);
         for (uint32_t i = 0; i < fValues.size(); ++i)
             fValues[i] = defOf(i);
         loadPresetList();
@@ -1059,6 +1087,8 @@ protected:
             fmtTime(buf, n, maquina::oneiroi::fallSeconds(iv));
         } else if (!std::strcmp(p.symbol, "env_sustain")) {
             std::snprintf(buf, n, "%.0f %%", maquina::oneiroi::sustainLevel(iv) * 100.0);
+        } else if (kNew && !std::strcmp(p.symbol, "gain")) {
+            std::snprintf(buf, n, "%+d dB", iv);
         } else if (p.kind == ParamKind::Int) {
             if (p.offset < 0) std::snprintf(buf, n, "%+d", iv); // bipolar
             else std::snprintf(buf, n, "%d", iv);
@@ -1081,6 +1111,14 @@ protected:
         }
         const float s = getWidth() / kWidth;
         scale(s, s);
+
+        if (kNew) {
+            drawNewLook();
+            if (fPopup >= 0) drawPopup();
+            if (fBrowser) drawBrowser();
+            if (fSaveDlg) drawSaveDialog();
+            return;
+        }
 
         beginPath();
         rect(0, 0, kWidth, fHeight);
@@ -1166,6 +1204,280 @@ protected:
         if (fSaveDlg) drawSaveDialog();
     }
 
+    // ------------------------------------------------------------- the new look
+    // (docs/ui-redesign.md; geometry: ui/Layouts.cpp, drawing primitives: ui/Controls.cpp)
+    void drawNewLook()
+    {
+        const Theme& T = theme();
+        const Layout& L = layout();
+        useFace(*this, "mono");
+        beginPath();
+        rect(0, 0, kWidth, fHeight);
+        fillColor(col(T.window));
+        fill();
+        drawHeaderNew();
+        if (kTheme == ThemeId::Silver303) drawSilverPanel(*this, L.panel.x, L.panel.y, L.panel.w, L.panel.h, T.panelRadius);
+        for (const Deco& d : L.decos) drawDeco(d);
+        for (const Ctl& c : fCtls) drawCtlNew(c);
+        drawDrawerNew();
+    }
+
+    void drawHeaderNew()
+    {
+        const Theme& T = theme();
+        const HeaderGeo& H = headerGeo();
+        beginPath();
+        rect(0, 0, kWidth, kChromeHeaderH);
+        fillColor(col(kChromeBg));
+        fill();
+        beginPath();
+        rect(0, kChromeHeaderH - 1, kWidth, 1);
+        fillColor(col(kChromeLine));
+        fill();
+        // MAQUINA <NAME>
+        useFace(*this, "mono-sb");
+        fontPx(*this, 13);
+        textLetterSpacing(13 * 0.12f);
+        textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+        fillColor(col(kChromeText));
+        text(H.titleX, H.titleY, "MAQUINA", nullptr);
+        std::string name = voiceDef().name;
+        for (char& ch : name) ch = char(std::toupper(ch));
+        fillColor(col(T.accentText));
+        text(H.titleX + 8 * 13 * (kMonoAdv + 0.12f), H.titleY, name.c_str(), nullptr);
+        textLetterSpacing(0);
+        useFace(*this, "mono");
+        // preset bar: [‹] [ name  category ▾ ] [›] [SAVE] [INIT]
+        drawChromeButton(*this, H.prev.x, H.prev.y, H.prev.w, H.prev.h, "\xe2\x80\xb9", false);
+        drawChromeButton(*this, H.next.x, H.next.y, H.next.w, H.next.h, "\xe2\x80\xba", false);
+        const Box& nb = H.name;
+        beginPath();
+        roundedRect(nb.x + 0.5f, nb.y + 0.5f, nb.w - 1, nb.h - 1, 6);
+        fillColor(col(kChromeWell));
+        fill();
+        strokeColor(col(fBrowser ? T.accent : kChromeBtnLine));
+        strokeWidth(1);
+        stroke();
+        const float my = nb.y + nb.h / 2 + 1;
+        fontPx(*this, 12);
+        float catW = 0;
+        std::string cat;
+        if (fPreset >= 0) {
+            const PresetEntry& e = fPresets[size_t(fPreset)];
+            cat = e.user && e.category != "User" ? "User \xc2\xb7 " + e.category : e.category;
+        }
+        catW = textWidth(cat.c_str()) + 16;
+        textAlign(ALIGN_RIGHT | ALIGN_MIDDLE);
+        fillColor(col(kChromeText2));
+        text(nb.x + nb.w - 26, my, cat.c_str(), nullptr);
+        beginPath(); // the list mark ▾
+        moveTo(nb.x + nb.w - 18, my - 3);
+        lineTo(nb.x + nb.w - 10, my - 3);
+        lineTo(nb.x + nb.w - 14, my + 2);
+        closePath();
+        fill();
+        textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+        fillColor(col(kChromeText));
+        lcdText(nb.x + 10, my, nb.w - 20 - catW - 8, fPresetName + (fPresetDirty ? " *" : ""));
+        drawChromeButton(*this, H.save.x, H.save.y, H.save.w, H.save.h, "SAVE", fSaveDlg);
+        drawChromeButton(*this, H.init.x, H.init.y, H.init.w, H.init.h, "INIT", false);
+        // credit (never wraps: cut to the room left of the zoom buttons)
+        fontPx(*this, 11);
+        textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+        fillColor(col(kChromeText2));
+        const float room = H.creditRight - (H.init.x + H.init.w + 12);
+        const float cw = std::min(room, textWidth(H.credit));
+        lcdText(H.creditRight - cw, my, room, H.credit);
+        // zoom: [–] 100% [+]
+        drawChromeButton(*this, H.minus.x, H.minus.y, H.minus.w, H.minus.h, "\xe2\x80\x93", false);
+        drawChromeButton(*this, H.plus.x, H.plus.y, H.plus.w, H.plus.h, "+", false);
+        char zbuf[16];
+        std::snprintf(zbuf, sizeof zbuf, "%d%%", int(std::lround(kZooms[fZoom] * 100)));
+        fontPx(*this, 12);
+        textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+        fillColor(col(kChromeText));
+        text(H.pct.x + H.pct.w / 2, my, zbuf, nullptr);
+    }
+
+    void drawDrawerNew()
+    {
+        const Theme& T = theme();
+        const Layout& L = layout();
+        const RandPanel& R = L.rand;
+        beginPath();
+        rect(L.drawer.x, L.drawer.y, L.drawer.w, L.drawer.h);
+        fillColor(col(kChromeBg));
+        fill();
+        beginPath();
+        rect(L.drawer.x, L.drawer.y, L.drawer.w, 1);
+        fillColor(col(kChromeLine));
+        fill();
+        // RANDOM (accent) and BACK
+        beginPath();
+        roundedRect(R.random.x, R.random.y, R.random.w, R.random.h, 6);
+        fillColor(col(T.accent));
+        fill();
+        useFace(*this, "mono-sb");
+        fontPx(*this, 12);
+        textLetterSpacing(12 * 0.08f);
+        textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+        fillColor(col(T.onAccent));
+        text(R.random.x + R.random.w / 2, R.random.y + R.random.h / 2 + 1, "RANDOM", nullptr);
+        textLetterSpacing(0);
+        useFace(*this, "mono");
+        drawChromeButton(*this, R.back.x, R.back.y, R.back.w, R.back.h, "BACK", false, fRunActive);
+        for (int g = 0; g < maquina::kNumRandGroups; ++g) {
+            if (!R.used[g]) continue;
+            const Box& c = R.cell[g];
+            const bool locked = fRand.lock[g];
+            const Color tc = col(locked ? T.accentText : kChromeText);
+            drawPadlock12(*this, c.x, c.y + 1, locked, tc);
+            useFace(*this, "mono-sb");
+            fontPx(*this, 11);
+            textLetterSpacing(11 * 0.08f);
+            textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+            fillColor(tc);
+            scissor(c.x, c.y, c.w, 17);
+            text(c.x + 18, c.y + 8, maquina::kRandGroups[g].title, nullptr);
+            resetScissor();
+            textLetterSpacing(0);
+            useFace(*this, "mono");
+            const Bar b = barOf(c);
+            const bool hot = fRangeDrag / 2 == g && fRangeDrag >= 0;
+            drawRangeBar(*this, b.x, b.y, b.w, fRand.min[g], fRand.max[g], locked, !locked && (fRandHover == g || hot),
+                         hot ? fRangeDrag % 2 : -1);
+            char buf[32];
+            if (locked) std::snprintf(buf, sizeof buf, "locked");
+            else std::snprintf(buf, sizeof buf, "%d\xe2\x80\x93%d %%", fRand.min[g], fRand.max[g]);
+            fontPx(*this, 11);
+            textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+            fillColor(col(hot ? kChromeText : kChromeText2));
+            text(c.x, c.y + 43, buf, nullptr);
+        }
+    }
+
+    // panel print: upper case, letter-spaced; '\n' = next line; (x, yBottom) = the last
+    // line's centre-bottom
+    void printLabel(const char* label, float x, float yCentreLast, float px, float spacingEm, Rgb c)
+    {
+        std::string s = label ? label : "";
+        for (char& ch : s) ch = char(std::toupper(ch));
+        std::vector<std::string> lines;
+        size_t a = 0;
+        for (size_t b; (b = s.find('\n', a)) != std::string::npos; a = b + 1) lines.push_back(s.substr(a, b - a));
+        lines.push_back(s.substr(a));
+        textLetterSpacing(px * spacingEm);
+        textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+        fillColor(col(c));
+        const float lh = px * 1.15f;
+        for (size_t k = 0; k < lines.size(); ++k)
+            text(x, yCentreLast - lh * float(lines.size() - 1 - k), lines[k].c_str(), nullptr);
+        textLetterSpacing(0);
+    }
+
+    void drawDeco(const Deco& d)
+    {
+        const Theme& T = theme();
+        switch (d.kind) {
+        case Deco::VRule:
+        case Deco::HRule:
+            beginPath();
+            rect(d.b.x, d.b.y, d.b.w, d.b.h);
+            fillColor(col(T.print));
+            fill();
+            break;
+        case Deco::Logo: {
+            // "Acida" / BASS LINE VOICE / the smiley (mockups/acida.html)
+            const float cx = d.b.x + d.b.w / 2, top = d.b.y + (d.b.h - 136) / 2;
+            useFace(*this, "logo");
+            fontPx(*this, 32);
+            textLetterSpacing(-0.64f);
+            textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+            fillColor(col(T.print));
+            text(cx, top + 16, "Acida", nullptr);
+            textLetterSpacing(0);
+            useFace(*this, "mono-sb");
+            fontPx(*this, 9.5f);
+            textLetterSpacing(9.5f * 0.12f);
+            fillColor(col(T.value));
+            text(cx, top + 42, voiceDef().voice == maquina::kAcidaFxVoice ? "EFFECT CHAIN" : "BASS LINE VOICE", nullptr);
+            textLetterSpacing(0);
+            useFace(*this, "mono");
+            drawSmiley(*this, cx, top + 99, 74, T.print);
+            break;
+        }
+        }
+    }
+
+    float valueFraction(uint32_t i) const
+    {
+        const float lo = minOf(i), hi = maxOf(i);
+        return hi > lo ? (fValues[i] - lo) / (hi - lo) : 0.f;
+    }
+
+    void drawCtlNew(const Ctl& c)
+    {
+        const Theme& T = theme();
+        const bool hot = fDrag == int(c.param) || fPopup == int(c.param);
+        char buf[48];
+        valueText(c.param, buf, sizeof buf);
+        switch (c.type) {
+        case CtlType::Knob:
+            useFace(*this, "print");
+            fontPx(*this, 11);
+            printLabel(c.label, c.ax, c.labelY - 6.5f, 11, 0.07f, T.print);
+            drawKnobStyled(*this, T.knob, c.ax, c.ay, c.size, valueFraction(c.param), hot);
+            useFace(*this, "mono");
+            fontPx(*this, 11);
+            textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+            fillColor(col(T.value));
+            text(c.ax, c.valueY, buf, nullptr);
+            break;
+        case CtlType::Switch: {
+            const VoiceParam& p = paramAt(voiceDef(), c.param);
+            const int n = std::max<int>(1, p.numLabels), cur = intOf(int(c.param));
+            useFace(*this, "print");
+            fontPx(*this, 11);
+            printLabel(c.label, c.x + c.w / 2, c.labelY, 11, 0.07f, T.print);
+            const float sx = c.ax - c.bw / 2, sy = c.ay - c.bh / 2;
+            drawSlideSwitchV(*this, sx, sy, c.bw, c.bh, n, cur, hot);
+            fontPx(*this, 10);
+            for (int k = 0; k < n; ++k) {
+                std::string l = p.labels && k < p.numLabels ? p.labels[k] : "";
+                for (char& ch : l) ch = char(std::toupper(ch));
+                textAlign(ALIGN_RIGHT | ALIGN_MIDDLE);
+                fillColor(col(T.print, k == cur ? 255 : 150));
+                text(sx - 10, slideSwitchPosY(sy, c.bh, n, k), l.c_str(), nullptr);
+            }
+            useFace(*this, "mono");
+            break;
+        }
+        case CtlType::Select: {
+            useFace(*this, "print");
+            fontPx(*this, 11);
+            printLabel(c.label, c.ax, c.labelY, 11, 0.07f, T.print);
+            float bx, by, bw, bh;
+            selectBox(c, bx, by, bw, bh);
+            const Rgb btn { 0x2a, 0x2a, 0x28 }, line { 0x1d, 0x1d, 0x1b };
+            drawStepButton(*this, bx, by + 1, 22, bh - 2, false, btn, line, kChromeText);
+            drawStepButton(*this, bx + bw - 22, by + 1, 22, bh - 2, true, btn, line, kChromeText);
+            useFace(*this, "mono");
+            std::string v = buf;
+            for (char& ch : v) ch = char(std::toupper(ch));
+            drawLedWindow(*this, bx + 26, by, bw - 52, bh, v.c_str(), { 0xff, 0x5a, 0x40 }, 14);
+            if (hot) {
+                beginPath();
+                roundedRect(bx + 26 - 1, by - 1, bw - 50, bh + 2, 4);
+                strokeColor(col(T.accent, 160));
+                strokeWidth(1);
+                stroke();
+            }
+            break;
+        }
+        default: break; // later steps: toggles, sliders on the new panels
+        }
+    }
+
     // ------------------------------------------------------------- randomize
     // Maquina Dredrum OSC title bar: [RND ON|OFF] [ROLL]
     void drawOscRandom(const Section& sec)
@@ -1212,8 +1524,8 @@ protected:
     }
     // range bar of a group cell
     struct Bar { float x, y, w; };
-    static Bar barOf(const Box& c) { return { c.x + 8, c.y + 34, c.w - 16 }; }
-    static Box titleOf(const Box& c) { return { c.x, c.y, c.w, 20 }; }
+    static Bar barOf(const Box& c) { return kNew ? Bar { c.x, c.y + 25, c.w } : Bar { c.x + 8, c.y + 34, c.w - 16 }; }
+    static Box titleOf(const Box& c) { return { c.x, c.y, c.w, kNew ? 17.f : 20.f }; }
 
     void drawPadlock(float x, float y, bool closed, Color c) // ~8 x 10
     {
@@ -2939,6 +3251,7 @@ protected:
 
     void selectBox(const Ctl& c, float& bx, float& by, float& bw, float& bh) const
     {
+        if (c.size > 0) { bx = c.ax - c.bw / 2; bw = c.bw; by = c.ay - c.bh / 2; bh = c.bh; return; }
         bx = c.x + 2; bw = c.w - 4; by = c.y + 18; bh = 22;
     }
 
@@ -3601,6 +3914,15 @@ protected:
     // the position a click at y picks
     int switchPosAt(const Ctl& c, float y) const
     {
+        if (c.size > 0) { // the new look: nearest lever position
+            const int n = std::max<int>(1, paramAt(voiceDef(), c.param).numLabels);
+            int best = 0;
+            for (int k = 1; k < n; ++k)
+                if (std::fabs(slideSwitchPosY(c.ay - c.bh / 2, c.bh, n, k) - y) <
+                    std::fabs(slideSwitchPosY(c.ay - c.bh / 2, c.bh, n, best) - y))
+                    best = k;
+            return best;
+        }
         const SwitchGeo g = switchGeo(c);
         int best = 0;
         for (int k = 1; k < g.n; ++k)
@@ -3852,8 +4174,9 @@ protected:
         const int maxRows = int((fHeight - kHeaderH - 2 * kMargin) / kItemH);
         cols = (n + maxRows - 1) / maxRows;
         rows = (n + cols - 1) / cols;
-        px = std::clamp(c ? c->x : fPopupAX, kMargin, kWidth - kMargin - cols * kItemW);
-        py = c ? c->y + 40 : fPopupAY;
+        const bool fixed = c && c->size > 0;
+        px = std::clamp(c ? (fixed ? c->ax - c->bw / 2 : c->x) : fPopupAX, kMargin, kWidth - kMargin - cols * kItemW);
+        py = c ? (fixed ? c->ay + c->bh / 2 + 4 : c->y + 40) : fPopupAY;
         if (py + rows * kItemH > fHeight - kMargin)
             py = std::max(kHeaderH, fHeight - kMargin - rows * kItemH);
     }
@@ -4014,16 +4337,17 @@ protected:
             return false;
         }
         if (fSaveDlg) return ev.button == kMouseButtonLeft ? dialogClick(x, y) : true;
-        if (ev.button == kMouseButtonLeft && y >= kZoomY && y < kZoomY + kZoomH) {
-            if (x >= kPrevX && x < kPrevX + kArrowW) {
+        const HeaderGeo& H = headerGeo();
+        if (ev.button == kMouseButtonLeft) {
+            if (H.prev.hit(x, y)) {
                 if (!fPresets.empty()) loadPreset(fPreset < 0 ? int(fPresets.size()) - 1 : (fPreset + int(fPresets.size()) - 1) % int(fPresets.size()));
                 return true;
             }
-            if (x >= kNextX && x < kNextX + kArrowW) {
+            if (H.next.hit(x, y)) {
                 if (!fPresets.empty()) loadPreset(fPreset < 0 ? 0 : (fPreset + 1) % int(fPresets.size()));
                 return true;
             }
-            if (x >= kNameX && x < kNameX + kPresetNameW) {
+            if (H.name.hit(x, y)) {
                 fBrowser = !fBrowser;
                 fSearchFocus = false;
                 fPopup = -1;
@@ -4031,8 +4355,8 @@ protected:
                 repaint();
                 return true;
             }
-            if (x >= kSaveX && x < kSaveX + kSaveW) { openSaveDialog(); return true; }
-            if (x >= kInitX && x < kInitX + kInitW) { initPatch(); return true; }
+            if (H.save.hit(x, y)) { openSaveDialog(); return true; }
+            if (H.init.hit(x, y)) { initPatch(); return true; }
         }
         if (fBrowser) return ev.button == kMouseButtonLeft && y >= kHeaderH ? browserClick(x, y) : true;
         if (fPopup < 0 && ev.button == kMouseButtonLeft) {
@@ -4091,8 +4415,8 @@ protected:
             }
         }
         if (layout().rand.back.hit(x, y)) { doBack(); return true; }
-        if (y >= kZoomY && y < kZoomY + kZoomH && x >= kZoomX && x < kZoomX + kZoomW) {
-            const int z = x < kZoomX + kZoomW / 2 ? std::max(0, fZoom - 1) : std::min(kNumZooms - 1, fZoom + 1);
+        if (H.minus.hit(x, y) || H.plus.hit(x, y)) {
+            const int z = H.minus.hit(x, y) ? std::max(0, fZoom - 1) : std::min(kNumZooms - 1, fZoom + 1);
             if (z != fZoom) {
                 fZoom = z;
                 saveZoom(fZoom);
@@ -4200,6 +4524,10 @@ protected:
             if (h != fPopupHover) { fPopupHover = h; repaint(); }
             return true;
         }
+        if (kNew) {
+            const int h = randCellAt(x, y);
+            if (h != fRandHover) { fRandHover = h; repaint(); }
+        }
         if (fRangeDrag >= 0) {
             setRangeFromX(x);
             return true;
@@ -4304,6 +4632,7 @@ private:
 
     maquina::RandSettings fRand;
     int fRangeDrag = -1;          // group * 2 + (0 min / 1 max) being dragged
+    int fRandHover = -1;          // the new look: the drawer group under the mouse (handles shown)
     bool fSnapshotDirty = false;
 
     // presets
