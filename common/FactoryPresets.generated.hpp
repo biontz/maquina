@@ -11,23 +11,26 @@ static const PresetValue k_kick_pv2[] = { { 0, -30 }, { 5, 58 }, { 6, 25 }, { 7,
 static const PresetValue k_kick_pv3[] = { { 0, -31 }, { 5, 65 }, { 6, 20 }, { 7, 70 }, { 8, 40 }, { 9, 3 }, { 10, 10 }, { 11, 10 }, { 12, 1 }, { 17, 2 }, { 18, 20 } };
 static const PresetValue k_kick_pv4[] = { { 0, -26 }, { 2, 1 }, { 5, 30 }, { 7, 20 }, { 9, 85 }, { 17, 3 }, { 18, 110 }, { 19, 60 }, { 23, 50 }, { 34, 100 } };
 static const PresetValue k_kick_pv5[] = { { 0, -27 }, { 2, 1 }, { 5, 26 }, { 6, 40 }, { 7, 16 }, { 8, 20 }, { 9, 75 }, { 17, 2 }, { 18, 90 }, { 19, 70 }, { 34, 85 } };
-static const PresetValue k_kick_pv6[] = { { 0, -28 }, { 5, 25 }, { 6, 25 }, { 7, 25 }, { 8, 25 }, { 9, 45 }, { 17, 2 }, { 18, 55 } };
-static const PresetValue k_kick_pv7[] = { { 0, -28 }, { 5, 25 }, { 6, 25 }, { 7, 25 }, { 8, 25 }, { 9, 45 }, { 17, 2 }, { 18, 80 }, { 20, 100 }, { 21, 70 }, { 22, 5 } };
-static const PresetValue k_kick_pv8[] = { { 0, -28 }, { 5, 30 }, { 6, 30 }, { 7, 35 }, { 8, 30 }, { 9, 50 }, { 10, 10 }, { 11, 40 }, { 12, 1 }, { 17, 2 }, { 18, 70 } };
-static const PresetValue k_kick_pv9[] = { { 0, -24 }, { 5, 20 }, { 6, 35 }, { 7, 12 }, { 9, 25 }, { 17, 5 }, { 18, 80 }, { 19, 100 }, { 20, 70 }, { 21, 10 } };
-static const PresetValue k_kick_pv10[] = { { 0, -25 }, { 5, 38 }, { 7, 14 }, { 9, 30 }, { 13, 15 }, { 15, 4 }, { 16, 1 }, { 17, 10 }, { 18, 70 }, { 19, 90 }, { 20, 95 } };
-static const PresetValue k_kick_pv11[] = { { 0, -27 }, { 4, 7 }, { 5, 28 }, { 6, 25 }, { 7, 22 }, { 8, 25 }, { 9, 30 } };
-static const PresetValue k_kick_pv12[] = { { 0, -35 }, { 5, 66 }, { 6, 65 }, { 7, 35 }, { 9, 20 } };
-static const PresetValue k_kick_pv13[] = { { 0, -32 }, { 5, 40 }, { 7, 15 }, { 9, 30 }, { 20, 60 } };
-static const PresetValue k_kick_pv14[] = { { 0, -26 }, { 5, 25 }, { 7, 15 }, { 9, 55 }, { 13, 80 }, { 14, 7 }, { 15, 3 } };
-static const PresetValue k_kick_pv15[] = { { 0, -27 }, { 5, 28 }, { 7, 18 }, { 9, 50 }, { 13, 45 }, { 14, -10 } };
-static const PresetValue k_kick_pv16[] = { { 0, -28 }, { 5, 25 }, { 6, 25 }, { 7, 25 }, { 8, 25 }, { 9, 45 }, { 13, 45 }, { 14, 10 } };
-static const PresetValue k_kick_pv17[] = { { 0, -31 }, { 5, 55 }, { 6, 55 }, { 7, 22 }, { 9, 40 }, { 20, 90 }, { 23, 70 }, { 31, 110 }, { 34, 120 } };
-static const PresetValue k_kick_pv18[] = { { 0, -24 }, { 2, 3 }, { 5, 35 }, { 7, 22 }, { 9, 90 }, { 20, 75 }, { 23, 110 }, { 31, 105 }, { 34, 127 } };
-static const PresetValue k_kick_pv19[] = { { 0, -27 }, { 5, 25 }, { 7, 16 }, { 9, 60 }, { 33, 75 }, { 34, 90 } };
-static const PresetValue k_kick_pv20[] = { { 0, -28 }, { 5, 30 }, { 7, 15 }, { 9, 35 }, { 20, 60 }, { 33, 95 } };
-static const PresetValue k_kick_pv21[] = { { 0, -12 }, { 5, 40 }, { 7, 45 }, { 8, 60 }, { 9, 127 } };
-static const PresetValue k_kick_pv22[] = { { 5, 55 }, { 6, 55 }, { 24, 90 }, { 26, 40 }, { 28, 1 }, { 30, 1 } };
+static const PresetValue k_kick_pv6[] = { { 0, -28 }, { 5, 25 }, { 6, 25 }, { 7, 20 }, { 8, 25 }, { 9, 60 }, { 17, 2 }, { 18, 50 } };
+static const PresetValue k_kick_pv7[] = { { 0, -28 }, { 5, 25 }, { 6, 25 }, { 7, 25 }, { 8, 25 }, { 9, 45 }, { 17, 2 }, { 18, 55 } };
+static const PresetValue k_kick_pv8[] = { { 0, -28 }, { 5, 25 }, { 6, 25 }, { 7, 25 }, { 8, 25 }, { 9, 45 }, { 17, 2 }, { 18, 80 }, { 20, 100 }, { 21, 70 }, { 22, 5 } };
+static const PresetValue k_kick_pv9[] = { { 0, -28 }, { 5, 30 }, { 6, 30 }, { 7, 35 }, { 8, 30 }, { 9, 50 }, { 10, 10 }, { 11, 40 }, { 12, 1 }, { 17, 2 }, { 18, 70 } };
+static const PresetValue k_kick_pv10[] = { { 0, -24 }, { 5, 20 }, { 6, 35 }, { 7, 12 }, { 9, 25 }, { 17, 5 }, { 18, 80 }, { 19, 100 }, { 20, 70 }, { 21, 10 } };
+static const PresetValue k_kick_pv11[] = { { 0, -25 }, { 5, 38 }, { 7, 14 }, { 9, 30 }, { 13, 15 }, { 15, 4 }, { 16, 1 }, { 17, 10 }, { 18, 70 }, { 19, 90 }, { 20, 95 } };
+static const PresetValue k_kick_pv12[] = { { 0, -27 }, { 4, 7 }, { 5, 28 }, { 6, 25 }, { 7, 22 }, { 8, 25 }, { 9, 30 } };
+static const PresetValue k_kick_pv13[] = { { 0, -32 }, { 5, 66 }, { 6, 60 }, { 7, 30 }, { 8, 20 }, { 9, 30 }, { 17, 2 }, { 18, 30 } };
+static const PresetValue k_kick_pv14[] = { { 0, -35 }, { 5, 66 }, { 6, 65 }, { 7, 35 }, { 9, 20 } };
+static const PresetValue k_kick_pv15[] = { { 0, -32 }, { 5, 40 }, { 7, 15 }, { 9, 30 }, { 20, 60 } };
+static const PresetValue k_kick_pv16[] = { { 0, -26 }, { 5, 25 }, { 7, 15 }, { 9, 55 }, { 13, 80 }, { 14, 7 }, { 15, 3 } };
+static const PresetValue k_kick_pv17[] = { { 0, -27 }, { 5, 28 }, { 7, 18 }, { 9, 50 }, { 13, 45 }, { 14, -10 } };
+static const PresetValue k_kick_pv18[] = { { 0, -28 }, { 5, 25 }, { 6, 25 }, { 7, 25 }, { 8, 25 }, { 9, 45 }, { 13, 45 }, { 14, 10 } };
+static const PresetValue k_kick_pv19[] = { { 0, -31 }, { 5, 55 }, { 6, 55 }, { 7, 22 }, { 9, 40 }, { 20, 90 }, { 23, 70 }, { 31, 110 }, { 34, 120 } };
+static const PresetValue k_kick_pv20[] = { { 0, -24 }, { 2, 3 }, { 5, 35 }, { 7, 22 }, { 9, 90 }, { 20, 75 }, { 23, 110 }, { 31, 105 }, { 34, 127 } };
+static const PresetValue k_kick_pv21[] = { { 0, -24 }, { 2, 3 }, { 5, 30 }, { 6, 20 }, { 7, 20 }, { 9, 90 }, { 20, 75 }, { 23, 110 }, { 31, 105 }, { 34, 70 } };
+static const PresetValue k_kick_pv22[] = { { 0, -27 }, { 5, 25 }, { 7, 16 }, { 9, 60 }, { 33, 75 }, { 34, 90 } };
+static const PresetValue k_kick_pv23[] = { { 0, -28 }, { 5, 30 }, { 7, 15 }, { 9, 35 }, { 20, 60 }, { 33, 95 } };
+static const PresetValue k_kick_pv24[] = { { 0, -12 }, { 5, 40 }, { 7, 45 }, { 8, 60 }, { 9, 127 } };
+static const PresetValue k_kick_pv25[] = { { 5, 55 }, { 6, 55 }, { 24, 90 }, { 26, 40 }, { 28, 1 }, { 30, 1 } };
 static const FactoryPreset k_kick_presets[] = {
     { "808 Long Boom", "808", "long, boomy, clean", k_kick_pv0, 6 },
     { "808 Short Thump", "808", "short, punchy, clean", k_kick_pv1, 6 },
@@ -35,159 +38,176 @@ static const FactoryPreset k_kick_presets[] = {
     { "SOS 808", "808", "long, boomy", k_kick_pv3, 11 },
     { "909 Hard", "909", "punchy, bright, dirty", k_kick_pv4, 10 },
     { "909 Punch", "909", "punchy, short", k_kick_pv5, 11 },
-    { "Recipe Kick", "909", "punchy, clean", k_kick_pv6, 8 },
-    { "Recipe Peak Click", "909", "punchy, bright", k_kick_pv7, 11 },
-    { "SOS 909", "909", "punchy", k_kick_pv8, 11 },
-    { "Acoustic Felt", "Acoustic", "short, soft, dark", k_kick_pv9, 10 },
-    { "Acoustic Room", "Acoustic", "long, soft", k_kick_pv10, 11 },
-    { "Recipe Soft Kick", "Acoustic", "soft", k_kick_pv11, 7 },
-    { "Sub Drop", "Sub", "long, boomy, clean", k_kick_pv12, 5 },
-    { "Sub Pulse", "Sub", "short, boomy", k_kick_pv13, 5 },
-    { "FM Metal Kick", "FM", "metallic, bright", k_kick_pv14, 7 },
-    { "FM Thump", "FM", "punchy, pitched", k_kick_pv15, 6 },
-    { "Recipe FM Attack", "FM", "punchy, bright", k_kick_pv16, 8 },
-    { "Driven 808", "Distorted", "long, dirty, boomy", k_kick_pv17, 9 },
-    { "Gabber", "Distorted", "dirty, punchy", k_kick_pv18, 9 },
-    { "Crunch", "Lo-Fi", "lo-fi, dirty, short", k_kick_pv19, 6 },
-    { "Dusty", "Lo-Fi", "lo-fi, dark, soft", k_kick_pv20, 6 },
-    { "Laser Zap", "FX", "pitched, bright", k_kick_pv21, 5 },
-    { "Wobble", "FX", "modulated, long", k_kick_pv22, 6 },
+    { "Maquina Kick 01 Punch", "909", "punchy, clean", k_kick_pv6, 8 },
+    { "Recipe Kick", "909", "punchy, clean", k_kick_pv7, 8 },
+    { "Recipe Peak Click", "909", "punchy, bright", k_kick_pv8, 11 },
+    { "SOS 909", "909", "punchy", k_kick_pv9, 11 },
+    { "Acoustic Felt", "Acoustic", "short, soft, dark", k_kick_pv10, 10 },
+    { "Acoustic Room", "Acoustic", "long, soft", k_kick_pv11, 11 },
+    { "Recipe Soft Kick", "Acoustic", "soft", k_kick_pv12, 7 },
+    { "Maquina Kick 02 Rumble", "Sub", "long, boomy", k_kick_pv13, 8 },
+    { "Sub Drop", "Sub", "long, boomy, clean", k_kick_pv14, 5 },
+    { "Sub Pulse", "Sub", "short, boomy", k_kick_pv15, 5 },
+    { "FM Metal Kick", "FM", "metallic, bright", k_kick_pv16, 7 },
+    { "FM Thump", "FM", "punchy, pitched", k_kick_pv17, 6 },
+    { "Recipe FM Attack", "FM", "punchy, bright", k_kick_pv18, 8 },
+    { "Driven 808", "Distorted", "long, dirty, boomy", k_kick_pv19, 9 },
+    { "Gabber", "Distorted", "dirty, punchy", k_kick_pv20, 9 },
+    { "Maquina Kick 03 Driven", "Distorted", "dirty, punchy", k_kick_pv21, 10 },
+    { "Crunch", "Lo-Fi", "lo-fi, dirty, short", k_kick_pv22, 6 },
+    { "Dusty", "Lo-Fi", "lo-fi, dark, soft", k_kick_pv23, 6 },
+    { "Laser Zap", "FX", "pitched, bright", k_kick_pv24, 5 },
+    { "Wobble", "FX", "modulated, long", k_kick_pv25, 6 },
 };
 
 static const PresetValue k_tom_pv0[] = { { 0, -10 }, { 5, 30 }, { 7, 20 }, { 9, 35 } };
 static const PresetValue k_tom_pv1[] = { { 0, -22 }, { 5, 40 }, { 7, 25 }, { 9, 35 } };
 static const PresetValue k_tom_pv2[] = { { 0, -16 }, { 5, 35 }, { 7, 22 }, { 9, 35 } };
-static const PresetValue k_tom_pv3[] = { { 0, -15 }, { 2, 1 }, { 5, 30 }, { 7, 18 }, { 9, 60 }, { 13, 15 }, { 15, 4 }, { 16, 1 }, { 17, 2 }, { 18, 60 }, { 19, 60 } };
-static const PresetValue k_tom_pv4[] = { { 0, -20 }, { 2, 1 }, { 5, 42 }, { 7, 30 }, { 9, 20 }, { 13, 12 }, { 15, 4 }, { 16, 1 }, { 17, 12 }, { 18, 90 }, { 19, 100 }, { 20, 85 } };
-static const PresetValue k_tom_pv5[] = { { 0, -13 }, { 2, 1 }, { 5, 32 }, { 7, 22 }, { 9, 25 }, { 13, 10 }, { 15, 4 }, { 16, 1 }, { 17, 12 }, { 18, 80 }, { 19, 80 } };
-static const PresetValue k_tom_pv6[] = { { 0, 0 }, { 5, 12 }, { 7, 6 }, { 9, 25 }, { 17, 3 }, { 18, 60 } };
-static const PresetValue k_tom_pv7[] = { { 0, -7 }, { 5, 18 }, { 7, 8 }, { 9, 30 }, { 18, 70 } };
-static const PresetValue k_tom_pv8[] = { { 0, 5 }, { 2, 3 }, { 5, 22 }, { 13, 64 }, { 14, 13 }, { 15, 3 }, { 16, 1 }, { 20, 95 }, { 21, 40 }, { 22, 2 } };
-static const PresetValue k_tom_pv9[] = { { 0, 11 }, { 2, 3 }, { 5, 35 }, { 6, 3 }, { 9, 0 }, { 13, 63 }, { 14, 18 }, { 15, 3 }, { 16, 1 }, { 20, 92 }, { 21, 70 }, { 22, 2 } };
-static const PresetValue k_tom_pv10[] = { { 0, 40 }, { 2, 1 }, { 5, 9 }, { 6, 12 }, { 9, 0 }, { 20, 100 }, { 22, 2 } };
-static const PresetValue k_tom_pv11[] = { { 0, 13 }, { 1, 60 }, { 2, 3 }, { 5, 45 }, { 6, 3 }, { 9, 0 }, { 13, 70 }, { 14, 20 }, { 15, 3 }, { 16, 1 }, { 20, 80 }, { 21, 30 }, { 22, 2 } };
-static const PresetValue k_tom_pv12[] = { { 0, 12 }, { 2, 1 }, { 5, 6 }, { 17, 4 }, { 18, 60 } };
-static const PresetValue k_tom_pv13[] = { { 0, -5 }, { 5, 45 }, { 6, 55 }, { 13, 60 }, { 14, 7 } };
-static const PresetValue k_tom_pv14[] = { { 0, -5 }, { 2, 5 }, { 3, 32 }, { 5, 22 }, { 6, 15 }, { 9, 0 }, { 13, 55 }, { 14, -38 } };
-static const PresetValue k_tom_pv15[] = { { 0, -8 }, { 5, 50 }, { 7, 60 }, { 9, 127 }, { 24, 100 }, { 26, 30 }, { 30, 2 } };
+static const PresetValue k_tom_pv3[] = { { 0, -22 }, { 5, 40 }, { 6, 30 }, { 7, 25 }, { 9, 35 } };
+static const PresetValue k_tom_pv4[] = { { 0, -15 }, { 2, 1 }, { 5, 30 }, { 7, 18 }, { 9, 60 }, { 13, 15 }, { 15, 4 }, { 16, 1 }, { 17, 2 }, { 18, 60 }, { 19, 60 } };
+static const PresetValue k_tom_pv5[] = { { 0, -20 }, { 2, 1 }, { 5, 42 }, { 7, 30 }, { 9, 20 }, { 13, 12 }, { 15, 4 }, { 16, 1 }, { 17, 12 }, { 18, 90 }, { 19, 100 }, { 20, 85 } };
+static const PresetValue k_tom_pv6[] = { { 0, -13 }, { 2, 1 }, { 5, 32 }, { 7, 22 }, { 9, 25 }, { 13, 10 }, { 15, 4 }, { 16, 1 }, { 17, 12 }, { 18, 80 }, { 19, 80 } };
+static const PresetValue k_tom_pv7[] = { { 0, 0 }, { 5, 12 }, { 7, 6 }, { 9, 25 }, { 17, 3 }, { 18, 60 } };
+static const PresetValue k_tom_pv8[] = { { 0, -7 }, { 5, 18 }, { 7, 8 }, { 9, 30 }, { 18, 70 } };
+static const PresetValue k_tom_pv9[] = { { 0, 5 }, { 2, 3 }, { 5, 22 }, { 13, 64 }, { 14, 13 }, { 15, 3 }, { 16, 1 }, { 20, 95 }, { 21, 40 }, { 22, 2 } };
+static const PresetValue k_tom_pv10[] = { { 0, 11 }, { 2, 3 }, { 5, 35 }, { 6, 3 }, { 9, 0 }, { 13, 63 }, { 14, 18 }, { 15, 3 }, { 16, 1 }, { 20, 92 }, { 21, 70 }, { 22, 2 } };
+static const PresetValue k_tom_pv11[] = { { 0, 40 }, { 2, 1 }, { 5, 9 }, { 6, 12 }, { 9, 0 }, { 20, 100 }, { 22, 2 } };
+static const PresetValue k_tom_pv12[] = { { 0, 13 }, { 1, 60 }, { 2, 3 }, { 5, 45 }, { 6, 3 }, { 9, 0 }, { 13, 70 }, { 14, 20 }, { 15, 3 }, { 16, 1 }, { 20, 80 }, { 21, 30 }, { 22, 2 } };
+static const PresetValue k_tom_pv13[] = { { 0, 12 }, { 2, 1 }, { 5, 6 }, { 17, 4 }, { 18, 60 } };
+static const PresetValue k_tom_pv14[] = { { 0, -5 }, { 5, 45 }, { 6, 55 }, { 13, 60 }, { 14, 7 } };
+static const PresetValue k_tom_pv15[] = { { 0, -5 }, { 2, 5 }, { 3, 32 }, { 5, 22 }, { 6, 15 }, { 9, 0 }, { 13, 55 }, { 14, -38 } };
+static const PresetValue k_tom_pv16[] = { { 0, -8 }, { 5, 50 }, { 7, 60 }, { 9, 127 }, { 24, 100 }, { 26, 30 }, { 30, 2 } };
 static const FactoryPreset k_tom_presets[] = {
     { "808 Tom High", "808", "pitched, clean, short", k_tom_pv0, 4 },
     { "808 Tom Low", "808", "long, boomy, clean", k_tom_pv1, 4 },
     { "808 Tom Mid", "808", "pitched, clean", k_tom_pv2, 4 },
-    { "909 Tom", "909", "punchy", k_tom_pv3, 11 },
-    { "Floor Tom", "Acoustic", "long, dark", k_tom_pv4, 12 },
-    { "Rack Tom", "Acoustic", "punchy", k_tom_pv5, 11 },
-    { "Bongo", "Perc", "short, bright", k_tom_pv6, 6 },
-    { "Conga", "Perc", "short, pitched", k_tom_pv7, 5 },
-    { "Cowbell", "Perc", "metallic, pitched", k_tom_pv8, 10 },
-    { "Recipe 808 Cowbell", "Perc", "metallic, pitched", k_tom_pv9, 12 },
-    { "SOS Claves", "Perc", "short, pitched, clean", k_tom_pv10, 7 },
-    { "SOS Cowbell", "Perc", "metallic, pitched", k_tom_pv11, 13 },
-    { "Wood Block", "Perc", "short, bright, pitched", k_tom_pv12, 5 },
-    { "FM Bell Tom", "FM", "metallic, pitched, long", k_tom_pv13, 5 },
-    { "SOS FM Shell", "FM", "short, dirty", k_tom_pv14, 8 },
-    { "Siren Drop", "FX", "modulated, long", k_tom_pv15, 7 },
+    { "Maquina Tom 01 Low", "808", "long, boomy, dark", k_tom_pv3, 5 },
+    { "909 Tom", "909", "punchy", k_tom_pv4, 11 },
+    { "Floor Tom", "Acoustic", "long, dark", k_tom_pv5, 12 },
+    { "Rack Tom", "Acoustic", "punchy", k_tom_pv6, 11 },
+    { "Bongo", "Perc", "short, bright", k_tom_pv7, 6 },
+    { "Conga", "Perc", "short, pitched", k_tom_pv8, 5 },
+    { "Cowbell", "Perc", "metallic, pitched", k_tom_pv9, 10 },
+    { "Recipe 808 Cowbell", "Perc", "metallic, pitched", k_tom_pv10, 12 },
+    { "SOS Claves", "Perc", "short, pitched, clean", k_tom_pv11, 7 },
+    { "SOS Cowbell", "Perc", "metallic, pitched", k_tom_pv12, 13 },
+    { "Wood Block", "Perc", "short, bright, pitched", k_tom_pv13, 5 },
+    { "FM Bell Tom", "FM", "metallic, pitched, long", k_tom_pv14, 5 },
+    { "SOS FM Shell", "FM", "short, dirty", k_tom_pv15, 8 },
+    { "Siren Drop", "FX", "modulated, long", k_tom_pv16, 7 },
 };
 
 static const PresetValue k_snare_pv0[] = { { 0, -6 }, { 3, 95 }, { 7, 16 }, { 19, 40 }, { 21, 1 } };
 static const PresetValue k_snare_pv1[] = { { 0, -6 }, { 2, 110 }, { 3, 70 }, { 4, 0 }, { 7, 14 }, { 9, 20 }, { 10, 10 }, { 12, 50 } };
 static const PresetValue k_snare_pv2[] = { { 0, -5 }, { 2, 115 }, { 3, 80 }, { 7, 20 }, { 10, 10 }, { 12, 55 }, { 19, 105 }, { 33, 80 } };
 static const PresetValue k_snare_pv3[] = { { 0, -4 }, { 2, 120 }, { 3, 85 }, { 7, 13 }, { 10, 9 }, { 12, 60 }, { 17, 80 }, { 33, 85 } };
-static const PresetValue k_snare_pv4[] = { { 0, -7 }, { 3, 100 }, { 4, 0 }, { 7, 24 }, { 9, 40 }, { 10, 15 }, { 11, 20 }, { 12, 25 }, { 19, 72 }, { 20, 40 }, { 21, 1 } };
-static const PresetValue k_snare_pv5[] = { { 0, -8 }, { 2, 100 }, { 3, 75 }, { 7, 18 }, { 10, 8 }, { 12, 40 }, { 16, 11 }, { 17, 100 }, { 18, 100 }, { 19, 110 } };
-static const PresetValue k_snare_pv6[] = { { 2, 80 }, { 3, 120 }, { 6, 8 }, { 7, 20 }, { 19, 85 }, { 30, 110 } };
-static const PresetValue k_snare_pv7[] = { { 0, -7 }, { 3, 100 }, { 4, 0 }, { 7, 50 }, { 9, 7 }, { 10, 15 }, { 11, 20 }, { 12, 25 }, { 19, 72 }, { 20, 40 }, { 21, 1 } };
-static const PresetValue k_snare_pv8[] = { { 0, -7 }, { 1, 10 }, { 3, 95 }, { 7, 35 }, { 9, 15 }, { 10, 10 }, { 11, 20 }, { 12, 8 }, { 13, 20 }, { 14, 40 }, { 19, 95 }, { 20, 45 }, { 21, 2 } };
-static const PresetValue k_snare_pv9[] = { { 0, 12 }, { 3, 10 }, { 7, 3 }, { 16, 4 }, { 17, 90 } };
-static const PresetValue k_snare_pv10[] = { { 0, 5 }, { 3, 20 }, { 7, 5 }, { 10, 4 }, { 12, 40 }, { 16, 6 }, { 17, 100 }, { 19, 100 }, { 20, 30 }, { 21, 2 } };
-static const PresetValue k_snare_pv11[] = { { 2, 105 }, { 3, 127 }, { 6, 4 }, { 8, 3 }, { 16, 9 }, { 17, 90 }, { 19, 100 }, { 20, 15 }, { 21, 2 } };
-static const PresetValue k_snare_pv12[] = { { 2, 100 }, { 3, 127 }, { 6, 7 }, { 7, 18 }, { 8, 4 }, { 16, 9 }, { 17, 100 }, { 19, 95 }, { 20, 20 }, { 21, 2 } };
-static const PresetValue k_snare_pv13[] = { { 3, 127 }, { 4, 4 }, { 6, 6 }, { 7, 22 }, { 8, 4 }, { 9, 6 }, { 12, 0 }, { 19, 70 }, { 20, 100 }, { 21, 2 } };
-static const PresetValue k_snare_pv14[] = { { 3, 127 }, { 7, 15 }, { 19, 60 }, { 21, 1 } };
-static const PresetValue k_snare_pv15[] = { { 2, 110 }, { 3, 127 }, { 7, 30 }, { 9, 40 }, { 19, 100 } };
-static const PresetValue k_snare_pv16[] = { { 0, -6 }, { 3, 80 }, { 7, 15 }, { 10, 10 }, { 12, 50 }, { 32, 80 }, { 33, 100 } };
-static const PresetValue k_snare_pv17[] = { { 0, 0 }, { 3, 0 }, { 4, 0 }, { 7, 30 }, { 9, 20 }, { 10, 30 }, { 11, 20 }, { 12, 110 } };
-static const PresetValue k_snare_pv18[] = { { 0, 0 }, { 3, 50 }, { 7, 16 }, { 10, 30 }, { 12, 127 } };
+static const PresetValue k_snare_pv4[] = { { 0, -4 }, { 2, 120 }, { 3, 90 }, { 9, 20 }, { 10, 8 }, { 12, 40 }, { 17, 70 }, { 33, 60 } };
+static const PresetValue k_snare_pv5[] = { { 0, -7 }, { 3, 100 }, { 4, 0 }, { 7, 24 }, { 9, 40 }, { 10, 15 }, { 11, 20 }, { 12, 25 }, { 19, 72 }, { 20, 40 }, { 21, 1 } };
+static const PresetValue k_snare_pv6[] = { { 0, -8 }, { 2, 100 }, { 3, 75 }, { 7, 18 }, { 10, 8 }, { 12, 40 }, { 16, 11 }, { 17, 100 }, { 18, 100 }, { 19, 110 } };
+static const PresetValue k_snare_pv7[] = { { 2, 80 }, { 3, 120 }, { 6, 8 }, { 7, 20 }, { 19, 85 }, { 30, 110 } };
+static const PresetValue k_snare_pv8[] = { { 0, -6 }, { 3, 100 }, { 4, 0 }, { 7, 45 }, { 9, 7 }, { 10, 15 }, { 11, 20 }, { 12, 25 }, { 19, 72 }, { 20, 40 }, { 21, 1 } };
+static const PresetValue k_snare_pv9[] = { { 0, -7 }, { 3, 100 }, { 4, 0 }, { 7, 50 }, { 9, 7 }, { 10, 15 }, { 11, 20 }, { 12, 25 }, { 19, 72 }, { 20, 40 }, { 21, 1 } };
+static const PresetValue k_snare_pv10[] = { { 0, -7 }, { 1, 10 }, { 3, 95 }, { 7, 35 }, { 9, 15 }, { 10, 10 }, { 11, 20 }, { 12, 8 }, { 13, 20 }, { 14, 40 }, { 19, 95 }, { 20, 45 }, { 21, 2 } };
+static const PresetValue k_snare_pv11[] = { { 0, 12 }, { 3, 10 }, { 7, 3 }, { 16, 4 }, { 17, 90 } };
+static const PresetValue k_snare_pv12[] = { { 0, 5 }, { 3, 20 }, { 7, 5 }, { 10, 4 }, { 12, 40 }, { 16, 6 }, { 17, 100 }, { 19, 100 }, { 20, 30 }, { 21, 2 } };
+static const PresetValue k_snare_pv13[] = { { 2, 105 }, { 3, 127 }, { 6, 4 }, { 8, 3 }, { 16, 9 }, { 17, 90 }, { 19, 100 }, { 20, 15 }, { 21, 2 } };
+static const PresetValue k_snare_pv14[] = { { 2, 100 }, { 3, 127 }, { 6, 7 }, { 7, 18 }, { 8, 4 }, { 16, 9 }, { 17, 100 }, { 19, 95 }, { 20, 20 }, { 21, 2 } };
+static const PresetValue k_snare_pv15[] = { { 3, 127 }, { 4, 4 }, { 6, 6 }, { 7, 22 }, { 8, 4 }, { 9, 6 }, { 12, 0 }, { 19, 70 }, { 20, 100 }, { 21, 2 } };
+static const PresetValue k_snare_pv16[] = { { 3, 127 }, { 7, 15 }, { 19, 60 }, { 21, 1 } };
+static const PresetValue k_snare_pv17[] = { { 2, 110 }, { 3, 127 }, { 7, 30 }, { 9, 40 }, { 19, 100 } };
+static const PresetValue k_snare_pv18[] = { { 0, -6 }, { 3, 80 }, { 7, 15 }, { 10, 10 }, { 12, 50 }, { 32, 80 }, { 33, 100 } };
+static const PresetValue k_snare_pv19[] = { { 0, 0 }, { 3, 50 }, { 7, 14 }, { 10, 28 }, { 12, 127 } };
+static const PresetValue k_snare_pv20[] = { { 0, 0 }, { 3, 0 }, { 4, 0 }, { 7, 30 }, { 9, 20 }, { 10, 30 }, { 11, 20 }, { 12, 110 } };
+static const PresetValue k_snare_pv21[] = { { 0, 0 }, { 3, 50 }, { 7, 16 }, { 10, 30 }, { 12, 127 } };
 static const FactoryPreset k_snare_presets[] = {
     { "808 Snappy", "808", "bright, short", k_snare_pv0, 5 },
     { "808 Snare", "808", "short, clean", k_snare_pv1, 8 },
     { "909 Fat", "909", "long, punchy", k_snare_pv2, 8 },
     { "909 Snare", "909", "punchy, bright", k_snare_pv3, 8 },
-    { "Recipe Dry Snare", "909", "short, punchy", k_snare_pv4, 11 },
-    { "Acoustic Snare", "Acoustic", "punchy", k_snare_pv5, 10 },
-    { "Brush", "Acoustic", "soft, noisy, dark", k_snare_pv6, 6 },
-    { "Recipe Room Snare", "Acoustic", "long", k_snare_pv7, 11 },
-    { "SOS Snare", "Acoustic", "punchy, clean", k_snare_pv8, 13 },
-    { "Rim Click", "Rim", "short, clean", k_snare_pv9, 5 },
-    { "Rim Shot", "Rim", "short, bright", k_snare_pv10, 10 },
-    { "Clap Tight", "Clap", "noisy, short", k_snare_pv11, 9 },
-    { "Clap", "Clap", "noisy", k_snare_pv12, 10 },
-    { "Recipe Clap", "Clap", "noisy", k_snare_pv13, 10 },
-    { "Noise Burst", "Noise", "noisy, bright, short", k_snare_pv14, 4 },
-    { "Noise Tail", "Noise", "noisy, long", k_snare_pv15, 5 },
-    { "Lo-Fi Snare", "Lo-Fi", "lo-fi, dirty", k_snare_pv16, 7 },
-    { "Recipe Robot Zap", "FX", "pitched", k_snare_pv17, 8 },
-    { "Zap Snare", "FX", "pitched, bright", k_snare_pv18, 5 },
+    { "Maquina Snare 01 Dry", "909", "short, clean, bright", k_snare_pv4, 8 },
+    { "Recipe Dry Snare", "909", "short, punchy", k_snare_pv5, 11 },
+    { "Acoustic Snare", "Acoustic", "punchy", k_snare_pv6, 10 },
+    { "Brush", "Acoustic", "soft, noisy, dark", k_snare_pv7, 6 },
+    { "Maquina Snare 02 Room", "Acoustic", "long, soft", k_snare_pv8, 11 },
+    { "Recipe Room Snare", "Acoustic", "long", k_snare_pv9, 11 },
+    { "SOS Snare", "Acoustic", "punchy, clean", k_snare_pv10, 13 },
+    { "Rim Click", "Rim", "short, clean", k_snare_pv11, 5 },
+    { "Rim Shot", "Rim", "short, bright", k_snare_pv12, 10 },
+    { "Clap Tight", "Clap", "noisy, short", k_snare_pv13, 9 },
+    { "Clap", "Clap", "noisy", k_snare_pv14, 10 },
+    { "Recipe Clap", "Clap", "noisy", k_snare_pv15, 10 },
+    { "Noise Burst", "Noise", "noisy, bright, short", k_snare_pv16, 4 },
+    { "Noise Tail", "Noise", "noisy, long", k_snare_pv17, 5 },
+    { "Lo-Fi Snare", "Lo-Fi", "lo-fi, dirty", k_snare_pv18, 7 },
+    { "Maquina Snare 03 Zap", "FX", "pitched, bright, noisy", k_snare_pv19, 5 },
+    { "Recipe Robot Zap", "FX", "pitched", k_snare_pv20, 8 },
+    { "Zap Snare", "FX", "pitched, bright", k_snare_pv21, 5 },
 };
 
 static const PresetValue k_cymbal_pv0[] = { { 0, 40 }, { 2, 3 }, { 5, 60 }, { 7, 30 }, { 11, 10 }, { 12, 23 }, { 13, 100 }, { 14, 100 }, { 15, 3 }, { 16, 3 }, { 20, 70 } };
 static const PresetValue k_cymbal_pv1[] = { { 0, 30 }, { 2, 3 }, { 5, 50 }, { 7, 30 }, { 11, 17 }, { 12, 31 }, { 13, 60 }, { 14, 60 }, { 15, 3 }, { 16, 3 }, { 20, 85 } };
 static const PresetValue k_cymbal_pv2[] = { { 0, 12 }, { 2, 3 }, { 5, 85 }, { 7, 8 }, { 11, 19 }, { 12, 6 }, { 13, 110 }, { 14, 110 }, { 15, 3 }, { 16, 3 }, { 20, 110 }, { 21, 30 }, { 22, 2 }, { 31, 95 } };
 static const PresetValue k_cymbal_pv3[] = { { 0, -5 }, { 2, 0 }, { 5, 65 }, { 7, 30 }, { 11, 2 }, { 12, 9 }, { 13, 80 }, { 14, 60 }, { 20, 90 }, { 22, 0 } };
-static const PresetValue k_cymbal_pv4[] = { { 0, 50 }, { 2, 3 }, { 5, 80 }, { 7, 5 }, { 11, 40 }, { 12, 58 }, { 13, 120 }, { 14, 120 }, { 15, 3 }, { 16, 3 }, { 20, 115 }, { 21, 100 }, { 22, 2 }, { 24, 12 }, { 26, 20 }, { 30, 21 }, { 31, 90 } };
-static const PresetValue k_cymbal_pv5[] = { { 0, 24 }, { 2, 3 }, { 5, 40 }, { 7, 30 }, { 11, 31 }, { 12, 17 }, { 13, 50 }, { 14, 30 }, { 20, 100 }, { 21, 30 }, { 22, 2 } };
-static const PresetValue k_cymbal_pv6[] = { { 0, 40 }, { 2, 3 }, { 5, 60 }, { 7, 30 }, { 11, 10 }, { 12, 23 }, { 13, 100 }, { 14, 40 }, { 15, 3 }, { 16, 4 }, { 20, 75 } };
-static const PresetValue k_cymbal_pv7[] = { { 0, 30 }, { 2, 3 }, { 5, 62 }, { 7, 30 }, { 11, 10 }, { 12, 23 }, { 13, 100 }, { 14, 100 }, { 15, 3 }, { 16, 3 }, { 17, 8 }, { 18, 70 }, { 20, 70 } };
-static const PresetValue k_cymbal_pv8[] = { { 0, 40 }, { 2, 3 }, { 5, 50 }, { 7, 30 }, { 11, 47 }, { 12, 23 }, { 13, 110 }, { 14, 90 }, { 15, 3 }, { 16, 3 }, { 20, 95 }, { 21, 40 }, { 22, 5 }, { 34, 110 } };
-static const PresetValue k_cymbal_pv9[] = { { 0, 40 }, { 2, 3 }, { 5, 30 }, { 7, 30 }, { 11, 17 }, { 12, 31 }, { 13, 100 }, { 14, 100 }, { 15, 3 }, { 16, 3 }, { 20, 80 } };
-static const PresetValue k_cymbal_pv10[] = { { 0, 40 }, { 2, 3 }, { 5, 55 }, { 7, 30 }, { 11, 10 }, { 12, 23 }, { 13, 100 }, { 14, 100 }, { 15, 3 }, { 16, 3 }, { 20, 70 }, { 33, 70 } };
-static const PresetValue k_cymbal_pv11[] = { { 0, 20 }, { 2, 0 }, { 5, 70 }, { 7, 10 }, { 11, 27 }, { 12, 41 }, { 13, 70 }, { 14, 40 }, { 20, 95 }, { 21, 60 }, { 22, 2 }, { 33, 90 } };
-static const PresetValue k_cymbal_pv12[] = { { 0, 40 }, { 2, 3 }, { 4, 90 }, { 5, 40 }, { 7, 30 }, { 11, 10 }, { 12, 23 }, { 13, 100 }, { 14, 100 }, { 15, 3 }, { 16, 3 }, { 20, 60 }, { 24, 70 }, { 26, 30 }, { 30, 21 } };
+static const PresetValue k_cymbal_pv4[] = { { 0, 30 }, { 2, 3 }, { 5, 55 }, { 7, 8 }, { 11, 17 }, { 12, 31 }, { 13, 60 }, { 14, 60 }, { 15, 3 }, { 16, 3 }, { 20, 110 }, { 21, 80 }, { 22, 2 } };
+static const PresetValue k_cymbal_pv5[] = { { 0, 50 }, { 2, 3 }, { 5, 80 }, { 7, 5 }, { 11, 40 }, { 12, 58 }, { 13, 120 }, { 14, 120 }, { 15, 3 }, { 16, 3 }, { 20, 115 }, { 21, 100 }, { 22, 2 }, { 24, 12 }, { 26, 20 }, { 30, 21 }, { 31, 90 } };
+static const PresetValue k_cymbal_pv6[] = { { 0, 24 }, { 2, 3 }, { 5, 40 }, { 7, 30 }, { 11, 31 }, { 12, 17 }, { 13, 50 }, { 14, 30 }, { 20, 100 }, { 21, 30 }, { 22, 2 } };
+static const PresetValue k_cymbal_pv7[] = { { 0, 40 }, { 2, 3 }, { 5, 60 }, { 7, 30 }, { 11, 10 }, { 12, 23 }, { 13, 100 }, { 14, 40 }, { 15, 3 }, { 16, 4 }, { 20, 75 } };
+static const PresetValue k_cymbal_pv8[] = { { 0, 30 }, { 2, 3 }, { 5, 62 }, { 7, 30 }, { 11, 10 }, { 12, 23 }, { 13, 100 }, { 14, 100 }, { 15, 3 }, { 16, 3 }, { 17, 8 }, { 18, 70 }, { 20, 70 } };
+static const PresetValue k_cymbal_pv9[] = { { 0, 40 }, { 2, 3 }, { 5, 50 }, { 7, 30 }, { 11, 47 }, { 12, 23 }, { 13, 110 }, { 14, 90 }, { 15, 3 }, { 16, 3 }, { 20, 95 }, { 21, 40 }, { 22, 5 }, { 34, 110 } };
+static const PresetValue k_cymbal_pv10[] = { { 0, 40 }, { 2, 3 }, { 5, 30 }, { 7, 30 }, { 11, 17 }, { 12, 31 }, { 13, 100 }, { 14, 100 }, { 15, 3 }, { 16, 3 }, { 20, 80 } };
+static const PresetValue k_cymbal_pv11[] = { { 0, 40 }, { 2, 3 }, { 5, 55 }, { 7, 30 }, { 11, 10 }, { 12, 23 }, { 13, 100 }, { 14, 100 }, { 15, 3 }, { 16, 3 }, { 20, 70 }, { 33, 70 } };
+static const PresetValue k_cymbal_pv12[] = { { 0, 20 }, { 2, 0 }, { 5, 70 }, { 7, 10 }, { 11, 27 }, { 12, 41 }, { 13, 70 }, { 14, 40 }, { 20, 95 }, { 21, 60 }, { 22, 2 }, { 33, 90 } };
+static const PresetValue k_cymbal_pv13[] = { { 0, 40 }, { 2, 3 }, { 4, 90 }, { 5, 40 }, { 7, 30 }, { 11, 10 }, { 12, 23 }, { 13, 100 }, { 14, 100 }, { 15, 3 }, { 16, 3 }, { 20, 60 }, { 24, 70 }, { 26, 30 }, { 30, 21 } };
 static const FactoryPreset k_cymbal_presets[] = {
     { "Analog Crash", "Analog", "bright, metallic", k_cymbal_pv0, 11 },
     { "Analog Ride", "Analog", "metallic", k_cymbal_pv1, 11 },
     { "SOS 808 Cymbal", "Analog", "long, metallic", k_cymbal_pv2, 14 },
     { "Gong", "Metallic", "dark, long, metallic", k_cymbal_pv3, 10 },
-    { "Recipe Ride", "Metallic", "long, metallic, modulated", k_cymbal_pv4, 17 },
-    { "Ride Bell", "Metallic", "metallic, pitched", k_cymbal_pv5, 11 },
-    { "Sizzle Crash", "Noise", "bright, noisy, metallic", k_cymbal_pv6, 11 },
-    { "Acoustic Crash", "Acoustic", "bright, metallic", k_cymbal_pv7, 13 },
-    { "China", "Acoustic", "dirty, metallic", k_cymbal_pv8, 14 },
-    { "Splash", "Acoustic", "short, bright, metallic", k_cymbal_pv9, 11 },
-    { "Lo-Fi Crash", "Lo-Fi", "lo-fi, metallic", k_cymbal_pv10, 12 },
-    { "Recipe Bell", "FX", "long, metallic, pitched", k_cymbal_pv11, 12 },
-    { "Reverse Swell", "FX", "modulated, metallic", k_cymbal_pv12, 15 },
+    { "Maquina Cymbal 01 Ride", "Metallic", "metallic, long, dark", k_cymbal_pv4, 13 },
+    { "Recipe Ride", "Metallic", "long, metallic, modulated", k_cymbal_pv5, 17 },
+    { "Ride Bell", "Metallic", "metallic, pitched", k_cymbal_pv6, 11 },
+    { "Sizzle Crash", "Noise", "bright, noisy, metallic", k_cymbal_pv7, 11 },
+    { "Acoustic Crash", "Acoustic", "bright, metallic", k_cymbal_pv8, 13 },
+    { "China", "Acoustic", "dirty, metallic", k_cymbal_pv9, 14 },
+    { "Splash", "Acoustic", "short, bright, metallic", k_cymbal_pv10, 11 },
+    { "Lo-Fi Crash", "Lo-Fi", "lo-fi, metallic", k_cymbal_pv11, 12 },
+    { "Recipe Bell", "FX", "long, metallic, pitched", k_cymbal_pv12, 12 },
+    { "Reverse Swell", "FX", "modulated, metallic", k_cymbal_pv13, 15 },
 };
 
 static const PresetValue k_hihat_pv0[] = { { 0, 30 }, { 2, 3 }, { 5, 4 }, { 10, 40 }, { 11, 55 }, { 14, 3 }, { 15, 3 }, { 19, 110 }, { 20, 20 } };
 static const PresetValue k_hihat_pv1[] = { { 0, 30 }, { 2, 3 }, { 10, 40 }, { 11, 55 }, { 14, 3 }, { 15, 3 }, { 19, 100 } };
 static const PresetValue k_hihat_pv2[] = { { 0, 12 }, { 2, 3 }, { 5, 10 }, { 6, 5 }, { 10, 19 }, { 11, 6 }, { 12, 110 }, { 13, 110 }, { 14, 3 }, { 15, 3 }, { 19, 118 }, { 20, 15 } };
-static const PresetValue k_hihat_pv3[] = { { 0, 33 }, { 2, 3 }, { 5, 6 }, { 10, 45 }, { 11, 26 }, { 14, 3 }, { 15, 3 }, { 19, 110 }, { 20, 50 }, { 21, 2 } };
-static const PresetValue k_hihat_pv4[] = { { 0, 38 }, { 2, 3 }, { 5, 2 }, { 10, 50 }, { 14, 3 }, { 19, 105 } };
-static const PresetValue k_hihat_pv5[] = { { 0, 50 }, { 2, 3 }, { 5, 8 }, { 6, 5 }, { 10, 40 }, { 11, 58 }, { 12, 120 }, { 13, 120 }, { 14, 3 }, { 15, 3 }, { 19, 120 }, { 20, 10 } };
-static const PresetValue k_hihat_pv6[] = { { 0, 50 }, { 2, 3 }, { 5, 40 }, { 10, 40 }, { 11, 58 }, { 12, 120 }, { 13, 120 }, { 14, 3 }, { 15, 3 }, { 19, 120 }, { 20, 10 } };
-static const PresetValue k_hihat_pv7[] = { { 0, 67 }, { 2, 4 }, { 5, 4 }, { 12, 0 }, { 13, 0 }, { 19, 105 } };
-static const PresetValue k_hihat_pv8[] = { { 0, 67 }, { 2, 4 }, { 5, 10 }, { 6, 5 }, { 12, 0 }, { 13, 0 }, { 19, 120 }, { 20, 10 } };
-static const PresetValue k_hihat_pv9[] = { { 0, 60 }, { 2, 4 }, { 4, 10 }, { 5, 8 }, { 12, 0 }, { 13, 0 }, { 19, 105 }, { 21, 2 } };
-static const PresetValue k_hihat_pv10[] = { { 0, 67 }, { 2, 4 }, { 5, 6 }, { 10, 50 }, { 12, 80 }, { 13, 0 }, { 14, 3 }, { 16, 8 }, { 17, 80 }, { 19, 100 } };
-static const PresetValue k_hihat_pv11[] = { { 0, 55 }, { 2, 4 }, { 5, 4 }, { 10, 45 }, { 12, 60 }, { 13, 0 }, { 14, 3 }, { 19, 110 }, { 21, 0 } };
-static const PresetValue k_hihat_pv12[] = { { 0, 30 }, { 2, 3 }, { 10, 40 }, { 11, 55 }, { 14, 3 }, { 15, 3 }, { 19, 100 }, { 32, 70 } };
-static const PresetValue k_hihat_pv13[] = { { 0, 67 }, { 2, 4 }, { 5, 10 }, { 12, 0 }, { 13, 0 }, { 19, 90 }, { 20, 50 }, { 21, 3 }, { 23, 60 }, { 25, 50 }, { 27, 1 }, { 29, 20 } };
+static const PresetValue k_hihat_pv3[] = { { 0, 50 }, { 2, 3 }, { 5, 6 }, { 6, 4 }, { 10, 40 }, { 11, 58 }, { 12, 120 }, { 13, 120 }, { 14, 3 }, { 15, 3 }, { 19, 125 }, { 20, 10 } };
+static const PresetValue k_hihat_pv4[] = { { 0, 50 }, { 2, 3 }, { 5, 40 }, { 10, 40 }, { 11, 58 }, { 12, 120 }, { 13, 120 }, { 14, 3 }, { 15, 3 }, { 19, 115 }, { 20, 10 } };
+static const PresetValue k_hihat_pv5[] = { { 0, 33 }, { 2, 3 }, { 5, 6 }, { 10, 45 }, { 11, 26 }, { 14, 3 }, { 15, 3 }, { 19, 110 }, { 20, 50 }, { 21, 2 } };
+static const PresetValue k_hihat_pv6[] = { { 0, 38 }, { 2, 3 }, { 5, 2 }, { 10, 50 }, { 14, 3 }, { 19, 105 } };
+static const PresetValue k_hihat_pv7[] = { { 0, 50 }, { 2, 3 }, { 5, 8 }, { 6, 5 }, { 10, 40 }, { 11, 58 }, { 12, 120 }, { 13, 120 }, { 14, 3 }, { 15, 3 }, { 19, 120 }, { 20, 10 } };
+static const PresetValue k_hihat_pv8[] = { { 0, 50 }, { 2, 3 }, { 5, 40 }, { 10, 40 }, { 11, 58 }, { 12, 120 }, { 13, 120 }, { 14, 3 }, { 15, 3 }, { 19, 120 }, { 20, 10 } };
+static const PresetValue k_hihat_pv9[] = { { 0, 67 }, { 2, 4 }, { 5, 4 }, { 12, 0 }, { 13, 0 }, { 19, 105 } };
+static const PresetValue k_hihat_pv10[] = { { 0, 67 }, { 2, 4 }, { 5, 10 }, { 6, 5 }, { 12, 0 }, { 13, 0 }, { 19, 120 }, { 20, 10 } };
+static const PresetValue k_hihat_pv11[] = { { 0, 60 }, { 2, 4 }, { 4, 10 }, { 5, 8 }, { 12, 0 }, { 13, 0 }, { 19, 105 }, { 21, 2 } };
+static const PresetValue k_hihat_pv12[] = { { 0, 67 }, { 2, 4 }, { 5, 6 }, { 10, 50 }, { 12, 80 }, { 13, 0 }, { 14, 3 }, { 16, 8 }, { 17, 80 }, { 19, 100 } };
+static const PresetValue k_hihat_pv13[] = { { 0, 55 }, { 2, 4 }, { 5, 4 }, { 10, 45 }, { 12, 60 }, { 13, 0 }, { 14, 3 }, { 19, 110 }, { 21, 0 } };
+static const PresetValue k_hihat_pv14[] = { { 0, 30 }, { 2, 3 }, { 10, 40 }, { 11, 55 }, { 14, 3 }, { 15, 3 }, { 19, 100 }, { 32, 70 } };
+static const PresetValue k_hihat_pv15[] = { { 0, 67 }, { 2, 4 }, { 5, 10 }, { 12, 0 }, { 13, 0 }, { 19, 90 }, { 20, 50 }, { 21, 3 }, { 23, 60 }, { 25, 50 }, { 27, 1 }, { 29, 20 } };
 static const FactoryPreset k_hihat_presets[] = {
     { "Analog Bright", "Analog", "bright, short", k_hihat_pv0, 9 },
     { "Analog Hat", "Analog", "short, metallic", k_hihat_pv1, 7 },
     { "SOS 808 Hat", "Analog", "short, metallic", k_hihat_pv2, 12 },
-    { "Metallic Hat", "Metallic", "metallic", k_hihat_pv3, 10 },
-    { "Metallic Tick", "Metallic", "short, metallic", k_hihat_pv4, 6 },
-    { "Recipe Closed Hat", "Metallic", "short, metallic, bright", k_hihat_pv5, 12 },
-    { "Recipe Open Hat", "Metallic", "long, metallic, bright", k_hihat_pv6, 11 },
-    { "Noise Hat", "Noise", "noisy, bright", k_hihat_pv7, 6 },
-    { "Recipe Noise Hat", "Noise", "short, noisy", k_hihat_pv8, 8 },
-    { "Shaker", "Noise", "soft, noisy", k_hihat_pv9, 8 },
-    { "Acoustic Hat", "Acoustic", "bright", k_hihat_pv10, 10 },
-    { "Pedal Hat", "Acoustic", "dark, soft, short", k_hihat_pv11, 9 },
-    { "Lo-Fi Hat", "Lo-Fi", "lo-fi, short", k_hihat_pv12, 8 },
-    { "Hat Sweep", "FX", "modulated", k_hihat_pv13, 12 },
+    { "Maquina Hat 01 Closed", "Metallic", "short, metallic, bright", k_hihat_pv3, 12 },
+    { "Maquina Hat 02 Open", "Metallic", "long, metallic, bright", k_hihat_pv4, 11 },
+    { "Metallic Hat", "Metallic", "metallic", k_hihat_pv5, 10 },
+    { "Metallic Tick", "Metallic", "short, metallic", k_hihat_pv6, 6 },
+    { "Recipe Closed Hat", "Metallic", "short, metallic, bright", k_hihat_pv7, 12 },
+    { "Recipe Open Hat", "Metallic", "long, metallic, bright", k_hihat_pv8, 11 },
+    { "Noise Hat", "Noise", "noisy, bright", k_hihat_pv9, 6 },
+    { "Recipe Noise Hat", "Noise", "short, noisy", k_hihat_pv10, 8 },
+    { "Shaker", "Noise", "soft, noisy", k_hihat_pv11, 8 },
+    { "Acoustic Hat", "Acoustic", "bright", k_hihat_pv12, 10 },
+    { "Pedal Hat", "Acoustic", "dark, soft, short", k_hihat_pv13, 9 },
+    { "Lo-Fi Hat", "Lo-Fi", "lo-fi, short", k_hihat_pv14, 8 },
+    { "Hat Sweep", "FX", "modulated", k_hihat_pv15, 12 },
 };
 
 static const PresetValue k_dredrum_pv0[] = { { 1, 13 }, { 2, 35 }, { 3, 200 } };
@@ -415,37 +435,63 @@ static const FactoryPreset k_klong_fx_presets[] = {
     { "FM Ring", "FX", "metallic, modulated", k_klong_fx_pv7, 5 },
 };
 
-static const PresetValue k_acida_pv0[] = { { 1, 35 }, { 2, 70 }, { 3, 60 }, { 4, 25 }, { 5, 70 } };
-static const PresetValue k_acida_pv1[] = { { 1, 30 }, { 2, 40 }, { 3, 30 }, { 4, 70 }, { 5, 50 } };
-static const PresetValue k_acida_pv2[] = { { 1, 22 }, { 2, 20 }, { 3, 15 }, { 5, 40 }, { 6, 1 } };
-static const PresetValue k_acida_pv3[] = { { 1, 45 }, { 2, 105 }, { 3, 80 }, { 4, 60 }, { 5, 90 } };
-static const PresetValue k_acida_pv4[] = { { 1, 15 }, { 2, 115 }, { 3, 70 }, { 4, 90 }, { 5, 80 } };
-static const PresetValue k_acida_pv5[] = { { 1, 30 }, { 2, 100 }, { 3, 110 }, { 4, 115 }, { 5, 70 } };
-static const PresetValue k_acida_pv6[] = { { 1, 40 }, { 2, 110 }, { 3, 85 }, { 4, 45 }, { 5, 100 }, { 6, 1 } };
-static const PresetValue k_acida_pv7[] = { { 0, 63 }, { 1, 100 }, { 2, 60 }, { 3, 40 }, { 4, 110 }, { 5, 60 } };
-static const PresetValue k_acida_pv8[] = { { 0, 63 }, { 1, 80 }, { 2, 80 }, { 3, 50 }, { 4, 90 }, { 5, 70 }, { 6, 1 } };
-static const PresetValue k_acida_pv9[] = { { 1, 70 }, { 2, 127 }, { 3, 110 }, { 4, 70 }, { 5, 127 } };
-static const PresetValue k_acida_pv10[] = { { 1, 30 }, { 2, 120 }, { 3, 100 }, { 4, 50 }, { 5, 110 } };
-static const PresetValue k_acida_pv11[] = { { 1, 45 }, { 2, 105 }, { 3, 80 }, { 4, 60 }, { 5, 90 }, { 7, 1 } };
-static const PresetValue k_acida_pv12[] = { { 1, 30 }, { 2, 50 }, { 3, 35 }, { 4, 75 }, { 5, 50 }, { 7, 1 } };
-static const PresetValue k_acida_pv13[] = { { 1, 60 }, { 2, 125 }, { 3, 0 }, { 4, 127 }, { 5, 30 }, { 6, 1 } };
-static const PresetValue k_acida_pv14[] = { { 1, 0 }, { 2, 127 }, { 3, 127 }, { 4, 0 }, { 5, 127 } };
+static const PresetValue k_acida_pv0[] = { { 1, 35 }, { 2, 40 }, { 3, 25 }, { 4, 80 }, { 5, 60 }, { 6, 1 } };
+static const PresetValue k_acida_pv1[] = { { 1, 35 }, { 2, 70 }, { 3, 60 }, { 4, 25 }, { 5, 70 } };
+static const PresetValue k_acida_pv2[] = { { 1, 30 }, { 2, 40 }, { 3, 30 }, { 4, 70 }, { 5, 50 } };
+static const PresetValue k_acida_pv3[] = { { 1, 22 }, { 2, 20 }, { 3, 15 }, { 5, 40 }, { 6, 1 } };
+static const PresetValue k_acida_pv4[] = { { 1, 45 }, { 2, 105 }, { 3, 80 }, { 4, 60 }, { 5, 90 } };
+static const PresetValue k_acida_pv5[] = { { 1, 15 }, { 2, 115 }, { 3, 70 }, { 4, 90 }, { 5, 80 } };
+static const PresetValue k_acida_pv6[] = { { 1, 30 }, { 2, 100 }, { 3, 110 }, { 4, 115 }, { 5, 70 } };
+static const PresetValue k_acida_pv7[] = { { 1, 40 }, { 2, 110 }, { 3, 85 }, { 4, 45 }, { 5, 100 }, { 6, 1 } };
+static const PresetValue k_acida_pv8[] = { { 1, 127 }, { 2, 95 }, { 3, 64 }, { 4, 0 }, { 5, 84 }, { 6, 1 } };
+static const PresetValue k_acida_pv9[] = { { 1, 84 }, { 2, 127 }, { 3, 84 }, { 4, 42 }, { 5, 25 }, { 6, 1 } };
+static const PresetValue k_acida_pv10[] = { { 1, 40 }, { 2, 110 }, { 3, 70 }, { 4, 55 }, { 5, 100 } };
+static const PresetValue k_acida_pv11[] = { { 1, 55 }, { 2, 127 }, { 3, 110 }, { 4, 35 }, { 5, 115 } };
+static const PresetValue k_acida_pv12[] = { { 1, 45 }, { 2, 127 }, { 3, 45 }, { 4, 64 }, { 5, 127 } };
+static const PresetValue k_acida_pv13[] = { { 1, 95 }, { 2, 84 }, { 3, 84 }, { 4, 84 }, { 5, 0 }, { 6, 1 } };
+static const PresetValue k_acida_pv14[] = { { 1, 65 }, { 2, 75 }, { 3, 55 }, { 5, 70 } };
+static const PresetValue k_acida_pv15[] = { { 0, 3 }, { 1, 40 }, { 2, 95 }, { 3, 60 }, { 4, 45 }, { 5, 75 } };
+static const PresetValue k_acida_pv16[] = { { 1, 35 }, { 2, 100 }, { 3, 60 }, { 4, 45 }, { 5, 95 } };
+static const PresetValue k_acida_pv17[] = { { 1, 50 }, { 2, 100 }, { 3, 70 }, { 4, 30 }, { 5, 80 }, { 6, 1 } };
+static const PresetValue k_acida_pv18[] = { { 0, 63 }, { 1, 100 }, { 2, 60 }, { 3, 40 }, { 4, 110 }, { 5, 60 } };
+static const PresetValue k_acida_pv19[] = { { 0, 63 }, { 1, 80 }, { 2, 80 }, { 3, 50 }, { 4, 90 }, { 5, 70 }, { 6, 1 } };
+static const PresetValue k_acida_pv20[] = { { 1, 30 }, { 2, 115 }, { 3, 100 }, { 4, 50 }, { 5, 100 } };
+static const PresetValue k_acida_pv21[] = { { 1, 70 }, { 2, 127 }, { 3, 110 }, { 4, 70 }, { 5, 127 } };
+static const PresetValue k_acida_pv22[] = { { 1, 30 }, { 2, 120 }, { 3, 100 }, { 4, 50 }, { 5, 110 } };
+static const PresetValue k_acida_pv23[] = { { 1, 60 }, { 2, 100 }, { 3, 75 }, { 4, 30 }, { 5, 90 }, { 7, 1 } };
+static const PresetValue k_acida_pv24[] = { { 1, 45 }, { 2, 105 }, { 3, 80 }, { 4, 60 }, { 5, 90 }, { 7, 1 } };
+static const PresetValue k_acida_pv25[] = { { 1, 30 }, { 2, 50 }, { 3, 35 }, { 4, 75 }, { 5, 50 }, { 7, 1 } };
+static const PresetValue k_acida_pv26[] = { { 1, 60 }, { 2, 125 }, { 3, 0 }, { 4, 127 }, { 5, 30 }, { 6, 1 } };
+static const PresetValue k_acida_pv27[] = { { 1, 0 }, { 2, 127 }, { 3, 127 }, { 4, 0 }, { 5, 127 } };
 static const FactoryPreset k_acida_presets[] = {
-    { "Pluck Bass", "Bass", "short, punchy", k_acida_pv0, 5 },
-    { "Round Bass", "Bass", "soft, dark", k_acida_pv1, 5 },
-    { "Square Sub", "Bass", "dark, clean", k_acida_pv2, 5 },
-    { "Classic Acid", "Acid", "bright, modulated", k_acida_pv3, 5 },
-    { "Deep Acid", "Acid", "dark, modulated", k_acida_pv4, 5 },
-    { "Long Acid", "Acid", "long, modulated", k_acida_pv5, 5 },
-    { "Rubber Acid", "Acid", "punchy, modulated", k_acida_pv6, 6 },
-    { "Bright Lead", "Lead", "bright, long", k_acida_pv7, 6 },
-    { "Square Lead", "Lead", "bright, pitched", k_acida_pv8, 7 },
-    { "Screamer", "Squelch", "bright, dirty", k_acida_pv9, 5 },
-    { "Squelch Line", "Squelch", "bright, dirty", k_acida_pv10, 5 },
-    { "Vintage Acid", "Vintage", "modulated", k_acida_pv11, 6 },
-    { "Vintage Bass", "Vintage", "soft, dark", k_acida_pv12, 6 },
-    { "Reso Drone", "FX", "long, pitched", k_acida_pv13, 6 },
-    { "Zap", "FX", "short, bright", k_acida_pv14, 5 },
+    { "Acida 06 Deep 303 Bass", "Bass", "soft, long", k_acida_pv0, 6 },
+    { "Pluck Bass", "Bass", "short, punchy", k_acida_pv1, 5 },
+    { "Round Bass", "Bass", "soft, dark", k_acida_pv2, 5 },
+    { "Square Sub", "Bass", "dark, clean", k_acida_pv3, 5 },
+    { "Classic Acid", "Acid", "bright, modulated", k_acida_pv4, 5 },
+    { "Deep Acid", "Acid", "dark, modulated", k_acida_pv5, 5 },
+    { "Long Acid", "Acid", "long, modulated", k_acida_pv6, 5 },
+    { "Rubber Acid", "Acid", "punchy, modulated", k_acida_pv7, 6 },
+    { "Acida 03 Higher State", "Acid", "dirty, bright", k_acida_pv8, 6 },
+    { "Acida 02 Access", "Acid", "short, bright", k_acida_pv9, 6 },
+    { "Acida 05 Acid Tracks (Phuture)", "Acid", "dark, modulated", k_acida_pv10, 5 },
+    { "Acida 07 Acperience 1 (Hard Acid)", "Acid", "dirty, short", k_acida_pv11, 5 },
+    { "Acida 04 Bwow Classic", "Acid", "modulated", k_acida_pv12, 5 },
+    { "Acida 01 Confusion Pump Panel", "Acid", "dark, modulated", k_acida_pv13, 6 },
+    { "Acida 10 Liquid Acid", "Acid", "soft, long", k_acida_pv14, 4 },
+    { "Acida 12 Tuned D Sharp", "Acid", "dark, pitched", k_acida_pv15, 6 },
+    { "Maquina Acida 01 Line", "Acid", "dark, modulated", k_acida_pv16, 5 },
+    { "Acida 11 Da Funk", "Lead", "bright, short", k_acida_pv17, 6 },
+    { "Bright Lead", "Lead", "bright, long", k_acida_pv18, 6 },
+    { "Square Lead", "Lead", "bright, pitched", k_acida_pv19, 7 },
+    { "Acida 08 Squelch", "Squelch", "bright, modulated", k_acida_pv20, 5 },
+    { "Screamer", "Squelch", "bright, dirty", k_acida_pv21, 5 },
+    { "Squelch Line", "Squelch", "bright, dirty", k_acida_pv22, 5 },
+    { "Acida 09 Vintage 15 Snap", "Vintage", "short, bright", k_acida_pv23, 6 },
+    { "Vintage Acid", "Vintage", "modulated", k_acida_pv24, 6 },
+    { "Vintage Bass", "Vintage", "soft, dark", k_acida_pv25, 6 },
+    { "Reso Drone", "FX", "long, pitched", k_acida_pv26, 6 },
+    { "Zap", "FX", "short, bright", k_acida_pv27, 5 },
 };
 
 static const PresetValue k_acida_fx_pv0[] = { { 2, 40 } };
@@ -669,11 +715,11 @@ static const FactoryPreset k_la50_presets[] = {
 struct VoicePresets { const FactoryPreset* presets; uint32_t count; };
 // in k_voices order
 static const VoicePresets k_factory_presets[] = {
-    { k_kick_presets, 23 },
-    { k_tom_presets, 16 },
-    { k_snare_presets, 19 },
-    { k_cymbal_presets, 13 },
-    { k_hihat_presets, 14 },
+    { k_kick_presets, 26 },
+    { k_tom_presets, 17 },
+    { k_snare_presets, 22 },
+    { k_cymbal_presets, 14 },
+    { k_hihat_presets, 16 },
     { k_dredrum_presets, 16 },
     { k_plethora_presets, 19 },
     { k_oneiroi_presets, 12 },
@@ -681,7 +727,7 @@ static const VoicePresets k_factory_presets[] = {
     { k_klang_presets, 22 },
     { k_klong_presets, 13 },
     { k_klong_fx_presets, 8 },
-    { k_acida_presets, 15 },
+    { k_acida_presets, 28 },
     { k_acida_fx_presets, 9 },
     { k_bl101_presets, 64 },
     { k_bl101_fx_presets, 14 },

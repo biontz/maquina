@@ -3,8 +3,8 @@
 # square, low cutoff, low res, long decay - what the 303 was designed for
 voice = acida
 name = Acida 06 Deep 303 Bass
-category = ReBirth
-tags = square, bass, round
+category = Bass
+tags = soft, long
 waveform = Square
 engine = 2.0
 tune = 0

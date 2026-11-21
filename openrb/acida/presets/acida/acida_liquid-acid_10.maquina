@@ -3,8 +3,8 @@
 # long decay, delay 3/16; the cutoff ride is the drama, not the scream
 voice = acida
 name = Acida 10 Liquid Acid
-category = ReBirth
-tags = saw, dubby, mellow
+category = Acid
+tags = soft, long
 waveform = Saw
 engine = 2.0
 tune = 0

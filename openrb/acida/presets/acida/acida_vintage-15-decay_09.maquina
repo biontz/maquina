@@ -3,10 +3,10 @@
 # snappy mid-acid panel, engine 1.5
 voice = acida
 name = Acida 09 Vintage 15 Snap
-category = ReBirth
-tags = saw, snappy, vintage
+category = Vintage
+tags = short, bright
 waveform = Saw
-engine = 1.5
+engine = Vintage
 tune = 0
 cutoff = 60
 resonance = 100

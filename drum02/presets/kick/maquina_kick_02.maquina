@@ -2,8 +2,8 @@
 # 808-style rumble layer for breakdowns: long exponential tail, shallow pitch drop
 voice = kick
 name = Maquina Kick 02 Rumble
-category = Techno
-tags = long, boomy, sub
+category = Sub
+tags = long, boomy
 osc_wave = Sine
 osc_coarse = -32
 amp_attack = 0

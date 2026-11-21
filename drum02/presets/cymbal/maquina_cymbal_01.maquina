@@ -2,7 +2,7 @@
 # metallic ride: inharmonic square stack, bandpass, long decay, lowered volume
 voice = cymbal
 name = Maquina Cymbal 01 Ride
-category = Techno
+category = Metallic
 tags = metallic, long, dark
 osc_wave = Square
 osc_coarse = 30

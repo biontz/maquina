@@ -3,8 +3,8 @@
 # high res, env up, tight decay
 voice = acida
 name = Acida 11 Da Funk
-category = ReBirth
-tags = square, bright, tight
+category = Lead
+tags = bright, short
 waveform = Square
 engine = 2.0
 tune = 0

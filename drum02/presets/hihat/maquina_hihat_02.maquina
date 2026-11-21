@@ -2,7 +2,7 @@
 # open offbeat hat: same recipe, ~10x tail of closed
 voice = hihat
 name = Maquina Hat 02 Open
-category = Techno
+category = Metallic
 tags = long, metallic, bright
 osc_wave = Square
 osc_coarse = 50

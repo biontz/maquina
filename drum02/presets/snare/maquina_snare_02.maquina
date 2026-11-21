@@ -2,8 +2,8 @@
 # room-tail snare: longer decay, very exponential slope (noise tail as room)
 voice = snare
 name = Maquina Snare 02 Room
-category = Techno
-tags = long, natural
+category = Acoustic
+tags = long, soft
 osc_wave = Sine
 osc_coarse = -6
 noise_mix = 100

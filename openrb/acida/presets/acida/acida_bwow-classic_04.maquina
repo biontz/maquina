@@ -3,8 +3,8 @@
 # cutoff ~9 o'clock, resonance full, env ~9 o'clock, accent full
 voice = acida
 name = Acida 04 Bwow Classic
-category = ReBirth
-tags = saw, squelch, classic
+category = Acid
+tags = modulated
 waveform = Saw
 engine = 2.0
 tune = 0

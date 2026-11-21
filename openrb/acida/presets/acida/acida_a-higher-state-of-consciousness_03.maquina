@@ -3,8 +3,8 @@
 # Square / Cutoff 100% / Res 75% / Env 50% / Dec 0% / Acc 66% / BPM 134 (pair with distortion)
 voice = acida
 name = Acida 03 Higher State
-category = ReBirth
-tags = square, distorted, screaming
+category = Acid
+tags = dirty, bright
 waveform = Square
 engine = 2.0
 tune = 0

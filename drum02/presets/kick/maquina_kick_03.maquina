@@ -2,8 +2,8 @@
 # distorted warehouse kick: square body, filter drive, high pitch env (gabber-descended)
 voice = kick
 name = Maquina Kick 03 Driven
-category = Techno
-tags = dirty, punchy, industrial
+category = Distorted
+tags = dirty, punchy
 osc_wave = Square
 osc_coarse = -24
 amp_attack = 0

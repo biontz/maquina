@@ -2,7 +2,7 @@
 # closed 16th hat: two square mods, very short decay, highpassed
 voice = hihat
 name = Maquina Hat 01 Closed
-category = Techno
+category = Metallic
 tags = short, metallic, bright
 osc_wave = Square
 osc_coarse = 50

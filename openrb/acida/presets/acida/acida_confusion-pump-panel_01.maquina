@@ -3,8 +3,8 @@
 # ReBirth panel: Square / Cutoff 75% / Res 66% / Env 66% / Dec 66% / Acc 0% / BPM 134
 voice = acida
 name = Acida 01 Confusion Pump Panel
-category = ReBirth
-tags = square, dark, slides
+category = Acid
+tags = dark, modulated
 waveform = Square
 engine = 2.0
 tune = 0

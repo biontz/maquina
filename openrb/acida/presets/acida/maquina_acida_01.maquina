@@ -3,7 +3,7 @@
 voice = acida
 name = Maquina Acida 01 Line
 category = Acid
-tags = dark, modulated, techno
+tags = dark, modulated
 waveform = Saw
 engine = 2.0
 tune = 0

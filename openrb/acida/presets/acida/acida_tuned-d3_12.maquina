@@ -3,8 +3,8 @@
 # famous riffs; classic dark panel to go with it
 voice = acida
 name = Acida 12 Tuned D Sharp
-category = ReBirth
-tags = saw, dark, transposed
+category = Acid
+tags = dark, pitched
 waveform = Saw
 engine = 2.0
 tune = 3

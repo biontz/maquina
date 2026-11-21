@@ -2,8 +2,8 @@
 # source: textbook squelch (LXR manual / 303 canon): saw, res high, env very up
 voice = acida
 name = Acida 08 Squelch
-category = ReBirth
-tags = saw, squelch, bright
+category = Squelch
+tags = bright, modulated
 waveform = Saw
 engine = 2.0
 tune = 0

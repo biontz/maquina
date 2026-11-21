@@ -2,8 +2,8 @@
 # dry short techno snap: noise over tone, fast decay (SOS 909 snare, shortened)
 voice = snare
 name = Maquina Snare 01 Dry
-category = Techno
-tags = short, dry, bright
+category = 909
+tags = short, clean, bright
 osc_wave = Triangle
 osc_coarse = -4
 noise_mix = 90

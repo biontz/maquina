@@ -2,8 +2,8 @@
 # robot zap accent: tone only, high pitch modulation (Kraftwerk/SOS tip)
 voice = snare
 name = Maquina Snare 03 Zap
-category = Techno
-tags = pitched, bright, fx
+category = FX
+tags = pitched, bright, noisy
 osc_wave = Triangle
 osc_coarse = 0
 noise_mix = 50

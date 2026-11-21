@@ -3,8 +3,8 @@
 # env up, moderate decay; knobs ridden during the track
 voice = acida
 name = Acida 05 Acid Tracks (Phuture)
-category = ReBirth
-tags = saw, phuture, classic
+category = Acid
+tags = dark, modulated
 waveform = Saw
 engine = 2.0
 tune = 0

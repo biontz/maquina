@@ -3,8 +3,8 @@
 # env high, short decay, accent high; pair with Acida FX Clp hardclip
 voice = acida
 name = Acida 07 Acperience 1 (Hard Acid)
-category = ReBirth
-tags = saw, hard, techno
+category = Acid
+tags = dirty, short
 waveform = Saw
 engine = 2.0
 tune = 0
