@@ -17,7 +17,9 @@
 #define MAQUINA_THEME_ERICA 6     // Dredrum
 
 #ifndef MAQUINA_THEME
-#if MAQUINA_VOICE_INDEX == 12 // Acida
+#if defined(MAQUINA_VOICE_INDEX) && MAQUINA_VOICE_INDEX >= 0 && MAQUINA_VOICE_INDEX <= 4 // Kick, Tom, Snare, Cymbal, HiHat
+#define MAQUINA_THEME MAQUINA_THEME_LXR
+#elif MAQUINA_VOICE_INDEX == 12 // Acida
 #define MAQUINA_THEME MAQUINA_THEME_SILVER303
 #elif MAQUINA_VOICE_INDEX >= 9 && MAQUINA_VOICE_INDEX <= 11 // Klang, Klong, Klong FX
 #define MAQUINA_THEME MAQUINA_THEME_MUTABLE
@@ -116,6 +118,23 @@ constexpr Theme kMutable {
       90, 10.f, 4.f },
 };
 
+// LXR black (Kick, Tom, Snare, Cymbal, HiHat): matte black, thin red rings, grey caps,
+// red display digits (mockups/kick-lxr.html)
+constexpr Theme kLxr {
+    1100.f,
+    { 0xe0, 0x29, 0x4a }, { 0xff, 0x5a, 0x72 }, { 0xff, 0xff, 0xff },
+    { 0x5a, 0x2a, 0x33 }, { 0x3a, 0x22, 0x28 },
+    { 0x14, 0x15, 0x18 }, 10.f,
+    { 0xf4, 0xf4, 0xf4 }, { 0xff, 0x3b, 0x30 },
+    { { 0xff, 0x3d, 0x5a }, { 0xff, 0xff, 0xff }, 26, 2.f, -1.f, -1.f,
+      false, { 0x16, 0x16, 0x17 }, { 0x16, 0x16, 0x17 }, 7.f,
+      0.2308f, 3, { 0.f, 0.55f, 1.f, 1.f },
+      { { 0xe6, 0xe6, 0xe6 }, { 0xb4, 0xb4, 0xb4 }, { 0x8a, 0x8a, 0x8a }, { 0x8a, 0x8a, 0x8a } }, 0.40f, 0.32f,
+      { 0, 0, 0 }, 0.f,
+      { 0xf4, 0xf4, 0xf4 }, -0.214f, 0.214f,
+      200, 7.f, 3.f },
+};
+
 // the classic look's values where a Theme is asked for (never drawn with)
 constexpr Theme kClassicTheme {
     1080.f,
@@ -128,7 +147,10 @@ constexpr Theme kClassicTheme {
 
 constexpr const Theme& theme()
 {
-    return kTheme == ThemeId::Silver303 ? kSilver303 : kTheme == ThemeId::Mutable ? kMutable : kClassicTheme;
+    return kTheme == ThemeId::Silver303 ? kSilver303
+         : kTheme == ThemeId::Mutable   ? kMutable
+         : kTheme == ThemeId::Lxr       ? kLxr
+                                        : kClassicTheme;
 }
 
 // header credit lines: the long one, and a shorter one when the header is tight

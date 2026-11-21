@@ -496,3 +496,150 @@ void drawDotted(NanoVG& v, float x0, float y0, float x1, float y1, Rgb c)
     v.fillColor(rgba(c));
     v.fill();
 }
+
+// ---------------------------------------------------------------------------
+// LXR black (mockups/kick-lxr.html)
+
+constexpr Rgb kLxrRed { 0xff, 0x2a, 0x22 };     // display digits, envelope curves
+constexpr Rgb kLxrValue { 0xff, 0x3b, 0x30 };   // values, selector windows
+constexpr Rgb kLxrTime { 0xff, 0x6a, 0x60 };    // envelope time text
+constexpr Rgb kLxrLine { 0x6a, 0x6a, 0x6a };    // section outlines, page-button rules
+constexpr Rgb kLxrPanelBg { 0x11, 0x11, 0x12 }; // behind section titles
+
+// matte black panel: radial ellipse from the top, top highlight, drop shadow
+void drawLxrPanel(NanoVG& v, float x, float y, float w, float h, float r)
+{
+    boxShadow(v, x, y, w, h, r, 8, 22, 150);
+    v.beginPath();
+    v.roundedRect(x, y, w, h, r);
+    v.fillColor(rgba(kLxrPanelBg));
+    v.fill();
+    // CSS radial-gradient(ellipse at 50% -20%, #1d1d1e, #111112 60%): squashed circle
+    v.save();
+    v.scale(1.f, h / w);
+    const float cy = (y - 0.2f * h) * w / h;
+    v.beginPath();
+    v.roundedRect(x, y * w / h, w, h * w / h, r);
+    v.fillPaint(v.radialGradient(x + w / 2, cy, 0, 0.6f * w * 0.75f, rgba({ 0x1d, 0x1d, 0x1e }), rgba(kLxrPanelBg)));
+    v.fill();
+    v.restore();
+    v.beginPath();
+    v.moveTo(x + r, y + 0.5f);
+    v.lineTo(x + w - r, y + 0.5f);
+    v.strokeColor(Color(1.f, 1.f, 1.f, 0.07f));
+    v.strokeWidth(1);
+    v.stroke();
+}
+
+// text with a soft glow of its own colour (CSS text-shadow 0 0 blur)
+void glowText(NanoVG& v, float x, float y, const char* s, Rgb c, float blur, int glowA)
+{
+    if (!s || !*s) return;
+    v.fontBlur(blur);
+    v.fillColor(rgba(c, glowA));
+    v.text(x, y, s, nullptr);
+    v.text(x, y, s, nullptr);
+    v.fontBlur(0);
+    v.fillColor(rgba(c));
+    v.text(x, y, s, nullptr);
+}
+
+// section: 1.5 px outline, radius 7; titleW > 0: the title's room on the top edge (the line
+// is cut there; the caller draws the title)
+void drawLxrBox(NanoVG& v, float x, float y, float w, float h, float titleW)
+{
+    v.beginPath();
+    v.roundedRect(x + 0.75f, y + 0.75f, w - 1.5f, h - 1.5f, 7);
+    v.strokeColor(rgba(kLxrLine));
+    v.strokeWidth(1.5f);
+    v.stroke();
+    if (titleW <= 0) return;
+    v.beginPath();
+    v.rect(x + w / 2 - titleW / 2 - 8, y - 2, titleW + 16, 4);
+    v.fillColor(rgba(kLxrPanelBg));
+    v.fill();
+}
+
+// dot-matrix window: near-black red, inset line; grid: faint red dots every 6 px
+void drawLxrMatrix(NanoVG& v, float x, float y, float w, float h, bool grid)
+{
+    v.beginPath();
+    v.roundedRect(x, y, w, h, 4);
+    v.fillColor(rgba({ 0x0a, 0x03, 0x03 }));
+    v.fill();
+    v.beginPath();
+    v.roundedRect(x, y, w, h, 4);
+    v.fillPaint(v.boxGradient(x, y + 2, w, h, 4, 6, Color(0, 0, 0, 0.f), Color(0, 0, 0, 0.8f)));
+    v.fill();
+    if (grid) {
+        v.beginPath();
+        for (float gy = y + 3; gy < y + h - 1; gy += 6)
+            for (float gx = x + 3; gx < x + w - 1; gx += 6) v.circle(gx, gy, 1.f);
+        v.fillColor(Color(1.f, 60 / 255.f, 50 / 255.f, 0.16f));
+        v.fill();
+    }
+    v.beginPath();
+    v.roundedRect(x + 0.5f, y + 0.5f, w - 1, h - 1, 4);
+    v.strokeColor(rgba({ 0x2a, 0x10, 0x10 }));
+    v.strokeWidth(1);
+    v.stroke();
+}
+
+// round grey button (24 px; small: the 14 px step buttons) in a black ring; on: lit pink-red
+void drawLxrButton(NanoVG& v, float cx, float cy, bool on, bool small, bool hot)
+{
+    const float r = small ? 7.f : 12.f, ring = small ? 2.f : 3.f;
+    if (on) {
+        v.beginPath();
+        v.circle(cx, cy, r + ring + 15);
+        v.fillPaint(v.radialGradient(cx, cy, r, r + ring + 15, Color(1.f, 61 / 255.f, 90 / 255.f, 0.55f),
+                                     Color(1.f, 61 / 255.f, 90 / 255.f, 0.f)));
+        v.fill();
+    } else {
+        circleShadow(v, cx, cy + 2, r + ring, 4, 200);
+    }
+    v.beginPath();
+    v.circle(cx, cy, r + ring);
+    v.fillColor(rgba({ 0x05, 0x05, 0x05 }));
+    v.fill();
+    static const float kStops[3] = { 0.f, 0.45f, 1.f };
+    if (on) {
+        const Rgb cols[3] = { { 0xff, 0xd6, 0xdc }, { 0xff, 0x3d, 0x5a }, { 0xc0, 0x16, 0x2f } };
+        fillRadialStops(v, [&] { v.circle(cx, cy, r); }, cx - r * 0.1f, cy - r * 0.2f, r * 1.6f, kStops, cols, 3);
+    } else {
+        const Rgb hi = small ? Rgb { 0x8a, 0x8a, 0x8a } : Rgb { 0x9a, 0x9a, 0x9a };
+        const Rgb cols[3] = { hot ? mix(hi, { 0xff, 0xff, 0xff }, 0.25f) : hi, small ? Rgb { 0x55, 0x55, 0x55 } : Rgb { 0x5e, 0x5e, 0x5e },
+                              small ? Rgb { 0x55, 0x55, 0x55 } : Rgb { 0x5e, 0x5e, 0x5e } };
+        static const float kOff[3] = { 0.f, 0.7f, 1.f };
+        fillRadialStops(v, [&] { v.circle(cx, cy, r); }, cx - r * 0.2f, cy - r * 0.36f, r * 1.75f, kOff, cols, 3);
+    }
+}
+
+// VOLUME fader: black well (30 x 72), slot, cap with a white line; t = 0..1 (top = 1)
+void drawLxrFader(NanoVG& v, float x, float y, float w, float h, float t, bool hot)
+{
+    v.beginPath();
+    v.roundedRect(x, y, w, h, 3);
+    v.fillColor(rgba({ 0x05, 0x05, 0x05 }));
+    v.fill();
+    v.beginPath();
+    v.roundedRect(x + 0.75f, y + 0.75f, w - 1.5f, h - 1.5f, 3);
+    v.strokeColor(rgba({ 0x2a, 0x2a, 0x2a }));
+    v.strokeWidth(1.5f);
+    v.stroke();
+    v.beginPath();
+    v.rect(x + w / 2 - 2, y + 6, 4, h - 12);
+    v.fillColor(rgba({ 0, 0, 0 }));
+    v.fill();
+    const float capH = 18, top = y + 4 + (1.f - std::clamp(t, 0.f, 1.f)) * (h - 8 - capH);
+    boxShadow(v, x + 3, top, w - 6, capH, 2, 2, 3, 255);
+    v.beginPath();
+    v.roundedRect(x + 3, top, w - 6, capH, 2);
+    v.fillPaint(v.linearGradient(0, top, 0, top + capH, rgba(hot ? Rgb { 0x45, 0x45, 0x46 } : Rgb { 0x2e, 0x2e, 0x2f }),
+                                 rgba({ 0x0c, 0x0c, 0x0c })));
+    v.fill();
+    v.beginPath();
+    v.rect(x + 5, top + 8, w - 10, 2);
+    v.fillColor(rgba({ 0xf4, 0xf4, 0xf4 }));
+    v.fill();
+}

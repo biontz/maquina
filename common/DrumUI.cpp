@@ -317,7 +317,9 @@ struct Ctl {
     float ax = 0, ay = 0, size = 0, bw = 0, bh = 0, labelY = 0, valueY = 0;
     float labelX = 0; // > 0: the label starts here (left aligned) instead of centred on ax
     // how it is drawn / clicked beyond its type (the new look)
-    enum Look : uint8_t { Plain, Window, Cluster, LedButton, Segments } look = Plain;
+    // LXR: LxrSel = red window (ax, ay, bw x bh) between two small step buttons, click = list;
+    // LxrToggle = round button at (ax, ay); LxrFader = the VOLUME fader (bw x bh at ax, ay)
+    enum Look : uint8_t { Plain, Window, Cluster, LedButton, Segments, LxrSel, LxrToggle, LxrFader } look = Plain;
     // Cluster: a row of n items (LEDs or colour dots) at xs[], picking a value of the bank
     // shown; optional round buttons (prevX: one back, stepX: one on, both wrap) and an LED
     uint8_t n = 0;
@@ -446,9 +448,20 @@ struct La50Panel {
 
 // the new look's panel decorations: printed rules, the logo block
 struct Deco {
-    enum Kind { VRule, HRule, Logo, Dotted, RuleText, Divider } kind;
+    enum Kind { VRule, HRule, Logo, Dotted, RuleText, Divider, LxrBox } kind;
     Box b;
-    const char* text = nullptr; // RuleText: the title in the rule
+    const char* text = nullptr; // RuleText: the title in the rule; LxrBox: the section title
+};
+
+// LXR: the top strip's display and page buttons. A page holds up to 8 parameters, shown
+// 4 at a time (slots 0-3, 4-7) as on the LXR-02's display; -1 = an empty slot
+struct LxrStrip {
+    bool used = false;
+    Box display {};
+    int pages = 0;
+    float btnX[8] {}, btnY = 0, labelY = 0, lineX0 = 0, lineX1 = 0;
+    const char* name[8] {};
+    int slot[8][8] {};
 };
 
 struct Layout {
@@ -457,6 +470,7 @@ struct Layout {
     std::vector<Graph> graphs;
     RandPanel rand;
     La50Panel la50;
+    LxrStrip lxr;
     float height = 400.f;
     // the new look: the machine panel, the random drawer, decorations
     Box panel {}, drawer {};
@@ -1130,6 +1144,7 @@ protected:
             if (maquina::isSoundParam(voiceDef(), i)) fPresetDirty = true;
         }
         fValues[i] = v;
+        if (gesture && !fApplying) lxrTouch(i);
         if (gesture) editParameter(i, true);
         setParameterValue(i, v);
         if (gesture) editParameter(i, false);
@@ -1283,7 +1298,10 @@ protected:
         drawHeaderNew();
         if (kTheme == ThemeId::Silver303) drawSilverPanel(*this, L.panel.x, L.panel.y, L.panel.w, L.panel.h, T.panelRadius);
         if (kTheme == ThemeId::Mutable) drawMutablePanel(*this, L.panel.x, L.panel.y, L.panel.w, L.panel.h, T.panelRadius);
+        if (kTheme == ThemeId::Lxr) drawLxrPanel(*this, L.panel.x, L.panel.y, L.panel.w, L.panel.h, T.panelRadius);
         for (const Deco& d : L.decos) drawDeco(d);
+        if (L.lxr.used) drawLxrStrip();
+        for (const Graph& g : fGraphs) drawGraph(g);
         for (const Ctl& c : fCtls) drawCtlNew(c);
         drawDrawerNew();
     }
@@ -1499,7 +1517,47 @@ protected:
             useFace(*this, "mono");
             break;
         }
+        case Deco::LxrBox: { // outlined section, the title on its top edge
+            useFace(*this, "print");
+            fontPx(*this, 12.5f);
+            textLetterSpacing(12.5f * 0.06f);
+            const float tw = d.text ? textWidth(d.text) : 0.f;
+            drawLxrBox(*this, d.b.x, d.b.y, d.b.w, d.b.h, tw);
+            if (d.text) {
+                textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+                fillColor(col(T.print));
+                text(d.b.x + d.b.w / 2, d.b.y, d.text, nullptr);
+            }
+            textLetterSpacing(0);
+            useFace(*this, "mono");
+            break;
+        }
         case Deco::Logo:
+            if (kTheme == ThemeId::Lxr) { // KICK / DIGITAL DRUM VOICE
+                std::string n = voiceDef().name;
+                for (char& ch : n) ch = char(std::toupper(ch));
+                const float y0 = d.b.y + (d.b.h - 49) / 2;
+                useFace(*this, "logo");
+                float px = 30;
+                fontPx(*this, px);
+                textLetterSpacing(px * 0.02f);
+                if (const float tw = textWidth(n.c_str()); tw > d.b.w) { // CYMBAL: a little smaller
+                    px *= d.b.w / tw;
+                    fontPx(*this, px);
+                    textLetterSpacing(px * 0.02f);
+                }
+                textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+                fillColor(col(T.print));
+                text(d.b.x, y0 + 15, n.c_str(), nullptr);
+                useFace(*this, "print");
+                fontPx(*this, 11.5f);
+                textLetterSpacing(11.5f * 0.14f);
+                fillColor(col({ 0xd8, 0xd8, 0xd8 }));
+                text(d.b.x, y0 + 30 + 6 + 6.5f, "DIGITAL DRUM VOICE", nullptr);
+                textLetterSpacing(0);
+                useFace(*this, "mono");
+                break;
+            }
             if (kTheme == ThemeId::Mutable) { // black square + the name
                 beginPath();
                 roundedRect(d.b.x, d.b.y + d.b.h / 2 - 9, 18, 18, 3);
@@ -1584,6 +1642,13 @@ protected:
             else { fPopup = int(c.param); fPopupHover = -1; }
             return true;
         case Ctl::Segments: stepWrap(c.param, 1); return true;
+        case Ctl::LxrSel: { // [o] window [o]: step buttons, the window opens the list
+            if (std::fabs(x - (c.ax - c.bw / 2 - 12)) <= 10) setValue(c.param, fValues[c.param] - 1, true);
+            else if (std::fabs(x - (c.ax + c.bw / 2 + 12)) <= 10) setValue(c.param, fValues[c.param] + 1, true);
+            else if (dbl) setValue(c.param, defOf(c.param), true);
+            else { fPopup = int(c.param); fPopupHover = -1; }
+            return true;
+        }
         default: return false;
         }
     }
@@ -1690,6 +1755,136 @@ protected:
             value(buf, c.ax, c.valueY, false);
             break;
         }
+        default: break; // LXR looks
+        }
+        useFace(*this, "mono");
+    }
+
+    // ---- LXR black: the value as the red windows / display show it
+    void lxrValue(uint32_t i, char* buf, size_t n) const
+    {
+        const VoiceParam& p = paramAt(voiceDef(), i);
+        const int iv = intOf(int(i));
+        if (p.kind == ParamKind::Int) std::snprintf(buf, n, p.offset < 0 || !std::strcmp(p.symbol, "gain") ? "%+d" : "%d", iv);
+        else if (p.labels && iv >= 0 && iv < p.numLabels) std::snprintf(buf, n, "%s", lxrShortLabel(p.labels[iv]).c_str());
+        else std::snprintf(buf, n, "%d", iv);
+    }
+    // the display follows the last parameter touched: its page and half
+    void lxrTouch(uint32_t param)
+    {
+        const LxrStrip& S = layout().lxr;
+        if (!S.used) return;
+        for (int k = 0; k < S.pages; ++k)
+            for (int j = 0; j < 8; ++j)
+                if (S.slot[k][j] == int(param)) { fLxrPage = k; fLxrHalf = j / 4; fLxrLast = int(param); return; }
+    }
+    bool lxrHasHalf(int page) const
+    {
+        for (int j = 4; j < 8; ++j)
+            if (layout().lxr.slot[page][j] >= 0) return true;
+        return false;
+    }
+    // page buttons (a lit page with a second half: flip it); the display flips halves too
+    bool lxrStripClick(float x, float y)
+    {
+        const LxrStrip& S = layout().lxr;
+        if (!S.used) return false;
+        if (S.display.hit(x, y)) {
+            if (lxrHasHalf(fLxrPage)) fLxrHalf ^= 1;
+            return true;
+        }
+        for (int k = 0; k < S.pages; ++k)
+            if (std::fabs(x - S.btnX[k]) <= 22 && y >= S.btnY - 15 && y <= S.labelY + 9) {
+                if (k == fLxrPage) fLxrHalf = lxrHasHalf(k) ? fLxrHalf ^ 1 : 0;
+                else { fLxrPage = k; fLxrHalf = 0; }
+                return true;
+            }
+        return false;
+    }
+    void drawLxrStrip()
+    {
+        const Theme& T = theme();
+        const LxrStrip& S = layout().lxr;
+        const Box& d = S.display;
+        drawLxrMatrix(*this, d.x, d.y, d.w, d.h, false);
+        useFace(*this, "lcd");
+        fontPx(*this, 32);
+        textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+        const float colW = (d.w - 32) / 4, y1 = d.y + (d.h - 66) / 2 + 16, y2 = y1 + 34;
+        for (int k = 0; k < 4; ++k) {
+            const int p = S.slot[fLxrPage][fLxrHalf * 4 + k];
+            if (p < 0) continue;
+            std::string nm = lxrShortName(paramAt(voiceDef(), uint32_t(p)).symbol);
+            if (p == fLxrLast)
+                for (char& ch : nm) ch = char(std::toupper(ch));
+            char buf[24];
+            lxrValue(uint32_t(p), buf, sizeof buf);
+            const float x = d.x + 16 + k * colW;
+            glowText(*this, x, y1, nm.c_str(), kLxrRed, 6, 150);
+            glowText(*this, x, y2, buf, kLxrRed, 6, 150);
+        }
+        // page buttons, their labels joined by rules
+        useFace(*this, "print");
+        fontPx(*this, 11.5f);
+        textLetterSpacing(11.5f * 0.05f);
+        textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+        float prevEnd = S.lineX0;
+        beginPath();
+        for (int k = 0; k < S.pages; ++k) {
+            drawLxrButton(*this, S.btnX[k], S.btnY, k == fLxrPage, false, false);
+            const float tw = textWidth(S.name[k]);
+            fillColor(col(T.print));
+            text(S.btnX[k], S.labelY, S.name[k], nullptr);
+            const float a = S.btnX[k] - tw / 2 - 6;
+            if (a > prevEnd + 2) { beginPath(); rect(prevEnd, S.labelY - 0.75f, a - prevEnd, 1.5f); fillColor(col(kLxrLine)); fill(); }
+            prevEnd = S.btnX[k] + tw / 2 + 6;
+        }
+        if (S.lineX1 > prevEnd + 2) { beginPath(); rect(prevEnd, S.labelY - 0.75f, S.lineX1 - prevEnd, 1.5f); fillColor(col(kLxrLine)); fill(); }
+        textLetterSpacing(0);
+        useFace(*this, "mono");
+    }
+    void drawCtlLxr(const Ctl& c)
+    {
+        const Theme& T = theme();
+        const bool hot = fDrag == int(c.param) || fPopup == int(c.param);
+        char buf[48];
+        auto label = [&](const char* l, float x, float yLast) {
+            if (!l) return;
+            useFace(*this, "print");
+            fontPx(*this, 11);
+            printLabel(l, x, yLast, 11, 0.05f, T.print);
+        };
+        auto lcd = [&](const char* s, float x, float y, float px) {
+            useFace(*this, "lcd");
+            fontPx(*this, px);
+            textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+            glowText(*this, x, y, s, hot ? mix(kLxrValue, { 0xff, 0xff, 0xff }, 0.3f) : kLxrValue, 5, 140);
+        };
+        switch (c.look) {
+        case Ctl::LxrSel: {
+            label(c.label, c.ax, c.labelY);
+            const float wx = c.ax - c.bw / 2, wy = c.ay - c.bh / 2;
+            drawLxrButton(*this, wx - 5 - 7, c.ay, false, true, false);
+            drawLxrButton(*this, wx + c.bw + 5 + 7, c.ay, false, true, false);
+            drawLxrMatrix(*this, wx, wy, c.bw, c.bh, false);
+            lxrValue(c.param, buf, sizeof buf);
+            lcd(buf, c.ax, c.ay + 1, 21);
+            break;
+        }
+        case Ctl::LxrToggle:
+            label(c.label, c.ax, c.labelY);
+            drawLxrButton(*this, c.ax, c.ay, fValues[c.param] >= 0.5f, false, hot);
+            break;
+        case Ctl::LxrFader:
+            label(c.label, c.ax, c.labelY);
+            drawLxrFader(*this, c.ax - c.bw / 2, c.ay - c.bh / 2, c.bw, c.bh, valueFraction(c.param), hot);
+            break;
+        default: // knob
+            label(c.label, c.ax, c.labelY);
+            drawKnobStyled(*this, T.knob, c.ax, c.ay, c.size, valueFraction(c.param), hot);
+            lxrValue(c.param, buf, sizeof buf);
+            lcd(buf, c.ax, c.valueY, 22);
+            break;
         }
         useFace(*this, "mono");
     }
@@ -1697,6 +1892,7 @@ protected:
     void drawCtlNew(const Ctl& c)
     {
         if (kTheme == ThemeId::Mutable) { drawCtlMutable(c); return; }
+        if (kTheme == ThemeId::Lxr) { drawCtlLxr(c); return; }
         const Theme& T = theme();
         const bool hot = fDrag == int(c.param) || fPopup == int(c.param);
         char buf[48];
@@ -4363,8 +4559,72 @@ protected:
         }
     }
 
+    // LXR: red curve with a glow on the dot-matrix grid, time text top right
+    void drawGraphLxr(const Graph& g)
+    {
+        drawLxrMatrix(*this, g.x, g.y, g.w, g.h, true);
+        const EgPoints e = egPoints(g);
+        const int slope = g.slope >= 0 ? fwOf(g.slope) : 64;
+        const float height = g.kind == GraphKind::Pitch && g.amount >= 0 ? 0.08f + 0.92f * float(fwOf(g.amount)) / 127.f : 1.f;
+        auto curve = [&] {
+            beginPath();
+            if (g.kind == GraphKind::Amp) {
+                moveTo(e.x0, e.yBot);
+                egCurve(e.x0, e.xPeak, e.yTop, e.yBot, 127 - slope, 1.999, true, 1.f);
+                egCurve(e.xPeak, e.xEnd, e.yTop, e.yBot, slope, 1.999, false, 1.f);
+            } else {
+                egCurve(e.x0, e.xEnd, e.yTop, e.yBot, slope, 2.0, false, height);
+            }
+            lineTo(g.x + g.w - 6, e.yBot);
+        };
+        scissor(g.x, g.y, g.w, g.h);
+        lineCap(ROUND);
+        lineJoin(ROUND);
+        curve();
+        strokeColor(col(kLxrRed, 70));
+        strokeWidth(6);
+        stroke();
+        curve();
+        strokeColor(col(kLxrRed));
+        strokeWidth(2.5f);
+        stroke();
+        // drag handles: small, bright while dragged
+        auto handle = [&](float x, float y, bool hot) {
+            beginPath();
+            circle(x, y, hot ? 3.5f : 2.5f);
+            fillColor(col(hot ? Rgb { 0xff, 0xff, 0xff } : kLxrTime, hot ? 255 : 170));
+            fill();
+        };
+        if (g.kind == GraphKind::Amp) {
+            if (g.attack >= 0) handle(e.xPeak, e.yTop, fDrag == g.attack);
+            handle(e.xEnd, e.yBot, fDrag == g.decay);
+        } else {
+            handle(e.x0, e.yBot - (e.yBot - e.yTop) * height, fDrag == g.amount);
+            handle(e.xEnd, e.yBot, fDrag == g.decay);
+        }
+        resetScissor();
+        char buf[64], t1[16], t2[16];
+        if (g.kind == GraphKind::Amp) {
+            fmtTime(t1, sizeof t1, g.attack >= 0 ? egSeconds(fwOf(g.attack), kAttackK) : 0.0);
+            fmtTime(t2, sizeof t2, egSeconds(fwOf(g.decay), kDecayK));
+            std::snprintf(buf, sizeof buf, "A%s D%s", t1, t2);
+        } else {
+            fmtTime(t2, sizeof t2, egSeconds(fwOf(g.decay), kPitchK));
+            std::snprintf(buf, sizeof buf, "D%s", t2);
+        }
+        std::string t = buf; // "1 ms" -> "1ms"
+        for (size_t k; (k = t.find(" ms")) != std::string::npos || (k = t.find(" s")) != std::string::npos;) t.erase(k, 1);
+        useFace(*this, "lcd");
+        fontPx(*this, 15);
+        textAlign(ALIGN_RIGHT | ALIGN_MIDDLE);
+        fillColor(col(kLxrTime));
+        text(g.x + g.w - 6, g.y + 4 + 7.5f, t.c_str(), nullptr);
+        useFace(*this, "mono");
+    }
+
     void drawGraph(const Graph& g)
     {
+        if (kTheme == ThemeId::Lxr) { drawGraphLxr(g); return; }
         if (g.kind == GraphKind::Draw) { drawDrawGraph(g); return; }
         if (g.kind == GraphKind::Chop) { drawChopGraph(g); return; }
         beginPath();
@@ -4579,6 +4839,7 @@ protected:
     void beginDrag(int param, float x, float y, int axis)
     {
         endRun();
+        lxrTouch(uint32_t(param));
         fDrag = param;
         fDragAxis = axis;
         fDragStartX = x;
@@ -4760,9 +5021,11 @@ protected:
             return true;
         }
 
+        if (kTheme == ThemeId::Lxr && lxrStripClick(x, y)) { repaint(); return true; }
         const Ctl* c = ctlAt(x, y);
         if (c == nullptr)
             return false;
+        lxrTouch(c->param);
 
         const bool dbl = (c->param == fLastClickParam) && (ev.time - fLastClickTime < 350);
         fLastClickParam = c->param;
@@ -4774,6 +5037,7 @@ protected:
         case CtlType::Slider:
             if (dbl) { setValue(c->param, defOf(c->param), true); return true; }
             beginDrag(int(c->param), x, y, 1);
+            if (c->look == Ctl::LxrFader) fLaDragPixels = c->bh - 26; // the cap follows the mouse
             break;
         case CtlType::Switch:
             setValue(c->param, float(switchPosAt(*c, y)), true);
@@ -4834,7 +5098,7 @@ protected:
         float v;
         if (fDragAxis == 1) {
             float pixels = typeOf(i) == CtlType::Select ? 8.f * range : 160.f; // selects: 8 px per step
-            if (fLaDragPixels > 0) pixels = fLaDragPixels; // LA-50: the slot's travel
+            if (fLaDragPixels > 0) pixels = fLaDragPixels; // LA-50: the slot's travel; LXR: the fader's
             else if (typeOf(i) == CtlType::Slider) // a slider: its cap follows the mouse
                 if (const Ctl* c = ctlFor(i)) {
                     float sx, y0, y1;
@@ -4897,6 +5161,8 @@ private:
     const std::vector<Graph>& fGraphs;
     float fHeight;
     bool fDrawerOpen = false; // the new look: random drawer folded / open
+    // LXR: the display's page, its half (slots 0-3 / 4-7) and the last parameter touched
+    int fLxrPage = 0, fLxrHalf = 0, fLxrLast = layout().lxr.used ? layout().lxr.slot[0][0] : -1;
 
     int fDrag = -1;
     int fDragAxis = 1; // 1 = vertical, 0 = horizontal

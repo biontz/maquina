@@ -130,6 +130,23 @@ Row tables: Kick / Tom use OSC · AEG · PITCH EG / CLICK · LFO · MOD / FM · 
 MIX; Snare and Cymbal / HiHat as in the guide. These replace `kDrumRows` / `kSnareRows` /
 `kMetalRows` (only the order changes).
 
+As built (step 4, `makeLxr` in `common/ui/Layouts.cpp`):
+
+- Each box gets its natural width (its items side by side, like the mockups' flex rows); the
+  rest of the row is shared out by the mockups' flex weights (Kick uses Tom's).
+- **Display**: the page of the last parameter touched (a knob, selector, toggle, graph handle
+  or list), 4 at a time like the LXR-02: pages with more than 4 (MOD: pitch EG / velocity,
+  LFO, MIX: + KEY TRK and GAIN, M.OSC: 1 / 2) have a second half. Clicking the lit page
+  button or the display flips halves. The touched parameter's name is in capitals (`COA`).
+  Names are the firmware's three-letter short names.
+- **Red windows** show short values (Sine → Sin, Lowpass → LP, Click 2 → Clk2; modulation
+  targets: section letter + short name, Osc Coarse → Ocoa); the list (click on the window)
+  has the full names. The small round buttons step back / on.
+- LFO **SYNC** is a red window (12 values), RETRIG a round toggle, as planned above.
+- The envelope graphs keep the classic editor's drag handles (small dots).
+- Long wordmarks shrink to fit the 170 px column (CYMBAL).
+- Drawer with 10 groups: tighter gaps (10 px) so the group titles fit.
+
 ### Klang (`klang`, 880 × 540)
 
 | Board | Symbol |

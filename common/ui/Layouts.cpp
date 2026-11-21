@@ -124,17 +124,17 @@ void makeDrawer(Layout& L, float panelBottom)
     RandPanel& R = L.rand;
     R.random = { 16, cy - 33, 104, 32 };
     R.back = { 16, cy + 7, 104, 26 };
-    float x = 16 + 104 + 26;
     int n = 0;
     for (int i = 0; i < maquina::kNumRandGroups; ++i)
         n += (R.used[i] = maquina::randGroupUsed(voiceDef(), i));
+    float x = 16 + 104 + (n > 8 ? 18 : 26); // many groups (LXR: 10): tighter
     // open: [▴] at the right end; folded: one bar [RANDOM] [BACK] ... [RANGES ▾]
     R.openToggle = { kWidth - 16 - 26, cy - 13, 26, 26 };
     R.foldRandom = { 16, y + 10, 104, 26 };
     R.foldBack = { 16 + 104 + 10, y + 10, 104, 26 };
     R.foldToggle = { kWidth - 16 - 112, y + 10, 112, 26 };
     const float right = R.openToggle.x - 22;
-    const float gap = 26, cw = (right - x - gap * float(n - 1)) / float(std::max(1, n));
+    const float gap = n > 8 ? 10.f : 26.f, cw = (right - x - gap * float(n - 1)) / float(std::max(1, n));
     for (int i = 0; i < maquina::kNumRandGroups; ++i) {
         R.cell[i] = { x, cy - 25, R.used[i] ? cw : 0.f, R.used[i] ? 50.f : 0.f };
         if (R.used[i]) x += cw + gap;
@@ -332,6 +332,305 @@ void makeKlong(Layout& L)
     makeDrawer(L, py + ph);
 }
 
+// ---------------------------------------------------------------------------
+// LXR drums: Kick, Tom, Snare, Cymbal, HiHat (mockups/kick-lxr.html, tom, snare, cymbal,
+// hihat). Sections are outlined boxes in three rows; a box's items are spread like the
+// mockups' flex rows (space-around). Each box gets its natural width, the rest of the row is
+// shared out by the mockups' flex weights.
+
+// the LXR-02 display's three-letter names (firmware MenuText.h shortNames)
+const char* lxrShortName(const char* sym)
+{
+    static const char* const kMap[][2] = {
+        { "osc_coarse", "coa" }, { "osc_fine", "fin" }, { "osc_wave", "wav" }, { "osc_pwm", "pwm" },
+        { "noise_freq", "frq" }, { "noise_mix", "mix" }, { "amp_attack", "atk" }, { "amp_decay", "dec" },
+        { "amp_slope", "slp" }, { "amp_repeat", "rpt" }, { "pitch_decay", "dec" }, { "pitch_slope", "slp" },
+        { "pitch_amount", "amt" }, { "velo_dest", "dst" }, { "velo_amount", "amt" }, { "velo_volume", "vol" },
+        { "fm_amount", "amt" }, { "fm_freq", "frq" }, { "fm_wave", "wav" }, { "fm_mode", "mod" },
+        { "trans_wave", "wav" }, { "trans_volume", "vol" }, { "trans_freq", "frq" }, { "filter_freq", "frq" },
+        { "filter_reso", "res" }, { "filter_type", "typ" }, { "filter_drive", "drv" }, { "lfo_rate", "frq" },
+        { "lfo_sync", "snc" }, { "lfo_amount", "amt" }, { "lfo_wave", "wav" }, { "lfo_retrigger", "rtg" },
+        { "lfo_offset", "ofs" }, { "lfo_target", "dst" }, { "volume", "vol" }, { "pan", "pan" },
+        { "decimation", "srt" }, { "drive", "drv" }, { "note_pitch", "trk" }, { "gain", "gai" },
+        { "mod1_freq", "f1" }, { "mod2_freq", "f2" }, { "mod1_gain", "g1" }, { "mod2_gain", "g2" },
+        { "mod1_wave", "w1" }, { "mod2_wave", "w2" },
+    };
+    for (const auto& e : kMap)
+        if (!std::strcmp(e[0], sym)) return e[1];
+    return "";
+}
+
+// a selector value as the small red windows and the display show it (up to 5 characters)
+std::string lxrShortLabel(const char* l)
+{
+    static const char* const kMap[][2] = {
+        { "Sine", "Sin" }, { "Triangle", "Tri" }, { "Square", "Sqr" }, { "Noise", "Noi" }, { "Saw Up", "SawU" },
+        { "Saw Down", "SawD" }, { "Random", "Rnd" }, { "Exp Up", "ExpU" }, { "Exp Down", "ExpD" },
+        { "Lowpass", "LP" }, { "Highpass", "HP" }, { "Bandpass", "BP" }, { "Unity BP", "UBP" },
+        { "Notch", "Ntch" }, { "Lowpass 2", "LP2" }, { "Offset", "Ofs" }, { "Click 2", "Clk2" },
+        { "Kick 2", "Kck2" }, { "Snap 2", "Snp2" }, { "Snare", "Snr" }, { "Volume", "Vol" },
+        { "Sample Rate", "SRt" }, { "Drive", "Drv" },
+    };
+    if (!l) return {};
+    for (const auto& e : kMap)
+        if (!std::strcmp(e[0], l)) return e[1];
+    // modulation targets: "<Section> <Param>" -> section letter(s) + the param's short name
+    static const char* const kSec[][2] = { { "Osc", "O" }, { "Amp", "A" }, { "Pitch", "P" }, { "Velocity", "V" },
+                                           { "FM", "FM" }, { "Transient", "T" }, { "Filter", "F" }, { "LFO", "L" },
+                                           { "Noise", "N" }, { "Mod1", "M1" }, { "Mod2", "M2" } };
+    static const char* const kWord[][2] = {
+        { "Coarse", "coa" }, { "Fine", "fin" }, { "Wave", "wav" }, { "PWM", "pwm" }, { "Attack", "atk" },
+        { "Decay", "dec" }, { "Slope", "slp" }, { "Repeat", "rpt" }, { "Amount", "amt" }, { "Dest", "dst" },
+        { "Freq", "frq" }, { "Mode", "mod" }, { "> Vol", "vol" }, { "Vol", "vol" }, { "Reso", "res" },
+        { "Type", "typ" }, { "Drive", "drv" }, { "Rate", "frq" }, { "Sync", "snc" }, { "Retrigger", "rtg" },
+        { "Phase", "ofs" }, { "Mix", "mix" }, { "Gain", "gai" },
+    };
+    if (const char* sp = std::strchr(l, ' '))
+        for (const auto& sec : kSec)
+            if (size_t(sp - l) == std::strlen(sec[0]) && !std::strncmp(l, sec[0], size_t(sp - l)))
+                for (const auto& w : kWord)
+                    if (!std::strcmp(sp + 1, w[0])) return std::string(sec[1]) + w[1];
+    std::string s = l;
+    if (utf8Len(l) > 5) s.resize(5);
+    return s;
+}
+
+// VT323 advances 0.4 em: a window holding n characters at 21 px, 8 px padding each side
+inline float lxrWindowW(int chars) { return std::max(44.f, chars * 8.4f + 16.f); }
+// Questrial 11 px upper case, 0.05 em spacing (about 0.62 em a character)
+inline float lxrLabelW(const char* l)
+{
+    float best = 0;
+    for (const char* a = l; a && *a;) {
+        const char* b = std::strchr(a, '\n');
+        const size_t n = b ? size_t(b - a) : std::strlen(a);
+        best = std::max(best, float(n) * 6.8f);
+        a = b ? b + 1 : nullptr;
+    }
+    return best;
+}
+
+enum class LxrKind : uint8_t { Knob, Sel, Toggle, Amp, Pitch, Stack };
+struct LxrItem { LxrKind kind; const char* sym; const char* label; const char* sym2 = nullptr; };
+struct LxrBoxSpec { int row; const char* title; float flex; LxrItem items[8]; };
+struct LxrPageSpec { const char* name; const char* syms[8]; };
+
+constexpr LxrKind kKn = LxrKind::Knob, kSel = LxrKind::Sel, kTg = LxrKind::Toggle;
+#define LXR_OSC { kKn, "osc_coarse", "Coarse" }, { kKn, "osc_fine", "Fine" }, { kSel, "osc_wave", "Wave" }, \
+    { kKn, "osc_pwm", "PWM" }
+#define LXR_AEG { LxrKind::Amp, nullptr, nullptr }, { kKn, "amp_attack", "Attack" }, { kKn, "amp_decay", "Decay" }, \
+    { kKn, "amp_slope", "Slope" }, { kKn, "amp_repeat", "Repeat" }
+#define LXR_PITCH { LxrKind::Pitch, nullptr, nullptr }, { kKn, "pitch_amount", "Amount" }, \
+    { kKn, "pitch_decay", "Decay" }, { kKn, "pitch_slope", "Slope" }
+#define LXR_CLICK { kSel, "trans_wave", "Wave" }, { kKn, "trans_volume", "Volume" }, { kKn, "trans_freq", "Freq" }
+#define LXR_LFO { kSel, "lfo_wave", "Wave" }, { kKn, "lfo_rate", "Rate" }, { kKn, "lfo_amount", "Amount" }, \
+    { kKn, "lfo_offset", "Phase" }, { kSel, "lfo_target", "Target" }, { kSel, "lfo_sync", "Sync" }, \
+    { kTg, "lfo_retrigger", "Retrig" }
+#define LXR_MOD { kSel, "velo_dest", "Velo dest" }, { kKn, "velo_amount", "Amount" }, { kTg, "velo_volume", "> Vol" }
+#define LXR_FILTER { kSel, "filter_type", "Type" }, { kKn, "filter_freq", "Cutoff" }, { kKn, "filter_reso", "Reso" }, \
+    { kKn, "filter_drive", "Drive" }
+#define LXR_MIX { kKn, "volume", "Volume" }, { kKn, "pan", "Pan" }, { kKn, "drive", "Drive" }, \
+    { kKn, "decimation", "Rate" }, { kKn, "gain", "Gain" }
+
+// Kick, Tom (as tom.html; the Kick mockup is the same rows)
+const LxrBoxSpec kLxrDrumBoxes[] = {
+    { 0, "OSC", 3, { LXR_OSC } }, { 0, "AEG", 4, { LXR_AEG } }, { 0, "PITCH EG", 4, { LXR_PITCH } },
+    { 1, "CLICK", 2.4f, { LXR_CLICK } }, { 1, "LFO", 5, { LXR_LFO } }, { 1, "MOD", 2.3f, { LXR_MOD } },
+    { 2, "FM", 3.4f, { { kKn, "fm_amount", "Amount" }, { kKn, "fm_freq", "Freq" }, { LxrKind::Stack, "fm_wave", nullptr, "fm_mode" } } },
+    { 2, "FILTER", 3.2f, { LXR_FILTER, { kTg, "note_pitch", "Key\ntrk" } } }, { 2, "MIX", 3.1f, { LXR_MIX } },
+};
+const LxrBoxSpec kLxrSnareBoxes[] = {
+    { 0, "OSC", 3, { LXR_OSC } }, { 0, "NOISE", 1.6f, { { kKn, "noise_freq", "Freq" }, { kKn, "noise_mix", "Mix" } } },
+    { 0, "PITCH EG", 4, { LXR_PITCH } }, { 0, "KEY", 0.8f, { { kTg, "note_pitch", "Track" } } },
+    { 1, "CLICK", 2.4f, { LXR_CLICK } }, { 1, "LFO", 5, { LXR_LFO } }, { 1, "MOD", 2.3f, { LXR_MOD } },
+    { 2, "AEG", 4.4f, { LXR_AEG } }, { 2, "FILTER", 3, { LXR_FILTER } }, { 2, "MIX", 3.3f, { LXR_MIX } },
+};
+const LxrBoxSpec kLxrMetalBoxes[] = { // Cymbal, HiHat
+    { 0, "OSC", 3, { LXR_OSC } }, { 0, "AEG", 4.2f, { LXR_AEG } }, { 0, "KEY", 0.8f, { { kTg, "note_pitch", "Track" } } },
+    { 0, "MOD", 2.3f, { LXR_MOD } },
+    { 1, "MOD OSC", 5, { { kKn, "mod1_freq", "Freq 1" }, { kKn, "mod1_gain", "Gain 1" }, { kSel, "mod1_wave", "Wave 1" },
+                         { kKn, "mod2_freq", "Freq 2" }, { kKn, "mod2_gain", "Gain 2" }, { kSel, "mod2_wave", "Wave 2" } } },
+    { 1, "CLICK", 2.4f, { LXR_CLICK } }, { 1, "FILTER", 3, { LXR_FILTER } },
+    { 2, "LFO", 5.4f, { LXR_LFO } }, { 2, "MIX", 4, { LXR_MIX } },
+};
+
+// the display pages (firmware menuPages order); slots 4-7 are the page's second half
+#define LXR_P_OSC { "OSC", { "osc_coarse", "osc_fine", "osc_wave", "osc_pwm" } }
+#define LXR_P_AEG { "AEG", { "amp_attack", "amp_decay", "amp_slope", "amp_repeat" } }
+#define LXR_P_CLICK { "CLICK", { "trans_wave", "trans_volume", "trans_freq" } }
+#define LXR_P_FILTER { "FILTER", { "filter_freq", "filter_reso", "filter_type", "filter_drive" } }
+#define LXR_P_LFO { "LFO", { "lfo_rate", "lfo_sync", "lfo_amount", "lfo_wave", "lfo_retrigger", "lfo_offset", "lfo_target" } }
+#define LXR_P_MIX { "MIX", { "volume", "pan", "decimation", "drive", "note_pitch", "gain" } }
+#define LXR_P_MOD { "MOD", { "pitch_decay", "pitch_slope", "pitch_amount", nullptr, "velo_dest", "velo_amount", "velo_volume" } }
+const LxrPageSpec kLxrDrumPages[8] = {
+    LXR_P_OSC, LXR_P_AEG, LXR_P_MOD, { "FM", { "fm_amount", "fm_freq", "fm_wave", "fm_mode" } },
+    LXR_P_CLICK, LXR_P_FILTER, LXR_P_LFO, LXR_P_MIX,
+};
+const LxrPageSpec kLxrSnarePages[8] = {
+    LXR_P_OSC, { "NOISE", { "noise_freq", "noise_mix" } }, LXR_P_AEG, LXR_P_MOD,
+    LXR_P_CLICK, LXR_P_FILTER, LXR_P_LFO, LXR_P_MIX,
+};
+const LxrPageSpec kLxrMetalPages[8] = {
+    LXR_P_OSC, LXR_P_AEG, { "MOD", { "velo_dest", "velo_amount", "velo_volume" } },
+    { "M.OSC", { "mod1_freq", "mod1_gain", "mod1_wave", nullptr, "mod2_freq", "mod2_gain", "mod2_wave" } },
+    LXR_P_CLICK, LXR_P_FILTER, LXR_P_LFO, LXR_P_MIX,
+};
+
+// the widest value a selector shows, in characters
+int lxrSelChars(int p)
+{
+    const VoiceParam& vp = paramAt(voiceDef(), uint32_t(p));
+    int n = 3;
+    for (uint8_t k = 0; vp.labels && k < vp.numLabels; ++k) n = std::max(n, utf8Len(lxrShortLabel(vp.labels[k]).c_str()));
+    return n;
+}
+
+void makeLxr(Layout& L)
+{
+    const uint8_t v = voiceDef().voice;
+    const bool snare = v == 3, metal = v >= 4;
+    const LxrBoxSpec* specs = snare ? kLxrSnareBoxes : metal ? kLxrMetalBoxes : kLxrDrumBoxes;
+    const size_t nSpecs = snare ? std::size(kLxrSnareBoxes) : metal ? std::size(kLxrMetalBoxes) : std::size(kLxrDrumBoxes);
+    const LxrPageSpec* pages = snare ? kLxrSnarePages : metal ? kLxrMetalPages : kLxrDrumPages;
+
+    const float px = kChromeInset, py = kChromeHeaderH + kChromeInset, pw = kWidth - 2 * kChromeInset, ph = 568;
+    L.panel = { px, py, pw, ph };
+    const float x0 = px + 16, x1 = px + pw - 16, top = py + 14;
+
+    // top strip: wordmark | display | page buttons | VOLUME
+    L.decos.push_back({ Deco::Logo, { x0, top, 170, 96 } });
+    LxrStrip& S = L.lxr;
+    S.used = true;
+    S.display = { x0 + 170 + 24, top + 10, 330, 76 };
+    const float volW = 52, bx0 = S.display.x + S.display.w + 24, bx1 = x1 - volW - 24;
+    S.pages = 8;
+    S.btnY = top + 25 + 12;
+    S.labelY = top + 25 + 24 + 8 + 7;
+    S.lineX0 = bx0;
+    S.lineX1 = bx1;
+    for (int k = 0; k < 8; ++k) {
+        S.btnX[k] = bx0 + 10 + 12 + k * (bx1 - bx0 - 44) / 7;
+        S.name[k] = pages[k].name;
+        for (int j = 0; j < 8; ++j) S.slot[k][j] = pages[k].syms[j] ? findParam(pages[k].syms[j]) : -1;
+    }
+    if (const int p = findParam("volume"); p >= 0) {
+        const float cx = x1 - volW / 2, fy = top + 2.5f + 13 + 6;
+        Ctl c { uint32_t(p), CtlType::Slider, "Volume", x1 - volW, top, volW, 96 };
+        c.ax = cx; c.ay = fy + 36; c.size = 1; c.bw = 30; c.bh = 72; c.labelY = top + 2.5f + 6.5f;
+        c.look = Ctl::LxrFader;
+        L.ctls.push_back(c);
+    }
+
+    // rows
+    const float rowY[3] = { top + 96 + 20, top + 96 + 20 + 132 + 20, top + 96 + 20 + 132 + 20 + 124 + 20 };
+    const float rowH[3] = { 132, 124, py + ph - 16 - (top + 96 + 20 + 132 + 20 + 124 + 20) };
+    constexpr float kKnobD = 52, kMini = 14, kMiniGap = 5, kItemGap = 8, kPadX = 10;
+    struct Placed { const LxrItem* it; int p, p2; float w; };
+    auto itemWidth = [&](const LxrItem& it, int p, int p2) -> float {
+        switch (it.kind) {
+        case LxrKind::Knob: return std::max(kKnobD, lxrLabelW(it.label));
+        case LxrKind::Sel: return std::max(lxrWindowW(lxrSelChars(p)) + 2 * (kMini + kMiniGap), lxrLabelW(it.label));
+        case LxrKind::Toggle: return std::max(30.f, lxrLabelW(it.label));
+        case LxrKind::Stack:
+            return lxrWindowW(std::max(lxrSelChars(p), p2 >= 0 ? lxrSelChars(p2) : 0)) + 2 * (kMini + kMiniGap);
+        default: return 150.f; // envelope graph
+        }
+    };
+    for (int r = 0; r < 3; ++r) {
+        struct BoxW { const LxrBoxSpec* spec; std::vector<Placed> items; float natural; };
+        std::vector<BoxW> boxes;
+        for (size_t b = 0; b < nSpecs; ++b) {
+            if (specs[b].row != r) continue;
+            BoxW bw { &specs[b], {}, 2 * kPadX };
+            for (const LxrItem& it : specs[b].items) {
+                if (it.kind == LxrKind::Knob && !it.sym) break; // end of the list (a zero entry)
+                int p = -1, p2 = -1;
+                if (it.kind == LxrKind::Amp) p = findParam("amp_decay");
+                else if (it.kind == LxrKind::Pitch) p = findParam("pitch_decay");
+                else p = findParam(it.sym);
+                if (it.sym2) p2 = findParam(it.sym2);
+                if (p < 0) continue;
+                const float w = itemWidth(it, p, p2);
+                bw.natural += w + (bw.items.empty() ? 0.f : kItemGap);
+                bw.items.push_back({ &it, p, p2, w });
+            }
+            if (!bw.items.empty()) boxes.push_back(std::move(bw));
+        }
+        float used = 14.f * float(boxes.size() - 1), flex = 0;
+        for (const BoxW& b : boxes) { used += b.natural; flex += b.spec->flex; }
+        const float spare = std::max(0.f, (x1 - x0) - used);
+        float bx = x0;
+        const float by = rowY[r], bh = rowH[r], cy = by + 22 + (bh - 32) / 2; // content: 22 top, 10 bottom
+        for (const BoxW& b : boxes) {
+            const float w = b.natural + spare * b.spec->flex / flex;
+            L.decos.push_back({ Deco::LxrBox, { bx, by, w, bh }, b.spec->title });
+            // space-around: the room left after the items and gaps, half a share at each end
+            float itemsW = kItemGap * float(b.items.size() - 1);
+            for (const Placed& pl : b.items) itemsW += pl.w;
+            const float share = (w - 2 * kPadX - itemsW) / float(b.items.size());
+            float ix = bx + kPadX + share / 2;
+            for (const Placed& pl : b.items) {
+                const float icx = ix + pl.w / 2;
+                const LxrItem& it = *pl.it;
+                const int lines = it.label && std::strchr(it.label, '\n') ? 2 : 1;
+                const float lh = 13.f * float(lines);
+                switch (it.kind) {
+                case LxrKind::Knob: {
+                    const float t = cy - (lh + 5 + kKnobD + 5 + 22) / 2;
+                    Ctl c { uint32_t(pl.p), CtlType::Knob, it.label, ix, t, pl.w, lh + 5 + kKnobD + 5 + 22 };
+                    c.ax = icx; c.ay = t + lh + 5 + kKnobD / 2; c.size = kKnobD;
+                    c.labelY = t + lh - 6.5f; c.valueY = t + lh + 5 + kKnobD + 5 + 11;
+                    L.ctls.push_back(c);
+                    break;
+                }
+                case LxrKind::Sel: {
+                    const float t = cy - (lh + 8 + 30) / 2;
+                    Ctl c { uint32_t(pl.p), CtlType::Select, it.label, ix, t, pl.w, lh + 8 + 30 };
+                    c.ax = icx; c.ay = t + lh + 8 + 15; c.size = 1; c.bw = lxrWindowW(lxrSelChars(pl.p)); c.bh = 30;
+                    c.labelY = t + lh - 6.5f; c.look = Ctl::LxrSel;
+                    L.ctls.push_back(c);
+                    break;
+                }
+                case LxrKind::Stack: {
+                    const float ww = pl.w - 2 * (kMini + kMiniGap);
+                    for (int k = 0; k < 2; ++k) {
+                        const int p = k ? pl.p2 : pl.p;
+                        if (p < 0) continue;
+                        const float wy = cy + (k ? 19.f : -19.f);
+                        Ctl c { uint32_t(p), CtlType::Select, nullptr, ix, wy - 15, pl.w, 30 };
+                        c.ax = icx; c.ay = wy; c.size = 1; c.bw = ww; c.bh = 30; c.look = Ctl::LxrSel;
+                        L.ctls.push_back(c);
+                    }
+                    break;
+                }
+                case LxrKind::Toggle: {
+                    const float t = cy - (lh + 12 + 24) / 2;
+                    Ctl c { uint32_t(pl.p), CtlType::Toggle, it.label, ix, t, pl.w, lh + 12 + 24 + 4 };
+                    c.ax = icx; c.ay = t + lh + 12 + 12; c.size = 1; c.labelY = t + lh - 6.5f;
+                    c.look = Ctl::LxrToggle;
+                    L.ctls.push_back(c);
+                    break;
+                }
+                case LxrKind::Amp:
+                case LxrKind::Pitch: {
+                    Graph g { it.kind == LxrKind::Amp ? GraphKind::Amp : GraphKind::Pitch, ix, cy - 42, 150, 84 };
+                    if (it.kind == LxrKind::Amp) {
+                        g.attack = findParam("amp_attack"); g.decay = findParam("amp_decay"); g.slope = findParam("amp_slope");
+                    } else {
+                        g.decay = findParam("pitch_decay"); g.slope = findParam("pitch_slope"); g.amount = findParam("pitch_amount");
+                    }
+                    L.graphs.push_back(g);
+                    break;
+                }
+                }
+                ix += pl.w + kItemGap + share;
+            }
+            bx += w + 14;
+        }
+    }
+    makeDrawer(L, py + ph);
+}
+
 void makeNewLayout(Layout& L)
 {
     switch (voiceDef().voice) {
@@ -339,6 +638,8 @@ void makeNewLayout(Layout& L)
     case maquina::kKlangVoice: makeKlang(L); break;
     case maquina::kKlongVoice:
     case maquina::kKlongFxVoice: makeKlong(L); break;
-    default: break;
+    default:
+        if (maquina::isLxrVoice(voiceDef().voice)) makeLxr(L);
+        break;
     }
 }

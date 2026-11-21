@@ -2,7 +2,8 @@
 //
 // Faces, by name: "mono" (IBM Plex Mono 500), "mono-sb" (600): the chrome, all themes;
 // 303 silver / graphene: "print" (Inter 700), "print-xb" (Inter 800), "logo" (Inter 800
-// italic); Mutable: "print" / "logo" (Mulish 800), "print-sm" (Mulish 700).
+// italic); Mutable: "print" / "logo" (Mulish 800), "print-sm" (Mulish 700); LXR: "print"
+// (Questrial), "logo" (Michroma), "lcd" (VT323).
 //
 // Included by DrumUI.cpp inside namespace maquina_ui, after Theme.hpp.
 // SPDX-License-Identifier: GPL-3.0-only
@@ -16,6 +17,11 @@
 #include "fonts/Inter/Inter-Bold.subset.ttf.hpp"
 #include "fonts/Inter/Inter-ExtraBold.subset.ttf.hpp"
 #include "fonts/Inter/Inter-ExtraBoldItalic.subset.ttf.hpp"
+#endif
+#if MAQUINA_THEME == MAQUINA_THEME_LXR
+#include "fonts/Michroma/Michroma-Regular.subset.ttf.hpp"
+#include "fonts/Questrial/Questrial-Regular.subset.ttf.hpp"
+#include "fonts/VT323/VT323-Regular.subset.ttf.hpp"
 #endif
 #if MAQUINA_THEME == MAQUINA_THEME_MUTABLE
 #include "fonts/Mulish/Mulish-Bold.subset.ttf.hpp"
@@ -74,6 +80,11 @@ inline void loadThemeFonts(NanoVG& v)
     addFace(v, "print", k_font_inter_bold, k_font_inter_bold_size);
     addFace(v, "print-xb", k_font_inter_extrabold, k_font_inter_extrabold_size);
     addFace(v, "logo", k_font_inter_extrabolditalic, k_font_inter_extrabolditalic_size);
+#endif
+#if MAQUINA_THEME == MAQUINA_THEME_LXR
+    addFace(v, "print", k_font_questrial_regular, k_font_questrial_regular_size);
+    addFace(v, "logo", k_font_michroma_regular, k_font_michroma_regular_size);
+    addFace(v, "lcd", k_font_vt323_regular, k_font_vt323_regular_size);
 #endif
 #if MAQUINA_THEME == MAQUINA_THEME_MUTABLE
     addFace(v, "print", k_font_mulish_extrabold, k_font_mulish_extrabold_size);
