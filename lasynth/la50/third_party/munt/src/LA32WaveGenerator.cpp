@@ -225,7 +225,11 @@ void LA32WaveGenerator::generateNextPCMWaveLogSamples() {
 	wavePosition += pcmSampleStep;
 	if (wavePosition >= (pcmWaveLength << 8)) {
 		if (pcmWaveLooped) {
-			wavePosition -= pcmWaveLength << 8;
+			// MAQUINA: modulo instead of a single subtraction - Maquina LA-50's
+			// stand-in loop waves are as short as 128 words, and at high pitches
+			// pcmSampleStep can exceed the whole loop, leaving wavePosition out
+			// of range after one subtraction (the MT-32's waves never hit this)
+			wavePosition %= (pcmWaveLength << 8);
 		} else {
 			deactivate();
 		}
