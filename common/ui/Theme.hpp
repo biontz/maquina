@@ -19,6 +19,8 @@
 #ifndef MAQUINA_THEME
 #if defined(MAQUINA_VOICE_INDEX) && MAQUINA_VOICE_INDEX >= 0 && MAQUINA_VOICE_INDEX <= 4 // Kick, Tom, Snare, Cymbal, HiHat
 #define MAQUINA_THEME MAQUINA_THEME_LXR
+#elif MAQUINA_VOICE_INDEX >= 14 && MAQUINA_VOICE_INDEX <= 16 // BL-101, BL-101 FX, LA-50
+#define MAQUINA_THEME MAQUINA_THEME_GRAPHENE
 #elif MAQUINA_VOICE_INDEX == 12 // Acida
 #define MAQUINA_THEME MAQUINA_THEME_SILVER303
 #elif MAQUINA_VOICE_INDEX >= 9 && MAQUINA_VOICE_INDEX <= 11 // Klang, Klong, Klong FX
@@ -118,6 +120,26 @@ constexpr Theme kMutable {
       90, 10.f, 4.f },
 };
 
+// graphene (BL-101, BL-101 FX, LA-50): dark grey sections with title strips, sliders with
+// coloured cap stripes, black knobs with orange rings (mockups/bl101.html)
+constexpr Theme kGraphene {
+    1100.f,
+    { 0xf0, 0x8a, 0x24 }, { 0xf0, 0x8a, 0x24 }, { 0x1b, 0x1d, 0x21 },
+    { 0x5a, 0x44, 0x30 }, { 0x3a, 0x2e, 0x24 },
+    { 0x14, 0x15, 0x18 }, 6.f,
+    { 0xf2, 0xf2, 0xee }, { 0xa9, 0xab, 0xb0 },
+    { { 0xf0, 0x8a, 0x24 }, { 0xff, 0xff, 0xff }, 31, 2.f, -1.f, -1.f,
+      false, { 0x1a, 0x19, 0x1b }, { 0x1a, 0x19, 0x1b }, 0.f,
+      0.1458f, 2, { 0.f, 0.7f, 1.f, 1.f },
+      { { 0x4a, 0x48, 0x4c }, { 0x1a, 0x19, 0x1b }, { 0x1a, 0x19, 0x1b }, { 0x1a, 0x19, 0x1b } }, 0.38f, 0.30f,
+      { 0, 0, 0 }, 0.f,
+      { 0xf0, 0x8a, 0x24 }, 0.0588f, 0.3235f,
+      150, 6.f, 3.f },
+};
+
+constexpr Theme withWidth(Theme t, float w) { t.width = w; return t; }
+constexpr Theme kGrapheneLa50 = withWidth(kGraphene, 1240.f); // the PG-1000 field is wider
+
 // LXR black (Kick, Tom, Snare, Cymbal, HiHat): matte black, thin red rings, grey caps,
 // red display digits (mockups/kick-lxr.html)
 constexpr Theme kLxr {
@@ -150,6 +172,7 @@ constexpr const Theme& theme()
     return kTheme == ThemeId::Silver303 ? kSilver303
          : kTheme == ThemeId::Mutable   ? kMutable
          : kTheme == ThemeId::Lxr       ? kLxr
+         : kTheme == ThemeId::Graphene  ? (MAQUINA_VOICE_INDEX == 16 ? kGrapheneLa50 : kGraphene)
                                         : kClassicTheme;
 }
 

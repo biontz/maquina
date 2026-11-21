@@ -643,3 +643,147 @@ void drawLxrFader(NanoVG& v, float x, float y, float w, float h, float t, bool h
     v.fillColor(rgba({ 0xf4, 0xf4, 0xf4 }));
     v.fill();
 }
+
+// ---------------------------------------------------------------------------
+// graphene (mockups/bl101.html)
+
+constexpr Rgb kGrSection { 0x2b, 0x2c, 0x2f };
+constexpr Rgb kGrStrip { 0x32, 0x33, 0x36 };
+constexpr Rgb kGrWindowText { 0xff, 0xb1, 0x5e };
+constexpr Rgb kGrGreen { 0x46, 0xb0, 0x7a };
+constexpr Rgb kGrOrange { 0xf0, 0x8a, 0x24 };
+
+void drawGrPanel(NanoVG& v, float x, float y, float w, float h, float r)
+{
+    boxShadow(v, x, y, w, h, r, 6, 18, 140);
+    v.beginPath();
+    v.roundedRect(x, y, w, h, r);
+    v.fillColor(rgba({ 0x22, 0x23, 0x26 }));
+    v.fill();
+    // radial-gradient(ellipse at 30% 0%, #2f3033, #222326 70%)
+    v.save();
+    v.scale(1.f, h / w);
+    v.beginPath();
+    v.roundedRect(x, y * w / h, w, w, r);
+    v.fillPaint(v.radialGradient(x + 0.3f * w, y * w / h, 0, 0.7f * w * 0.9f, rgba({ 0x2f, 0x30, 0x33 }), rgba({ 0x22, 0x23, 0x26 })));
+    v.fill();
+    v.restore();
+    v.beginPath();
+    v.moveTo(x + r, y + 0.5f);
+    v.lineTo(x + w - r, y + 0.5f);
+    v.strokeColor(Color(1.f, 1.f, 1.f, 0.08f));
+    v.strokeWidth(1);
+    v.stroke();
+}
+
+// a section: grey body, title strip (24 px, 2 px dark line under it); the caller prints the title
+void drawGrSection(NanoVG& v, float x, float y, float w, float h)
+{
+    v.beginPath();
+    v.roundedRect(x, y, w, h, 3);
+    v.fillColor(rgba(kGrSection));
+    v.fill();
+    v.beginPath();
+    v.roundedRect(x, y, w, 24, 3);
+    v.fillColor(rgba(kGrStrip));
+    v.fill();
+    v.beginPath();
+    v.rect(x, y + 24, w, 2);
+    v.fillColor(rgba({ 0x1a, 0x1b, 0x1d }));
+    v.fill();
+    v.beginPath();
+    v.moveTo(x + 3, y + 0.5f);
+    v.lineTo(x + w - 3, y + 0.5f);
+    v.strokeColor(Color(1.f, 1.f, 1.f, 0.05f));
+    v.strokeWidth(1);
+    v.stroke();
+}
+
+// vertical slider, 26 x h: tick scale (left), slot, black cap with a coloured stripe; t = 0..1
+void drawGrSlider(NanoVG& v, float cx, float top, float h, float t, Rgb stripe, bool hot)
+{
+    const float x = cx - 13;
+    v.beginPath();
+    for (float ty = top + 6; ty <= top + h - 6 + 0.01f; ty += 9.2f) v.rect(x, std::round(ty), 6, 1);
+    v.fillColor(rgba({ 0xd8, 0xd8, 0xd4 }));
+    v.fill();
+    v.beginPath();
+    v.roundedRect(x + 12, top, 5, h, 2.5f);
+    v.fillColor(rgba({ 0x0b, 0x0b, 0x0c }));
+    v.fill();
+    const float capY = top + (1.f - std::clamp(t, 0.f, 1.f)) * (h - 13);
+    boxShadow(v, x + 4, capY, 22, 13, 2, 2, 3, 150);
+    v.beginPath();
+    v.roundedRect(x + 4, capY, 22, 13, 2);
+    v.fillPaint(v.linearGradient(0, capY, 0, capY + 13, rgba(hot ? Rgb { 0x55, 0x55, 0x57 } : Rgb { 0x3a, 0x3a, 0x3c }),
+                                 rgba({ 0x11, 0x11, 0x12 })));
+    v.fill();
+    v.beginPath();
+    v.roundedRect(x + 7, capY + 5, 16, 2.5f, 1);
+    v.fillColor(rgba(stripe));
+    v.fill();
+}
+
+// slide switch: well 14 x (20 per position), lever with a yellow stripe at screen row k
+void drawGrSwitch(NanoVG& v, float x, float y, float h, int row, bool hot)
+{
+    v.beginPath();
+    v.roundedRect(x, y, 14, h, 3);
+    v.fillColor(rgba({ 0x0b, 0x0b, 0x0c }));
+    v.fill();
+    const float ly = y + 20.f * float(row) + 3.5f;
+    v.beginPath();
+    v.roundedRect(x + 1, ly, 12, 13, 2);
+    v.fillPaint(v.linearGradient(0, ly, 0, ly + 13, rgba(hot ? Rgb { 0x55, 0x55, 0x57 } : Rgb { 0x3a, 0x3a, 0x3c }),
+                                 rgba({ 0x11, 0x11, 0x11 })));
+    v.fill();
+    v.beginPath();
+    v.rect(x + 3, ly + 5, 8, 2.5f);
+    v.fillColor(rgba({ 0xe8, 0xc5, 0x3a }));
+    v.fill();
+}
+
+// light-grey button (40 x 22) with a red rectangular LED above it
+void drawGrLedButton(NanoVG& v, float cx, float cy, bool on, bool hot)
+{
+    const float ly = cy - 11 - 6 - 5;
+    if (on) {
+        v.beginPath();
+        v.rect(cx - 16, ly - 8, 32, 21);
+        v.fillPaint(v.boxGradient(cx - 8, ly, 16, 5, 1, 7, Color(1.f, 59 / 255.f, 34 / 255.f, 0.7f), Color(1.f, 59 / 255.f, 34 / 255.f, 0.f)));
+        v.fill();
+    }
+    v.beginPath();
+    v.roundedRect(cx - 8, ly, 16, 5, 1);
+    v.fillColor(rgba(on ? Rgb { 0xff, 0x3b, 0x22 } : Rgb { 0x4a, 0x15, 0x12 }));
+    v.fill();
+    v.beginPath();
+    v.roundedRect(cx - 20, cy - 11 + 2, 40, 22, 2);
+    v.fillColor(rgba({ 0x6e, 0x6d, 0x69 }));
+    v.fill();
+    v.beginPath();
+    v.roundedRect(cx - 20, cy - 11, 40, 22, 2);
+    v.fillPaint(v.linearGradient(0, cy - 11, 0, cy + 11, rgba(hot ? Rgb { 0xe6, 0xe5, 0xe0 } : Rgb { 0xd6, 0xd5, 0xd0 }),
+                                 rgba({ 0xa9, 0xa8, 0xa3 })));
+    v.fill();
+}
+
+// dark display window (steppers, MULTIPLY, the CHOP masks); the caller prints the value
+void drawGrWindow(NanoVG& v, float x, float y, float w, float h, bool hot)
+{
+    v.beginPath();
+    v.roundedRect(x, y, w, h, 3);
+    v.fillColor(rgba({ 0x10, 0x11, 0x12 }));
+    v.fill();
+    v.beginPath();
+    v.roundedRect(x, y, w, h, 3);
+    v.fillPaint(v.boxGradient(x, y + 1, w, h, 3, 3, Color(0, 0, 0, 0.f), Color(0, 0, 0, 0.7f)));
+    v.fill();
+    if (hot) {
+        v.beginPath();
+        v.roundedRect(x + 0.5f, y + 0.5f, w - 1, h - 1, 3);
+        v.strokeColor(rgba(kGrOrange, 160));
+        v.strokeWidth(1);
+        v.stroke();
+    }
+}

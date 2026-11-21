@@ -125,8 +125,14 @@ void makeDrawer(Layout& L, float panelBottom)
     R.random = { 16, cy - 33, 104, 32 };
     R.back = { 16, cy + 7, 104, 26 };
     int n = 0;
-    for (int i = 0; i < maquina::kNumRandGroups; ++i)
-        n += (R.used[i] = maquina::randGroupUsed(voiceDef(), i));
+    // a group shows when it holds a parameter of its own: one whose first matching group it
+    // is (BL-101: PATCH matches only patch_level, which LEVEL holds first)
+    for (int i = 0; i < maquina::kNumRandGroups; ++i) {
+        R.used[i] = false;
+        for (uint32_t k = 0; k < voiceDef().numParams && !R.used[i]; ++k)
+            R.used[i] = maquina::randGroupOf(voiceDef().params[k].symbol) == i;
+        n += R.used[i];
+    }
     float x = 16 + 104 + (n > 8 ? 18 : 26); // many groups (LXR: 10): tighter
     // open: [▴] at the right end; folded: one bar [RANDOM] [BACK] ... [RANGES ▾]
     R.openToggle = { kWidth - 16 - 26, cy - 13, 26, 26 };
@@ -631,6 +637,393 @@ void makeLxr(Layout& L)
     makeDrawer(L, py + ph);
 }
 
+// ---------------------------------------------------------------------------
+// graphene: BL-101, BL-101 FX (mockups/bl101.html, bl101-fx.html). Sections with a title
+// strip in rows; fixed sections keep the mockup's width (or their natural one if wider),
+// the others share the rest; items spread like the mockups' flex rows (space-around).
+
+// a slide switch's option as printed on the panel
+std::string grOption(const char* l)
+{
+    static const char* const kMap[][2] = {
+        { "Inv Saw", "INV" }, { "Triangle", "TRI" }, { "Square", "SQR" }, { "Random", "S/H" }, { "Manual", "MAN" },
+        { "-2 Pulse", "-2 PW" }, { "Gate+Trig", "G+T" },
+    };
+    for (const auto& e : kMap)
+        if (!std::strcmp(e[0], l)) return e[1];
+    std::string t = l;
+    for (char& ch : t) ch = char(std::toupper(ch));
+    return t;
+}
+// Inter 700 10 px upper case, 0.06 em: about 7 px a character; options (9.5 px): 6.6
+inline float grLabelW(const char* l) { return l ? float(utf8Len(l)) * 7.f : 0.f; }
+float grSwitchW(int p)
+{
+    const VoiceParam& vp = paramAt(voiceDef(), uint32_t(p));
+    float w = 0;
+    for (uint8_t k = 0; vp.labels && k < vp.numLabels; ++k) w = std::max(w, float(utf8Len(grOption(vp.labels[k]).c_str())) * 6.6f);
+    return 14 + 5 + w;
+}
+// a stepper's window: the longest value (IBM Plex Mono 12 px, 7.2 px a character)
+float grWindowW(int p)
+{
+    const VoiceParam& vp = paramAt(voiceDef(), uint32_t(p));
+    int n = 3;
+    for (uint8_t k = 0; vp.labels && k < vp.numLabels; ++k) n = std::max(n, utf8Len(vp.labels[k]));
+    return std::max(52.f, float(n) * 7.2f + 20.f);
+}
+
+enum class GrKind : uint8_t { Slider, Switch, Knob, Led, Step };
+// join: sits right after the previous item (12 px), one unit with it (CHORD's voice + shift);
+// sym2 (a slider): a small chip under its value toggling that parameter (NOISE: PINK / WHITE)
+struct GrItem { GrKind kind; const char* sym; const char* label; bool join = false; const char* sym2 = nullptr; };
+struct GrSecSpec { int row; const char* title; float width; bool green; GrItem items[10]; };
+
+constexpr GrKind kGSl = GrKind::Slider, kGSw = GrKind::Switch, kGKn = GrKind::Knob, kGLed = GrKind::Led, kGSt = GrKind::Step;
+const GrSecSpec kBl101Secs[] = {
+    { 0, "MODULATOR", 118, true, { { kGSl, "modulator_rate", "Rate" }, { kGSw, "modulator_wave", "Wave" } } },
+    { 0, "VCO", 190, false, { { kGSl, "vco_mod", "Mod" }, { kGSl, "vco_pw", "PW" }, { kGSw, "vco_range", "Range" },
+                              { kGSw, "vco_pwm_src", "PWM" } } },
+    { 0, "SOURCE MIXER", 258, true, { { kGSl, "mix_pulse", "Pulse" }, { kGSl, "mix_saw", "Saw" }, { kGSl, "mix_sub", "Sub" },
+                                       { kGSl, "mix_noise", "Noise", false, "mix_noise_type" }, { kGSw, "mix_sub_type", "Sub" } } },
+    { 0, "VCF", 206, false, { { kGSl, "vcf_freq", "Freq" }, { kGSl, "vcf_res", "Res" }, { kGSl, "vcf_env", "Env" },
+                              { kGSl, "vcf_mod", "Mod" }, { kGSl, "vcf_kybd", "Kybd" } } },
+    { 0, "VCA", 62, false, { { kGSw, "vca_mode", nullptr } } },
+    { 0, "ENV", 0, false, { { kGSw, "env_trigger", "Trig" }, { kGSl, "adsr_attack", "A" }, { kGSl, "adsr_decay", "D" },
+                            { kGSl, "adsr_sustain", "S" }, { kGSl, "adsr_release", "R" } } },
+    { 1, "LFO MODE", 200, false, { { kGLed, "modulator_sync", "Sync" }, { kGLed, "modulator_fast", "Fast" },
+                                   { kGLed, "modulator_trig", "Key trig" } } },
+    { 1, "VOICE", 380, false, { { kGSt, "voice_mode", "Voicing" }, { kGSt, "porta_mode", "Porta" }, { kGKn, "porta_time", "Time" },
+                                { kGKn, "transpose", "Transpose" } } },
+    { 1, "CHORD", 0, false, { { kGLed, "chord2_on", "Voice 2" }, { kGKn, "chord2_shift", nullptr, true },
+                              { kGLed, "chord3_on", "Voice 3" }, { kGKn, "chord3_shift", nullptr, true },
+                              { kGLed, "chord4_on", "Voice 4" }, { kGKn, "chord4_shift", nullptr, true } } },
+    { 2, "CONTROL", 0, false, { { kGKn, "vco_fine", "Fine" }, { kGKn, "bend_vco", "Bend VCO" }, { kGKn, "bend_vcf", "Bend VCF" },
+                                { kGKn, "stereo_spread", "Spread" }, { kGKn, "unison_detune", "Detune" } } },
+    { 2, "MIX", 240, false, { { kGKn, "patch_level", "Level" }, { kGKn, "gain", "Gain" } } },
+    { 3, "OSC DRAW", 330, false, {} },
+    { 3, "OSC CHOP", 0, false, {} },
+};
+const GrSecSpec kBl101FxSecs[] = {
+    { 0, "CHORUS", 170, false, { { kGSt, "chorus_mode", "Mode" } } },
+    { 0, "DELAY", 0, false, { { kGSl, "dly_level", "Level" }, { kGSl, "dly_time", "Time" }, { kGSl, "dly_feedback", "Feedback" },
+                              { kGLed, "dly_sync", "Sync" } } },
+    { 0, "REVERB", 0, true, { { kGSt, "rev_type", "Type" }, { kGSl, "rev_level", "Level" }, { kGSl, "rev_time", "Time" },
+                              { kGSl, "rev_predelay", "Pre-delay" } } },
+    { 1, "LO-FI", 0, false, { { kGSt, "lofi_mode", "Mode" }, { kGKn, "lofi_amount", "Amount" }, { kGKn, "lofi_mix", "Mix" } } },
+    { 1, "MIX", 150, false, { { kGKn, "gain", "Gain" } } },
+};
+
+constexpr float kGrTitleH = 26.f; // title strip 24 + its 2 px bottom line
+constexpr float kGrSliderH = 104.f, kGrKnobD = 48.f;
+
+void makeGraphene(Layout& L)
+{
+    const bool fx = voiceDef().voice == maquina::kBl101FxVoice;
+    const GrSecSpec* specs = fx ? kBl101FxSecs : kBl101Secs;
+    const size_t nSpecs = fx ? std::size(kBl101FxSecs) : std::size(kBl101Secs);
+    const float px = kChromeInset, py = kChromeHeaderH + kChromeInset, pw = kWidth - 2 * kChromeInset;
+    const float ph = fx ? 358 : 698;
+    L.panel = { px, py, pw, ph };
+    const float x0 = px + 8, x1 = px + pw - 8;
+    std::vector<float> rowH = fx ? std::vector<float> { 212 } : std::vector<float> { 212, 118, 112 };
+    float used = 0;
+    for (float h : rowH) used += h + 6;
+    rowH.push_back(ph - 16 - used);
+    float ry = py + 8;
+    for (size_t r = 0; r < rowH.size(); ++r) {
+        struct Unit { std::vector<std::pair<const GrItem*, int>> items; float w; };
+        struct SecW { const GrSecSpec* spec; std::vector<Unit> units; float natural; };
+        std::vector<SecW> secs;
+        for (size_t b = 0; b < nSpecs; ++b) {
+            if (specs[b].row != int(r)) continue;
+            SecW sw { &specs[b], {}, 12 };
+            for (const GrItem& it : specs[b].items) {
+                if (!it.sym) break;
+                const int p = findParam(it.sym);
+                if (p < 0) continue;
+                float w = 0;
+                switch (it.kind) {
+                case GrKind::Slider: w = std::max({ 26.f, grLabelW(it.label), it.sym2 ? 40.f : 0.f }); break;
+                case GrKind::Switch: w = std::max(grSwitchW(p), grLabelW(it.label)); break;
+                case GrKind::Knob: w = std::max(kGrKnobD, grLabelW(it.label)); break;
+                case GrKind::Led: w = std::max(40.f, grLabelW(it.label)); break;
+                case GrKind::Step: w = std::max(26 + 4 + grWindowW(p) + 4 + 26, grLabelW(it.label)); break;
+                }
+                if (it.join && !sw.units.empty()) {
+                    sw.units.back().items.push_back({ &it, p });
+                    sw.units.back().w += 12 + w;
+                } else {
+                    sw.units.push_back({ { { &it, p } }, w });
+                }
+            }
+            for (size_t u = 0; u < sw.units.size(); ++u) sw.natural += sw.units[u].w + (u ? 8.f : 0.f);
+            secs.push_back(std::move(sw));
+        }
+        // widths: fixed sections first, the flexible ones share the rest
+        float fixedW = 6.f * float(secs.size() - 1), flexNat = 0;
+        int nFlex = 0;
+        for (const SecW& s : secs) {
+            if (s.spec->width > 0) fixedW += std::max(s.spec->width, s.natural);
+            else { flexNat += s.natural; ++nFlex; }
+        }
+        const float spare = std::max(0.f, (x1 - x0) - fixedW - flexNat);
+        float sx = x0;
+        const float h = rowH[r];
+        for (const SecW& s : secs) {
+            const float w = s.spec->width > 0 ? std::max(s.spec->width, s.natural) : s.natural + spare / float(std::max(1, nFlex));
+            L.decos.push_back({ Deco::GrSection, { sx, ry, w, h }, s.spec->title });
+            const float cy = ry + kGrTitleH + (h - kGrTitleH) / 2;
+            // space-around between units
+            float unitsW = 8.f * float(s.units.size() ? s.units.size() - 1 : 0);
+            for (const Unit& u : s.units) unitsW += u.w;
+            const float share = s.units.empty() ? 0.f : (w - unitsW) / float(s.units.size());
+            float ux = sx + share / 2;
+            for (const Unit& u : s.units) {
+                float ix = ux;
+                for (const auto& [itp, p] : u.items) {
+                    const GrItem& it = *itp;
+                    float iw = 0;
+                    switch (it.kind) {
+                    case GrKind::Slider: iw = std::max({ 26.f, grLabelW(it.label), it.sym2 ? 40.f : 0.f }); break;
+                    case GrKind::Switch: iw = std::max(grSwitchW(p), grLabelW(it.label)); break;
+                    case GrKind::Knob: iw = std::max(kGrKnobD, grLabelW(it.label)); break;
+                    case GrKind::Led: iw = std::max(40.f, grLabelW(it.label)); break;
+                    case GrKind::Step: iw = std::max(26 + 4 + grWindowW(p) + 4 + 26, grLabelW(it.label)); break;
+                    }
+                    const float icx = ix + iw / 2;
+                    const float lh = it.label ? 12.f : 0.f;
+                    switch (it.kind) {
+                    case GrKind::Slider: { // label, 6, slider 104, 6, value
+                        const float t = cy - (12 + 6 + kGrSliderH + 6 + 13) / 2;
+                        Ctl c { uint32_t(p), CtlType::Slider, it.label, ix, t, iw, 12 + 6 + kGrSliderH + 6 + 13 };
+                        c.ax = icx; c.ay = t + 18 + kGrSliderH / 2; c.size = 1; c.bw = 26; c.bh = kGrSliderH;
+                        c.labelY = t + 6; c.valueY = t + 18 + kGrSliderH + 6 + 6.5f; c.look = Ctl::GrSlider;
+                        c.n = s.spec->green ? 1 : 0; // cap stripe: green / orange
+                        L.ctls.push_back(c);
+                        if (it.sym2)
+                            if (const int q = findParam(it.sym2); q >= 0) {
+                                Ctl k { uint32_t(q), CtlType::Toggle, nullptr, icx - 20, c.valueY + 9, 40, 16 };
+                                k.ax = icx; k.ay = c.valueY + 17; k.size = 1; k.bw = 40; k.bh = 16; k.look = Ctl::GrChip;
+                                L.ctls.push_back(k);
+                            }
+                        break;
+                    }
+                    case GrKind::Switch: { // label, 6, switch (20 px a position) + options
+                        const int n = std::max<int>(1, paramAt(voiceDef(), uint32_t(p)).numLabels);
+                        const float sh = 20.f * float(n), t = cy - (lh + (lh ? 6 : 0) + sh) / 2;
+                        Ctl c { uint32_t(p), CtlType::Switch, it.label, ix, t, iw, lh + (lh ? 6 : 0) + sh };
+                        const float swx = icx - grSwitchW(p) / 2;
+                        c.ax = swx + 7; c.ay = t + lh + (lh ? 6 : 0) + sh / 2; c.size = 1; c.bw = 14; c.bh = sh;
+                        c.labelY = t + 6; c.labelX = swx + 19; c.look = Ctl::GrSwitch;
+                        L.ctls.push_back(c);
+                        break;
+                    }
+                    case GrKind::Knob: { // label, 4, knob, 4, value
+                        const float t = cy - (lh + 4 + kGrKnobD + 4 + 13) / 2;
+                        Ctl c { uint32_t(p), CtlType::Knob, it.label, ix, t, iw, lh + 4 + kGrKnobD + 4 + 13 };
+                        c.ax = icx; c.ay = t + lh + 4 + kGrKnobD / 2; c.size = kGrKnobD;
+                        c.labelY = t + 6; c.valueY = t + lh + 4 + kGrKnobD + 4 + 6.5f;
+                        L.ctls.push_back(c);
+                        break;
+                    }
+                    case GrKind::Led: { // LED 16 x 5, 6, button 40 x 22, 6, label
+                        const float t = cy - (5 + 6 + 22 + 6 + 12) / 2;
+                        Ctl c { uint32_t(p), CtlType::Toggle, it.label, ix, t, iw, 51 };
+                        c.ax = icx; c.ay = t + 11 + 11; c.size = 1; c.bw = 40; c.bh = 22;
+                        c.labelY = t + 39 + 6; c.look = Ctl::GrLed;
+                        L.ctls.push_back(c);
+                        break;
+                    }
+                    case GrKind::Step: { // label, 8, [‹] window [›]
+                        const float t = cy - (lh + 8 + 26) / 2;
+                        Ctl c { uint32_t(p), CtlType::Select, it.label, ix, t, iw, lh + 8 + 26 };
+                        c.ax = icx; c.ay = t + lh + 8 + 13; c.size = 1; c.bw = grWindowW(p); c.bh = 26;
+                        c.labelY = t + 6; c.look = Ctl::GrStep;
+                        L.ctls.push_back(c);
+                        break;
+                    }
+                    }
+                    ix += iw + 12;
+                }
+                ux += u.w + 8 + share;
+            }
+            // OSC DRAW: the bar display, MODE stepper, MULTIPLY window
+            if (!std::strcmp(s.spec->title, "OSC DRAW")) {
+                Graph g { GraphKind::Draw, sx + 12, ry + kGrTitleH + 10, w - 24, 96 };
+                g.mode = findParam("draw_mode");
+                g.first = findParam("draw_1");
+                L.graphs.push_back(g);
+                const float rowY = g.y + 96 + 8 + 13;
+                if (g.mode >= 0) {
+                    const float ww = 64, cx = sx + 12 + 42 + 30 + ww / 2;
+                    Ctl c { uint32_t(g.mode), CtlType::Select, "Mode", sx + 12, rowY - 13, 42 + 60 + ww + 4, 26 };
+                    c.ax = cx; c.ay = rowY; c.size = 1; c.bw = ww; c.bh = 26; c.labelX = sx + 12; c.labelY = rowY;
+                    c.look = Ctl::GrStep;
+                    L.ctls.push_back(c);
+                }
+                if (const int m = findParam("draw_mult"); m >= 0) {
+                    const float ww = 36, wx = sx + w - 12 - ww;
+                    Ctl c { uint32_t(m), CtlType::Knob, "Multiply", wx - 72, rowY - 13, 72 + ww, 26 };
+                    c.ax = wx + ww / 2; c.ay = rowY; c.size = 1; c.bw = ww; c.bh = 26; c.labelX = wx - 72; c.labelY = rowY;
+                    c.look = Ctl::GrWin;
+                    L.ctls.push_back(c);
+                }
+            }
+            // OSC CHOP: 4 rows of 16 pads (+ the mask window), OVERTONE and COMB knobs
+            if (!std::strcmp(s.spec->title, "OSC CHOP")) {
+                const float gw = 52 + 16 * 26 + 4 + 60, gh = 4 * 24 - 6, kw = 48 + 8 + 70;
+                const float gx = sx + (w - gw - 22 - kw) / 2, gy = cy - gh / 2;
+                Graph g { GraphKind::Chop, gx, gy, gw, gh };
+                static const char* const kSrc[4] = { "sqr", "saw", "sub", "noise" };
+                char sym[32];
+                g.amount = findParam("chop_overtone");
+                for (int k = 0; k < 4; ++k) {
+                    std::snprintf(sym, sizeof sym, "chop_mask_%s", kSrc[k]);
+                    g.mask[k] = findParam(sym);
+                    std::snprintf(sym, sizeof sym, "chop_bits_%s_lo", kSrc[k]);
+                    g.bitsLo[k] = findParam(sym);
+                    std::snprintf(sym, sizeof sym, "chop_bits_%s_hi", kSrc[k]);
+                    g.bitsHi[k] = findParam(sym);
+                }
+                L.graphs.push_back(g);
+                const float kx = gx + gw + 22 + 24;
+                const char* const kKn[2][2] = { { "chop_overtone", "Overtone" }, { "chop_comb", "Comb" } };
+                for (int k = 0; k < 2; ++k) {
+                    const int p = findParam(kKn[k][0]);
+                    if (p < 0) continue;
+                    const float ky = cy + (k ? 29.f : -29.f);
+                    Ctl c { uint32_t(p), CtlType::Knob, kKn[k][1], kx - 24, ky - 24, kw, 48 };
+                    c.ax = kx; c.ay = ky; c.size = kGrKnobD; c.labelX = kx + 24 + 8; c.labelY = ky - 7; c.valueY = ky + 8;
+                    L.ctls.push_back(c);
+                }
+            }
+            sx += w + 6;
+        }
+        ry += h + 6;
+    }
+    makeDrawer(L, py + ph);
+}
+
+// ---------------------------------------------------------------------------
+// LA-50 (mockups/la50.html): the PATCH column, then the PG-1000's three slider rows split
+// into titled sections; 42 px columns. Fills the same La50Panel as the classic look, so
+// the edit modes, drags and envelopes work unchanged. A slot's box: the slider (top + 13,
+// height - 27) with 13 px above and 14 below (cap travel = box.h - 40, like the classic).
+
+constexpr float kLaColW = 42.f, kLaSliderH = 84.f;
+
+void makeLa50New(Layout& L)
+{
+    La50Panel& P = L.la50;
+    P.used = true;
+    const float px = kChromeInset, py = kChromeHeaderH + kChromeInset, pw = kWidth - 2 * kChromeInset, ph = 638;
+    L.panel = { px, py, pw, ph };
+    const float x0 = px + 8, y0 = py + 8, colPatch = 186;
+    // PATCH column
+    L.decos.push_back({ Deco::GrSection, { x0, y0, colPatch, ph - 16 }, "PATCH" });
+    const float lx = x0 + 10, lw = colPatch - 20;
+    float y = y0 + kGrTitleH + 8;
+    P.lcd = { lx, y, lw, 56 };
+    y += 56 + 10;
+    // a row of LED buttons: caption, LED + button (36 x 20), name under it
+    auto buttons = [&](Box* out, int n, bool spread) {
+        const float bw = 40, bh = 22;
+        for (int k = 0; k < n; ++k) {
+            const float cx = n == 1 ? lx + bw / 2 : spread ? lx + bw / 2 + (lw - bw) * float(k) / float(n - 1) : 0;
+            out[k] = { cx - bw / 2, y + 14 + 9 + 11, bw, bh };
+        }
+        y += 14 + 9 + 11 + bh + 14 + 12;
+    };
+    buttons(&P.patch, 1, true);
+    buttons(P.common, 2, true);
+    buttons(P.partial, 4, true);
+    buttons(P.mute, 2, true);
+    P.init = { lx, y, 60, 26 };
+    P.import = { lx + 66, y, lw - 66, 26 };
+    y += 26 + 10;
+    {
+        const float bottom = y0 + ph - 16 - 10, gap = 8, eh = (bottom - y - 2 * gap) / 3;
+        for (int k = 0; k < 3; ++k) P.env[k] = { lx, y + k * (eh + gap), lw, eh };
+    }
+    // the rows: sections (first column, last column, title, width, slots: 0 centred,
+    // 1 right-aligned (WG WAVEFORM: the PCM selector left of them), 2 left (TVA ENV: OUTPUT))
+    struct Sec { int row, c0, c1; const char* title; float w; int align; };
+    static const Sec kSecs[] = {
+        { 0, 0, 5, "WG PITCH", 309, 0 }, { 0, 6, 12, "WG WAVEFORM", 567, 1 }, { 0, 13, 14, "KEY", 0, 0 },
+        { 1, 0, 9, "TVF", 456, 0 }, { 1, 10, 15, "TVF ENV", 273, 0 }, { 1, 16, 21, "TVA ENV", 0, 0 },
+        { 2, 0, 6, "TVA", 334, 0 }, { 2, 7, 12, "TVF ENV", 285, 0 }, { 2, 13, 18, "TVA ENV", 0, 2 },
+    };
+    const float rx0 = x0 + colPatch + 6, rx1 = px + pw - 8;
+    const float rowY[3] = { y0, y0 + 202 + 6, y0 + 2 * (202 + 6) };
+    const float rowH[3] = { 202, 202, y0 + ph - 16 - (y0 + 2 * (202 + 6)) };
+    const La50SlotSpec* rows[3] = { kLa50Row1, kLa50Row2, kLa50Row3 };
+    const int counts[3] = { int(std::size(kLa50Row1)), int(std::size(kLa50Row2)), int(std::size(kLa50Row3)) };
+    static const char* const kPartial[4] = { "u_p1_", "u_p2_", "l_p1_", "l_p2_" };
+    static const char* const kCommon[2] = { "u_", "l_" };
+    std::vector<float> colCx[3];
+    for (int r = 0; r < 3; ++r) colCx[r].assign(size_t(counts[r]), 0.f);
+    float sx = rx0;
+    int lastRow = -1;
+    for (const Sec& sc : kSecs) {
+        if (sc.row != lastRow) { sx = rx0; lastRow = sc.row; }
+        const float w = sc.w > 0 ? sc.w : rx1 - sx;
+        L.decos.push_back({ Deco::GrSection, { sx, rowY[sc.row], w, rowH[sc.row] }, sc.title });
+        const int n = sc.c1 - sc.c0 + 1;
+        const float left = sc.align == 1 ? sx + w - 12 - n * kLaColW : sc.align == 2 ? sx + 12 : sx + (w - n * kLaColW) / 2;
+        for (int c = sc.c0; c <= sc.c1 && c < counts[sc.row]; ++c) colCx[sc.row][size_t(c)] = left + (c - sc.c0 + 0.5f) * kLaColW;
+        if (sc.row == 0 && sc.align == 1) { // the PCM wave selector, centred in the room left of the slots
+            const float fw = 26 + 4 + 150 + 4 + 26, fx = sx + (left - sx - fw) / 2, fy = rowY[0] + kGrTitleH + (rowH[0] - kGrTitleH) / 2 - 20;
+            P.pcmPrev = { fx, fy, 26, 26 };
+            P.pcmName = { fx + 30, fy, 150, 26 };
+            P.pcmNext = { fx + fw - 26, fy, 26, 26 };
+        }
+        if (sc.align == 2) { // OUTPUT: the gain knob right of the slots
+            const float gx = left + n * kLaColW, gwid = sx + w - gx;
+            P.gainBox = { gx, rowY[sc.row] + kGrTitleH, gwid, rowH[sc.row] - kGrTitleH };
+            if (const int gain = findParam("gain"); gain >= 0) {
+                const float cx = gx + gwid / 2, cy = rowY[sc.row] + kGrTitleH + (rowH[sc.row] - kGrTitleH) / 2 + 6;
+                Ctl c { uint32_t(gain), CtlType::Knob, "Gain", cx - 40, cy - 40, 80, 90 };
+                c.ax = cx; c.ay = cy; c.size = kGrKnobD; c.labelY = cy + 24 + 12; c.valueY = cy + 24 + 26;
+                L.ctls.push_back(c);
+            }
+        }
+        sx += w + 6;
+    }
+    for (int r = 0; r < 3; ++r) {
+        const float top = rowY[r] + kGrTitleH + 54; // the slider's top
+        for (int c = 0; c < counts[r]; ++c) {
+            const La50SlotSpec& sp = rows[r][c];
+            La50Slot sl;
+            sl.box = { colCx[r][size_t(c)] - kLaColW / 2, top - 13, kLaColW, kLaSliderH + 27 };
+            sl.green = (r == 1 && c >= 10) || (r == 2 && c >= 7); // TVF ENV, TVA ENV
+            sl.field[0] = sp.partial; sl.field[1] = sp.common; sl.field[2] = sp.patch;
+            sl.label[0] = sp.pLabel; sl.label[1] = sp.cLabel; sl.label[2] = sp.kLabel;
+            char sym[64];
+            for (int k = 0; k < 4 && sp.partial; ++k) {
+                std::snprintf(sym, sizeof sym, "%s%s", kPartial[k], sp.partial);
+                sl.param[k] = findParam(sym);
+            }
+            for (int k = 0; k < 2 && sp.common; ++k) {
+                std::snprintf(sym, sizeof sym, "%s%s", kCommon[k], sp.common);
+                sl.param[4 + k] = findParam(sym);
+            }
+            if (sp.patch) {
+                std::snprintf(sym, sizeof sym, "patch_%s", sp.patch);
+                sl.param[6] = findParam(sym);
+            }
+            P.slots.push_back(sl);
+        }
+    }
+    // group brackets under the lower labels (the section titles are the kind-0 groups)
+    for (const La50GroupSpec& g : kLa50Groups) {
+        if (g.kind == 0 || g.row == 0) continue;
+        P.groups.push_back({ colCx[g.row][size_t(g.c0)] - kLaColW / 2 + 4, colCx[g.row][size_t(g.c1)] + kLaColW / 2 - 4,
+                             rowY[g.row] + rowH[g.row] - 10, g.title, g.kind });
+    }
+    makeDrawer(L, py + ph);
+}
+
 void makeNewLayout(Layout& L)
 {
     switch (voiceDef().voice) {
@@ -638,6 +1031,9 @@ void makeNewLayout(Layout& L)
     case maquina::kKlangVoice: makeKlang(L); break;
     case maquina::kKlongVoice:
     case maquina::kKlongFxVoice: makeKlong(L); break;
+    case maquina::kBl101Voice:
+    case maquina::kBl101FxVoice: makeGraphene(L); break;
+    case maquina::kLa50Voice: makeLa50New(L); break;
     default:
         if (maquina::isLxrVoice(voiceDef().voice)) makeLxr(L);
         break;

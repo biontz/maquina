@@ -86,6 +86,15 @@ matches `patch_level`, which belongs to LEVEL; PATCH holds nothing for BL-101. P
 group in the drawer when every parameter it matches belongs to an earlier group (editor-side
 check; the randomizer is untouched).
 
+As built (step 5, `makeGraphene` in `common/ui/Layouts.cpp`): sections keep the mockup's
+width (or their natural one if wider), the others share the rest. Slide switches list the
+options top down from the last value (as printed on the panel: SUB -1 OCT / -2 OCT / -2 PW);
+WAVE and RANGE have all 6 positions. NOISE type: a small PINK / WHITE chip under the NOISE
+slider (click toggles). CHOP: the mask name in a window after each pad row (click = next,
+wheel = step). The pads and DRAW bars are dimmed while OVERTONE is 0 / DRAW is off (they have
+no effect then). The drawer hides PATCH (a group shows only when a parameter's first matching
+group is it; BL-101 is the only voice this changes).
+
 ### BL-101 FX (`bl101_fx`, 1100 × 520)
 
 CHORUS Mode `chorus_mode` · DELAY Level / Time / Feedback `dly_level` `dly_time` `dly_feedback`,
@@ -102,6 +111,11 @@ way. One gap: the board has **no PATCH select button**. Today PATCH is the third
 (`fLaMode == 2`) and the only way to edit the patch fields of row 1 and row 3 (key shift,
 fine, tone balance, bender, aftertouch bend, portamento, hold, chase, key mode, split, output
 mode, reverb, total volume). See question 4.
+
+As built (step 5, `makeLa50New`): the same `La50Panel` slots, sections from the mockup
+(42 px columns), so the edit modes, drags, envelope handles, INIT and IMPORT work unchanged.
+PATCH is a LED button above COMMON SELECT (decision 4). Labels of the mode being edited are
+bright, the others dim; group brackets are orange. Window 1240 × 800.
 
 ### LXR drums — Kick, Tom, Snare, Cymbal, HiHat (1100 × 730)
 

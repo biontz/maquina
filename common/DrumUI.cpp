@@ -319,7 +319,11 @@ struct Ctl {
     // how it is drawn / clicked beyond its type (the new look)
     // LXR: LxrSel = red window (ax, ay, bw x bh) between two small step buttons, click = list;
     // LxrToggle = round button at (ax, ay); LxrFader = the VOLUME fader (bw x bh at ax, ay)
-    enum Look : uint8_t { Plain, Window, Cluster, LedButton, Segments, LxrSel, LxrToggle, LxrFader } look = Plain;
+    // graphene: GrSlider (slot ax, ay, bh tall; n = 1: green cap stripe), GrSwitch (well bw x bh at ax, ay;
+    // options from labelX), GrLed (button bw x bh at ax, ay; LED above), GrStep ([‹] window [›]; labelX > 0:
+    // label on the left), GrWin (a window dragged like a knob), GrChip (a small window toggling)
+    enum Look : uint8_t { Plain, Window, Cluster, LedButton, Segments, LxrSel, LxrToggle, LxrFader,
+                          GrSlider, GrSwitch, GrLed, GrStep, GrWin, GrChip } look = Plain;
     // Cluster: a row of n items (LEDs or colour dots) at xs[], picking a value of the bank
     // shown; optional round buttons (prevX: one back, stepX: one on, both wrap) and an LED
     uint8_t n = 0;
@@ -434,6 +438,7 @@ struct La50Slot {
     const char* field[3]; // partial, common, patch
     const char* label[3];
     int param[7] = { -1, -1, -1, -1, -1, -1, -1 }; // partial U1 U2 L1 L2, common U L, patch
+    bool green = false; // the new look: an envelope column (green cap stripe)
 };
 struct La50Group { float x0, x1, y; const char* title; int kind; }; // kind: 0 partial, 1 common, 2 patch
 struct La50Panel {
@@ -448,7 +453,7 @@ struct La50Panel {
 
 // the new look's panel decorations: printed rules, the logo block
 struct Deco {
-    enum Kind { VRule, HRule, Logo, Dotted, RuleText, Divider, LxrBox } kind;
+    enum Kind { VRule, HRule, Logo, Dotted, RuleText, Divider, LxrBox, GrSection } kind;
     Box b;
     const char* text = nullptr; // RuleText: the title in the rule; LxrBox: the section title
 };
@@ -1299,7 +1304,9 @@ protected:
         if (kTheme == ThemeId::Silver303) drawSilverPanel(*this, L.panel.x, L.panel.y, L.panel.w, L.panel.h, T.panelRadius);
         if (kTheme == ThemeId::Mutable) drawMutablePanel(*this, L.panel.x, L.panel.y, L.panel.w, L.panel.h, T.panelRadius);
         if (kTheme == ThemeId::Lxr) drawLxrPanel(*this, L.panel.x, L.panel.y, L.panel.w, L.panel.h, T.panelRadius);
+        if (kTheme == ThemeId::Graphene) drawGrPanel(*this, L.panel.x, L.panel.y, L.panel.w, L.panel.h, T.panelRadius);
         for (const Deco& d : L.decos) drawDeco(d);
+        if (L.la50.used) drawLa50New();
         if (L.lxr.used) drawLxrStrip();
         for (const Graph& g : fGraphs) drawGraph(g);
         for (const Ctl& c : fCtls) drawCtlNew(c);
@@ -1517,6 +1524,20 @@ protected:
             useFace(*this, "mono");
             break;
         }
+        case Deco::GrSection: { // grey section, title strip
+            drawGrSection(*this, d.b.x, d.b.y, d.b.w, d.b.h);
+            if (d.text) {
+                useFace(*this, "print-xb");
+                fontPx(*this, 12);
+                textLetterSpacing(12 * 0.12f);
+                textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+                fillColor(col(T.print));
+                text(d.b.x + d.b.w / 2, d.b.y + 12.5f, d.text, nullptr);
+                textLetterSpacing(0);
+                useFace(*this, "mono");
+            }
+            break;
+        }
         case Deco::LxrBox: { // outlined section, the title on its top edge
             useFace(*this, "print");
             fontPx(*this, 12.5f);
@@ -1642,6 +1663,13 @@ protected:
             else { fPopup = int(c.param); fPopupHover = -1; }
             return true;
         case Ctl::Segments: stepWrap(c.param, 1); return true;
+        case Ctl::GrStep: { // [‹] window [›]
+            if (x < c.ax - c.bw / 2) setValue(c.param, fValues[c.param] - 1, true);
+            else if (x > c.ax + c.bw / 2) setValue(c.param, fValues[c.param] + 1, true);
+            else if (dbl) setValue(c.param, defOf(c.param), true);
+            else { fPopup = int(c.param); fPopupHover = -1; }
+            return true;
+        }
         case Ctl::LxrSel: { // [o] window [o]: step buttons, the window opens the list
             if (std::fabs(x - (c.ax - c.bw / 2 - 12)) <= 10) setValue(c.param, fValues[c.param] - 1, true);
             else if (std::fabs(x - (c.ax + c.bw / 2 + 12)) <= 10) setValue(c.param, fValues[c.param] + 1, true);
@@ -1889,9 +1917,109 @@ protected:
         useFace(*this, "mono");
     }
 
+    // ---- graphene (BL-101, BL-101 FX)
+    // a slide switch lists the options top down from the last value (as printed on the S-1 / SH-101)
+    static int grSwitchRow(int n, int value) { return n - 1 - std::clamp(value, 0, n - 1); }
+    void drawCtlGraphene(const Ctl& c)
+    {
+        const Theme& T = theme();
+        const bool hot = fDrag == int(c.param) || fPopup == int(c.param);
+        char buf[48];
+        valueText(c.param, buf, sizeof buf);
+        auto label = [&](const char* l, float x, float y, bool left) {
+            if (!l) return;
+            std::string t = l;
+            for (char& ch : t) ch = char(std::toupper(ch));
+            useFace(*this, "print");
+            fontPx(*this, 10);
+            textLetterSpacing(10 * 0.06f);
+            textAlign((left ? ALIGN_LEFT : ALIGN_CENTER) | ALIGN_MIDDLE);
+            fillColor(col(T.print));
+            text(x, y, t.c_str(), nullptr);
+            textLetterSpacing(0);
+        };
+        auto value = [&](const char* v, float x, float y, bool left) {
+            useFace(*this, "mono");
+            fontPx(*this, 10.5f);
+            textAlign((left ? ALIGN_LEFT : ALIGN_CENTER) | ALIGN_MIDDLE);
+            fillColor(col(T.value));
+            text(x, y, v, nullptr);
+        };
+        auto window = [&](float cx, float cy, float w, float h, const char* v, float px) {
+            drawGrWindow(*this, cx - w / 2, cy - h / 2, w, h, hot);
+            useFace(*this, "mono");
+            fontPx(*this, px);
+            textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+            fillColor(col(kGrWindowText));
+            text(cx, cy + 1, v, nullptr);
+        };
+        switch (c.look) {
+        case Ctl::GrSlider:
+            label(c.label, c.ax, c.labelY, false);
+            drawGrSlider(*this, c.ax, c.ay - c.bh / 2, c.bh, valueFraction(c.param), c.n ? kGrGreen : kGrOrange, hot);
+            value(buf, c.ax, c.valueY, false);
+            break;
+        case Ctl::GrSwitch: {
+            const VoiceParam& p = paramAt(voiceDef(), c.param);
+            const int n = std::max<int>(1, p.numLabels), cur = intOf(int(c.param));
+            const float sy = c.ay - c.bh / 2;
+            label(c.label, c.x + c.w / 2, c.labelY, false);
+            drawGrSwitch(*this, c.ax - 7, sy, c.bh, grSwitchRow(n, cur), hot);
+            useFace(*this, "print");
+            fontPx(*this, 9.5f);
+            textLetterSpacing(9.5f * 0.04f);
+            textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+            for (int k = 0; k < n; ++k) {
+                const int val = n - 1 - k;
+                fillColor(col(val == cur ? T.print : Rgb { 0x8d, 0x8f, 0x94 }));
+                text(c.labelX, sy + 20.f * float(k) + 10.5f, grOption(p.labels ? p.labels[val] : "").c_str(), nullptr);
+            }
+            textLetterSpacing(0);
+            break;
+        }
+        case Ctl::GrLed:
+            drawGrLedButton(*this, c.ax, c.ay, fValues[c.param] >= 0.5f, hot);
+            label(c.label, c.ax, c.labelY, false);
+            break;
+        case Ctl::GrStep: {
+            const bool left = c.labelX > 0;
+            label(c.label, left ? c.labelX : c.ax, left ? c.ay : c.labelY, left);
+            const float bx = c.ax - c.bw / 2;
+            drawChromeButton(*this, bx - 4 - 26, c.ay - 13, 26, 26, "\xe2\x80\xb9", false);
+            drawChromeButton(*this, bx + c.bw + 4, c.ay - 13, 26, 26, "\xe2\x80\xba", false);
+            std::string v = buf;
+            for (char& ch : v) ch = char(std::toupper(ch));
+            window(c.ax, c.ay, c.bw, c.bh, v.c_str(), 12);
+            break;
+        }
+        case Ctl::GrWin: { // MULTIPLY: x N, dragged like a knob
+            label(c.label, c.labelX, c.ay, true);
+            char m[16];
+            std::snprintf(m, sizeof m, "\xc3\x97%d", intOf(int(c.param)));
+            window(c.ax, c.ay, c.bw, c.bh, m, 12);
+            break;
+        }
+        case Ctl::GrChip: { // NOISE: PINK / WHITE
+            std::string v = buf;
+            for (char& ch : v) ch = char(std::toupper(ch));
+            window(c.ax, c.ay, c.bw, c.bh, v.c_str(), 9.5f);
+            break;
+        }
+        default: { // knob; labelX > 0: label and value to its right
+            const bool left = c.labelX > 0;
+            if (c.label) label(c.label, left ? c.labelX : c.ax, c.labelY, left);
+            drawKnobStyled(*this, T.knob, c.ax, c.ay, c.size, valueFraction(c.param), hot);
+            value(buf, left ? c.labelX : c.ax, c.valueY, left);
+            break;
+        }
+        }
+        useFace(*this, "mono");
+    }
+
     void drawCtlNew(const Ctl& c)
     {
         if (kTheme == ThemeId::Mutable) { drawCtlMutable(c); return; }
+        if (kTheme == ThemeId::Graphene) { drawCtlGraphene(c); return; }
         if (kTheme == ThemeId::Lxr) { drawCtlLxr(c); return; }
         const Theme& T = theme();
         const bool hot = fDrag == int(c.param) || fPopup == int(c.param);
@@ -3942,6 +4070,7 @@ protected:
     }
     void drawEnvShape(const EnvGeo& g, bool hot)
     {
+        if (kNew) { drawEnvShapeNew(g, hot); return; }
         frame(g.b.x, g.b.y, g.b.w, g.b.h, col(kWell), col(kBorder));
         if (g.centre) {
             beginPath();
@@ -3984,6 +4113,232 @@ protected:
         fillColor(col(hot ? kText : kDim));
         text(g.b.x + 5, g.b.y + 3, g.title.c_str(), nullptr);
     }
+    // graphene: an orange line in a dark window, the release mark dotted, small handles
+    void drawEnvShapeNew(const EnvGeo& g, bool hot)
+    {
+        drawGrWindow(*this, g.b.x, g.b.y, g.b.w, g.b.h, false);
+        if (g.centre) {
+            beginPath();
+            rect(g.b.x + 4, (g.yTop + g.yBot) / 2, g.b.w - 8, 1);
+            fillColor(col({ 0x3a, 0x3b, 0x3e }));
+            fill();
+        }
+        lineJoin(ROUND);
+        beginPath();
+        moveTo(g.pts[0].x, g.pts[0].y);
+        for (size_t k = 1; k < g.pts.size(); ++k) {
+            lineTo(g.pts[k].x, g.pts[k].y);
+            if (int(k) == g.susAfter) lineTo(g.pts[k].x + g.susW, g.pts[k].y);
+        }
+        strokeColor(col(kGrOrange, hot ? 255 : 120));
+        strokeWidth(2);
+        stroke();
+        if (g.susAfter > 0) {
+            const float rx = g.pts[size_t(g.susAfter)].x + g.susW;
+            fillColor(col({ 0xd8, 0xd8, 0xd4 }, 150));
+            for (float yy = g.yTop; yy < g.yBot; yy += 6) {
+                beginPath();
+                rect(rx, yy, 1, 3);
+                fill();
+            }
+        }
+        for (const EnvHandle& h : g.pts) {
+            if (h.tParam < 0 && h.lParam < 0) continue;
+            const bool on = fEnvDrag && (h.tParam == fEnvT && h.lParam == fEnvL);
+            beginPath();
+            circle(h.x, h.y, on ? 3.5f : 2.5f);
+            fillColor(on ? col({ 0xff, 0xff, 0xff }) : col(kGrWindowText, hot ? 230 : 120));
+            fill();
+        }
+        useFace(*this, "print");
+        fontPx(*this, 9.5f);
+        textLetterSpacing(0.4f);
+        textAlign(ALIGN_LEFT | ALIGN_TOP);
+        fillColor(col(hot ? theme().print : Rgb { 0x8d, 0x8f, 0x94 }));
+        std::string t = g.title;
+        for (char& ch : t) ch = char(std::toupper(ch));
+        text(g.b.x + 6, g.b.y + 4, t.c_str(), nullptr);
+        textLetterSpacing(0);
+        useFace(*this, "mono");
+    }
+
+    // LA-50, graphene: the PATCH column, the slots' labels and sliders, the brackets
+    void drawLa50New()
+    {
+        const Theme& T = theme();
+        const La50Panel& P = layout().la50;
+        static const char* const kPartialNames[4] = { "U1", "U2", "L1", "L2" };
+        const Rgb dim { 0x8d, 0x8f, 0x94 };
+        // LCD (amber)
+        drawGrWindow(*this, P.lcd.x, P.lcd.y, P.lcd.w, P.lcd.h, false);
+        {
+            const char* modeName = fLaMode == 0 ? kPartialNames[fLaPartial] : fLaMode == 1 ? (fLaTone ? "LOWER COM" : "UPPER COM")
+                                                                                           : "PATCH";
+            std::string name = fPresetName, bank;
+            const size_t paren = name.find(" (");
+            if (paren != std::string::npos && name.back() == ')') {
+                bank = name.substr(paren + 2, name.size() - paren - 3);
+                name.resize(paren);
+            }
+            if (fPresetDirty) name += " *";
+            useFace(*this, "mono-sb");
+            fontPx(*this, 13);
+            textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+            fillColor(col(kGrWindowText));
+            const float lw = P.lcd.w - 16;
+            lcdText(P.lcd.x + 8, P.lcd.y + 13, lw, name);
+            useFace(*this, "mono");
+            fontPx(*this, 10.5f);
+            std::string line = !fLaMsg.empty() ? fLaMsg : std::string("EDIT ") + modeName;
+            if (fLaMsg.empty() && fLaLast >= 0) {
+                char v[48];
+                valueText(uint32_t(fLaLast), v, sizeof v);
+                line += std::string("  ") + paramAt(voiceDef(), uint32_t(fLaLast)).name + " " + v;
+            } else if (fLaMsg.empty() && !bank.empty()) {
+                line = bank + " \xc2\xb7 " + line;
+            }
+            lcdText(P.lcd.x + 8, P.lcd.y + 38, lw, line);
+        }
+        auto caption = [&](const Box& b, const char* t) {
+            useFace(*this, "print");
+            fontPx(*this, 10);
+            textLetterSpacing(0.3f);
+            textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+            fillColor(col(T.print));
+            text(P.lcd.x, b.y - 11 - 6 - 12, t, nullptr);
+            textLetterSpacing(0);
+        };
+        auto button = [&](const Box& b, const char* name, bool on) {
+            drawGrLedButton(*this, b.x + b.w / 2, b.y + b.h / 2, on, false);
+            useFace(*this, "print");
+            fontPx(*this, 9.5f);
+            textLetterSpacing(9.5f * 0.06f);
+            textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+            fillColor(col(T.print));
+            text(b.x + b.w / 2, b.y + b.h + 10, name, nullptr);
+            textLetterSpacing(0);
+        };
+        caption(P.patch, "Patch");
+        button(P.patch, "PATCH", fLaMode == 2);
+        caption(P.common[0], "Common select");
+        button(P.common[0], "UPPER", fLaMode == 1 && fLaTone == 0);
+        button(P.common[1], "LOWER", fLaMode == 1 && fLaTone == 1);
+        caption(P.partial[0], "Partial select");
+        for (int k = 0; k < 4; ++k) button(P.partial[k], kPartialNames[k], fLaMode == 0 && fLaPartial == k);
+        const int mp = la50MuteParam(), mute = mp >= 0 ? intOf(mp) : 3;
+        caption(P.mute[0], fLaTone ? "Lower partials on" : "Upper partials on");
+        button(P.mute[0], "P1", (mute & 1) != 0);
+        button(P.mute[1], "P2", (mute & 2) != 0);
+        useFace(*this, "mono");
+        drawChromeButton(*this, P.init.x, P.init.y, P.init.w, P.init.h, "INIT", false);
+        drawChromeButton(*this, P.import.x, P.import.y, P.import.w, P.import.h, "IMPORT .SYX", false);
+        drawLa50Envs();
+        // PCM wave: [‹] "N name ▾" [›], its caption under it
+        if (const int p = la50PcmParam(); p >= 0) {
+            static const char* const kPartName[4] = { "U1", "U2", "L1", "L2" };
+            useFace(*this, "mono");
+            drawChromeButton(*this, P.pcmPrev.x, P.pcmPrev.y, P.pcmPrev.w, P.pcmPrev.h, "\xe2\x80\xb9", false);
+            drawChromeButton(*this, P.pcmNext.x, P.pcmNext.y, P.pcmNext.w, P.pcmNext.h, "\xe2\x80\xba", false);
+            const Box& n = P.pcmName;
+            drawGrWindow(*this, n.x, n.y, n.w, n.h, fPopup == p);
+            const VoiceParam& vp = paramAt(voiceDef(), uint32_t(p));
+            const int v = intOf(p);
+            char buf[64];
+            std::snprintf(buf, sizeof buf, "%d %s", v + 1, vp.labels && v >= 0 && v < vp.numLabels ? vp.labels[v] : "");
+            useFace(*this, "mono");
+            fontPx(*this, 12);
+            textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+            fillColor(col(kGrWindowText));
+            scissor(n.x + 4, n.y, n.w - 8, n.h);
+            text(n.x + n.w / 2 - 6, n.y + n.h / 2 + 1, buf, nullptr);
+            resetScissor();
+            { // ▾ (not in the mono face)
+                const float ax = n.x + n.w / 2 - 6 + textWidth(buf) / 2 + 10, ay = n.y + n.h / 2;
+                beginPath();
+                moveTo(ax - 4, ay - 2); lineTo(ax + 4, ay - 2); lineTo(ax, ay + 3); closePath();
+                fillColor(col(kGrWindowText));
+                fill();
+            }
+            char cap[32];
+            std::snprintf(cap, sizeof cap, "PCM WAVE %s", kPartName[la50PcmPart()]);
+            useFace(*this, "print");
+            fontPx(*this, 10);
+            textLetterSpacing(0.6f);
+            fillColor(col(T.print));
+            text(n.x + n.w / 2, n.y + n.h + 14, cap, nullptr);
+            textLetterSpacing(0);
+        }
+        if (P.gainBox.w > 0) { // OUTPUT over the gain knob
+            useFace(*this, "print-xb");
+            fontPx(*this, 10.5f);
+            textLetterSpacing(10.5f * 0.08f);
+            textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+            fillColor(col(T.print));
+            text(P.gainBox.x + P.gainBox.w / 2, P.gainBox.y + 22, "OUTPUT", nullptr);
+            textLetterSpacing(0);
+        }
+        // brackets: ── PITCH MOD ──
+        for (const La50Group& g : P.groups) {
+            const bool on = g.kind == 1 ? fLaMode == 1 : fLaMode == 2;
+            useFace(*this, "print-xb");
+            fontPx(*this, 9.5f);
+            textLetterSpacing(9.5f * 0.08f);
+            const float tw = textWidth(g.title), cx = (g.x0 + g.x1) / 2;
+            beginPath();
+            rect(g.x0, g.y - 0.5f, std::max(0.f, cx - tw / 2 - 6 - g.x0), 1);
+            rect(cx + tw / 2 + 6, g.y - 0.5f, std::max(0.f, g.x1 - (cx + tw / 2 + 6)), 1);
+            fillColor(col(kGrOrange, on ? 255 : 170));
+            fill();
+            textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+            text(cx, g.y, g.title, nullptr);
+            textLetterSpacing(0);
+        }
+        // a label in a 42 px column: two lines when one does not fit (up from y, or down)
+        auto colLabel = [&](const char* l, float cx, float y, bool up, Rgb c) {
+            if (!l) return;
+            useFace(*this, "print");
+            fontPx(*this, 9);
+            textLetterSpacing(9 * 0.04f);
+            textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+            fillColor(col(c));
+            std::string s = l;
+            const size_t sp = s.find(' ');
+            if (textWidth(s.c_str()) > kLaColW - 2 && sp != std::string::npos) {
+                const std::string a = s.substr(0, sp), b = s.substr(sp + 1);
+                text(cx, up ? y - 10 : y, a.c_str(), nullptr);
+                text(cx, up ? y : y + 10, b.c_str(), nullptr);
+            } else {
+                text(cx, y, s.c_str(), nullptr);
+            }
+            textLetterSpacing(0);
+        };
+        for (const La50Slot& sl : P.slots) {
+            const float cx = sl.box.x + sl.box.w / 2, top = sl.box.y + 13, h = sl.box.h - 27;
+            const int p = la50Param(sl);
+            colLabel(sl.label[0], cx, top - 34, true, fLaMode == 0 || (!sl.field[0] && !sl.field[1]) ? T.print : dim);
+            if (p >= 0) {
+                char v[32];
+                valueText(uint32_t(p), v, sizeof v);
+                useFace(*this, "mono");
+                fontPx(*this, 10.5f);
+                textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+                fillColor(col(T.value));
+                text(cx, top - 14, v, nullptr);
+                drawGrSlider(*this, cx, top, h, valueFraction(uint32_t(p)), sl.green ? kGrGreen : kGrOrange, fDrag == p);
+            } else { // nothing to edit in this mode: the empty slot
+                beginPath();
+                roundedRect(cx - 1, top, 5, h, 2.5f);
+                fillColor(col({ 0x0b, 0x0b, 0x0c }, 140));
+                fill();
+            }
+            float by = top + h + 12;
+            if (sl.label[1]) { colLabel(sl.label[1], cx, by, false, fLaMode == 1 ? T.print : dim); by += 11; }
+            const bool patchOnly = !sl.field[0] && !sl.field[1]; // KEY MODE, SPLIT: always edited
+            if (sl.label[2]) colLabel(sl.label[2], cx, by, false, fLaMode == 2 || patchOnly ? T.print : dim);
+        }
+        useFace(*this, "mono");
+    }
+
     void drawLa50Envs()
     {
         for (int e = 0; e < 3; ++e) drawEnvShape(la50EnvGeo(e), e < 2 ? fLaMode == 0 : fLaMode == 1);
@@ -4274,6 +4629,12 @@ protected:
     // slider geometry: the slot from top to bottom (panel units)
     void sliderSlot(const Ctl& c, float& x, float& y0, float& y1) const
     {
+        if (c.look == Ctl::GrSlider) { // the cap's centre travel
+            x = c.ax;
+            y0 = c.ay - c.bh / 2 + 6.5f;
+            y1 = c.ay + c.bh / 2 - 6.5f;
+            return;
+        }
         x = c.x + c.w / 2;
         y0 = c.y + 24;
         y1 = c.y + c.h - 22;
@@ -4394,6 +4755,11 @@ protected:
     // the position a click at y picks
     int switchPosAt(const Ctl& c, float y) const
     {
+        if (c.look == Ctl::GrSwitch) { // graphene: 20 px a position, the last value on top
+            const int n = std::max<int>(1, paramAt(voiceDef(), c.param).numLabels);
+            const int row = std::clamp(int((y - (c.ay - c.bh / 2)) / 20.f), 0, n - 1);
+            return n - 1 - row;
+        }
         if (c.size > 0) { // the new look: nearest lever position
             const int n = std::max<int>(1, paramAt(voiceDef(), c.param).numLabels);
             int best = 0;
@@ -4413,8 +4779,46 @@ protected:
     // ---- Maquina BL-101: the OSC DRAW table (16 bars) and the CHOP masks
     static constexpr float kChopLabelW = 36.f, kChopNameW = 48.f;
 
+    // graphene: orange bars above the line, darker below, on a dark window
+    static constexpr float kDrawPad = kNew ? 6.f : 4.f;
+    void drawDrawGraphGr(const Graph& g)
+    {
+        drawGrWindow(*this, g.x, g.y, g.w, g.h, fGraphDrag == 1);
+        if (g.first < 0) return;
+        const bool on = g.mode >= 0 && intOf(g.mode) != 0;
+        const float pad = kDrawPad, bw = (g.w - 2 * pad) / 16.f, mid = g.y + g.h / 2, half = g.h / 2 - pad;
+        beginPath();
+        rect(g.x + pad, mid - 0.5f, g.w - 2 * pad, 1);
+        fillColor(col({ 0x4a, 0x4b, 0x4f }));
+        fill();
+        float py[16];
+        for (int k = 0; k < 16; ++k) {
+            const float v = float(intOf(g.first + k)) / 128.f;
+            const float x = g.x + pad + k * bw, y = mid - v * half;
+            py[k] = y;
+            if (std::fabs(y - mid) < 0.5f) continue;
+            beginPath();
+            rect(x + 1.5f, std::min(y, mid), bw - 3, std::fabs(y - mid));
+            fillColor(col(v > 0 ? kGrOrange : Rgb { 0xa6, 0x5c, 0x16 }, on ? 255 : 90));
+            fill();
+        }
+        if (on && intOf(g.mode) == 2) { // SLOPE: the smoothed wave through the steps
+            beginPath();
+            for (int k = 0; k <= 16 * 8; ++k) {
+                const int i = (k / 8) % 16, j = (i + 1) % 16;
+                const float t = float(k % 8) / 8.f, st = t * t * (3 - 2 * t);
+                const float x = g.x + pad + float(k) / 8.f * bw, y = py[i] + (py[j] - py[i]) * st;
+                if (k == 0) moveTo(x, y); else lineTo(x, y);
+            }
+            strokeColor(col(kGrWindowText, 220));
+            strokeWidth(1.2f);
+            stroke();
+        }
+    }
+
     void drawDrawGraph(const Graph& g)
     {
+        if (kTheme == ThemeId::Graphene) { drawDrawGraphGr(g); return; }
         frame(g.x, g.y, g.w, g.h, col(kWell), col(fGraphDrag == 1 ? kAccent : kBorder));
         if (g.first < 0) return;
         const bool on = g.mode >= 0 && intOf(g.mode) != 0;
@@ -4470,6 +4874,14 @@ protected:
     ChopGeo chopGeo(const Graph& g) const
     {
         ChopGeo c;
+        if (kTheme == ThemeId::Graphene) { // pads 22 x 18, 4 / 6 px apart; the mask window after them
+            c.x0 = g.x + 52;
+            c.cellW = 26;
+            c.rowH = 24;
+            c.y0 = g.y;
+            c.nameX = c.x0 + 16 * 26 + 4;
+            return c;
+        }
         c.x0 = g.x + kChopLabelW;
         c.nameX = g.x + g.w - kChopNameW;
         c.cellW = (c.nameX - 4 - c.x0) / 16.f;
@@ -4478,8 +4890,58 @@ protected:
         return c;
     }
 
+    // graphene: S-1 style rubber pads, the mask name in a window after each row
+    void drawChopGraphGr(const Graph& g)
+    {
+        const ChopGeo c = chopGeo(g);
+        const bool on = g.amount >= 0 && intOf(g.amount) > 0;
+        static const char* const kRows[4] = { "PULSE", "SAW", "SUB", "NOISE" };
+        for (int s = 0; s < 4; ++s) {
+            const float y = c.y0 + s * c.rowH;
+            const uint16_t m = chopMaskOf(g, s);
+            useFace(*this, "print");
+            fontPx(*this, 10);
+            textLetterSpacing(0.6f);
+            textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+            fillColor(col(theme().print));
+            text(g.x, y + 9.5f, kRows[s], nullptr);
+            textLetterSpacing(0);
+            for (int k = 0; k < 16; ++k) {
+                const bool lit = m >> k & 1u;
+                const float px = c.x0 + k * c.cellW;
+                if (lit && on) {
+                    beginPath();
+                    rect(px - 6, y - 6, 34, 30);
+                    fillPaint(boxGradient(px, y, 22, 18, 3, 6, col(kGrOrange, 110), col(kGrOrange, 0)));
+                    fill();
+                }
+                beginPath();
+                roundedRect(px, y, 22, 18, 3);
+                fillColor(lit ? col(kGrOrange, on ? 255 : 110) : col({ 0x3a, 0x3b, 0x3e }));
+                fill();
+                beginPath();
+                rect(px + 1, y + 16, 20, 2);
+                fillColor(Color(0, 0, 0, 0.3f));
+                fill();
+            }
+            // the mask: click = next, wheel = step
+            const VoiceParam* mp = g.mask[s] >= 0 ? &paramAt(voiceDef(), uint32_t(g.mask[s])) : nullptr;
+            const int sel = g.mask[s] >= 0 ? intOf(g.mask[s]) : 1;
+            drawGrWindow(*this, c.nameX, y, 56, 18, false);
+            std::string n = mp && mp->labels && sel >= 0 && sel < mp->numLabels ? mp->labels[sel] : "";
+            for (char& ch : n) ch = char(std::toupper(ch));
+            useFace(*this, "mono");
+            fontPx(*this, 9.5f);
+            textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+            fillColor(col(kGrWindowText, sel == 0 ? 255 : 200));
+            text(c.nameX + 28, y + 9.5f, n.c_str(), nullptr);
+        }
+        useFace(*this, "mono");
+    }
+
     void drawChopGraph(const Graph& g)
     {
+        if (kTheme == ThemeId::Graphene) { drawChopGraphGr(g); return; }
         frame(g.x, g.y, g.w, g.h, col(kWell), col(fGraphDrag == 2 ? kAccent : kBorder));
         const ChopGeo c = chopGeo(g);
         const bool on = g.amount >= 0 && intOf(g.amount) > 0;
@@ -4763,7 +5225,7 @@ protected:
     // ---- Maquina BL-101 editors: paint the DRAW bars / the CHOP cells
     void paintDraw(const Graph& g, float x, float y)
     {
-        const float pad = 4, bw = (g.w - 2 * pad) / 16.f, mid = g.y + g.h / 2, half = g.h / 2 - pad;
+        const float pad = kDrawPad, bw = (g.w - 2 * pad) / 16.f, mid = g.y + g.h / 2, half = g.h / 2 - pad;
         const int k = std::clamp(int((x - g.x - pad) / bw), 0, 15);
         const int v = std::clamp(int(std::lround((mid - y) / half * 128.f)), -128, 127);
         // fill the bars between the last point and this one (fast strokes)
