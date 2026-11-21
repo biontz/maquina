@@ -219,7 +219,7 @@ protected:
                               : "https://github.com/erica-synths/lxr-desktop-app";
     }
     const char* getLicense() const override { return "GPL-3.0-only"; }
-    uint32_t getVersion() const override { return d_version(0, 1, 0); }
+    uint32_t getVersion() const override { return d_version(0, 2, 0); }
 
     void initPortGroup(uint32_t groupId, PortGroup& group) override
     {
