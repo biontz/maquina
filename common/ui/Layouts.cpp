@@ -437,19 +437,19 @@ constexpr LxrKind kKn = LxrKind::Knob, kSel = LxrKind::Sel, kTg = LxrKind::Toggl
 
 // Kick, Tom (as tom.html; the Kick mockup is the same rows)
 const LxrBoxSpec kLxrDrumBoxes[] = {
-    { 0, "OSC", 3, { LXR_OSC } }, { 0, "AEG", 4, { LXR_AEG } }, { 0, "PITCH EG", 4, { LXR_PITCH } },
+    { 0, "OSC", 3, { LXR_OSC } }, { 0, "KEY", 0.8f, { { kTg, "note_pitch", "Track" } } }, { 0, "PITCH EG", 4, { LXR_PITCH } },
+    { 0, "FM", 3, { { kKn, "fm_amount", "Amount" }, { kKn, "fm_freq", "Freq" }, { LxrKind::Stack, "fm_wave", nullptr, "fm_mode" } } },
     { 1, "CLICK", 2.4f, { LXR_CLICK } }, { 1, "LFO", 5, { LXR_LFO } }, { 1, "MOD", 2.3f, { LXR_MOD } },
-    { 2, "FM", 3.4f, { { kKn, "fm_amount", "Amount" }, { kKn, "fm_freq", "Freq" }, { LxrKind::Stack, "fm_wave", nullptr, "fm_mode" } } },
-    { 2, "FILTER", 3.2f, { LXR_FILTER, { kTg, "note_pitch", "Key\ntrk" } } }, { 2, "MIX", 3.1f, { LXR_MIX } },
+    { 2, "AEG", 4.4f, { LXR_AEG } }, { 2, "FILTER", 3, { LXR_FILTER } }, { 2, "MIX", 3.3f, { LXR_MIX } },
 };
 const LxrBoxSpec kLxrSnareBoxes[] = {
-    { 0, "OSC", 3, { LXR_OSC } }, { 0, "NOISE", 1.6f, { { kKn, "noise_freq", "Freq" }, { kKn, "noise_mix", "Mix" } } },
-    { 0, "PITCH EG", 4, { LXR_PITCH } }, { 0, "KEY", 0.8f, { { kTg, "note_pitch", "Track" } } },
+    { 0, "OSC", 3, { LXR_OSC } }, { 0, "KEY", 0.8f, { { kTg, "note_pitch", "Track" } } },
+    { 0, "NOISE", 1.6f, { { kKn, "noise_freq", "Freq" }, { kKn, "noise_mix", "Mix" } } }, { 0, "PITCH EG", 4, { LXR_PITCH } },
     { 1, "CLICK", 2.4f, { LXR_CLICK } }, { 1, "LFO", 5, { LXR_LFO } }, { 1, "MOD", 2.3f, { LXR_MOD } },
     { 2, "AEG", 4.4f, { LXR_AEG } }, { 2, "FILTER", 3, { LXR_FILTER } }, { 2, "MIX", 3.3f, { LXR_MIX } },
 };
 const LxrBoxSpec kLxrMetalBoxes[] = { // Cymbal, HiHat
-    { 0, "OSC", 3, { LXR_OSC } }, { 0, "AEG", 4.2f, { LXR_AEG } }, { 0, "KEY", 0.8f, { { kTg, "note_pitch", "Track" } } },
+    { 0, "OSC", 3, { LXR_OSC } }, { 0, "KEY", 0.8f, { { kTg, "note_pitch", "Track" } } }, { 0, "AEG", 4.2f, { LXR_AEG } },
     { 0, "MOD", 2.3f, { LXR_MOD } },
     { 1, "MOD OSC", 5, { { kKn, "mod1_freq", "Freq 1" }, { kKn, "mod1_gain", "Gain 1" }, { kSel, "mod1_wave", "Wave 1" },
                          { kKn, "mod2_freq", "Freq 2" }, { kKn, "mod2_gain", "Gain 2" }, { kSel, "mod2_wave", "Wave 2" } } },

@@ -130,8 +130,8 @@ bright, the others dim; group brackets are orange. Window 1240 × 800.
 | MOD: Velo Dest, Amount, > Vol | `velo_dest` `velo_amount` `velo_volume` |
 | FM (Kick, Tom): Amount, Freq, Wave, Mode | `fm_amount` `fm_freq` `fm_wave` `fm_mode` |
 | MOD OSC (Cymbal, HiHat): Freq / Gain / Wave 1 and 2 | `mod1_*` `mod2_*` |
-| FILTER: Type, Cutoff, Reso, Drive (+ Key Trk on Kick) | `filter_type` `filter_freq` `filter_reso` `filter_drive` (`note_pitch`) |
-| KEY (Snare, Cymbal, HiHat): Track | `note_pitch` |
+| FILTER: Type, Cutoff, Reso, Drive | `filter_type` `filter_freq` `filter_reso` `filter_drive` |
+| KEY (all five, right after OSC): Track | `note_pitch` |
 | MIX: Volume, Pan, Drive, Rate, Gain | `volume` `pan` `drive` `decimation` `gain` |
 | Top strip: display, page buttons | *(UI)* the page shown = last-touched section, buttons pick it |
 | Top strip: VOLUME fader | see question 5 |
@@ -140,9 +140,11 @@ Mismatch: the board draws LFO **SYNC as a round toggle**, but `lfo_sync` has 12 
 (Off, 4/1 … 1/32). Plan: a small red display window with step buttons like TARGET (it fits in
 the LFO box by narrowing TARGET); RETRIG stays a toggle.
 
-Row tables: Kick / Tom use OSC · AEG · PITCH EG / CLICK · LFO · MOD / FM · FILTER (+KEY) ·
-MIX; Snare and Cymbal / HiHat as in the guide. These replace `kDrumRows` / `kSnareRows` /
-`kMetalRows` (only the order changes).
+Row tables: Kick / Tom use OSC · KEY · PITCH EG · FM / CLICK · LFO · MOD / AEG · FILTER · MIX
+(AEG and FM swap rows so the top row fits); Snare and Cymbal / HiHat as in the guide, but with
+KEY moved right after OSC. Key Track transposes the oscillators only (`osc_setBaseNote`), so on
+all five voices it sits next to OSC (the guide had it in Kick's FILTER box, which read as filter
+key tracking). These replace `kDrumRows` / `kSnareRows` / `kMetalRows` (only the order changes).
 
 As built (step 4, `makeLxr` in `common/ui/Layouts.cpp`):
 
