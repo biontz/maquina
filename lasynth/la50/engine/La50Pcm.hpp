@@ -10,7 +10,9 @@
 //     77-100 loops made of two of those.
 // Waves are stored as the LA32 wave generator wants them: 16-bit log samples
 // (sign bit + 15-bit log magnitude, Munt's LA32WaveGenerator::pcmSampleToLogSample),
-// at 32 kHz with C4 (261.6 Hz) as their natural pitch.
+// at 32 kHz. Each wave's natural pitch is its rootHz (the stand-in loops use
+// the D-50's measured loop roots - divisions of the 32 kHz clock; attacks and
+// the unpitched Noise wave are C4, rootHz = 0 meaning "C4, no offset").
 //
 // SPDX-License-Identifier: GPL-3.0-only
 #pragma once
@@ -24,6 +26,10 @@ namespace la50 {
 struct PcmWave {
     std::vector<int16_t> data; // log samples
     bool looped = false;       // the whole wave loops
+    float rootHz = 0.f;        // natural pitch; 0 = C4 (no offset)
+
+    // the offset from the engine's C4 PCM base pitch, in 4096ths of an octave
+    int pitchOffset() const;
 };
 
 class PcmBank {

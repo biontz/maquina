@@ -376,7 +376,11 @@ void Engine::startNote(int tone, int key, int velocity, int channel)
         }
         // pitch without modulation
         s.keyfollow = kPitchKeyfollowMult[std::min<int>(pp[P_WG_KEYFOLLOW], 16)];
-        const int waveBase = s.pcm ? kPcmC4 : (pp[P_WG_WAVEFORM] ? kSawC4 : kSquareC4);
+        // PCM waves carry their own natural pitch (the stand-in loops use the
+        // D-50's measured loop roots): transpose from it, as the real chip does
+        int waveBase = s.pcm ? kPcmC4 : (pp[P_WG_WAVEFORM] ? kSawC4 : kSquareC4);
+        if (s.pcm)
+            waveBase += fPcm->wave(pp[P_WG_PCM_WAVE]).pitchOffset();
         s.basePitch = waveBase + (pp[P_WG_COARSE] - 36) * 4096 / 12 + (pp[P_WG_FINE] - 50) * 4096 / 1200 +
                       int(toneFine * 4096 / 1200);
         const int keyPitch = int((v.keyTarget * s.keyfollow) / 8192);
