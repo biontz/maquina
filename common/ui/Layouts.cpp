@@ -92,24 +92,10 @@ HeaderGeo makeHeaderGeo()
     return g;
 }
 
-// the classic header (DrumUI's constants)
-HeaderGeo classicHeaderGeo()
-{
-    HeaderGeo g;
-    g.prev = { kPrevX, kZoomY, kArrowW, kZoomH };
-    g.name = { kNameX, kZoomY, kPresetNameW, kZoomH };
-    g.next = { kNextX, kZoomY, kArrowW, kZoomH };
-    g.save = { kSaveX, kZoomY, kSaveW, kZoomH };
-    g.init = { kInitX, kZoomY, kInitW, kZoomH };
-    g.minus = { kZoomX, kZoomY, kZoomW / 2, kZoomH };
-    g.plus = { kZoomX + kZoomW / 2, kZoomY, kZoomW / 2, kZoomH };
-    g.pct = { kZoomX, kZoomY, 0, 0 };
-    return g;
-}
 
 const HeaderGeo& headerGeo()
 {
-    static const HeaderGeo g = kNew ? makeHeaderGeo() : classicHeaderGeo();
+    static const HeaderGeo g = makeHeaderGeo();
     return g;
 }
 
@@ -141,15 +127,15 @@ void makeDrawer(Layout& L, float panelBottom, bool channels = false)
     R.foldToggle = { kWidth - 16 - 112, y + 10, 112, 26 };
     float right = R.openToggle.x - 22;
     if (channels) { // per channel: [A] [RND ON] [ROLL], three rows, a rule before them
-        const float rollX = right - 50, onX = rollX - 6 - 64;
+        const float rollX = right - 50, onX = rollX - 6 - 64, lw = voiceDef().voice == maquina::kDredrumVoice ? 44.f : 20.f;
         for (int k = 0; k < 3; ++k) {
-            Section sec { "", onX - 20, y + 8 + 28.f * float(k), 20 + 64 + 6 + 50, 24 };
+            Section sec { "", onX - lw, y + 8 + 28.f * float(k), lw + 64 + 6 + 50, 24 };
             sec.osc = k;
             sec.randOn = { onX, sec.y, 64, 24 };
             sec.roll = { rollX, sec.y, 50, 24 };
             L.sections.push_back(sec);
         }
-        right = onX - 20 - 24;
+        right = onX - lw - 24;
     }
     const float gap = n > 8 ? 10.f : 26.f, cw = (right - x - gap * float(n - 1)) / float(std::max(1, n));
     for (int i = 0; i < maquina::kNumRandGroups; ++i) {
@@ -918,9 +904,9 @@ void makeGraphene(Layout& L)
 
 // ---------------------------------------------------------------------------
 // LA-50 (mockups/la50.html): the PATCH column, then the PG-1000's three slider rows split
-// into titled sections; 42 px columns. Fills the same La50Panel as the classic look, so
+// into titled sections; 42 px columns. Fills the La50Panel the editor's LA-50 code uses, so
 // the edit modes, drags and envelopes work unchanged. A slot's box: the slider (top + 13,
-// height - 27) with 13 px above and 14 below (cap travel = box.h - 40, like the classic).
+// height - 27) with 13 px above and 14 below (la50Click: cap travel = box.h - 40).
 
 constexpr float kLaColW = 42.f, kLaSliderH = 84.f;
 
@@ -1282,10 +1268,170 @@ void makePlethora(Layout& L)
     makeDrawer(L, oy + 580, true);
 }
 
+// Acida FX (DESIGN-GUIDE §3.1a; mockups/acida-fx.html): the silver panel in two rows split by
+// the seam; DISTORTION | PCF FILTER | logo, COMPRESSOR | TEMPO DELAY | GAIN; items spread
+// edge to edge in each section (space-between), each centred vertically
+void makeAcidaFx(Layout& L)
+{
+    const float px = kChromeInset, py = kChromeHeaderH + kChromeInset, pw = kWidth - 2 * kChromeInset, ph = 358;
+    L.panel = { px, py, pw, ph };
+    const float x0 = px + 20, x1 = px + pw - 20, col3 = 165, gap = 6;
+    const float x3 = x1 - col3, vr2 = x3 - gap, avail = vr2 - gap - x0 - 2 * gap - 1.5f;
+    const float w1 = avail * 2.6f / 9.6f, vr1 = x0 + w1 + gap, x2 = vr1 + 1.5f + gap, w2 = vr2 - gap - x2;
+    const float rowH = ph / 2;
+    L.decos.push_back({ Deco::Seam, { px, py + rowH, pw, 1 } });
+    enum K { Kn, On, Mode };
+    struct It { K k; const char* sym; const char* label; float size; };
+    struct Sec { int row; const char* title; float x, w; It items[8]; };
+    const Sec kSecs[] = {
+        { 0, "DISTORTION", x0, w1, { { On, "dist_on", "On", 0 }, { Kn, "dist_amount", "Amount", 54 }, { Kn, "dist_shape", "Shape", 54 } } },
+        { 0, "PCF FILTER", x2, w2, { { On, "pcf_on", "On", 0 }, { Mode, "pcf_mode", "Mode", 0 }, { Kn, "pcf_wave", "Wave", 54 },
+                                     { Kn, "pcf_freq", "Freq", 70 }, { Kn, "pcf_reso", "Reso", 54 }, { Kn, "pcf_amount", "Amount", 54 },
+                                     { Kn, "pcf_decay", "Decay", 54 } } },
+        { 1, "COMPRESSOR", x0, w1, { { On, "comp_on", "On", 0 }, { Kn, "comp_amount", "Amount", 54 }, { Kn, "comp_threshold", "Thresh", 54 } } },
+        { 1, "TEMPO DELAY", x2, w2, { { On, "delay_on", "On", 0 }, { Mode, "delay_mode", "Mode", 0 }, { Kn, "delay_steps", "Steps", 54 },
+                                      { Kn, "delay_send", "Send", 54 }, { Kn, "delay_feedback", "Feedback", 54 },
+                                      { Kn, "delay_pan", "Pan", 54 } } },
+    };
+    for (int r = 0; r < 2; ++r)
+        for (float vx : { vr1, vr2 }) L.decos.push_back({ Deco::VRule, { vx, py + r * rowH + 22, 1.5f, rowH - 44 } });
+    for (const Sec& sc : kSecs) {
+        const float ry = py + sc.row * rowH, cy = ry + 44 + (rowH - 44 - 10) / 2, ix0 = sc.x + 4, ix1 = sc.x + sc.w - 4;
+        L.decos.push_back({ Deco::Heading, { ix0, ry + 14, 0, 0 }, sc.title });
+        // item widths, then space-between
+        int n = 0;
+        float ws[8], total = 0;
+        for (const It& it : sc.items) {
+            if (!it.sym) break;
+            ws[n] = it.k == Kn ? std::max(it.size, 70.f) : it.k == On ? 56.f : 160.f;
+            total += ws[n++];
+        }
+        const float between = n > 1 ? (ix1 - ix0 - total) / float(n - 1) : 0.f;
+        float x = ix0;
+        for (int i = 0; i < n; ++i) {
+            const It& it = sc.items[i];
+            const float cx = x + ws[i] / 2;
+            const int p = findParam(it.sym);
+            if (p >= 0) switch (it.k) {
+            case Kn: {
+                const float t = cy - (13 + 10 + it.size + 10 + 13) / 2;
+                addKnob(L, it.sym, it.label, cx, t + 6.5f, t + 23 + it.size / 2, t + 23 + it.size + 10 + 6.5f, it.size, ws[i]);
+                break;
+            }
+            case On: { // label, red LED, silver key
+                const float t = cy - 30;
+                Ctl c { uint32_t(p), CtlType::Toggle, it.label, x, t, ws[i], 60 };
+                c.ax = cx; c.ay = t + 13 + 10 + 9 + 8 + 10; c.size = 1; c.bw = 30; c.bh = 20; c.labelY = t + 6.5f;
+                c.prevX = t + 13 + 10 + 4.5f; // the LED's centre
+                L.ctls.push_back(c);
+                break;
+            }
+            case Mode: { // label, [‹] LED window [›]
+                const float t = cy - 26.5f;
+                Ctl c { uint32_t(p), CtlType::Select, it.label, x, t, ws[i], 53 };
+                c.ax = cx; c.ay = t + 13 + 10 + 15; c.size = 1; c.bw = ws[i]; c.bh = 30; c.labelY = t + 6.5f;
+                L.ctls.push_back(c);
+                break;
+            }
+            }
+            x += ws[i] + between;
+        }
+    }
+    L.decos.push_back({ Deco::Logo, { x3, py, col3, rowH } });
+    const float gy = py + rowH + (rowH - 13 - 10 - 46 - 10 - 13) / 2;
+    addKnob(L, "gain", "Gain", x3 + col3 / 2, gy + 6.5f, gy + 23 + 23, gy + 23 + 46 + 10 + 6.5f, 46, 80);
+    makeDrawer(L, py + ph);
+}
+
+// Erica Dredrum (DESIGN-GUIDE §3.6; mockups/dredrum.html): wordmark, OLED, MODE, GAIN on top;
+// three oscillator columns under white rules; pixel decorations
+void makeDredrum(Layout& L)
+{
+    const float px = kChromeInset, py = kChromeHeaderH + kChromeInset, pw = kWidth - 2 * kChromeInset, ph = 478;
+    L.panel = { px, py, pw, ph };
+    static const float kPix[][2] = { { 262, 18 }, { 271, 18 }, { 271, 27 }, { 736, 14 }, { 736, 23 }, { 745, 23 }, { 520, 160 },
+                                     { 529, 160 }, { 529, 169 }, { 538, 169 }, { 1000, 165 }, { 1009, 156 }, { 1009, 165 } };
+    for (const auto& q : kPix) L.decos.push_back({ Deco::Pixel, { px + q[0], py + q[1], 7, 7 } });
+    const float x0 = px + 28, x1 = px + pw - 28, y0 = py + 20;
+    L.decos.push_back({ Deco::Logo, { x0, y0, 220, 150 } });
+    L.oled = { x0 + 220 + 30, y0 + 7, 460, 136 };
+    { // MODE: TRIG / GATE bat toggle
+        const int p = findParam("trig_mode");
+        const float cx = px + 845, top = y0 + (150 - 67) / 2;
+        if (p >= 0) {
+            Ctl c { uint32_t(p), CtlType::Switch, "Mode", cx - 40, top, 80, 67 };
+            c.ax = cx + 19; c.ay = top + 21 + 23; c.size = 1; c.bw = 18; c.bh = 46; c.labelY = top + 6.5f; c.labelX = cx + 2;
+            c.look = Ctl::ErBat;
+            L.ctls.push_back(c);
+        }
+    }
+    if (const int p = findParam("gain"); p >= 0) {
+        const float cx = px + 987, top = y0 + (150 - 94) / 2;
+        Ctl c { uint32_t(p), CtlType::Knob, "Gain", cx - 40, top, 80, 94 };
+        c.ax = cx; c.ay = top + 19 + 29; c.size = 58; c.labelY = top + 6.5f; c.valueY = top + 19 + 58 + 6 + 5.5f;
+        c.look = Ctl::ErKnob;
+        L.ctls.push_back(c);
+    }
+    // the oscillator columns
+    const float cy0 = y0 + 150 + 16, colW = (x1 - x0 - 44) / 3;
+    for (int k = 0; k < 3; ++k) {
+        const float cx0 = x0 + k * (colW + 22);
+        L.decos.push_back({ Deco::HRule, { cx0, cy0, colW, 1.5f } });
+        char name[8];
+        std::snprintf(name, sizeof name, "OSC %d", k + 1);
+        static char names[3][8];
+        std::memcpy(names[k], name, sizeof name);
+        L.decos.push_back({ Deco::RuleText, { cx0, cy0 + 12 + 13, 0, 0 }, names[k] });
+        char sym[24];
+        auto P = [&](const char* f) { std::snprintf(sym, sizeof sym, "osc%d_%s", k + 1, f); return findParam(sym); };
+        if (const int p = P("wave"); p >= 0) { // [o] OLED window [o]
+            const float wcx = cx0 + colW - 13 - 6 - 48;
+            Ctl c { uint32_t(p), CtlType::Select, nullptr, wcx - 48 - 19, cy0 + 12, 96 + 38, 26 };
+            c.ax = wcx; c.ay = cy0 + 12 + 13; c.size = 1; c.bw = 96; c.bh = 26; c.look = Ctl::LxrSel;
+            L.ctls.push_back(c);
+        }
+        static const char* const kBig[4][2] = { { "pitch", "Pitch" }, { "drop", "Drop" }, { "decay", "Decay" }, { "level", "Level" } };
+        const float ky = cy0 + 12 + 26 + 12;
+        for (int i = 0; i < 4; ++i)
+            if (const int p = P(kBig[i][0]); p >= 0) {
+                const float cx = cx0 + (i + 0.5f) * colW / 4;
+                Ctl c { uint32_t(p), CtlType::Knob, kBig[i][1], cx - colW / 8, ky, colW / 4, 106 };
+                c.ax = cx; c.ay = ky + 19 + 35; c.size = 70; c.labelY = ky + 6.5f; c.valueY = ky + 19 + 70 + 6 + 5.5f;
+                c.look = Ctl::ErKnob;
+                L.ctls.push_back(c);
+            }
+        // bottom row: Octave, Semi (knobs), [Click], Track, Mute (buttons); bottoms aligned
+        struct B { const char* f; const char* label; bool knob; };
+        std::vector<B> row = { { "octave", "Octave", true }, { "semi", "Semi", true } };
+        if (k == 2) row.push_back({ nullptr, "Click", false });
+        row.push_back({ "track", "Track", false });
+        row.push_back({ "mute", "Mute", false });
+        const float by = ky + 106 + 12, bottom = by + 76;
+        for (size_t i = 0; i < row.size(); ++i) {
+            const int p = row[i].f ? P(row[i].f) : findParam("click");
+            if (p < 0) continue;
+            const float cx = cx0 + (float(i) + 0.5f) * colW / float(row.size());
+            if (row[i].knob) {
+                Ctl c { uint32_t(p), CtlType::Knob, row[i].label, cx - 30, by, 60, 76 };
+                c.ax = cx; c.ay = by + 22; c.size = 44; c.labelY = by + 48 + 6.5f; c.valueY = by + 48 + 13 + 4 + 5.5f;
+                c.n = 1; c.look = Ctl::ErKnob; // n = 1: label under the knob
+                L.ctls.push_back(c);
+            } else {
+                const float top = bottom - 63;
+                Ctl c { uint32_t(p), CtlType::Toggle, row[i].label, cx - 28, top, 56, 50 };
+                c.ax = cx; c.ay = top + 13; c.size = 26; c.labelY = top + 26 + 8 + 6.5f; c.look = Ctl::ErButton;
+                L.ctls.push_back(c);
+            }
+        }
+    }
+    makeDrawer(L, py + ph, true);
+}
+
 void makeNewLayout(Layout& L)
 {
     switch (voiceDef().voice) {
     case maquina::kAcidaVoice: makeAcida(L); break;
+    case maquina::kAcidaFxVoice: makeAcidaFx(L); break;
     case maquina::kKlangVoice: makeKlang(L); break;
     case maquina::kKlongVoice:
     case maquina::kKlongFxVoice: makeKlong(L); break;
@@ -1295,6 +1441,7 @@ void makeNewLayout(Layout& L)
     case maquina::kOneiroiVoice:
     case maquina::kOneiroiFxVoice: makeOneiroi(L); break;
     case maquina::kPlethoraVoice: makePlethora(L); break;
+    case maquina::kDredrumVoice: makeDredrum(L); break;
     default:
         if (maquina::isLxrVoice(voiceDef().voice)) makeLxr(L);
         break;

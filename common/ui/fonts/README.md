@@ -10,6 +10,7 @@ plugin embeds only the fonts of its theme (`common/ui/Theme.hpp`), as the
 | `Mulish/` | Bold (700), ExtraBold (800) | github.com/google/fonts `ofl/mulish` (variable) | static instances (`fonttools varLib.instancer wght=700 / 800`), subset like Inter (no reserved name) |
 | `Michroma/`, `Questrial/`, `VT323/` | Regular | github.com/google/fonts `ofl/michroma`, `ofl/questrial`, `ofl/vt323` | subset like Inter (no reserved names) |
 | `Oswald/` | Regular (400), Medium (500) | github.com/google/fonts `ofl/oswald` (variable) | static instances (`varLib.instancer`), subset like Inter (no reserved name) |
+| `Silkscreen/`, `ChakraPetch/` | Silkscreen Regular, Bold; Chakra Petch SemiBold | github.com/google/fonts `ofl/silkscreen`, `ofl/chakrapetch` | subset like Inter (no reserved names) |
 | `Inter/` | Bold (700), ExtraBold (800), ExtraBold Italic | github.com/rsms/inter release 4.1, `extras/ttf` | subset to Latin-1, punctuation and arrows (`*.subset.ttf`; no reserved name) |
 
 Subsetting (fontTools):

@@ -1028,3 +1028,106 @@ void drawBfSwitch(NanoVG& v, float cx, float cy, float h, int n, int k, bool hot
         v.fill();
     }
 }
+
+// ---------------------------------------------------------------------------
+// Erica black & white (mockups/dredrum.html)
+
+// knob: a dashed tick ring is the value display (5° ticks every 10°, white up to the value,
+// dim after), dark body with a thin ring, grey cap, white pointer on the body
+void drawErKnob(NanoVG& v, float cx, float cy, float size, float t, bool hot)
+{
+    const float R = size / 2, a0 = kKnobA0, a1 = kKnobA1, av = a0 + std::clamp(t, 0.f, 1.f) * (a1 - a0);
+    const float tick = float(M_PI) / 36.f; // 5°
+    for (float a = a0; a <= a1 + 0.001f; a += 2 * tick) {
+        const bool lit = a < av + 0.001f && t > 0.f;
+        v.beginPath();
+        v.arc(cx, cy, R - 2.5f, a, std::min(a + tick, a1), NanoVG::CW);
+        v.strokeColor(lit ? rgba(hot ? Rgb { 0xff, 0xff, 0xff } : Rgb { 0xff, 0xff, 0xff }) : Color(1.f, 1.f, 1.f, 0.22f));
+        v.strokeWidth(5);
+        v.lineCap(NanoVG::BUTT);
+        v.stroke();
+    }
+    const float rb = 0.38f * size, rc = 0.22f * size;
+    circleShadow(v, cx, cy + 4, rb + 2, 10, 200);
+    v.beginPath();
+    v.circle(cx, cy, rb + 2);
+    v.fillColor(rgba({ 0x2c, 0x2c, 0x2c }));
+    v.fill();
+    v.beginPath();
+    v.circle(cx, cy, rb);
+    v.fillPaint(v.radialGradient(cx - 0.1f * rb, cy - 0.3f * rb, 0, 1.4f * rb, rgba({ 0x2a, 0x2a, 0x2a }), rgba({ 0x0a, 0x0a, 0x0a })));
+    v.fill();
+    static const float kStops[3] = { 0.f, 0.7f, 1.f };
+    const Rgb cols[3] = { hot ? Rgb { 0xf4, 0xf4, 0xf4 } : Rgb { 0xe4, 0xe4, 0xe4 }, { 0xbd, 0xbd, 0xbd }, { 0x9c, 0x9c, 0x9c } };
+    fillRadialStops(v, [&] { v.circle(cx, cy, rc); }, cx - 0.1f * rc, cy - 0.3f * rc, 1.5f * rc, kStops, cols, 3);
+    const float ca = std::cos(av), sa = std::sin(av);
+    v.beginPath();
+    v.moveTo(cx + ca * (rb - 0.06f * rb), cy + sa * (rb - 0.06f * rb));
+    v.lineTo(cx + ca * (rb - 0.34f * rb), cy + sa * (rb - 0.34f * rb));
+    v.strokeColor(rgba({ 0xff, 0xff, 0xff }));
+    v.strokeWidth(3);
+    v.lineCap(NanoVG::BUTT);
+    v.stroke();
+}
+
+// round button (d): grey, or lit white with a glow; small = the 13 px step buttons
+void drawErButton(NanoVG& v, float cx, float cy, float d, bool on, bool hot)
+{
+    const float r = d / 2;
+    if (d < 20) {
+        v.beginPath();
+        v.circle(cx, cy, r + 2);
+        v.fillColor(rgba({ 0x1a, 0x1a, 0x1a }));
+        v.fill();
+        v.beginPath();
+        v.circle(cx, cy, r);
+        v.fillColor(rgba(hot ? Rgb { 0x8a, 0x8a, 0x8a } : Rgb { 0x6a, 0x6a, 0x6a }));
+        v.fill();
+        return;
+    }
+    if (on) {
+        v.beginPath();
+        v.circle(cx, cy, r + 18);
+        v.fillPaint(v.radialGradient(cx, cy, r, r + 18, Color(1.f, 1.f, 1.f, 0.5f), Color(1.f, 1.f, 1.f, 0.f)));
+        v.fill();
+    } else {
+        circleShadow(v, cx, cy + 2, r + 3, 5, 230);
+    }
+    v.beginPath();
+    v.circle(cx, cy, r + 3);
+    v.fillColor(rgba({ 0x2c, 0x2c, 0x2c }));
+    v.fill();
+    static const float kStops[3] = { 0.f, 0.5f, 1.f };
+    const Rgb onC[3] = { { 0xff, 0xff, 0xff }, { 0xf2, 0xf2, 0xf2 }, { 0xcf, 0xcf, 0xcf } };
+    const Rgb offC[3] = { hot ? Rgb { 0xf2, 0xf2, 0xf2 } : Rgb { 0xe6, 0xe6, 0xe6 }, { 0xb0, 0xb0, 0xb0 }, { 0x9a, 0x9a, 0x9a } };
+    fillRadialStops(v, [&] { v.circle(cx, cy, r); }, cx - 0.2f * r, cy - 0.36f * r, 1.6f * r, kStops, on ? onC : offC, 3);
+}
+
+// bat toggle (18 x 46): up = the first value
+void drawErBat(NanoVG& v, float cx, float cy, bool down, bool hot)
+{
+    v.beginPath();
+    v.roundedRect(cx - 9, cy - 23, 18, 46, 9);
+    v.fillColor(rgba({ 0x1a, 0x1a, 0x1a }));
+    v.fill();
+    v.strokeColor(rgba({ 0x4a, 0x4a, 0x4a }));
+    v.strokeWidth(1.5f);
+    v.stroke();
+    const float ly = down ? cy + 23 - 5 - 16 : cy - 23 + 5;
+    v.beginPath();
+    v.roundedRect(cx - 4, ly, 8, 16, 4);
+    v.fillPaint(v.linearGradient(0, ly, 0, ly + 16, rgba(hot ? Rgb { 0xff, 0xff, 0xff } : Rgb { 0xf2, 0xf2, 0xf2 }), rgba({ 0x9a, 0x9a, 0x9a })));
+    v.fill();
+}
+
+// OLED window: black, 1.5 px grey edge
+void drawErOled(NanoVG& v, float x, float y, float w, float h, bool hot)
+{
+    v.beginPath();
+    v.roundedRect(x + 0.75f, y + 0.75f, w - 1.5f, h - 1.5f, 3);
+    v.fillColor(rgba({ 0, 0, 0 }));
+    v.fill();
+    v.strokeColor(rgba(hot ? Rgb { 0x8a, 0x8a, 0x8a } : Rgb { 0x3a, 0x3a, 0x3a }));
+    v.strokeWidth(1.5f);
+    v.stroke();
+}

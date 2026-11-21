@@ -62,28 +62,20 @@ const VoiceDef& voiceDef() { return maquina::k_voices[MAQUINA_VOICE_INDEX]; }
 #include "ui/Theme.hpp"
 
 constexpr float kWidth = theme().width;
-constexpr float kHeaderH = kNew ? kChromeHeaderH : 30.f;
+constexpr float kHeaderH = kChromeHeaderH;
 constexpr float kMargin = 8.f;
-constexpr float kGap = 6.f;
-constexpr float kTitleH = 18.f;
-constexpr float kCellH = 64.f;
-constexpr float kSectionPad = 8.f;
-constexpr float kKnobW = 54.f;
-constexpr float kSelectW = 96.f;
-constexpr float kToggleW = 54.f;
-constexpr float kGraphW = 168.f;
 
-// the classic palette; the new look's chrome tokens (Theme.hpp) for the browser, dialogs, popups
-constexpr Rgb kBg = kNew ? Rgb { 0x14, 0x15, 0x18 } : Rgb { 0x1c, 0x1c, 0x1c };
-constexpr Rgb kPanel = kNew ? kChromeBg : Rgb { 0x26, 0x26, 0x26 };
-constexpr Rgb kBorder = kNew ? kChromeBtnLine : Rgb { 0x36, 0x36, 0x36 };
-constexpr Rgb kWell = kNew ? kChromeWell : Rgb { 0x1a, 0x1a, 0x1a };
-constexpr Rgb kTrack = kNew ? Rgb { 0x2e, 0x34, 0x3d } : Rgb { 0x45, 0x45, 0x45 };
-constexpr Rgb kText = kNew ? kChromeText : Rgb { 0xc8, 0xc8, 0xc8 };
-constexpr Rgb kDim = kNew ? kChromeText2 : Rgb { 0x80, 0x80, 0x80 };
+// the chrome tokens (Theme.hpp) under the names the browser, dialogs and popups use
+constexpr Rgb kBg = Rgb { 0x14, 0x15, 0x18 };
+constexpr Rgb kPanel = kChromeBg;
+constexpr Rgb kBorder = kChromeBtnLine;
+constexpr Rgb kWell = kChromeWell;
+constexpr Rgb kTrack = Rgb { 0x2e, 0x34, 0x3d };
+constexpr Rgb kText = kChromeText;
+constexpr Rgb kDim = kChromeText2;
 // parameter labels + section titles: lighter than kDim, below kText
-constexpr Rgb kLabel = kNew ? Rgb { 0xc3, 0xca, 0xd3 } : Rgb { 0xa8, 0xa8, 0xa8 };
-constexpr Rgb kAccent = kNew ? theme().accent : Rgb { 0xff, 0x9f, 0x2e };
+constexpr Rgb kLabel = Rgb { 0xc3, 0xca, 0xd3 };
+constexpr Rgb kAccent = theme().accent;
 
 // a: 0..255 (DPF's Color takes alpha as a float 0..1)
 Color col(Rgb c, int a = 255) { return Color(c.r, c.g, c.b, float(a) / 255.f); }
@@ -327,7 +319,8 @@ struct Ctl {
     // BfButton (size = diameter), BfSwitch (bw x bh), steppers use GrStep's clicks
     enum Look : uint8_t { Plain, Window, Cluster, LedButton, Segments, LxrSel, LxrToggle, LxrFader,
                           GrSlider, GrSwitch, GrLed, GrStep, GrWin, GrChip,
-                          BfKnob, BfShift, BfBadge, BfFader, BfButton, BfSwitch } look = Plain;
+                          BfKnob, BfShift, BfBadge, BfFader, BfButton, BfSwitch,
+                          ErKnob, ErButton, ErBat } look = Plain; // Erica (Dredrum); the wave windows use LxrSel
     int alt = -1; // Befaco: the parameter this control edits while SHIFT is latched
     // Cluster: a row of n items (LEDs or colour dots) at xs[], picking a value of the bank
     // shown; optional round buttons (prevX: one back, stepX: one on, both wrap) and an LED
@@ -402,37 +395,8 @@ ItemStyle styleOf(uint32_t i)
     return ItemStyle::Auto;
 }
 
-constexpr float kSliderW = 26.f;
-constexpr float kSliderCellH = 150.f; // a row with sliders / switches
-constexpr float kGraphCellH = 104.f;  // a row with the DRAW / CHOP editors
-// a slide switch: the lever plus its position labels
-float switchWidth(uint32_t i)
-{
-    const VoiceParam& p = paramAt(voiceDef(), i);
-    size_t longest = 3;
-    for (uint8_t k = 0; p.labels && k < p.numLabels; ++k) longest = std::max(longest, std::strlen(p.labels[k]));
-    return 20.f + 4.6f * float(longest);
-}
 
-float cellWidth(uint32_t i)
-{
-    switch (typeOf(i)) {
-    case CtlType::Knob: return kKnobW;
-    case CtlType::Toggle: return kToggleW;
-    case CtlType::Slider: return kSliderW;
-    case CtlType::Switch: return switchWidth(i);
-    default: return styleOf(i) == ItemStyle::Narrow ? 70.f : kSelectW;
-    }
-}
 
-float graphWidth(GraphKind k)
-{
-    switch (k) {
-    case GraphKind::Draw: return 16 * 12.f;
-    case GraphKind::Chop: return 36.f + 16 * 10.f + 48.f;
-    default: return kGraphW;
-    }
-}
 
 // Maquina LA-50: the PG-1000 programmer's slider field. Each slot has a partial
 // field, a common field and a patch field (symbols without the u_p1_ / u_ /
@@ -458,7 +422,7 @@ struct La50Panel {
 
 // the new look's panel decorations: printed rules, the logo block
 struct Deco {
-    enum Kind { VRule, HRule, Logo, Dotted, RuleText, Divider, LxrBox, GrSection } kind;
+    enum Kind { VRule, HRule, Logo, Dotted, RuleText, Divider, LxrBox, GrSection, Heading, Seam, Pixel } kind;
     Box b;
     const char* text = nullptr; // RuleText: the title in the rule; LxrBox: the section title
 };
@@ -494,6 +458,7 @@ struct Layout {
     LxrStrip lxr;
     BfPanel bf;
     bool noDrawer = false; // Oneiroi: the randomizer is on the panel
+    Box oled {};           // Dredrum: the OLED (the last-touched oscillator)
     float height = 400.f;
     // the new look: the machine panel, the random drawer, decorations
     Box panel {}, drawer {};
@@ -581,334 +546,11 @@ const La50GroupSpec kLa50Groups[] = {
 
 int findParam(const char* symbol);
 
-// the slider field and the select panel; returns the y below it
-float makeLa50(Layout& L, float y)
-{
-    La50Panel& P = L.la50;
-    P.used = true;
-    const float panelW = 150.f, gx = kMargin + panelW + kGap, gw = kWidth - kMargin - gx;
-    // a small gap between the partial groups (WG PITCH | WG WAVEFORM ...; at most 2 per row)
-    const float groupGap = 14.f;
-    const float colW = (gw - 2 * groupGap) / 22.f;
-    const float rowH = 196.f;
-    auto colX = [&](int row, int c) {
-        float x = gx + c * colW;
-        for (const La50GroupSpec& g : kLa50Groups)
-            if (g.row == row && (g.kind == 0 || g.row == 0) && g.c0 > 0 && g.c0 <= c) x += groupGap;
-        return x;
-    };
-    // select panel
-    float py = y;
-    P.lcd = { kMargin, py, panelW, 74 };
-    py += 82;
-    P.patch = { kMargin, py + 14, panelW, 22 };
-    py += 44;
-    P.common[0] = { kMargin, py + 14, panelW / 2 - 3, 22 };
-    P.common[1] = { kMargin + panelW / 2 + 3, py + 14, panelW / 2 - 3, 22 };
-    py += 44;
-    for (int k = 0; k < 4; ++k) P.partial[k] = { kMargin + k * (panelW + 4) / 4, py + 14, panelW / 4 - 4, 22 };
-    py += 44;
-    P.mute[0] = { kMargin, py + 14, panelW / 2 - 3, 22 };
-    P.mute[1] = { kMargin + panelW / 2 + 3, py + 14, panelW / 2 - 3, 22 };
-    py += 52;
-    P.init = { kMargin, py, 52, 26 };
-    P.import = { kMargin + 58, py, panelW - 58, 26 };
-    // envelope shapes under the buttons
-    {
-        const float ey = py + 46, bottom = y + 3 * 196.f - 8, gap = 8;
-        const float eh = (bottom - ey - 2 * gap) / 3;
-        for (int k = 0; k < 3; ++k) P.env[k] = { kMargin, ey + k * (eh + gap), panelW, eh };
-    }
-    // the rows
-    const La50SlotSpec* rows[3] = { kLa50Row1, kLa50Row2, kLa50Row3 };
-    const int counts[3] = { int(sizeof(kLa50Row1) / sizeof(kLa50Row1[0])), int(sizeof(kLa50Row2) / sizeof(kLa50Row2[0])),
-                            int(sizeof(kLa50Row3) / sizeof(kLa50Row3[0])) };
-    static const char* const kPartial[4] = { "u_p1_", "u_p2_", "l_p1_", "l_p2_" };
-    static const char* const kCommon[2] = { "u_", "l_" };
-    for (int r = 0; r < 3; ++r) {
-        const float ry = y + r * rowH;
-        for (int c = 0; c < counts[r]; ++c) {
-            const La50SlotSpec& sp = rows[r][c];
-            La50Slot sl;
-            sl.box = { colX(r, c), ry + 26, colW, rowH - 64 };
-            sl.field[0] = sp.partial; sl.field[1] = sp.common; sl.field[2] = sp.patch;
-            sl.label[0] = sp.pLabel; sl.label[1] = sp.cLabel; sl.label[2] = sp.kLabel;
-            char sym[64];
-            for (int k = 0; k < 4 && sp.partial; ++k) {
-                std::snprintf(sym, sizeof sym, "%s%s", kPartial[k], sp.partial);
-                sl.param[k] = findParam(sym);
-            }
-            for (int k = 0; k < 2 && sp.common; ++k) {
-                std::snprintf(sym, sizeof sym, "%s%s", kCommon[k], sp.common);
-                sl.param[4 + k] = findParam(sym);
-            }
-            if (sp.patch) {
-                std::snprintf(sym, sizeof sym, "patch_%s", sp.patch);
-                sl.param[6] = findParam(sym);
-            }
-            P.slots.push_back(sl);
-        }
-    }
-    // the PCM wave selector in the free end of row 1
-    {
-        // up in the title strip, from the CHASE T column on; its label on the column-label line
-        const float fx = colX(0, counts[0] - 3) + 14, fw = std::min(200.f, gx + gw - fx - 8), py0 = y + 1;
-        P.pcmPrev = { fx, py0, 18, 16 };
-        P.pcmName = { fx + 20, py0, fw - 40, 16 };
-        P.pcmNext = { fx + fw - 18, py0, 18, 16 };
-    }
-    // the output gain (ExtraParams) in the free end of row 3 (no MIX row of its own)
-    {
-        const float fx = colX(2, counts[2] - 1) + colW + 10, fw = gx + gw - fx;
-        P.gainBox = { fx, y + 2 * rowH + 26, fw, rowH - 64 };
-        const int gain = findParam("gain");
-        if (gain >= 0)
-            L.ctls.push_back({ uint32_t(gain), CtlType::Knob, "Gain", fx + (fw - 70) / 2, y + 2 * rowH + 50, 70, kCellH });
-    }
-    for (const La50GroupSpec& g : kLa50Groups) {
-        const float ry = y + g.row * rowH;
-        P.groups.push_back({ colX(g.row, g.c0) + 2, colX(g.row, g.c1) + colW - 2,
-                             g.kind == 0 ? ry + 6 : ry + rowH - 14, g.title, g.kind });
-    }
-    L.sections.push_back({ "", gx - 4, y, gw + 4, 3 * rowH - 4 });
-    return y + 3 * rowH;
-}
 
 Layout makeLayout()
 {
     Layout L;
-    if (kNew) {
-        makeNewLayout(L);
-        return L;
-    }
-    struct Pending {
-        const SectionSpec* spec;
-        std::vector<std::pair<uint32_t, const char*>> items;
-        float natural;
-    };
-    std::vector<Pending> secs;
-    for (const SectionSpec& s : kSections) {
-        Pending p { &s, {}, 0.f };
-        for (const ItemSpec& it : s.items) {
-            if (!it.symbol) break;
-            const int idx = findParam(it.symbol);
-            if (idx >= 0) p.items.push_back({ uint32_t(idx), it.label });
-        }
-        if (p.items.empty()) continue;
-        if (voiceDef().voice == maquina::kLa50Voice && !std::strcmp(s.title, "MIX")) continue;
-        float w = 2 * kSectionPad + (s.graph != GraphKind::None ? graphWidth(s.graph) + kGap : 0.f);
-        for (auto& it : p.items) w += cellWidth(it.first);
-        w += kGap * float(p.items.size() - 1);
-        p.natural = w;
-        secs.push_back(std::move(p));
-    }
-
-    // Rows per voice family, chosen so each row is nearly full (3 rows).
-    // Sections a voice does not have are skipped; anything not listed (or a
-    // row that would overflow) falls back to greedy packing.
-    // (MIX with Gain is too wide to share a row with LFO and VELOCITY)
-    static const char* const kDrumRows[4][6] = {
-        { "OSCILLATOR", "AMP EG", "PITCH EG" },
-        { "TRANSIENT", "LFO", "VELOCITY" },
-        { "FM", "FILTER", "KEY", "MIX" } };
-    static const char* const kSnareRows[4][6] = {
-        { "OSCILLATOR", "NOISE", "PITCH EG", "KEY" },
-        { "TRANSIENT", "LFO", "VELOCITY" },
-        { "AMP EG", "FILTER", "MIX" } };
-    static const char* const kMetalRows[4][6] = {
-        { "OSCILLATOR", "AMP EG", "KEY", "VELOCITY" },
-        { "MOD OSCILLATORS", "TRANSIENT", "FILTER" },
-        { "LFO", "MIX" } };
-    static const char* const kDredrumRows[4][6] = {
-        { "OSC 1" },
-        { "OSC 2" },
-        { "OSC 3", "MODE", "MIX" } };
-    static const char* const kPlethoraRows[4][6] = {
-        { "CHANNEL A" },
-        { "CHANNEL B" },
-        { "CHANNEL C", "GLOBAL", "MODE", "MIX" } };
-    static const char* const kOneiroiRows[4][6] = {
-        { "LOOPER", "OSCILLATORS", "MODULATION" },
-        { "FILTER", "RESONATOR", "ECHO", "AMBIENCE", "GLOBAL" },
-        { "MIX", "ENVELOPE" } };
-    static const char* const kKlangRows[4][6] = {
-        { "MODEL", "SOUND" },
-        { "ENV MOD", "LPG", "MIX" },
-        {} };
-    static const char* const kKlongRows[4][6] = {
-        { "MODEL", "MIX" },
-        { "RESONATOR" },
-        {} };
-    static const char* const kAcidaRows[4][6] = {
-        { "SYNTH" },
-        { "PLAY", "MIX" },
-        {} };
-    static const char* const kAcidaFxRows[4][6] = {
-        { "DISTORTION", "COMPRESSOR", "MIX" },
-        { "PCF" },
-        { "DELAY" } };
-    // Maquina BL-101: the panel's strip first
-    static const char* const kBl101Rows[4][6] = {
-        { "MODULATOR", "VCO", "SOURCE MIXER", "VCF", "VCA", "ENV" },
-        { "LFO MODE", "VOICE", "CHORD" },
-        { "CONTROL", "MIX" },
-        { "DRAW", "CHOP" } };
-    static const char* const kBl101FxRows[4][6] = {
-        { "CHORUS", "DELAY", "REVERB" },
-        { "LO-FI", "MIX" } };
-    const uint8_t v = voiceDef().voice;
-    const char* const (*plan)[6] = v == maquina::kBl101Voice     ? kBl101Rows
-                                   : v == maquina::kBl101FxVoice ? kBl101FxRows
-                                   : v == maquina::kAcidaVoice      ? kAcidaRows
-                                   : v == maquina::kAcidaFxVoice  ? kAcidaFxRows
-                                   : v == maquina::kKlangVoice    ? kKlangRows
-                                   : maquina::isKlong(v)          ? kKlongRows
-                                   : maquina::isOneiroi(v)        ? kOneiroiRows
-                                   : v == maquina::kPlethoraVoice ? kPlethoraRows
-                                   : v == maquina::kDredrumVoice ? kDredrumRows
-                                   : v <= 2                    ? kDrumRows
-                                   : v == 3                    ? kSnareRows
-                                                               : kMetalRows;
-
-    const float avail = kWidth - 2 * kMargin;
-    std::vector<std::vector<Pending*>> rows;
-    std::vector<bool> placed(secs.size(), false);
-    for (int r = 0; r < 4; ++r) {
-        std::vector<Pending*> row;
-        float used = 0.f;
-        for (int k = 0; k < 6 && plan[r][k]; ++k)
-            for (size_t i = 0; i < secs.size(); ++i)
-                if (!placed[i] && !std::strcmp(secs[i].spec->title, plan[r][k])) {
-                    const float need = (row.empty() ? 0.f : kGap) + secs[i].natural;
-                    if (used + need > avail) continue;
-                    used += need;
-                    row.push_back(&secs[i]);
-                    placed[i] = true;
-                }
-        if (!row.empty()) rows.push_back(row);
-    }
-    for (size_t i = 0; i < secs.size(); ++i) { // leftovers: greedy
-        if (placed[i]) continue;
-        float used = 0.f;
-        if (!rows.empty())
-            for (auto* s : rows.back()) used += s->natural + kGap;
-        if (rows.empty() || used + secs[i].natural > avail)
-            rows.emplace_back();
-        rows.back().push_back(&secs[i]);
-    }
-
-    float y = kHeaderH + kMargin;
-    if (voiceDef().voice == maquina::kLa50Voice) y = makeLa50(L, y) + kGap;
-    for (auto& row : rows) {
-        // the row's cell height: knobs, or BL-101's sliders / editors
-        float cellH = kCellH;
-        for (auto* s : row) {
-            if (s->spec->graph == GraphKind::Draw || s->spec->graph == GraphKind::Chop) cellH = std::max(cellH, kGraphCellH);
-            for (auto& it : s->items)
-                if (typeOf(it.first) == CtlType::Slider || typeOf(it.first) == CtlType::Switch)
-                    cellH = std::max(cellH, kSliderCellH);
-        }
-        const float rowH = kTitleH + cellH + kSectionPad;
-        float natural = 0.f;
-        for (auto* s : row) natural += s->natural;
-        const float spare = avail - natural - kGap * float(row.size() - 1);
-        float x = kMargin;
-        for (auto* s : row) {
-            const float w = s->natural + spare * (s->natural / natural);
-            L.sections.push_back({ s->spec->title, x, y, w, rowH });
-            const char* t = s->spec->title;
-            const int chan = voiceDef().voice == maquina::kDredrumVoice && !std::strncmp(t, "OSC ", 4) ? t[4] - '1'
-                             : voiceDef().voice == maquina::kPlethoraVoice && !std::strncmp(t, "CHANNEL ", 8)
-                                 ? t[8] - 'A'
-                                 : -1;
-            if (chan >= 0) {
-                Section& sec = L.sections.back();
-                sec.osc = chan;
-                sec.roll = { x + w - kSectionPad - 40.f, y + 3, 40.f, kTitleH - 5 };
-                sec.randOn = { sec.roll.x - kGap - 58.f, y + 3, 58.f, kTitleH - 5 };
-            }
-            // graph first; the stretch is shared by the graph and the items
-            const float extra = w - s->natural;
-            float cx = x + kSectionPad;
-            const float cy = y + kTitleH;
-            const bool hasGraph = s->spec->graph != GraphKind::None;
-            if (hasGraph) {
-                Graph g;
-                g.kind = s->spec->graph;
-                const float gw = graphWidth(g.kind) + extra * 0.5f;
-                g.x = cx; g.y = cy + 2; g.w = gw; g.h = cellH - 6;
-                if (g.kind == GraphKind::Draw) {
-                    g.mode = findParam("draw_mode");
-                    g.first = findParam("draw_1");
-                } else if (g.kind == GraphKind::Chop) {
-                    static const char* const kSrc[4] = { "sqr", "saw", "sub", "noise" };
-                    char sym[32];
-                    g.amount = findParam("chop_overtone");
-                    for (int k = 0; k < 4; ++k) {
-                        std::snprintf(sym, sizeof sym, "chop_mask_%s", kSrc[k]);
-                        g.mask[k] = findParam(sym);
-                        std::snprintf(sym, sizeof sym, "chop_bits_%s_lo", kSrc[k]);
-                        g.bitsLo[k] = findParam(sym);
-                        std::snprintf(sym, sizeof sym, "chop_bits_%s_hi", kSrc[k]);
-                        g.bitsHi[k] = findParam(sym);
-                    }
-                } else if (g.kind == GraphKind::Amp) {
-                    g.attack = findParam("amp_attack");
-                    g.decay = findParam("amp_decay");
-                    g.slope = findParam("amp_slope");
-                } else {
-                    g.decay = findParam("pitch_decay");
-                    g.slope = findParam("pitch_slope");
-                    g.amount = findParam("pitch_amount");
-                }
-                L.graphs.push_back(g);
-                cx += gw + kGap;
-            }
-            const float itemExtra = (hasGraph ? extra * 0.5f : extra) / float(s->items.size());
-            for (auto& it : s->items) {
-                const CtlType t = typeOf(it.first);
-                // sliders and switches don't grow: the stretch goes between them
-                const bool fixedW = t == CtlType::Slider || t == CtlType::Switch;
-                const float cw = cellWidth(it.first) + (fixedW ? 0.f : itemExtra);
-                const float tall = fixedW ? cellH : kCellH;
-                L.ctls.push_back({ it.first, t, it.second, cx + (fixedW ? itemExtra * 0.5f : 0.f), cy,
-                                   cw, tall });
-                cx += cw + (fixedW ? itemExtra : 0.f) + kGap;
-            }
-            x += w + kGap;
-        }
-        y += rowH + kGap;
-    }
-
-    // RANDOM panel: full width, [RANDOM]/[BACK] | one cell per group
-    {
-        const float h = kTitleH + kCellH + kSectionPad;
-        L.sections.push_back({ "RANDOM", kMargin, y, avail, h });
-        const float cy = y + kTitleH;
-        float x = kMargin + kSectionPad;
-        L.rand.random = { x, cy + 2, 96.f, 30.f };
-        L.rand.back = { x, cy + 38, 96.f, 22.f };
-        x += 96.f + 3 * kGap;
-        if (maquina::isOneiroi(voiceDef().voice)) {
-            // the module's two switches, as selectors
-            L.rand.oTarget = { x, cy, kSelectW + 20.f, kCellH };
-            L.rand.oAmount = { x + kSelectW + 20.f + kGap, cy, kSelectW + 20.f, kCellH };
-            for (int i = 0; i < maquina::kNumRandGroups; ++i) L.rand.used[i] = false;
-            y += h + kGap;
-            L.height = y - kGap + kMargin;
-            return L;
-        }
-        int n = 0;
-        for (int i = 0; i < maquina::kNumRandGroups; ++i)
-            n += (L.rand.used[i] = maquina::randGroupUsed(voiceDef(), i));
-        const float cw = (kMargin + avail - kSectionPad - x - kGap * float(n - 1)) / float(n);
-        for (int i = 0; i < maquina::kNumRandGroups; ++i) {
-            L.rand.cell[i] = { x, cy, L.rand.used[i] ? cw : 0.f, L.rand.used[i] ? kCellH : 0.f };
-            if (L.rand.used[i]) x += cw + kGap;
-        }
-        y += h + kGap;
-    }
-    L.height = y - kGap + kMargin;
+    makeNewLayout(L);
     return L;
 }
 
@@ -1037,17 +679,6 @@ void saveZoom(int idx)
 bool loadDrawerOpen() { return uiConfGet("drawer") == "open"; }
 void saveDrawerOpen(bool open) { uiConfSet("drawer", open ? "open" : "folded"); }
 
-// header zoom control geometry (panel units)
-constexpr float kZoomW = 92.f;
-constexpr float kZoomX = kWidth - kMargin - kZoomW;
-constexpr float kZoomY = 7.f, kZoomH = 17.f;
-
-// header preset bar: [<] [ name  category ] [>] [SAVE]
-constexpr float kPresetX = 170.f, kPresetNameW = 260.f, kArrowW = 18.f, kSaveW = 48.f;
-constexpr float kPrevX = kPresetX, kNameX = kPrevX + kArrowW + 2, kNextX = kNameX + kPresetNameW + 2;
-constexpr float kSaveX = kNextX + kArrowW + 8;
-constexpr float kInitW = 40.f, kInitX = kSaveX + kSaveW + 6;
-
 #include "ui/Layouts.cpp"
 
 } // namespace maquina_ui
@@ -1066,17 +697,15 @@ public:
           fHeight(layout().height)
     {
         loadSharedResources();
-        if (kNew) loadThemeFonts(*this);
+        loadThemeFonts(*this);
         for (uint32_t i = 0; i < fValues.size(); ++i)
             fValues[i] = defOf(i);
         loadPresetList();
 
         const int saved = loadZoom();
         fZoom = saved >= 0 ? saved : nearestZoom(desktopScale(getScaleFactor()));
-        if (kNew) {
-            fDrawerOpen = loadDrawerOpen();
-            fHeight = layoutHeight();
-        }
+        fDrawerOpen = loadDrawerOpen();
+        fHeight = layoutHeight();
         setGeometryConstraints(uint(kWidth * 0.75f), uint(fHeight * 0.75f), true);
         applyZoom();
         // test hook (screenshots): MAQUINA_UI_SIZE=1 prints the window's size in pixels
@@ -1087,7 +716,7 @@ public:
     // the window height: the new look's drawer folds to a slim bar
     float layoutHeight() const
     {
-        return layout().height - (kNew && !fDrawerOpen && !layout().noDrawer ? kChromeDrawerH - kChromeDrawerFoldH : 0.f);
+        return layout().height - (!fDrawerOpen && !layout().noDrawer ? kChromeDrawerH - kChromeDrawerFoldH : 0.f);
     }
     void setDrawerOpen(bool open)
     {
@@ -1188,9 +817,9 @@ protected:
             fmtTime(buf, n, maquina::oneiroi::fallSeconds(iv));
         } else if (!std::strcmp(p.symbol, "env_sustain")) {
             std::snprintf(buf, n, "%.0f %%", maquina::oneiroi::sustainLevel(iv) * 100.0);
-        } else if (kNew && maquina::isMutable(voiceDef().voice) && !std::strcmp(p.symbol, "coarse")) {
+        } else if (maquina::isMutable(voiceDef().voice) && !std::strcmp(p.symbol, "coarse")) {
             std::snprintf(buf, n, "%+d st", iv);
-        } else if (kNew && !std::strcmp(p.symbol, "gain")) {
+        } else if (!std::strcmp(p.symbol, "gain")) {
             std::snprintf(buf, n, "%+d dB", iv);
         } else if (p.kind == ParamKind::Int) {
             if (p.offset < 0) std::snprintf(buf, n, "%+d", iv); // bipolar
@@ -1215,94 +844,8 @@ protected:
         const float s = getWidth() / kWidth;
         scale(s, s);
 
-        if (kNew) {
-            drawNewLook();
-            if (fPopup >= 0) drawPopup();
-            if (fBrowser) drawBrowser();
-            if (fSaveDlg) drawSaveDialog();
-            return;
-        }
-
-        beginPath();
-        rect(0, 0, kWidth, fHeight);
-        fillColor(col(kBg));
-        fill();
-
-        // header
-        fontSize(14);
-        textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
-        fillColor(col(kText));
-        char title[64];
-        std::snprintf(title, sizeof(title), "MAQUINA  %s", voiceDef().name);
-        for (char* c = title; *c; ++c) *c = char(std::toupper(*c));
-        text(kMargin + 2, kHeaderH / 2 + 2, title, nullptr);
-        fontSize(10);
-        textAlign(ALIGN_RIGHT | ALIGN_MIDDLE);
-        fillColor(col(kDim));
-        text(kZoomX - 14, kHeaderH / 2 + 2,
-             voiceDef().voice == maquina::kDredrumVoice    ? "based on Dredrum firmware  \xc2\xb7  unofficial"
-             : voiceDef().voice == maquina::kPlethoraVoice ? "based on Befaco Noise Plethora  \xc2\xb7  unofficial"
-             : maquina::isOneiroi(voiceDef().voice)        ? "based on Befaco Oneiroi firmware  \xc2\xb7  unofficial"
-             : voiceDef().voice == maquina::kKlangVoice    ? "based on Mutable Instruments Plaits  \xc2\xb7  unofficial"
-             : maquina::isKlong(voiceDef().voice)          ? "based on Mutable Instruments Rings  \xc2\xb7  unofficial"
-             : maquina::isAcida(voiceDef().voice)          ? "based on OpenRB-338  \xc2\xb7  unofficial"
-             : maquina::isBl101(voiceDef().voice)          ? "based on S1Vave by Andrew GG  \xc2\xb7  unofficial"
-             : maquina::isLa50(voiceDef().voice)           ? "LA synthesis \xc2\xb7 reads D-50 patches \xc2\xb7 dsynkant, Munt \xc2\xb7 unofficial"
-                                                           : "based on Erica Synths LXR-02 firmware  \xc2\xb7  unofficial",
-             nullptr);
-
-        // zoom control: [-] 150% [+]
-        beginPath();
-        rect(kZoomX + 0.5f, kZoomY + 0.5f, kZoomW - 1, kZoomH - 1);
-        fillColor(col(kWell));
-        fill();
-        strokeColor(col(kBorder));
-        strokeWidth(1);
-        stroke();
-        fillColor(col(kDim));
-        fontSize(13);
-        textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
-        text(kZoomX + 9, kZoomY + kZoomH / 2 + 1, "\xe2\x88\x92", nullptr);
-        text(kZoomX + kZoomW - 9, kZoomY + kZoomH / 2 + 1, "+", nullptr);
-        char zbuf[16];
-        std::snprintf(zbuf, sizeof zbuf, "%d%%", int(std::lround(kZooms[fZoom] * 100)));
-        fontSize(10);
-        fillColor(col(kText));
-        text(kZoomX + kZoomW / 2, kZoomY + kZoomH / 2 + 1, zbuf, nullptr);
-
-        for (const Section& sec : fSections) {
-            beginPath();
-            rect(sec.x + 0.5f, sec.y + 0.5f, sec.w - 1, sec.h - 1);
-            fillColor(col(kPanel));
-            fill();
-            strokeColor(col(kBorder));
-            strokeWidth(1);
-            stroke();
-            fontSize(10);
-            textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
-            fillColor(col(kLabel));
-            text(sec.x + kSectionPad, sec.y + kTitleH / 2 + 1, sec.title, nullptr);
-            if (sec.osc >= 0) drawOscRandom(sec);
-        }
-
-        if (layout().la50.used) drawLa50();
-        drawRandPanel();
-        for (const Graph& g : fGraphs)
-            drawGraph(g);
-        for (const Ctl& c : fCtls) {
-            switch (c.type) {
-            case CtlType::Knob:
-                drawKnob(c);
-                break;
-            case CtlType::Select: drawSelect(c); break;
-            case CtlType::Toggle: drawToggle(c); break;
-            case CtlType::Slider: drawSlider(c); break;
-            case CtlType::Switch: drawSwitch(c); break;
-            }
-        }
-        if (fPopup >= 0)
-            drawPopup();
-        drawPresetBar();
+        drawNewLook();
+        if (fPopup >= 0) drawPopup();
         if (fBrowser) drawBrowser();
         if (fSaveDlg) drawSaveDialog();
     }
@@ -1323,6 +866,13 @@ protected:
         if (kTheme == ThemeId::Mutable) drawMutablePanel(*this, L.panel.x, L.panel.y, L.panel.w, L.panel.h, T.panelRadius);
         if (kTheme == ThemeId::Lxr) drawLxrPanel(*this, L.panel.x, L.panel.y, L.panel.w, L.panel.h, T.panelRadius);
         if (kTheme == ThemeId::Graphene) drawGrPanel(*this, L.panel.x, L.panel.y, L.panel.w, L.panel.h, T.panelRadius);
+        if (kTheme == ThemeId::Erica) {
+            boxShadow(*this, L.panel.x, L.panel.y, L.panel.w, L.panel.h, 4, 8, 22, 180);
+            beginPath();
+            roundedRect(L.panel.x, L.panel.y, L.panel.w, L.panel.h, 4);
+            fillColor(col({ 0x0e, 0x0e, 0x0e }));
+            fill();
+        }
         if (L.bf.used)
             for (const Box& b : { L.panel, Box { L.bf.ex, L.panel.y, L.bf.ew, L.panel.h } }) {
                 boxShadow(*this, b.x, b.y, b.w, b.h, 4, 8, 22, 180);
@@ -1341,6 +891,7 @@ protected:
         if (L.la50.used) drawLa50New();
         if (L.lxr.used) drawLxrStrip();
         if (L.bf.used) drawBefacoPanel();
+        if (L.oled.w > 0) drawDredrumOled();
         for (const Graph& g : fGraphs) drawGraph(g);
         for (const Ctl& c : fCtls) drawCtlNew(c);
         if (!L.noDrawer) drawDrawerNew();
@@ -1462,24 +1013,25 @@ protected:
             for (const Section& sec : fSections) {
                 if (sec.osc < 0) continue;
                 static const char* const kCh[3] = { "A", "B", "C" };
-                const bool on = fRand.oscOn[sec.osc];
+                static const char* const kOsc[3] = { "OSC 1", "OSC 2", "OSC 3" };
+                const bool on = fRand.oscOn[sec.osc], erica = kTheme == ThemeId::Erica;
                 useFace(*this, "mono-sb");
                 fontPx(*this, 11);
                 textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
                 fillColor(col(kChromeText));
-                text(sec.x, sec.y + 12, kCh[sec.osc], nullptr);
+                text(sec.x, sec.y + 12, erica ? kOsc[sec.osc] : kCh[sec.osc], nullptr);
                 useFace(*this, "mono");
                 const Box& o = sec.randOn;
                 beginPath();
                 roundedRect(o.x + 0.5f, o.y + 0.5f, o.w - 1, o.h - 1, 6);
-                fillColor(col(on ? Rgb { 0x2a, 0x12, 0x14 } : kChromeBtn));
+                fillColor(col(on ? (erica ? Rgb { 0x2a, 0x2c, 0x30 } : Rgb { 0x2a, 0x12, 0x14 }) : kChromeBtn));
                 fill();
                 strokeColor(col(on ? T.accent : kChromeBtnLine));
                 strokeWidth(1);
                 stroke();
                 fontPx(*this, 11);
                 textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
-                fillColor(col(on ? Rgb { 0xff, 0x8a, 0x8d } : kChromeText2));
+                fillColor(col(on ? (erica ? Rgb { 0xff, 0xff, 0xff } : Rgb { 0xff, 0x8a, 0x8d }) : kChromeText2));
                 text(o.x + o.w / 2, o.y + o.h / 2 + 1, on ? "RND ON" : "RND OFF", nullptr);
                 drawChromeButton(*this, sec.roll.x, sec.roll.y, sec.roll.w, sec.roll.h, "ROLL", false);
             }
@@ -1570,7 +1122,17 @@ protected:
             fillColor(col({ 0xb5, 0xb5, 0xb0 }));
             fill();
             break;
-        case Deco::RuleText: { // ── TITLE ── (small print)
+        case Deco::RuleText: // ── TITLE ── (small print); Dredrum: the column name in pixel type
+            if (kTheme == ThemeId::Erica) {
+                useFace(*this, "pixel-b");
+                fontPx(*this, 18);
+                textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+                fillColor(col({ 0xff, 0xff, 0xff }));
+                text(d.b.x, d.b.y, d.text, nullptr);
+                useFace(*this, "mono");
+                break;
+            }
+            {
             useFace(*this, "print-sm");
             fontPx(*this, 10.5f);
             std::string t = d.text ? d.text : "";
@@ -1588,6 +1150,37 @@ protected:
             useFace(*this, "mono");
             break;
         }
+        case Deco::Heading: { // DISTORTION, underlined (Acida FX)
+            useFace(*this, "print-xb");
+            fontPx(*this, 11);
+            textLetterSpacing(11 * 0.14f);
+            textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+            fillColor(col(T.print));
+            text(d.b.x, d.b.y + 6.5f, d.text, nullptr);
+            const float tw = textWidth(d.text);
+            textLetterSpacing(0);
+            beginPath();
+            rect(d.b.x, d.b.y + 15.5f, tw, 1.5f);
+            fill();
+            useFace(*this, "mono");
+            break;
+        }
+        case Deco::Pixel: // Dredrum: a grey 7 px square
+            beginPath();
+            rect(d.b.x, d.b.y, d.b.w, d.b.h);
+            fillColor(col({ 0x5a, 0x5a, 0x5a }));
+            fill();
+            break;
+        case Deco::Seam: // the panel's seam: a dark line with a light one under it
+            beginPath();
+            rect(d.b.x, d.b.y, d.b.w, 1);
+            fillColor(col({ 0x8d, 0x8d, 0x89 }));
+            fill();
+            beginPath();
+            rect(d.b.x, d.b.y + 1, d.b.w, 1);
+            fillColor(Color(1.f, 1.f, 1.f, 0.75f));
+            fill();
+            break;
         case Deco::GrSection: { // grey section, title strip
             drawGrSection(*this, d.b.x, d.b.y, d.b.w, d.b.h);
             if (d.text) {
@@ -1643,6 +1236,23 @@ protected:
                 useFace(*this, "mono");
                 break;
             }
+            if (kTheme == ThemeId::Erica) { // DREDRUM / 8-BIT PERCUSSION · 3 OSC
+                const float top = d.b.y + (d.b.h - 52) / 2;
+                useFace(*this, "pixel-b");
+                fontPx(*this, 30);
+                textLetterSpacing(30 * 0.02f);
+                textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+                fillColor(col({ 0xff, 0xff, 0xff }));
+                text(d.b.x, top + 15, "DREDRUM", nullptr);
+                useFace(*this, "print");
+                fontPx(*this, 12);
+                textLetterSpacing(12 * 0.16f);
+                fillColor(col({ 0xbd, 0xbd, 0xbd }));
+                text(d.b.x, top + 30 + 8 + 7, "8-BIT PERCUSSION \xc2\xb7 3 OSC", nullptr);
+                textLetterSpacing(0);
+                useFace(*this, "mono");
+                break;
+            }
             if (kTheme == ThemeId::Mutable) { // black square + the name
                 beginPath();
                 roundedRect(d.b.x, d.b.y + d.b.h / 2 - 9, 18, 18, 3);
@@ -1672,7 +1282,7 @@ protected:
             text(cx, top + 42, voiceDef().voice == maquina::kAcidaFxVoice ? "EFFECT CHAIN" : "BASS LINE VOICE", nullptr);
             textLetterSpacing(0);
             useFace(*this, "mono");
-            drawSmiley(*this, cx, top + 99, 74, T.print);
+            drawSmiley(*this, cx, top + 99, voiceDef().voice == maquina::kAcidaFxVoice ? 62.f : 74.f, T.print);
             }
             break;
         }
@@ -1865,6 +1475,11 @@ protected:
     // the display follows the last parameter touched: its page and half
     void lxrTouch(uint32_t param)
     {
+        if (layout().oled.w > 0) { // Dredrum: the OLED shows the oscillator touched last
+            const char* sym = paramAt(voiceDef(), param).symbol;
+            if (!std::strncmp(sym, "osc", 3) && sym[3] >= '1' && sym[3] <= '3') fDreOsc = sym[3] - '1';
+            return;
+        }
         const LxrStrip& S = layout().lxr;
         if (!S.used) return;
         for (int k = 0; k < S.pages; ++k)
@@ -2130,7 +1745,7 @@ protected:
             }
             if (!c.label) v = std::string("GAIN  ") + v; // OUT: GAIN +0 dB on one line
             bfText(v.c_str(), c.ax, c.valueY, c.label ? 10.5f : c.bh > 0 ? c.bh : 13.f, c.label ? kBfGrey : kBfWhite,
-                   c.label ? "mono" : "print-m");
+                   c.label ? "mono" : c.n >= 3 ? "print-m" : "print"); // Plethora: medium
             break;
         }
         case Ctl::BfShift:
@@ -2465,8 +2080,122 @@ protected:
         return false;
     }
 
+    // ---- Erica (Dredrum)
+    void erText(const char* t, float x, float y, float px, Rgb c, const char* face, int align = ALIGN_CENTER, float sp = 0.04f)
+    {
+        useFace(*this, face);
+        fontPx(*this, px);
+        textLetterSpacing(px * sp);
+        textAlign(align | ALIGN_MIDDLE);
+        fillColor(col(c));
+        std::string u = t;
+        for (char& ch : u) ch = char(std::toupper(ch));
+        text(x, y, u.c_str(), nullptr);
+        textLetterSpacing(0);
+    }
+    void drawCtlErica(const Ctl& c)
+    {
+        const bool hot = fDrag == int(c.param) || fPopup == int(c.param);
+        char buf[48];
+        valueText(c.param, buf, sizeof buf);
+        const Rgb white { 0xf2, 0xf2, 0xf2 }, val { 0xbd, 0xbd, 0xbd };
+        switch (c.look) {
+        case Ctl::ErKnob:
+            drawErKnob(*this, c.ax, c.ay, c.size, valueFraction(c.param), hot);
+            erText(c.label, c.ax, c.labelY, c.n ? 11.f : 13.f, white, "print");
+            erText(buf, c.ax, c.valueY, 11, val, "pixel", ALIGN_CENTER, 0);
+            break;
+        case Ctl::ErButton:
+            drawErButton(*this, c.ax, c.ay, c.size, fValues[c.param] >= 0.5f, hot);
+            erText(c.label, c.ax, c.labelY, 11, white, "print");
+            break;
+        case Ctl::ErBat: { // MODE: TRIG / GATE
+            const int cur = intOf(int(c.param));
+            erText(c.label, c.labelX, c.labelY, 13, white, "print");
+            drawErBat(*this, c.ax, c.ay, cur != 0, hot);
+            erText("TRIG", c.ax - 17, c.ay - 12, 11, cur == 0 ? Rgb { 0xff, 0xff, 0xff } : Rgb { 0x8a, 0x8a, 0x8a }, "print", ALIGN_RIGHT);
+            erText("GATE", c.ax - 17, c.ay + 12, 11, cur == 1 ? Rgb { 0xff, 0xff, 0xff } : Rgb { 0x8a, 0x8a, 0x8a }, "print", ALIGN_RIGHT);
+            break;
+        }
+        case Ctl::LxrSel: { // the wave: [o] OLED window [o]
+            drawErButton(*this, c.ax - c.bw / 2 - 12.5f, c.ay, 13, false, false);
+            drawErButton(*this, c.ax + c.bw / 2 + 12.5f, c.ay, 13, false, false);
+            drawErOled(*this, c.ax - c.bw / 2, c.ay - c.bh / 2, c.bw, c.bh, hot);
+            erText(buf, c.ax, c.ay + 1, 12, { 0xff, 0xff, 0xff }, "pixel", ALIGN_CENTER, 0.06f);
+            break;
+        }
+        default: break;
+        }
+        useFace(*this, "mono");
+    }
+    // the OLED: the last-touched oscillator, its wave as an 8-bit step drawing
+    void drawDredrumOled()
+    {
+        const Box& o = layout().oled;
+        drawErOled(*this, o.x, o.y, o.w, o.h, false);
+        char sym[24], v[32];
+        auto P = [&](const char* f) { std::snprintf(sym, sizeof sym, "osc%d_%s", fDreOsc + 1, f); return findParam(sym); };
+        auto val = [&](const char* f) -> std::string {
+            const int p = P(f);
+            if (p < 0) return "";
+            valueText(uint32_t(p), v, sizeof v);
+            return v;
+        };
+        const Rgb w { 0xff, 0xff, 0xff };
+        const float l = o.x + 16, r = o.x + o.w - 16, cx = o.x + o.w / 2, t1 = o.y + 10 + 7, t2 = t1 + 14, b = o.y + o.h - 10 - 7;
+        char osc[16];
+        std::snprintf(osc, sizeof osc, "OSC %d", fDreOsc + 1);
+        erText(osc, l, t1, 12, w, "pixel", ALIGN_LEFT, 0.06f);
+        erText(val("wave").c_str(), l, t2, 12, w, "pixel", ALIGN_LEFT, 0.06f);
+        erText("PITCH", cx, t1, 12, w, "pixel", ALIGN_CENTER, 0.06f);
+        erText(val("pitch").c_str(), cx, t2, 12, w, "pixel", ALIGN_CENTER, 0.06f);
+        erText("DROP", r, t1, 12, w, "pixel", ALIGN_RIGHT, 0.06f);
+        erText(val("drop").c_str(), r, t2, 12, w, "pixel", ALIGN_RIGHT, 0.06f);
+        erText(("DECAY " + val("decay")).c_str(), l, b, 12, w, "pixel", ALIGN_LEFT, 0.06f);
+        erText(("LEVEL " + val("level")).c_str(), cx, b, 12, w, "pixel", ALIGN_CENTER, 0.06f);
+        erText(("OCT " + val("octave")).c_str(), r, b, 12, w, "pixel", ALIGN_RIGHT, 0.06f);
+        // the wave: 8 levels, the pitch falling with DROP, the level falling with DECAY
+        const int wp = P("wave"), dp = P("drop"), dc = P("decay"), pp = P("pitch");
+        const int wave = wp >= 0 ? intOf(wp) : 1;
+        const float drop = dp >= 0 ? valueFraction(uint32_t(dp)) : 0.f, decay = dc >= 0 ? valueFraction(uint32_t(dc)) : 0.5f;
+        const float pitch = pp >= 0 ? valueFraction(uint32_t(pp)) : 0.3f;
+        const float gy0 = t2 + 14, gy1 = b - 14, mid = (gy0 + gy1) / 2, amp = (gy1 - gy0) / 2;
+        beginPath(); // the dotted centre line
+        for (float x = l; x < r; x += 6) rect(x, mid, 3, 1);
+        fillColor(col({ 0x5a, 0x5a, 0x5a }));
+        fill();
+        const int n = 220;
+        float phase = 0;
+        uint32_t noise = 0x1234567u;
+        beginPath();
+        for (int i = 0; i <= n; ++i) {
+            const float tt = float(i) / float(n);
+            const float f = (8.f + 24.f * pitch) * (1.f + 8.f * drop * std::exp(-tt * 4.f)); // cycles over the width
+            phase += f / float(n);
+            const float ph = phase - std::floor(phase);
+            float s = 0;
+            switch (wave) {
+            case 0: s = std::sin(ph * 2 * float(M_PI)); break;
+            case 1: s = ph < 0.5f ? 1.f : -1.f; break;
+            case 2: s = 1.f - 2.f * ph; break;
+            default: noise = noise * 1664525u + 1013904223u; s = float(noise >> 8) / float(1u << 24) * 2.f - 1.f; break;
+            }
+            const float env = std::exp(-tt * (2.5f * (1.f - decay) + 0.2f));
+            const float q = std::round(s * env * 4.f) / 4.f; // 8-bit look: few levels
+            const float x = l + tt * (r - l), y = mid - q * amp;
+            if (i == 0) moveTo(x, y);
+            else lineTo(x, y);
+            if (i < n) lineTo(l + float(i + 1) / float(n) * (r - l), y); // steps
+        }
+        strokeColor(col(w));
+        strokeWidth(2);
+        lineJoin(MITER);
+        stroke();
+    }
+
     void drawCtlNew(const Ctl& c)
     {
+        if (kTheme == ThemeId::Erica) { drawCtlErica(c); return; }
         if (kTheme == ThemeId::Befaco) { drawCtlBefaco(c); return; }
         if (kTheme == ThemeId::Mutable) { drawCtlMutable(c); return; }
         if (kTheme == ThemeId::Graphene) { drawCtlGraphene(c); return; }
@@ -2528,58 +2257,44 @@ protected:
             }
             break;
         }
-        default: break; // later steps: toggles, sliders on the new panels
+        case CtlType::Toggle: { // Acida FX "On": label, red LED, a small silver key
+            useFace(*this, "print");
+            fontPx(*this, 11);
+            printLabel(c.label, c.ax, c.labelY, 11, 0.07f, T.print);
+            const bool on = fValues[c.param] >= 0.5f;
+            const float ly = c.prevX;
+            if (on) {
+                beginPath();
+                circle(c.ax, ly, 14);
+                fillPaint(radialGradient(c.ax, ly, 3, 14, Color(1.f, 59 / 255.f, 34 / 255.f, 0.55f), Color(1.f, 59 / 255.f, 34 / 255.f, 0.f)));
+                fill();
+            }
+            static const float kStops[3] = { 0.f, 0.55f, 1.f };
+            const Rgb onC[3] = { { 0xff, 0xb4, 0xa6 }, { 0xff, 0x3b, 0x22 }, { 0xb8, 0x1c, 0x0c } };
+            const Rgb offC[3] = { { 0x5a, 0x17, 0x12 }, { 0x5a, 0x17, 0x12 }, { 0x4a, 0x12, 0x0e } };
+            fillRadialStops(*this, [&] { circle(c.ax, ly, 4.5f); }, c.ax - 0.9f, ly - 1.4f, 6, kStops, on ? onC : offC, 3);
+            const float kx = c.ax - c.bw / 2, ky = c.ay - c.bh / 2;
+            boxShadow(*this, kx, ky, c.bw, c.bh, 3, 2, 3, 90);
+            beginPath();
+            roundedRect(kx - 2, ky - 2, c.bw + 4, c.bh + 4, 4);
+            fillColor(col({ 0x1d, 0x1d, 0x1b }));
+            fill();
+            beginPath();
+            roundedRect(kx, ky, c.bw, c.bh, 3);
+            fillPaint(linearGradient(0, ky, 0, ky + c.bh, col(hot ? Rgb { 0xff, 0xff, 0xff } : Rgb { 0xf4, 0xf4, 0xf2 }), col({ 0xa9, 0xa9, 0xa5 })));
+            fill();
+            useFace(*this, "mono");
+            break;
+        }
+        default: break;
         }
     }
 
-    // ------------------------------------------------------------- randomize
-    // Maquina Dredrum OSC title bar: [RND ON|OFF] [ROLL]
-    void drawOscRandom(const Section& sec)
-    {
-        const bool on = fRand.oscOn[sec.osc];
-        const Box& t = sec.randOn;
-        beginPath();
-        rect(t.x + 0.5f, t.y + 0.5f, t.w - 1, t.h - 1);
-        fillColor(col(kWell));
-        fill();
-        strokeColor(col(on ? kAccent : kBorder));
-        strokeWidth(1);
-        stroke();
-        fontSize(9);
-        textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
-        fillColor(on ? col(kAccent) : col(kDim));
-        text(t.x + t.w / 2, t.y + t.h / 2 + 1, on ? "RND ON" : "RND OFF", nullptr);
 
-        const Box& r = sec.roll;
-        beginPath();
-        rect(r.x + 0.5f, r.y + 0.5f, r.w - 1, r.h - 1);
-        fillColor(col(kWell));
-        fill();
-        strokeColor(col(kBorder));
-        strokeWidth(1);
-        stroke();
-        fillColor(col(kText));
-        text(r.x + r.w / 2, r.y + r.h / 2 + 1, "ROLL", nullptr);
-    }
-
-    void drawButton(const Box& b, const char* label, bool enabled, bool accent)
-    {
-        beginPath();
-        rect(b.x + 0.5f, b.y + 0.5f, b.w - 1, b.h - 1);
-        fillColor(accent && enabled ? col(kAccent) : col(kWell));
-        fill();
-        strokeColor(col(accent && enabled ? kAccent : kBorder));
-        strokeWidth(1);
-        stroke();
-        fontSize(12);
-        textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
-        fillColor(accent ? col(kBg) : enabled ? col(kText) : col(kDim, 110));
-        text(b.x + b.w / 2, b.y + b.h / 2 + 1, label, nullptr);
-    }
     // range bar of a group cell
     struct Bar { float x, y, w; };
-    static Bar barOf(const Box& c) { return kNew ? Bar { c.x, c.y + 25, c.w } : Bar { c.x + 8, c.y + 34, c.w - 16 }; }
-    static Box titleOf(const Box& c) { return { c.x, c.y, c.w, kNew ? 17.f : 20.f }; }
+    static Bar barOf(const Box& c) { return Bar { c.x, c.y + 25, c.w }; }
+    static Box titleOf(const Box& c) { return { c.x, c.y, c.w, 17.f }; }
 
     void drawPadlock(float x, float y, bool closed, Color c) // ~8 x 10
     {
@@ -2595,110 +2310,13 @@ protected:
         stroke();
     }
 
-    // Oneiroi: a switch of the module's randomizer, [<] value [>]
-    void drawRandSwitch(const Box& c, const char* label, const char* value)
-    {
-        fontSize(10);
-        textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
-        fillColor(col(kLabel));
-        text(c.x + c.w / 2, c.y + 8, label, nullptr);
-        const float bx = c.x + 2, bw = c.w - 4, by = c.y + 18, bh = 22, my = by + bh / 2;
-        beginPath();
-        rect(bx + 0.5f, by + 0.5f, bw - 1, bh - 1);
-        fillColor(col(kWell));
-        fill();
-        strokeColor(col(kBorder));
-        strokeWidth(1);
-        stroke();
-        fillColor(col(kDim));
-        beginPath();
-        moveTo(bx + 5, my); lineTo(bx + 10, my - 4); lineTo(bx + 10, my + 4); closePath();
-        fill();
-        beginPath();
-        moveTo(bx + bw - 5, my); lineTo(bx + bw - 10, my - 4); lineTo(bx + bw - 10, my + 4); closePath();
-        fill();
-        fontSize(11);
-        fillColor(col(kText));
-        text(bx + bw / 2, my + 1, value, nullptr);
-    }
 
-    void drawRandPanel()
-    {
-        const RandPanel& R = layout().rand;
-        if (maquina::isOneiroi(voiceDef().voice)) {
-            drawButton(R.random, "RANDOM", true, true);
-            drawButton(R.back, fRedo ? "REDO" : "UNDO", fRunActive, false);
-            drawRandSwitch(R.oTarget, "TARGET", maquina::kOneiroiTargetLabels[fRand.oTarget % 4]);
-            drawRandSwitch(R.oAmount, "AMOUNT", maquina::kOneiroiAmountLabels[fRand.oAmount % 3]);
-            fontSize(10);
-            textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
-            fillColor(col(kDim));
-            const float hx = R.oAmount.x + R.oAmount.w + 3 * kGap;
-            const bool fx = voiceDef().voice == maquina::kOneiroiFxVoice;
-            text(hx, R.oTarget.y + 22,
-                 fx ? "The module's randomizer: it moves the knobs of the target (Looper: speed, start,"
-                    : "The module's randomizer: it moves the knobs of the target (Osc: pitch, detune;",
-                 nullptr);
-            text(hx, R.oTarget.y + 36,
-                 fx ? "length; Effects: the 8 effect knobs). Full = anywhere,"
-                    : "Looper: speed, start, length; Effects: the 8 effect knobs). Full = anywhere,",
-                 nullptr);
-            text(hx, R.oTarget.y + 50, "Mid = up to 10 %, Low = up to 2 %. Faders, switches and SHIFT functions stay.",
-                 nullptr);
-            return;
-        }
-        drawButton(R.random, "RANDOM", true, true);
-        drawButton(R.back, "BACK", fRunActive, false);
-        for (int g = 0; g < maquina::kNumRandGroups; ++g) {
-            if (!R.used[g]) continue;
-            const Box& c = R.cell[g];
-            const bool locked = fRand.lock[g];
-            // title + lock
-            fontSize(10);
-            textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
-            const char* title = maquina::kRandGroups[g].title;
-            Rectangle<float> bounds;
-            textBounds(0, 0, title, nullptr, bounds);
-            const float tw = bounds.getWidth();
-            const float tx = c.x + (c.w - tw - 13) / 2;
-            drawPadlock(tx, c.y + 2, locked, locked ? col(kAccent) : col(kLabel));
-            fillColor(locked ? col(kAccent) : col(kLabel));
-            text(tx + 13, c.y + 7, title, nullptr);
-
-            if (locked) globalAlpha(0.35f);
-            const Bar b = barOf(c);
-            const float x0 = b.x + b.w * fRand.min[g] / 100.f, x1 = b.x + b.w * fRand.max[g] / 100.f;
-            beginPath();
-            rect(b.x, b.y - 2, b.w, 4);
-            fillColor(col(kTrack));
-            fill();
-            beginPath();
-            rect(x0, b.y - 2, std::max(1.f, x1 - x0), 4);
-            fillColor(col(kAccent));
-            fill();
-            for (int k = 0; k < 2; ++k) {
-                const float hx = k ? x1 : x0;
-                beginPath();
-                rect(hx - 3, b.y - 7, 6, 14);
-                fillColor(fRangeDrag == g * 2 + k ? col(kAccent) : col(kText));
-                fill();
-            }
-            char buf[32];
-            if (locked) std::snprintf(buf, sizeof buf, "locked");
-            else std::snprintf(buf, sizeof buf, "%d\xe2\x80\x93%d %%", fRand.min[g], fRand.max[g]);
-            fontSize(10);
-            textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
-            fillColor(col(fRangeDrag / 2 == g && fRangeDrag >= 0 ? kAccent : kText));
-            text(c.x + c.w / 2, c.y + c.h - 9, buf, nullptr);
-            globalAlpha(1.f);
-        }
-    }
     // RANDOM / BACK where they are now (the new look: folded bar or open drawer)
-    const Box& randomBox() const { return kNew && !fDrawerOpen ? layout().rand.foldRandom : layout().rand.random; }
-    const Box& backBox() const { return kNew && !fDrawerOpen ? layout().rand.foldBack : layout().rand.back; }
+    const Box& randomBox() const { return !fDrawerOpen ? layout().rand.foldRandom : layout().rand.random; }
+    const Box& backBox() const { return !fDrawerOpen ? layout().rand.foldBack : layout().rand.back; }
     int randCellAt(float x, float y) const
     {
-        if (kNew && !fDrawerOpen) return -1;
+        if (!fDrawerOpen) return -1;
         for (int g = 0; g < maquina::kNumRandGroups; ++g)
             if (layout().rand.cell[g].hit(x, y)) return g;
         return -1;
@@ -2957,51 +2575,6 @@ protected:
         return textWidth(label) + 14;
     }
 
-    void drawPresetBar()
-    {
-        const float y = kZoomY, h = kZoomH, my = y + h / 2 + 1;
-        frame(kPrevX, y, kArrowW, h, col(kWell), col(kBorder));
-        frame(kNextX, y, kArrowW, h, col(kWell), col(kBorder));
-        fillColor(col(kDim));
-        beginPath(); moveTo(kPrevX + 6, my - 1); lineTo(kPrevX + 11, my - 5); lineTo(kPrevX + 11, my + 3); closePath(); fill();
-        beginPath(); moveTo(kNextX + 12, my - 1); lineTo(kNextX + 7, my - 5); lineTo(kNextX + 7, my + 3); closePath(); fill();
-        frame(kNameX, y, kPresetNameW, h, col(kWell), col(fBrowser ? kAccent : kBorder));
-        const std::string name = fPresetName + (fPresetDirty ? " *" : "");
-        fontSize(11);
-        textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
-        fillColor(col(kText));
-        float catW = 0.f;
-        if (fPreset >= 0) {
-            const PresetEntry& e = fPresets[size_t(fPreset)];
-            const std::string cat = e.user && e.category != "User" ? "User \xc2\xb7 " + e.category : e.category;
-            fontSize(9);
-            textAlign(ALIGN_RIGHT | ALIGN_MIDDLE);
-            fillColor(col(kDim));
-            catW = textWidth(cat.c_str()) + 10;
-            text(kNameX + kPresetNameW - 16, my, cat.c_str(), nullptr);
-        }
-        fontSize(11);
-        textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
-        fillColor(col(kText));
-        scissor(kNameX + 4, y, kPresetNameW - 8, h);
-        lcdText(kNameX + 7, my, kPresetNameW - 7 - 16 - catW, name);
-        resetScissor();
-        fillColor(col(kDim)); // list mark
-        beginPath();
-        moveTo(kNameX + kPresetNameW - 11, my - 3); lineTo(kNameX + kPresetNameW - 5, my - 3);
-        lineTo(kNameX + kPresetNameW - 8, my + 1); closePath();
-        fill();
-        frame(kSaveX, y, kSaveW, h, col(kWell), col(fSaveDlg ? kAccent : kBorder));
-        fontSize(10);
-        textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
-        fillColor(col(kText));
-        text(kSaveX + kSaveW / 2, my, "SAVE", nullptr);
-        frame(kInitX, y, kInitW, h, col(kWell), col(kBorder));
-        fontSize(10);
-        textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
-        fillColor(col(kText));
-        text(kInitX + kInitW / 2, my, "INIT", nullptr);
-    }
 
     // ---- browser geometry (panel units)
     struct BrowserGeo { float x, y, w, h, catX, catW, rightX, rightW; };
@@ -4258,54 +3831,7 @@ protected:
         return true;
     }
 
-    void drawLabel(const Ctl& c)
-    {
-        fontSize(10);
-        textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
-        fillColor(col(kLabel));
-        text(c.x + c.w / 2, c.y + 7, c.label, nullptr);
-    }
 
-    void drawKnob(const Ctl& c)
-    {
-        drawLabel(c);
-        const float cx = c.x + c.w / 2, cy = c.y + 30, r = 13.f;
-        const float a0 = float(0.75 * M_PI), a1 = float(2.25 * M_PI);
-        const float lo = minOf(c.param), hi = maxOf(c.param);
-        const float t = (fValues[c.param] - lo) / (hi - lo);
-        const float av = a0 + t * (a1 - a0);
-        const bool bipolar = lo < 0.f;
-        const float ac = bipolar ? a0 + (0.f - lo) / (hi - lo) * (a1 - a0) : a0;
-        const bool active = fDrag == int(c.param);
-
-        beginPath();
-        arc(cx, cy, r, a0, a1, CW);
-        strokeColor(col(kTrack));
-        strokeWidth(3);
-        lineCap(BUTT);
-        stroke();
-        if (std::fabs(av - ac) > 0.001f) {
-            beginPath();
-            arc(cx, cy, r, std::min(ac, av), std::max(ac, av), CW);
-            strokeColor(col(kAccent));
-            strokeWidth(3);
-            stroke();
-        }
-        beginPath();
-        moveTo(cx + std::cos(av) * (r - 7), cy + std::sin(av) * (r - 7));
-        lineTo(cx + std::cos(av) * (r + 1), cy + std::sin(av) * (r + 1));
-        strokeColor(col(kText));
-        strokeWidth(2);
-        lineCap(ROUND);
-        stroke();
-
-        char buf[32];
-        valueText(c.param, buf, sizeof(buf));
-        fontSize(10);
-        textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
-        fillColor(col(active ? kAccent : kText));
-        text(cx, c.y + c.h - 9, buf, nullptr);
-    }
 
     void selectBox(const Ctl& c, float& bx, float& by, float& bw, float& bh) const
     {
@@ -4313,55 +3839,7 @@ protected:
         bx = c.x + 2; bw = c.w - 4; by = c.y + 18; bh = 22;
     }
 
-    void drawSelect(const Ctl& c)
-    {
-        drawLabel(c);
-        float bx, by, bw, bh;
-        selectBox(c, bx, by, bw, bh);
-        beginPath();
-        rect(bx + 0.5f, by + 0.5f, bw - 1, bh - 1);
-        fillColor(col(kWell));
-        fill();
-        strokeColor(col(fPopup == int(c.param) || fDrag == int(c.param) ? kAccent : kBorder));
-        strokeWidth(1);
-        stroke();
-        // arrows
-        fillColor(col(kDim));
-        const float my = by + bh / 2;
-        beginPath();
-        moveTo(bx + 5, my); lineTo(bx + 10, my - 4); lineTo(bx + 10, my + 4); closePath();
-        fill();
-        beginPath();
-        moveTo(bx + bw - 5, my); lineTo(bx + bw - 10, my - 4); lineTo(bx + bw - 10, my + 4); closePath();
-        fill();
 
-        char buf[48];
-        valueText(c.param, buf, sizeof(buf));
-        fontSize(11);
-        textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
-        fillColor(col(kText));
-        scissor(bx + 12, by, bw - 24, bh);
-        text(bx + bw / 2, my + 1, buf, nullptr);
-        resetScissor();
-    }
-
-    void drawToggle(const Ctl& c)
-    {
-        drawLabel(c);
-        const bool on = fValues[c.param] >= 0.5f;
-        const float bw = std::min(40.f, c.w - 6), bx = c.x + (c.w - bw) / 2, by = c.y + 18, bh = 22;
-        beginPath();
-        rect(bx + 0.5f, by + 0.5f, bw - 1, bh - 1);
-        fillColor(on ? col(kAccent) : col(kWell));
-        fill();
-        strokeColor(col(on ? kAccent : kBorder));
-        strokeWidth(1);
-        stroke();
-        fontSize(11);
-        textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
-        fillColor(on ? col(kBg) : col(kDim));
-        text(bx + bw / 2, by + bh / 2 + 1, on ? "On" : "Off", nullptr);
-    }
 
     // ---- Maquina LA-50: the PG-1000 field
     int la50Param(const La50Slot& sl) const
@@ -4369,27 +3847,8 @@ protected:
         if (!sl.field[0] && !sl.field[1]) return sl.param[6]; // KEY MODE, SPLIT: patch only, always
         return fLaMode == 0 ? sl.param[fLaPartial] : fLaMode == 1 ? sl.param[4 + fLaTone] : sl.param[6];
     }
-    Ctl la50Ctl(const La50Slot& sl, int param) const
-    {
-        return { uint32_t(param), CtlType::Slider, "", sl.box.x, sl.box.y - 14, sl.box.w, sl.box.h + 24 };
-    }
     int la50MuteParam() const { return findParam(fLaTone ? "l_partial_mute" : "u_partial_mute"); }
 
-    void la50Button(const Box& b, const char* label, bool on)
-    {
-        frame(b.x, b.y, b.w, b.h, on ? col(kAccent) : col(kWell), on ? col(kAccent) : col(kBorder));
-        fontSize(10);
-        textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
-        fillColor(on ? col(kBg) : col(kText));
-        text(b.x + b.w / 2, b.y + b.h / 2 + 1, label, nullptr);
-    }
-    void la50Caption(const Box& b, const char* label)
-    {
-        fontSize(9);
-        textAlign(ALIGN_LEFT | ALIGN_BOTTOM);
-        fillColor(col(kLabel));
-        text(b.x, b.y - 3, label, nullptr);
-    }
 
     // one LCD line, cut with an ellipsis to fit w
     void lcdText(float x, float y, float w, std::string s)
@@ -4409,49 +3868,6 @@ protected:
     {
         static const char* const kSym[4] = { "u_p1_wg_pcm_wave", "u_p2_wg_pcm_wave", "l_p1_wg_pcm_wave", "l_p2_wg_pcm_wave" };
         return findParam(kSym[la50PcmPart()]);
-    }
-    void drawPcmSelector()
-    {
-        const La50Panel& P = layout().la50;
-        static const char* const kPartName[4] = { "U1", "U2", "L1", "L2" };
-        const int p = la50PcmParam();
-        if (p < 0) return;
-        char cap[32];
-        std::snprintf(cap, sizeof cap, "PCM WAVE  %s", kPartName[la50PcmPart()]);
-        fontSize(9);
-        textAlign(ALIGN_LEFT | ALIGN_TOP);
-        fillColor(col(kLabel));
-        text(P.pcmPrev.x + 2, P.pcmPrev.y + P.pcmPrev.h + 3, cap, nullptr); // the label below
-        for (int k = 0; k < 2; ++k) {
-            const Box& b = k ? P.pcmNext : P.pcmPrev;
-            frame(b.x, b.y, b.w, b.h, col(kWell), col(kBorder));
-            const float cx = b.x + b.w / 2, cy = b.y + b.h / 2;
-            beginPath();
-            if (k) { moveTo(cx - 2, cy - 4); lineTo(cx + 3, cy); lineTo(cx - 2, cy + 4); }
-            else { moveTo(cx + 2, cy - 4); lineTo(cx - 3, cy); lineTo(cx + 2, cy + 4); }
-            closePath();
-            fillColor(col(kText));
-            fill();
-        }
-        const Box& n = P.pcmName;
-        frame(n.x, n.y, n.w, n.h, col(kWell), col(fPopup == p ? kAccent : kBorder));
-        const int v = intOf(p);
-        const VoiceParam& vp = paramAt(voiceDef(), uint32_t(p));
-        char num[16];
-        std::snprintf(num, sizeof num, "%d", v + 1);
-        fontSize(11);
-        textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
-        fillColor(col(kAccent));
-        text(n.x + 6, n.y + n.h / 2 + 1, num, nullptr);
-        fontSize(10);
-        fillColor(col(kText));
-        text(n.x + 28, n.y + n.h / 2 + 1, v >= 0 && v < int(vp.numLabels) ? vp.labels[v] : "", nullptr);
-        // the list mark
-        fillColor(col(kDim));
-        beginPath();
-        const float mx = n.x + n.w - 12, my = n.y + n.h / 2;
-        moveTo(mx - 4, my - 2); lineTo(mx + 4, my - 2); lineTo(mx, my + 3); closePath();
-        fill();
     }
 
     // envelope shapes: the selected partial's TVF and TVA, its tone's pitch envelope; each
@@ -4518,53 +3934,14 @@ protected:
         }
         return g;
     }
-    void drawEnvShape(const EnvGeo& g, bool hot)
+    void drawGraph(const Graph& g)
     {
-        if (kNew) { drawEnvShapeNew(g, hot); return; }
-        frame(g.b.x, g.b.y, g.b.w, g.b.h, col(kWell), col(kBorder));
-        if (g.centre) {
-            beginPath();
-            moveTo(g.b.x + 4, (g.yTop + g.yBot) / 2); lineTo(g.b.x + g.b.w - 4, (g.yTop + g.yBot) / 2);
-            strokeColor(col(kBorder));
-            strokeWidth(1);
-            stroke();
-        }
-        // the curve, the sustain held flat
-        beginPath();
-        moveTo(g.pts[0].x, g.pts[0].y);
-        for (size_t k = 1; k < g.pts.size(); ++k) {
-            lineTo(g.pts[k].x, g.pts[k].y);
-            if (int(k) == g.susAfter) lineTo(g.pts[k].x + g.susW, g.pts[k].y); // held
-        }
-        strokeColor(col(kAccent, hot ? 255 : 130));
-        strokeWidth(1.5f);
-        stroke();
-        // the key release: a mark at the sustain's end
-        if (g.susAfter > 0) {
-            const float rx = g.pts[size_t(g.susAfter)].x + g.susW;
-            fillColor(col(kDim));
-            for (float yy = g.yTop; yy < g.yBot; yy += 6) {
-                beginPath();
-                rect(rx, yy, 1, 3);
-                fill();
-            }
-        }
-        // handles
-        for (const EnvHandle& h : g.pts) {
-            if (h.tParam < 0 && h.lParam < 0) continue;
-            const bool on = fEnvDrag && (h.tParam == fEnvT && h.lParam == fEnvL);
-            beginPath();
-            rect(h.x - 3, h.y - 3, 6, 6);
-            fillColor(on ? col(kAccent) : col(kText, hot ? 230 : 140));
-            fill();
-        }
-        fontSize(9);
-        textAlign(ALIGN_LEFT | ALIGN_TOP);
-        fillColor(col(hot ? kText : kDim));
-        text(g.b.x + 5, g.b.y + 3, g.title.c_str(), nullptr);
+        if (g.kind == GraphKind::Draw) drawDrawGraphGr(g);
+        else if (g.kind == GraphKind::Chop) drawChopGraphGr(g);
+        else drawGraphLxr(g);
     }
-    // graphene: an orange line in a dark window, the release mark dotted, small handles
-    void drawEnvShapeNew(const EnvGeo& g, bool hot)
+    // LA-50: an orange line in a dark window, the release mark dotted, small handles
+    void drawEnvShape(const EnvGeo& g, bool hot)
     {
         drawGrWindow(*this, g.b.x, g.b.y, g.b.w, g.b.h, false);
         if (g.centre) {
@@ -4858,110 +4235,6 @@ protected:
         repaint();
     }
 
-    void drawLa50()
-    {
-        const La50Panel& P = layout().la50;
-        static const Rgb kPatchRgb { 0xe0, 0x5a, 0x4a };
-        static const char* const kPartialNames[4] = { "U1", "U2", "L1", "L2" };
-        // LCD
-        frame(P.lcd.x, P.lcd.y, P.lcd.w, P.lcd.h, Color(0x2c, 0x34, 0x24), col(kBorder));
-        fontSize(11);
-        textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
-        fillColor(Color(0xb8, 0xd8, 0x90));
-        const char* modeName = fLaMode == 0 ? kPartialNames[fLaPartial] : fLaMode == 1 ? (fLaTone ? "LOWER COM" : "UPPER COM")
-                                                                                       : "PATCH";
-        // imported presets are "NN Name (bank file)": the name, then the bank on its own line
-        std::string name = fPresetName, bank;
-        const size_t paren = name.find(" (");
-        if (paren != std::string::npos && name.back() == ')') {
-            bank = name.substr(paren + 2, name.size() - paren - 3);
-            name.resize(paren);
-        }
-        if (fPresetDirty) name += " *";
-        const float lw = P.lcd.w - 12;
-        lcdText(P.lcd.x + 6, P.lcd.y + 11, lw, name);
-        fillColor(Color(0x88, 0xa8, 0x68));
-        fontSize(9);
-        if (!bank.empty()) lcdText(P.lcd.x + 6, P.lcd.y + 26, lw, bank);
-        fontSize(11);
-        fillColor(Color(0xb8, 0xd8, 0x90));
-        lcdText(P.lcd.x + 6, P.lcd.y + 43, lw, std::string("EDIT ") + modeName);
-        if (!fLaMsg.empty()) {
-            lcdText(P.lcd.x + 6, P.lcd.y + 60, lw, fLaMsg);
-        } else if (fLaLast >= 0) {
-            char v[48];
-            valueText(uint32_t(fLaLast), v, sizeof v);
-            lcdText(P.lcd.x + 6, P.lcd.y + 60, lw, std::string(paramAt(voiceDef(), uint32_t(fLaLast)).name) + " " + v);
-        }
-        // select buttons
-        la50Caption(P.patch, "PATCH");
-        la50Button(P.patch, "PATCH", fLaMode == 2);
-        la50Caption(P.common[0], "COMMON SELECT");
-        la50Button(P.common[0], "UPPER", fLaMode == 1 && fLaTone == 0);
-        la50Button(P.common[1], "LOWER", fLaMode == 1 && fLaTone == 1);
-        la50Caption(P.partial[0], "PARTIAL SELECT");
-        for (int k = 0; k < 4; ++k) la50Button(P.partial[k], kPartialNames[k], fLaMode == 0 && fLaPartial == k);
-        const int mp = la50MuteParam(), mute = mp >= 0 ? intOf(mp) : 3;
-        la50Caption(P.mute[0], fLaTone ? "LOWER PARTIALS ON" : "UPPER PARTIALS ON");
-        la50Button(P.mute[0], "P1", (mute & 1) != 0);
-        la50Button(P.mute[1], "P2", (mute & 2) != 0);
-        la50Button(P.init, "INIT", false);
-        la50Button(P.import, "IMPORT .SYX", false);
-        fontSize(9);
-        textAlign(ALIGN_LEFT | ALIGN_TOP);
-        fillColor(col(kDim));
-        text(P.import.x, P.import.y + P.import.h + 6, "PCM: built-in stand-ins", nullptr);
-        la50Caption(Box { P.gainBox.x + 4, P.gainBox.y + 10, P.gainBox.w, 0 }, "OUTPUT");
-        drawLa50Envs();
-        drawPcmSelector();
-        // group brackets
-        for (const La50Group& g : P.groups) {
-            const Color c = g.kind == 0 ? col(fLaMode == 0 ? kText : kDim)
-                            : g.kind == 1 ? col(kAccent, fLaMode == 1 ? 255 : 110)
-                                          : col(kPatchRgb, fLaMode == 2 ? 255 : 110);
-            beginPath();
-            rect(g.x0, g.y + 4, g.x1 - g.x0, 1);
-            fillColor(c);
-            fill();
-            fontSize(9);
-            textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
-            const float tw = textWidth(g.title) + 8;
-            beginPath();
-            rect((g.x0 + g.x1) / 2 - tw / 2, g.y - 2, tw, 12);
-            fillColor(col(kPanel));
-            fill();
-            fillColor(c);
-            text((g.x0 + g.x1) / 2, g.y + 4, g.title, nullptr);
-        }
-        // sliders with their three labels
-        for (const La50Slot& sl : P.slots) {
-            const float cx = sl.box.x + sl.box.w / 2;
-            fontSize(8);
-            textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
-            if (sl.label[0]) {
-                fillColor(col(fLaMode == 0 ? kText : kDim));
-                text(cx, sl.box.y - 6, sl.label[0], nullptr);
-            }
-            const float by = sl.box.y + sl.box.h + 18;
-            if (sl.label[1]) {
-                fillColor(col(kAccent, fLaMode == 1 ? 255 : 110));
-                text(cx, by, sl.label[1], nullptr);
-            }
-            if (sl.label[2]) {
-                fillColor(col(kPatchRgb, fLaMode == 2 ? 255 : 110));
-                text(cx, by + (sl.label[1] ? 10 : 0), sl.label[2], nullptr);
-            }
-            const int p = la50Param(sl);
-            if (p >= 0) {
-                drawSlider(la50Ctl(sl, p));
-            } else { // nothing to edit in this mode: the empty slot
-                beginPath();
-                roundedRect(cx - 2, sl.box.y + 10, 4, sl.box.h - 30, 2);
-                fillColor(col(kWell, 120));
-                fill();
-            }
-        }
-    }
 
     bool la50Click(float x, float y, bool dbl, uint time)
     {
@@ -5090,121 +4363,11 @@ protected:
         y1 = c.y + c.h - 22;
     }
 
-    void drawSlider(const Ctl& c)
-    {
-        drawLabel(c);
-        float x, y0, y1;
-        sliderSlot(c, x, y0, y1);
-        const float lo = minOf(c.param), hi = maxOf(c.param);
-        const float t = (fValues[c.param] - lo) / (hi - lo);
-        const bool bipolar = lo < 0.f;
-        const float yv = y1 - t * (y1 - y0);
-        const float yc = bipolar ? y1 - (0.f - lo) / (hi - lo) * (y1 - y0) : y1;
-        const bool active = fDrag == int(c.param);
-
-        // scale ticks 0..10, as printed on the panel
-        for (int k = 0; k <= 10; ++k) {
-            const float ty = y1 - float(k) / 10.f * (y1 - y0);
-            beginPath();
-            moveTo(x - 11, ty);
-            lineTo(x - (k % 5 == 0 ? 6.5f : 8.f), ty);
-            strokeColor(col(kTrack));
-            strokeWidth(1);
-            stroke();
-        }
-        // slot
-        beginPath();
-        roundedRect(x - 2, y0 - 4, 4, y1 - y0 + 8, 2);
-        fillColor(col(kWell));
-        fill();
-        strokeColor(col(kBorder));
-        strokeWidth(1);
-        stroke();
-        if (std::fabs(yv - yc) > 0.5f) {
-            beginPath();
-            rect(x - 1, std::min(yv, yc), 2, std::fabs(yv - yc));
-            fillColor(col(kAccent));
-            fill();
-        }
-        // cap
-        const float capW = std::min(20.f, c.w - 4), capH = 10.f;
-        beginPath();
-        roundedRect(x - capW / 2, yv - capH / 2, capW, capH, 1.5f);
-        fillColor(col(active ? kAccent : kText));
-        fill();
-        beginPath();
-        moveTo(x - capW / 2 + 2, yv);
-        lineTo(x + capW / 2 - 2, yv);
-        strokeColor(col(active ? kBg : kPanel));
-        strokeWidth(1.5f);
-        stroke();
-
-        char buf[32];
-        valueText(c.param, buf, sizeof(buf));
-        fontSize(10);
-        textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
-        fillColor(col(active ? kAccent : kText));
-        text(x, c.y + c.h - 8, buf, nullptr);
-    }
-
-    // slide switch geometry: position k's y (0 = bottom, as the panel's
-    // switches read upward), the lever's x
-    struct SwitchGeo { float x, w, yTop, yBot; int n; };
-    SwitchGeo switchGeo(const Ctl& c) const
-    {
-        SwitchGeo g;
-        g.n = int(maxOf(c.param)) + 1;
-        g.x = c.x + 4;
-        g.w = 10;
-        const float mid = c.y + 24 + (c.h - 46) / 2;
-        const float span = 22.f * float(g.n - 1);
-        g.yTop = mid - span / 2;
-        g.yBot = mid + span / 2;
-        return g;
-    }
-    float switchPosY(const SwitchGeo& g, int k) const
-    {
-        return g.n > 1 ? g.yBot - float(k) * (g.yBot - g.yTop) / float(g.n - 1) : g.yBot;
-    }
-
-    void drawSwitch(const Ctl& c)
-    {
-        drawLabel(c);
-        const SwitchGeo g = switchGeo(c);
-        const VoiceParam& p = paramAt(voiceDef(), c.param);
-        const int cur = intOf(int(c.param));
-        // the slot
-        beginPath();
-        roundedRect(g.x, g.yTop - 8, g.w, g.yBot - g.yTop + 16, 2);
-        fillColor(col(kWell));
-        fill();
-        strokeColor(col(fDrag == int(c.param) ? kAccent : kBorder));
-        strokeWidth(1);
-        stroke();
-        // the lever
-        const float ly = switchPosY(g, cur);
-        beginPath();
-        roundedRect(g.x + 1.5f, ly - 6, g.w - 3, 12, 1.5f);
-        fillColor(col(kText));
-        fill();
-        // position labels
-        fontSize(9);
-        textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
-        for (int k = 0; k < g.n; ++k) {
-            const float py = switchPosY(g, k);
-            beginPath();
-            moveTo(g.x + g.w + 1, py);
-            lineTo(g.x + g.w + 4, py);
-            strokeColor(col(kTrack));
-            stroke();
-            fillColor(k == cur ? col(kAccent) : col(kDim));
-            text(g.x + g.w + 6, py + 1, p.labels && k < p.numLabels ? p.labels[k] : "", nullptr);
-        }
-    }
 
     // the position a click at y picks
     int switchPosAt(const Ctl& c, float y, float x = 0) const
     {
+        if (c.look == Ctl::ErBat) return y < c.ay ? 0 : 1; // TRIG up, GATE down
         if (c.look == Ctl::BfSwitch) {
             if (c.n == 3) return 2 - std::clamp(int((y - (c.ay - c.bh / 2)) / (c.bh / 3)), 0, 2); // HP on top
             if (c.n == 2) return x >= c.ax ? 1 : 0;                                                // GRITTY | WHITE
@@ -5224,18 +4387,13 @@ protected:
                     best = k;
             return best;
         }
-        const SwitchGeo g = switchGeo(c);
-        int best = 0;
-        for (int k = 1; k < g.n; ++k)
-            if (std::fabs(switchPosY(g, k) - y) < std::fabs(switchPosY(g, best) - y)) best = k;
-        return best;
+        return 0;
     }
 
     // ---- Maquina BL-101: the OSC DRAW table (16 bars) and the CHOP masks
-    static constexpr float kChopLabelW = 36.f, kChopNameW = 48.f;
 
     // graphene: orange bars above the line, darker below, on a dark window
-    static constexpr float kDrawPad = kNew ? 6.f : 4.f;
+    static constexpr float kDrawPad = 6.f;
     void drawDrawGraphGr(const Graph& g)
     {
         drawGrWindow(*this, g.x, g.y, g.w, g.h, fGraphDrag == 1);
@@ -5271,51 +4429,6 @@ protected:
         }
     }
 
-    void drawDrawGraph(const Graph& g)
-    {
-        if (kTheme == ThemeId::Graphene) { drawDrawGraphGr(g); return; }
-        frame(g.x, g.y, g.w, g.h, col(kWell), col(fGraphDrag == 1 ? kAccent : kBorder));
-        if (g.first < 0) return;
-        const bool on = g.mode >= 0 && intOf(g.mode) != 0;
-        const float pad = 4, bw = (g.w - 2 * pad) / 16.f, mid = g.y + g.h / 2, half = g.h / 2 - pad;
-        beginPath();
-        moveTo(g.x + pad, mid);
-        lineTo(g.x + g.w - pad, mid);
-        strokeColor(col(kBorder));
-        strokeWidth(1);
-        stroke();
-        float py[16];
-        for (int k = 0; k < 16; ++k) {
-            const float v = float(intOf(g.first + k)) / 128.f; // -1 .. +0.99
-            const float x = g.x + pad + k * bw;
-            const float y = mid - v * half;
-            py[k] = y;
-            beginPath();
-            rect(x + 1, std::min(y, mid), bw - 2, std::max(1.f, std::fabs(y - mid)));
-            fillColor(col(kAccent, on ? 170 : 60));
-            fill();
-        }
-        // SLOPE: the smoothed wave through the steps
-        if (on && intOf(g.mode) == 2) {
-            beginPath();
-            for (int k = 0; k <= 16 * 8; ++k) {
-                const int i = (k / 8) % 16, j = (i + 1) % 16;
-                const float t = float(k % 8) / 8.f, st = t * t * (3 - 2 * t);
-                const float x = g.x + pad + float(k) / 8.f * bw;
-                const float y = py[i] + (py[j] - py[i]) * st;
-                if (k == 0) moveTo(x, y); else lineTo(x, y);
-            }
-            strokeColor(col(kText, 200));
-            strokeWidth(1.2f);
-            stroke();
-        }
-        if (!on) {
-            fontSize(9);
-            textAlign(ALIGN_LEFT | ALIGN_TOP);
-            fillColor(col(kDim));
-            text(g.x + 5, g.y + 3, "DRAW OFF", nullptr);
-        }
-    }
 
     uint16_t chopMaskOf(const Graph& g, int s) const
     {
@@ -5328,20 +4441,12 @@ protected:
     struct ChopGeo { float x0, cellW, rowH, y0, nameX; };
     ChopGeo chopGeo(const Graph& g) const
     {
-        ChopGeo c;
-        if (kTheme == ThemeId::Graphene) { // pads 22 x 18, 4 / 6 px apart; the mask window after them
-            c.x0 = g.x + 52;
-            c.cellW = 26;
-            c.rowH = 24;
-            c.y0 = g.y;
-            c.nameX = c.x0 + 16 * 26 + 4;
-            return c;
-        }
-        c.x0 = g.x + kChopLabelW;
-        c.nameX = g.x + g.w - kChopNameW;
-        c.cellW = (c.nameX - 4 - c.x0) / 16.f;
-        c.y0 = g.y + 16;
-        c.rowH = (g.h - 20) / 4.f;
+        ChopGeo c; // pads 22 x 18, 4 / 6 px apart; the mask window after them
+        c.x0 = g.x + 52;
+        c.cellW = 26;
+        c.rowH = 24;
+        c.y0 = g.y;
+        c.nameX = c.x0 + 16 * 26 + 4;
         return c;
     }
 
@@ -5394,52 +4499,6 @@ protected:
         useFace(*this, "mono");
     }
 
-    void drawChopGraph(const Graph& g)
-    {
-        if (kTheme == ThemeId::Graphene) { drawChopGraphGr(g); return; }
-        frame(g.x, g.y, g.w, g.h, col(kWell), col(fGraphDrag == 2 ? kAccent : kBorder));
-        const ChopGeo c = chopGeo(g);
-        const bool on = g.amount >= 0 && intOf(g.amount) > 0;
-        static const char* const kRows[4] = { "PULSE", "SAW", "SUB", "NOISE" };
-        fontSize(8);
-        textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
-        fillColor(col(kDim));
-        for (int k = 0; k < 16; k += 4) {
-            char n[4];
-            std::snprintf(n, sizeof n, "%d", k + 1);
-            text(c.x0 + (k + 0.5f) * c.cellW, g.y + 8, n, nullptr);
-        }
-        for (int s = 0; s < 4; ++s) {
-            const float y = c.y0 + s * c.rowH;
-            const uint16_t m = chopMaskOf(g, s);
-            fontSize(9);
-            textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
-            fillColor(col(kLabel));
-            text(g.x + 5, y + c.rowH / 2 + 1, kRows[s], nullptr);
-            for (int k = 0; k < 16; ++k) {
-                const bool lit = m >> k & 1u;
-                beginPath();
-                rect(c.x0 + k * c.cellW + 1, y + 1.5f, c.cellW - 2, c.rowH - 3);
-                fillColor(lit ? col(kAccent, on ? 220 : 80) : col(kTrack, on ? 255 : 120));
-                fill();
-            }
-            // the mask's name: click / wheel steps through the firmware's masks
-            const VoiceParam* mp = g.mask[s] >= 0 ? &paramAt(voiceDef(), uint32_t(g.mask[s])) : nullptr;
-            const int sel = g.mask[s] >= 0 ? intOf(g.mask[s]) : 1;
-            frame(c.nameX, y + 1, kChopNameW - 4, c.rowH - 2, col(kPanel), col(kBorder));
-            fontSize(9);
-            textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
-            fillColor(col(sel == 0 ? kAccent : kText));
-            text(c.nameX + (kChopNameW - 4) / 2, y + c.rowH / 2 + 1,
-                 mp && mp->labels && sel >= 0 && sel < mp->numLabels ? mp->labels[sel] : "", nullptr);
-        }
-        if (!on) { // overtone 0: the masks have no effect
-            fontSize(8);
-            textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
-            fillColor(col(kDim));
-            text(c.nameX + (kChopNameW - 4) / 2, g.y + 8, "OVTN 0", nullptr);
-        }
-    }
 
     // envelope geometry in panel coordinates
     struct EgPoints { float x0, xPeak, xEnd, yTop, yBot; };
@@ -5539,91 +4598,6 @@ protected:
         useFace(*this, "mono");
     }
 
-    void drawGraph(const Graph& g)
-    {
-        if (kTheme == ThemeId::Lxr) { drawGraphLxr(g); return; }
-        if (g.kind == GraphKind::Draw) { drawDrawGraph(g); return; }
-        if (g.kind == GraphKind::Chop) { drawChopGraph(g); return; }
-        beginPath();
-        rect(g.x + 0.5f, g.y + 0.5f, g.w - 1, g.h - 1);
-        fillColor(col(kWell));
-        fill();
-        strokeColor(col(kBorder));
-        strokeWidth(1);
-        stroke();
-        const EgPoints e = egPoints(g);
-        const int slope = g.slope >= 0 ? fwOf(g.slope) : 64;
-
-        // time grid: 10 ms, 100 ms, 1 s
-        for (double t : { 0.01, 0.1, 1.0 }) {
-            const float x = (g.kind == GraphKind::Amp ? e.xPeak : e.x0) +
-                            timeToX(t) * ((g.x + g.w - 6) - (g.kind == GraphKind::Amp ? e.xPeak : e.x0));
-            beginPath();
-            moveTo(x, g.y + 3); lineTo(x, g.y + g.h - 3);
-            strokeColor(col(kBorder));
-            strokeWidth(1);
-            stroke();
-        }
-
-        float height = 1.f;
-        if (g.kind == GraphKind::Pitch && g.amount >= 0)
-            height = 0.08f + 0.92f * float(fwOf(g.amount)) / 127.f;
-
-        // filled contour
-        beginPath();
-        moveTo(e.x0, e.yBot);
-        if (g.kind == GraphKind::Amp) {
-            egCurve(e.x0, e.xPeak, e.yTop, e.yBot, 127 - slope, 1.999, true, 1.f); // attack uses invSlope
-            egCurve(e.xPeak, e.xEnd, e.yTop, e.yBot, slope, 1.999, false, 1.f);
-        } else {
-            egCurve(e.x0, e.xEnd, e.yTop, e.yBot, slope, 2.0, false, height);
-        }
-        lineTo(e.xEnd, e.yBot);
-        closePath();
-        fillColor(col(kAccent, 40));
-        fill();
-        beginPath();
-        if (g.kind == GraphKind::Amp) {
-            egCurve(e.x0, e.xPeak, e.yTop, e.yBot, 127 - slope, 1.999, true, 1.f);
-            egCurve(e.xPeak, e.xEnd, e.yTop, e.yBot, slope, 1.999, false, 1.f);
-        } else {
-            egCurve(e.x0, e.xEnd, e.yTop, e.yBot, slope, 2.0, false, height);
-        }
-        strokeColor(col(kAccent));
-        strokeWidth(1.5f);
-        stroke();
-
-        // handles
-        auto handle = [&](float x, float y, bool hot) {
-            beginPath();
-            rect(x - 3, y - 3, 6, 6);
-            fillColor(hot ? col(kAccent) : col(kText));
-            fill();
-        };
-        const float yPitchTop = e.yBot - (e.yBot - e.yTop) * height;
-        if (g.kind == GraphKind::Amp) {
-            if (g.attack >= 0) handle(e.xPeak, e.yTop, fDrag == g.attack);
-            handle(e.xEnd, e.yBot, fDrag == g.decay);
-        } else {
-            handle(e.x0, yPitchTop, fDrag == g.amount);
-            handle(e.xEnd, e.yBot, fDrag == g.decay);
-        }
-
-        // time readout
-        char buf[64], t1[16], t2[16];
-        fontSize(9);
-        textAlign(ALIGN_RIGHT | ALIGN_TOP);
-        fillColor(col(kDim));
-        if (g.kind == GraphKind::Amp) {
-            fmtTime(t1, sizeof t1, g.attack >= 0 ? egSeconds(fwOf(g.attack), kAttackK) : 0.0);
-            fmtTime(t2, sizeof t2, egSeconds(fwOf(g.decay), kDecayK));
-            std::snprintf(buf, sizeof buf, "A %s  D %s", t1, t2);
-        } else {
-            fmtTime(t2, sizeof t2, egSeconds(fwOf(g.decay), kPitchK));
-            std::snprintf(buf, sizeof buf, "D %s", t2);
-        }
-        text(g.x + g.w - 5, g.y + 4, buf, nullptr);
-    }
 
     // list popup for selectors
     static constexpr float kItemH = 16.f, kItemW = 112.f;
@@ -5828,7 +4802,7 @@ protected:
             if (H.init.hit(x, y)) { initPatch(); return true; }
         }
         if (fBrowser) return ev.button == kMouseButtonLeft && y >= kHeaderH ? browserClick(x, y) : true;
-        if (kNew && fPopup < 0 && ev.button == kMouseButtonLeft) {
+        if (fPopup < 0 && ev.button == kMouseButtonLeft) {
             const RandPanel& R = layout().rand;
             if ((fDrawerOpen ? R.openToggle : R.foldToggle).hit(x, y)) { setDrawerOpen(!fDrawerOpen); return true; }
         }
@@ -5878,7 +4852,7 @@ protected:
             }
         }
         for (const Section& sec : fSections) {
-            if (sec.osc < 0 || (kNew && !fDrawerOpen)) continue;
+            if (sec.osc < 0 || !fDrawerOpen) continue;
             if (sec.roll.hit(x, y)) { doRandom(sec.osc); return true; }
             if (sec.randOn.hit(x, y)) {
                 fRand.oscOn[sec.osc] = !fRand.oscOn[sec.osc];
@@ -5963,7 +4937,7 @@ protected:
         fLastClickParam = c->param;
         fLastClickTime = ev.time;
 
-        if (kNew && lookClick(*c, x, dbl)) { repaint(); return true; }
+        if (lookClick(*c, x, dbl)) { repaint(); return true; }
         switch (c->type) {
         case CtlType::Knob:
         case CtlType::Slider:
@@ -6009,10 +4983,7 @@ protected:
             if (h != fPopupHover) { fPopupHover = h; repaint(); }
             return true;
         }
-        if (kNew) {
-            const int h = randCellAt(x, y);
-            if (h != fRandHover) { fRandHover = h; repaint(); }
-        }
+        if (const int h = randCellAt(x, y); h != fRandHover) { fRandHover = h; repaint(); }
         if (fRangeDrag >= 0) {
             setRangeFromX(x);
             return true;
@@ -6178,6 +5149,7 @@ private:
     bool fRunActive = false;      // BACK available
     bool fRedo = false;           // Oneiroi: the next UNDO press is a REDO
     bool fShift = false;          // Oneiroi (new look): SHIFT latched
+    int fDreOsc = 0;              // Dredrum (new look): the OLED's oscillator
     int fPleSel = 0;              // Plethora (new look): the program display's channel (A / B)
     bool fPleBank = false;        //   bank mode (PROGRAM held)
     uint fPleDown = 0;            //   PROGRAM pressed at (0: not pressed)

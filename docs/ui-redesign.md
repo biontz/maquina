@@ -266,6 +266,13 @@ channel on its right (shown with the drawer open).
 
 All 30 on the board; random groups match.
 
+As built (step 8): Acida FX (`makeAcidaFx`) in two rows on the silver panel, items spread edge
+to edge per section; "On" keys with red LEDs. Dredrum (`makeDredrum`): the OLED follows the
+oscillator touched last and draws its wave as an 8-bit step line (pitch falling with DROP, level
+with DECAY); wave windows with small step buttons; dashed tick-ring knobs; Silkscreen and Chakra
+Petch added. The classic look is removed: every plugin has a theme (`Theme.hpp` stops the build
+if a voice index has none), and the old row packing, header and draw path are gone.
+
 ## 3. Decisions
 
 Asked before building; all proposals accepted on 2026-11-20 (Klong colour order as given in 7).
@@ -312,6 +319,8 @@ As in the prompt: 2 Acida + theme / controls / chrome · 3 Klang, Klong, Klong F
 drums · 5 BL-101, BL-101 FX, LA-50 · 6 Oneiroi, Oneiroi FX (+ padlocks) · 7 Plethora ·
 8 Dredrum, Acida FX. One commit per step, a stop after each. Until a plugin's step is done it
 keeps today's look (the old draw path stays until the last step removes it).
+
+All eight steps are done (2026-11-21).
 
 Checks per step: build, `tools/screenshots.sh <plugin>` vs the design screenshot, 75 / 100 /
 150 % zoom, `make test` (or at least `check_presets`, `check_random`), click-through.

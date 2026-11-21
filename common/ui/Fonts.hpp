@@ -3,20 +3,24 @@
 // Faces, by name: "mono" (IBM Plex Mono 500), "mono-sb" (600): the chrome, all themes;
 // 303 silver / graphene: "print" (Inter 700), "print-xb" (Inter 800), "logo" (Inter 800
 // italic); Mutable: "print" / "logo" (Mulish 800), "print-sm" (Mulish 700); LXR: "print"
-// (Questrial), "logo" (Michroma), "lcd" (VT323); Befaco: "print" (Oswald 400), "print-m" (500).
+// (Questrial), "logo" (Michroma), "lcd" (VT323); Befaco: "print" (Oswald 400), "print-m" (500); Erica: "print" (Chakra Petch 600),
+// "pixel" / "pixel-b" (Silkscreen 400 / 700).
 //
 // Included by DrumUI.cpp inside namespace maquina_ui, after Theme.hpp.
 // SPDX-License-Identifier: GPL-3.0-only
 #pragma once
 
-#if MAQUINA_THEME != MAQUINA_THEME_CLASSIC
 #include "fonts/IBMPlexMono/IBMPlexMono-Medium.ttf.hpp"
 #include "fonts/IBMPlexMono/IBMPlexMono-SemiBold.ttf.hpp"
-#endif
 #if MAQUINA_THEME == MAQUINA_THEME_SILVER303 || MAQUINA_THEME == MAQUINA_THEME_GRAPHENE
 #include "fonts/Inter/Inter-Bold.subset.ttf.hpp"
 #include "fonts/Inter/Inter-ExtraBold.subset.ttf.hpp"
 #include "fonts/Inter/Inter-ExtraBoldItalic.subset.ttf.hpp"
+#endif
+#if MAQUINA_THEME == MAQUINA_THEME_ERICA
+#include "fonts/ChakraPetch/ChakraPetch-SemiBold.subset.ttf.hpp"
+#include "fonts/Silkscreen/Silkscreen-Regular.subset.ttf.hpp"
+#include "fonts/Silkscreen/Silkscreen-Bold.subset.ttf.hpp"
 #endif
 #if MAQUINA_THEME == MAQUINA_THEME_BEFACO
 #include "fonts/Oswald/Oswald-Regular.subset.ttf.hpp"
@@ -74,16 +78,18 @@ inline void fontPx(NanoVG& v, float px) { v.fontSize(px * gFaceScale); }
 
 inline void loadThemeFonts(NanoVG& v)
 {
-    (void)v;
     gNumFaces = 0;
-#if MAQUINA_THEME != MAQUINA_THEME_CLASSIC
     addFace(v, "mono", k_font_ibmplexmono_medium, k_font_ibmplexmono_medium_size);
     addFace(v, "mono-sb", k_font_ibmplexmono_semibold, k_font_ibmplexmono_semibold_size);
-#endif
 #if MAQUINA_THEME == MAQUINA_THEME_SILVER303 || MAQUINA_THEME == MAQUINA_THEME_GRAPHENE
     addFace(v, "print", k_font_inter_bold, k_font_inter_bold_size);
     addFace(v, "print-xb", k_font_inter_extrabold, k_font_inter_extrabold_size);
     addFace(v, "logo", k_font_inter_extrabolditalic, k_font_inter_extrabolditalic_size);
+#endif
+#if MAQUINA_THEME == MAQUINA_THEME_ERICA
+    addFace(v, "print", k_font_chakrapetch_semibold, k_font_chakrapetch_semibold_size);
+    addFace(v, "pixel", k_font_silkscreen_regular, k_font_silkscreen_regular_size);
+    addFace(v, "pixel-b", k_font_silkscreen_bold, k_font_silkscreen_bold_size);
 #endif
 #if MAQUINA_THEME == MAQUINA_THEME_BEFACO
     addFace(v, "print", k_font_oswald_regular, k_font_oswald_regular_size);

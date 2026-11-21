@@ -1,14 +1,12 @@
 // Theme.hpp - the editor's look per machine family (docs/ui-redesign.md).
 //
-// Picked at compile time from MAQUINA_VOICE_INDEX (or a MAQUINA_THEME define). Plugins
-// whose family is not redesigned yet keep the classic look (kTheme == Theme::Classic):
-// they are moved over step by step.
+// Picked at compile time from MAQUINA_VOICE_INDEX (or a MAQUINA_THEME define); every
+// plugin has one (the classic look is gone).
 //
 // Included by DrumUI.cpp inside namespace maquina_ui.
 // SPDX-License-Identifier: GPL-3.0-only
 #pragma once
 
-#define MAQUINA_THEME_CLASSIC 0
 #define MAQUINA_THEME_SILVER303 1 // Acida, Acida FX
 #define MAQUINA_THEME_GRAPHENE 2  // BL-101, BL-101 FX, LA-50
 #define MAQUINA_THEME_LXR 3       // Kick, Tom, Snare, Cymbal, HiHat
@@ -19,32 +17,31 @@
 #ifndef MAQUINA_THEME
 #if defined(MAQUINA_VOICE_INDEX) && MAQUINA_VOICE_INDEX >= 0 && MAQUINA_VOICE_INDEX <= 4 // Kick, Tom, Snare, Cymbal, HiHat
 #define MAQUINA_THEME MAQUINA_THEME_LXR
+#elif MAQUINA_VOICE_INDEX == 5 // Dredrum
+#define MAQUINA_THEME MAQUINA_THEME_ERICA
 #elif MAQUINA_VOICE_INDEX >= 6 && MAQUINA_VOICE_INDEX <= 8 // Plethora, Oneiroi, Oneiroi FX
 #define MAQUINA_THEME MAQUINA_THEME_BEFACO
 #elif MAQUINA_VOICE_INDEX >= 14 && MAQUINA_VOICE_INDEX <= 16 // BL-101, BL-101 FX, LA-50
 #define MAQUINA_THEME MAQUINA_THEME_GRAPHENE
-#elif MAQUINA_VOICE_INDEX == 12 // Acida
+#elif MAQUINA_VOICE_INDEX == 12 || MAQUINA_VOICE_INDEX == 13 // Acida, Acida FX
 #define MAQUINA_THEME MAQUINA_THEME_SILVER303
 #elif MAQUINA_VOICE_INDEX >= 9 && MAQUINA_VOICE_INDEX <= 11 // Klang, Klong, Klong FX
 #define MAQUINA_THEME MAQUINA_THEME_MUTABLE
 #else
-#define MAQUINA_THEME MAQUINA_THEME_CLASSIC
+#error "no editor theme for this MAQUINA_VOICE_INDEX (common/ui/Theme.hpp)"
 #endif
 #endif
 
 struct Rgb { int r, g, b; };
 
-enum class ThemeId { Classic, Silver303, Graphene, Lxr, Befaco, Mutable, Erica };
+enum class ThemeId { Silver303, Graphene, Lxr, Befaco, Mutable, Erica };
 
 constexpr ThemeId kTheme = MAQUINA_THEME == MAQUINA_THEME_SILVER303 ? ThemeId::Silver303
                            : MAQUINA_THEME == MAQUINA_THEME_GRAPHENE ? ThemeId::Graphene
                            : MAQUINA_THEME == MAQUINA_THEME_LXR      ? ThemeId::Lxr
                            : MAQUINA_THEME == MAQUINA_THEME_BEFACO   ? ThemeId::Befaco
                            : MAQUINA_THEME == MAQUINA_THEME_MUTABLE  ? ThemeId::Mutable
-                           : MAQUINA_THEME == MAQUINA_THEME_ERICA    ? ThemeId::Erica
-                                                                     : ThemeId::Classic;
-// the new look: 46 px header chrome, the machine panel, the random drawer
-constexpr bool kNew = kTheme != ThemeId::Classic;
+                                                                     : ThemeId::Erica;
 
 // a knob: value ring (inside the knob, or around it), skirt (a ring round the cap, or a
 // knurled body), cap (radial stops), pointer
@@ -150,6 +147,17 @@ constexpr Theme kBefaco {
     {},
 };
 
+// Erica black & white (Dredrum): black panel, white dashed tick rings, pixel type
+// (mockups/dredrum.html); knobs drawn by drawErKnob
+constexpr Theme kErica {
+    1100.f,
+    { 0xe8, 0xe8, 0xe8 }, { 0xff, 0xff, 0xff }, { 0x12, 0x12, 0x12 },
+    { 0x55, 0x55, 0x55 }, { 0x33, 0x33, 0x33 },
+    { 0x14, 0x15, 0x18 }, 4.f,
+    { 0xf2, 0xf2, 0xf2 }, { 0xbd, 0xbd, 0xbd },
+    {},
+};
+
 constexpr Theme withWidth(Theme t, float w) { t.width = w; return t; }
 constexpr Theme kGrapheneLa50 = withWidth(kGraphene, 1240.f); // the PG-1000 field is wider
 
@@ -170,24 +178,14 @@ constexpr Theme kLxr {
       200, 7.f, 3.f },
 };
 
-// the classic look's values where a Theme is asked for (never drawn with)
-constexpr Theme kClassicTheme {
-    1080.f,
-    { 0xff, 0x9f, 0x2e }, { 0xff, 0x9f, 0x2e }, { 0x1c, 0x1c, 0x1c },
-    { 0x45, 0x45, 0x45 }, { 0x26, 0x26, 0x26 },
-    { 0x1c, 0x1c, 0x1c }, 0.f,
-    { 0xc8, 0xc8, 0xc8 }, { 0xc8, 0xc8, 0xc8 },
-    {},
-};
-
 constexpr const Theme& theme()
 {
     return kTheme == ThemeId::Silver303 ? kSilver303
          : kTheme == ThemeId::Mutable   ? kMutable
          : kTheme == ThemeId::Lxr       ? kLxr
          : kTheme == ThemeId::Befaco    ? kBefaco
-         : kTheme == ThemeId::Graphene  ? (MAQUINA_VOICE_INDEX == 16 ? kGrapheneLa50 : kGraphene)
-                                        : kClassicTheme;
+         : kTheme == ThemeId::Erica     ? kErica
+                                        : (MAQUINA_VOICE_INDEX == 16 ? kGrapheneLa50 : kGraphene);
 }
 
 // header credit lines: the long one, and a shorter one when the header is tight
