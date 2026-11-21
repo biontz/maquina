@@ -1,0 +1,15 @@
+# Maquina preset (ReBirth acid patch conversion)
+# source: JonDent Famous 303 Bassline Patterns - New Order "Confusion" (Pump Panel Reconstruction)
+# ReBirth panel: Square / Cutoff 75% / Res 66% / Env 66% / Dec 66% / Acc 0% / BPM 134
+voice = acida
+name = Acida 01 Confusion Pump Panel
+category = ReBirth
+tags = square, dark, slides
+waveform = Square
+engine = 2.0
+tune = 0
+cutoff = 95
+resonance = 84
+env_mod = 84
+decay = 84
+accent = 0

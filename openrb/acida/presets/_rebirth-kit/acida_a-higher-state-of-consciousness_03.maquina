@@ -1,0 +1,15 @@
+# Maquina preset (ReBirth acid patch conversion)
+# source: JonDent - Josh Wink "Higher State of Consciousness":
+# Square / Cutoff 100% / Res 75% / Env 50% / Dec 0% / Acc 66% / BPM 134 (pair with distortion)
+voice = acida
+name = Acida 03 Higher State
+category = ReBirth
+tags = square, distorted, screaming
+waveform = Square
+engine = 2.0
+tune = 0
+cutoff = 127
+resonance = 95
+env_mod = 64
+decay = 0
+accent = 84

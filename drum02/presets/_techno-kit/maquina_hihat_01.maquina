@@ -1,0 +1,20 @@
+# Maquina techno-kit preset
+# closed 16th hat: two square mods, very short decay, highpassed
+voice = hihat
+name = Maquina Hat 01 Closed
+category = Techno
+tags = short, metallic, bright
+osc_wave = Square
+osc_coarse = 50
+mod1_wave = Square
+mod1_freq = 40
+mod1_gain = 120
+mod2_wave = Square
+mod2_freq = 58
+mod2_gain = 120
+amp_attack = 0
+amp_decay = 6
+amp_slope = 4
+filter_type = Highpass
+filter_freq = 125
+filter_reso = 10

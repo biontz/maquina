@@ -1,0 +1,16 @@
+# Maquina techno-kit preset
+# 909-style club punch: fast pitch drop, short body, tight click (SOS Synth Secrets / LXR recipe)
+voice = kick
+name = Maquina Kick 01 Punch
+category = Techno
+tags = punchy, clean, club
+osc_wave = Sine
+osc_coarse = -28
+amp_attack = 0
+amp_decay = 25
+amp_slope = 25
+pitch_amount = 60
+pitch_decay = 20
+pitch_slope = 25
+trans_wave = Click
+trans_volume = 50

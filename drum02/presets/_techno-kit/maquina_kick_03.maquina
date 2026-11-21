@@ -1,0 +1,17 @@
+# Maquina techno-kit preset
+# distorted warehouse kick: square body, filter drive, high pitch env (gabber-descended)
+voice = kick
+name = Maquina Kick 03 Driven
+category = Techno
+tags = dirty, punchy, industrial
+osc_wave = Square
+osc_coarse = -24
+amp_attack = 0
+amp_decay = 30
+amp_slope = 20
+pitch_amount = 90
+pitch_decay = 20
+filter_freq = 75
+filter_drive = 110
+drive = 70
+volume = 105

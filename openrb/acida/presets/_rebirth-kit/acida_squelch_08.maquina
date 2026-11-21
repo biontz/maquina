@@ -1,0 +1,14 @@
+# Maquina preset (ReBirth acid patch conversion)
+# source: textbook squelch (LXR manual / 303 canon): saw, res high, env very up
+voice = acida
+name = Acida 08 Squelch
+category = ReBirth
+tags = saw, squelch, bright
+waveform = Saw
+engine = 2.0
+tune = 0
+cutoff = 30
+resonance = 115
+env_mod = 100
+decay = 50
+accent = 100

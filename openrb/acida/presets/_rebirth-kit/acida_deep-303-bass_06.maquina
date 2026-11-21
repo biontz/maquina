@@ -1,0 +1,15 @@
+# Maquina preset (ReBirth acid patch conversion)
+# source: TB-303 as bass synth (Imagination / Orange Juice usage):
+# square, low cutoff, low res, long decay - what the 303 was designed for
+voice = acida
+name = Acida 06 Deep 303 Bass
+category = ReBirth
+tags = square, bass, round
+waveform = Square
+engine = 2.0
+tune = 0
+cutoff = 35
+resonance = 40
+env_mod = 25
+decay = 80
+accent = 60

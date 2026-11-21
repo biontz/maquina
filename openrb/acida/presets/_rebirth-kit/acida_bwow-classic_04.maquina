@@ -1,0 +1,15 @@
+# Maquina preset (ReBirth acid patch conversion)
+# source: classic TB-303 "bwowww" panel (gearspace/303 lore):
+# cutoff ~9 o'clock, resonance full, env ~9 o'clock, accent full
+voice = acida
+name = Acida 04 Bwow Classic
+category = ReBirth
+tags = saw, squelch, classic
+waveform = Saw
+engine = 2.0
+tune = 0
+cutoff = 45
+resonance = 127
+env_mod = 45
+decay = 64
+accent = 127

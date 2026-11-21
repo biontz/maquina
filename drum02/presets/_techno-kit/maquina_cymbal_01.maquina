@@ -1,0 +1,20 @@
+# Maquina techno-kit preset
+# metallic ride: inharmonic square stack, bandpass, long decay, lowered volume
+voice = cymbal
+name = Maquina Cymbal 01 Ride
+category = Techno
+tags = metallic, long, dark
+osc_wave = Square
+osc_coarse = 30
+mod1_wave = Square
+mod1_freq = 17
+mod1_gain = 60
+mod2_wave = Square
+mod2_freq = 31
+mod2_gain = 60
+filter_type = Bandpass
+filter_freq = 110
+filter_reso = 80
+amp_attack = 0
+amp_decay = 55
+amp_slope = 8

@@ -1,0 +1,14 @@
+# Maquina preset (ReBirth acid patch conversion)
+# source: JonDent - DJ Tim & Misjah "Access": Square / Cutoff 66% / Res 100% / Env 66% / Dec 33% / Acc 20% / BPM 134
+voice = acida
+name = Acida 02 Access
+category = ReBirth
+tags = square, tight, squelch
+waveform = Square
+engine = 2.0
+tune = 0
+cutoff = 84
+resonance = 127
+env_mod = 84
+decay = 42
+accent = 25

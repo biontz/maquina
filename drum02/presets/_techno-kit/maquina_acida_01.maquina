@@ -1,0 +1,14 @@
+# Maquina techno-kit preset
+# 16th acid line for techno: saw, high res, moderate env mod, tight decay
+voice = acida
+name = Maquina Acida 01 Line
+category = Acid
+tags = dark, modulated, techno
+waveform = Saw
+engine = 2.0
+tune = 0
+cutoff = 35
+resonance = 100
+env_mod = 60
+decay = 45
+accent = 95

@@ -1,0 +1,15 @@
+# Maquina preset (ReBirth acid patch conversion)
+# source: acidvoice TB-3 tonality tip - tune 3.2 / transpose D# to match the
+# famous riffs; classic dark panel to go with it
+voice = acida
+name = Acida 12 Tuned D Sharp
+category = ReBirth
+tags = saw, dark, transposed
+waveform = Saw
+engine = 2.0
+tune = 3
+cutoff = 40
+resonance = 95
+env_mod = 60
+decay = 45
+accent = 75

@@ -1,0 +1,11 @@
+# Maquina techno-kit preset
+# low tom for fills/drop accents: boomy 808-style, moderate pitch drop
+voice = tom
+name = Maquina Tom 01 Low
+category = Techno
+tags = long, boomy, dark
+osc_coarse = -22
+amp_decay = 40
+amp_slope = 30
+pitch_amount = 35
+pitch_decay = 25

@@ -1,0 +1,15 @@
+# Maquina preset (ReBirth acid patch conversion)
+# source: hard acid techno panel (Hardfloor/acidvoice canon): saw, res max,
+# env high, short decay, accent high; pair with Acida FX Clp hardclip
+voice = acida
+name = Acida 07 Acperience 1 (Hard Acid)
+category = ReBirth
+tags = saw, hard, techno
+waveform = Saw
+engine = 2.0
+tune = 0
+cutoff = 55
+resonance = 127
+env_mod = 110
+decay = 35
+accent = 115

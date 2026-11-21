@@ -1,0 +1,13 @@
+# Maquina techno-kit preset
+# robot zap accent: tone only, high pitch modulation (Kraftwerk/SOS tip)
+voice = snare
+name = Maquina Snare 03 Zap
+category = Techno
+tags = pitched, bright, fx
+osc_wave = Triangle
+osc_coarse = 0
+noise_mix = 50
+amp_attack = 0
+amp_decay = 14
+pitch_amount = 127
+pitch_decay = 28

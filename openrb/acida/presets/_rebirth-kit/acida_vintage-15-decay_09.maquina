@@ -1,0 +1,15 @@
+# Maquina preset (ReBirth acid patch conversion)
+# source: ReBirth "Vintage ReBirth Synth Sound" switch ON = RB-338 v1.5 short decay;
+# snappy mid-acid panel, engine 1.5
+voice = acida
+name = Acida 09 Vintage 15 Snap
+category = ReBirth
+tags = saw, snappy, vintage
+waveform = Saw
+engine = 1.5
+tune = 0
+cutoff = 60
+resonance = 100
+env_mod = 75
+decay = 30
+accent = 90

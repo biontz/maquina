@@ -1,0 +1,18 @@
+# Maquina techno-kit preset
+# dry short techno snap: noise over tone, fast decay (SOS 909 snare, shortened)
+voice = snare
+name = Maquina Snare 01 Dry
+category = Techno
+tags = short, dry, bright
+osc_wave = Triangle
+osc_coarse = -4
+noise_mix = 90
+noise_freq = 120
+amp_attack = 0
+amp_decay = 10
+amp_slope = 20
+pitch_amount = 40
+pitch_decay = 8
+trans_wave = Snap
+trans_volume = 70
+drive = 60

@@ -1,0 +1,15 @@
+# Maquina preset (ReBirth acid patch conversion)
+# source: liquid/dub acid (Sound Design Atlas ranges): moderate resonance 50-60%,
+# long decay, delay 3/16; the cutoff ride is the drama, not the scream
+voice = acida
+name = Acida 10 Liquid Acid
+category = ReBirth
+tags = saw, dubby, mellow
+waveform = Saw
+engine = 2.0
+tune = 0
+cutoff = 65
+resonance = 75
+env_mod = 55
+decay = 100
+accent = 70

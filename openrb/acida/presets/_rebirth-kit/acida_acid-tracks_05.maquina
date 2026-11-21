@@ -1,0 +1,15 @@
+# Maquina preset (ReBirth acid patch conversion)
+# source: Phuture "Acid Tracks" style panel: saw, low cutoff, high resonance,
+# env up, moderate decay; knobs ridden during the track
+voice = acida
+name = Acida 05 Acid Tracks (Phuture)
+category = ReBirth
+tags = saw, phuture, classic
+waveform = Saw
+engine = 2.0
+tune = 0
+cutoff = 40
+resonance = 110
+env_mod = 70
+decay = 55
+accent = 100

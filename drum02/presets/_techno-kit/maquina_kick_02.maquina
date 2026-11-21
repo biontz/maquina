@@ -1,0 +1,16 @@
+# Maquina techno-kit preset
+# 808-style rumble layer for breakdowns: long exponential tail, shallow pitch drop
+voice = kick
+name = Maquina Kick 02 Rumble
+category = Techno
+tags = long, boomy, sub
+osc_wave = Sine
+osc_coarse = -32
+amp_attack = 0
+amp_decay = 66
+amp_slope = 60
+pitch_amount = 30
+pitch_decay = 30
+pitch_slope = 20
+trans_wave = Click
+trans_volume = 30

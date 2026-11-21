@@ -1,0 +1,15 @@
+# Maquina preset (ReBirth acid patch conversion)
+# source: Daft Punk "Da Funk" style panel: square, bright-ish cutoff,
+# high res, env up, tight decay
+voice = acida
+name = Acida 11 Da Funk
+category = ReBirth
+tags = square, bright, tight
+waveform = Square
+engine = 2.0
+tune = 0
+cutoff = 50
+resonance = 100
+env_mod = 70
+decay = 30
+accent = 80

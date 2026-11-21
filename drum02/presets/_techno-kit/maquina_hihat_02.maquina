@@ -1,0 +1,20 @@
+# Maquina techno-kit preset
+# open offbeat hat: same recipe, ~10x tail of closed
+voice = hihat
+name = Maquina Hat 02 Open
+category = Techno
+tags = long, metallic, bright
+osc_wave = Square
+osc_coarse = 50
+mod1_wave = Square
+mod1_freq = 40
+mod1_gain = 120
+mod2_wave = Square
+mod2_freq = 58
+mod2_gain = 120
+amp_attack = 0
+amp_decay = 40
+amp_slope = 6
+filter_type = Highpass
+filter_freq = 115
+filter_reso = 10
