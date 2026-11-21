@@ -38,7 +38,7 @@ echo "$list" | while IFS='|' read -r ids preset; do
     id=${ids% *}; bin=bin/Maquina${ids#* }
     if [ $# -gt 0 ]; then case " $* " in *" $id "*) ;; *) continue ;; esac; fi
     [ -x "$bin" ] || { echo "missing $bin (make first)"; exit 1; }
-    XDG_CONFIG_HOME="$cfg" MAQUINA_UI_PRESET="$preset" "$PWD/$bin" >/dev/null 2>&1 &
+    XDG_CONFIG_HOME="$cfg" MAQUINA_UI_PRESET="$preset" MAQUINA_UI_SIZE=1 "$PWD/$bin" >/dev/null 2>"$cfg/err.txt" &
     pid=$!
     win=""
     for _ in $(seq 50); do
@@ -51,6 +51,16 @@ echo "$list" | while IFS='|' read -r ids preset; do
     # a tiled window is stretched to its tile: float it, so it takes the editor's own size
     hyprctl dispatch "hl.dsp.window.float({ action = \"enable\", window = \"pid:$pid\" })" >/dev/null
     sleep 0.5
+    # floated windows may get a default size: give it the editor's own (MAQUINA_UI_SIZE, in
+    # pixels; the compositor works in logical units)
+    size=$(sed -n 's/^maquina-ui-size //p' "$cfg/err.txt" | head -n 1)
+    if [ -n "$size" ]; then
+        scale=$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .scale')
+        w=$(echo "$size $scale" | awk '{ printf "%d", $1 / $3 + 0.5 }')
+        h=$(echo "$size $scale" | awk '{ printf "%d", $2 / $3 + 0.5 }')
+        hyprctl dispatch "hl.dsp.window.resize({ x = $w, y = $h, exact = true, window = \"pid:$pid\" })" >/dev/null
+        sleep 0.3
+    fi
     win=$(hyprctl clients -j | jq -r --argjson p "$pid" \
         '.[] | select(.pid == $p) | "\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"' | head -n 1)
     sleep 1.5   # first draws + the preset

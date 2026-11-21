@@ -15,7 +15,7 @@ except the Oneiroi padlocks (step 6). Every parameter reachable today stays reac
 |---|---|
 | `common/ui/Theme.hpp` | `Theme` struct per family (`Silver303`, `Graphene`, `LxrBlack`, `Befaco`, `MutableGrey`, `EricaBW`): panel / print / accent colours, fonts, `KnobStyle`, `SliderStyle`, `SwitchStyle`, `DisplayStyle`, panel radius, window width. Picked at compile time from `MAQUINA_VOICE_INDEX` (no Makefile change needed). |
 | `common/ui/Controls.cpp` | Draw functions: knob (scale, value arc, skirt, cap, pointer; S/M/L), slider + tick ladder, slide switch, LED button, rubber pad, display window, 7-segment digit, dot-matrix / OLED text, Befaco fader, badge, shift-label box, padlock, range bar. No hit-testing (stays in `DrumUI.cpp`). |
-| `common/ui/Chrome.cpp` | Header (46 px) and random drawer (96 px), coloured by the theme accent. |
+| `common/ui/Chrome.cpp` | Header (46 px) and random drawer (96 px open, 46 px folded — see decision 10), coloured by the theme accent. |
 | `common/ui/Layouts.cpp` | `makeLayout()`: the existing row packing (BL-101, BL-101 FX, LXR drums, Acida FX) plus fixed layouts in panel coordinates taken from the mockups (Acida, Klang, Klong, Klong FX, Oneiroi, Oneiroi FX, Plethora, Dredrum). `makeLa50` stays. |
 | `common/ui/fonts/` | The OFL fonts (static TTF instances of the weights used, `LICENSE-OFL.txt` per font), turned into `const unsigned char[]` headers by a small script; only the theme's fonts are compiled into each plugin. |
 
@@ -252,6 +252,12 @@ Asked before building; all proposals accepted on 2026-11-20 (Klong colour order 
 9. **Plethora SOURCE.** The switch has 3 positions, `c_source` 2. Proposal: a two-position
    switch GRITTY / WHITE (no FILTERED), unless a third source is wanted — that would be a DSP
    change and out of scope here.
+10. **Random drawer fold** (asked for while building step 3). The drawer starts folded: a
+    46 px bar with [RANDOM] [BACK] on the left and [RANGES ▾] on the right. RANGES opens the
+    design's 96 px drawer (range bars + padlocks) with a [▴] button that folds it again. The
+    window grows / shrinks by the difference (`setSize`, as zoom does). The choice is kept in
+    `ui.conf` as `drawer=open|folded`; `ui.conf` is now `key=value` lines (`zoom=`, `drawer=`,
+    unknown keys kept).
 
 ## 4. Steps
 

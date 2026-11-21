@@ -76,7 +76,8 @@ inline void boxShadow(NanoVG& v, float x, float y, float w, float h, float r, fl
 
 void drawKnobStyled(NanoVG& v, const KnobStyle& k, float cx, float cy, float size, float t, bool hot)
 {
-    const float rr = size / 2 - k.ringW / 2;
+    const float out = size < 45 ? k.ringOutSmall : k.ringOut;
+    const float rr = size / 2 + out - k.ringW / 2;
     const float av = kKnobA0 + std::clamp(t, 0.f, 1.f) * (kKnobA1 - kKnobA0);
     v.lineCap(NanoVG::BUTT);
     v.beginPath();
@@ -91,23 +92,40 @@ void drawKnobStyled(NanoVG& v, const KnobStyle& k, float cx, float cy, float siz
         v.stroke();
     }
     const float rc = size * (0.5f - k.capInset);
-    circleShadow(v, cx, cy + 4, rc + k.skirtW, 8, 100);
+    const float body = k.knurl ? size / 2 : rc + k.skirtW;
+    circleShadow(v, cx, cy + k.shadowDy, body, k.shadowBlur, k.shadowA);
     v.beginPath();
-    v.circle(cx, cy, rc + k.skirtW);
+    v.circle(cx, cy, body);
     v.fillColor(rgba(k.skirt));
     v.fill();
-    // cap lit from 38 % / 32 % of its box (CSS: farthest corner = radius)
-    const float gx = cx - 0.24f * rc, gy = cy - 0.36f * rc, gr = 1.84f * rc;
-    static const float kStops[4] = { 0.f, 0.38f, 0.78f, 1.f };
-    fillRadialStops(v, [&] { v.circle(cx, cy, rc); }, gx, gy, gr, kStops, k.cap, 4);
-    // pointer: from 6 % to 36 % of the cap's diameter, from its edge
+    if (k.knurl) { // ridges: every other 6° wedge
+        v.beginPath();
+        for (int i = 0; i < 30; ++i) {
+            const float a0 = float(i) * float(M_PI) / 15.f, a1 = a0 + float(M_PI) / 30.f;
+            v.moveTo(cx, cy);
+            v.arc(cx, cy, body, a0, a1, NanoVG::CW);
+            v.closePath();
+        }
+        v.fillColor(rgba(k.skirt2));
+        v.fill();
+    }
+    if (k.capLineW > 0) {
+        v.beginPath();
+        v.circle(cx, cy, rc + k.capLineW);
+        v.fillColor(rgba(k.capLine));
+        v.fill();
+    }
+    // cap lit from (capGx, capGy) of its box; CSS radius: the farthest corner
+    const float gx = cx - rc + 2 * rc * k.capGx, gy = cy - rc + 2 * rc * k.capGy;
+    const float dx = 2 * rc * std::max(k.capGx, 1 - k.capGx), dy = 2 * rc * std::max(k.capGy, 1 - k.capGy);
+    fillRadialStops(v, [&] { v.circle(cx, cy, rc); }, gx, gy, std::sqrt(dx * dx + dy * dy), k.capStop, k.cap, k.capN);
     const float ca = std::cos(av), sa = std::sin(av);
-    const float r0 = rc * 0.88f, r1 = rc * 0.28f;
+    const float r0 = rc - k.ptrFrom * 2 * rc, r1 = r0 - k.ptrLen * 2 * rc;
     v.beginPath();
     v.moveTo(cx + ca * r0, cy + sa * r0);
     v.lineTo(cx + ca * r1, cy + sa * r1);
     v.strokeColor(rgba(k.pointer));
-    v.strokeWidth(std::max(2.f, size * 0.05f));
+    v.strokeWidth(std::max(2.f, std::min(3.f, size * 0.05f)));
     v.lineCap(NanoVG::ROUND);
     v.stroke();
 }
@@ -336,4 +354,145 @@ void drawRangeBar(NanoVG& v, float x, float yc, float w, int lo, int hi, bool lo
         v.strokeWidth(1.5f);
         v.stroke();
     }
+}
+
+// ---------------------------------------------------------------------------
+// Mutable light grey
+
+void drawMutablePanel(NanoVG& v, float x, float y, float w, float h, float r)
+{
+    boxShadow(v, x, y, w, h, r, 6, 18, 128);
+    v.beginPath();
+    v.roundedRect(x, y, w, h, r);
+    v.fillPaint(v.linearGradient(x, y, x, y + h, rgba({ 0xec, 0xec, 0xea }), rgba({ 0xdf, 0xdf, 0xdc })));
+    v.fill();
+    v.beginPath();
+    v.moveTo(x + r, y + 0.5f);
+    v.lineTo(x + w - r, y + 0.5f);
+    v.strokeColor(rgba({ 0xff, 0xff, 0xff }));
+    v.strokeWidth(1);
+    v.stroke();
+    // black screws in the corners
+    v.beginPath();
+    for (float sx : { x + 16.5f, x + w - 16.5f })
+        for (float sy : { y + 16.5f, y + h - 16.5f }) v.circle(sx, sy, 4.5f);
+    v.fillColor(rgba({ 0x1a, 0x1a, 0x1a }));
+    v.fill();
+}
+
+// round black push button with a light bezel (30 px)
+void drawRoundButton(NanoVG& v, float cx, float cy, bool hot)
+{
+    circleShadow(v, cx, cy + 2, 18, 4, 90);
+    v.beginPath();
+    v.circle(cx, cy, 18);
+    v.fillColor(rgba({ 0xbd, 0xbd, 0xb8 }));
+    v.fill();
+    v.beginPath();
+    v.circle(cx, cy, 15);
+    v.fillPaint(v.radialGradient(cx - 3, cy - 5, 0, 18, rgba(hot ? Rgb { 0x55, 0x55, 0x55 } : Rgb { 0x3a, 0x3a, 0x3a }),
+                                 rgba({ 0x0e, 0x0e, 0x0e })));
+    v.fill();
+}
+
+// LED, 12 px: off = grey, on = lit in its colour with a glow
+void drawLed(NanoVG& v, float cx, float cy, bool on, Rgb c)
+{
+    if (on) {
+        v.beginPath();
+        v.circle(cx, cy, 15);
+        v.fillPaint(v.radialGradient(cx, cy, 4, 15, rgba(c, 150), rgba(c, 0)));
+        v.fill();
+        static const float kStops[3] = { 0.f, 0.55f, 1.f };
+        const Rgb cols[3] = { mix(c, { 0xff, 0xff, 0xff }, 0.7f), c, mix(c, { 0, 0, 0 }, 0.35f) };
+        fillRadialStops(v, [&] { v.circle(cx, cy, 6); }, cx - 1.2f, cy - 1.8f, 7.5f, kStops, cols, 3);
+    } else {
+        v.beginPath();
+        v.circle(cx, cy, 6);
+        v.fillColor(rgba({ 0xa3, 0xa3, 0x9e }));
+        v.fill();
+        v.beginPath();
+        v.circle(cx, cy, 6);
+        v.fillPaint(v.radialGradient(cx, cy + 1, 3, 6.5f, Color(0, 0, 0, 0.f), Color(0, 0, 0, 0.35f)));
+        v.fill();
+    }
+}
+
+// colour dot (14 px, white border); selected: an ink ring around it, alt: a thinner one
+void drawColourDot(NanoVG& v, float cx, float cy, Rgb c, bool selected, bool alt)
+{
+    if (selected || alt) {
+        v.beginPath();
+        v.circle(cx, cy, alt && !selected ? 9 : 10);
+        v.fillColor(rgba({ 0x1a, 0x1a, 0x1a }));
+        v.fill();
+    }
+    v.beginPath();
+    v.circle(cx, cy, 8);
+    v.fillColor(Color(0, 0, 0, 0.15f));
+    v.fill();
+    v.beginPath();
+    v.circle(cx, cy, 7);
+    v.fillColor(rgba({ 0xff, 0xff, 0xff }));
+    v.fill();
+    v.beginPath();
+    v.circle(cx, cy, 5);
+    v.fillColor(rgba(c));
+    v.fill();
+}
+
+// dark window (a selector's value, click = list): text + ▾
+void drawDarkWindow(NanoVG& v, float x, float y, float w, float h, const char* s, bool hot)
+{
+    v.beginPath();
+    v.roundedRect(x, y, w, h, 4);
+    v.fillColor(rgba(hot ? Rgb { 0x2a, 0x2a, 0x2a } : Rgb { 0x1a, 0x1a, 0x1a }));
+    v.fill();
+    // a long name: a slightly smaller font first, then cut with an ellipsis (small zooms
+    // measure a little wider than 100 %, so a name that fits there can overflow here)
+    const float room = w - 34;
+    float px = 12.5f;
+    fontPx(v, px);
+    for (; px > 11.f && vTextWidth(v, s) > room; px -= 0.5f) fontPx(v, px - 0.5f);
+    std::string fit = s ? s : "";
+    if (vTextWidth(v, fit.c_str()) > room) {
+        while (!fit.empty() && vTextWidth(v, (fit + "\xe2\x80\xa6").c_str()) > room) {
+            fit.pop_back();
+            while (!fit.empty() && (uint8_t(fit.back()) & 0xc0) == 0x80) fit.pop_back(); // whole UTF-8 chars
+            if (!fit.empty() && (uint8_t(fit.back()) & 0xc0) == 0xc0) fit.pop_back();
+        }
+        while (!fit.empty() && fit.back() == ' ') fit.pop_back();
+        fit += "\xe2\x80\xa6";
+    }
+    s = fit.c_str();
+    const float tw = std::min(vTextWidth(v, s), room);
+    const float tx = x + (w - tw - 18) / 2;
+    v.save();
+    v.scissor(x + 4, y, w - 26, h);
+    v.textAlign(NanoVG::ALIGN_LEFT | NanoVG::ALIGN_MIDDLE);
+    v.fillColor(rgba({ 0xf2, 0xf2, 0xee }));
+    vText(v, tx, y + h / 2 + 1, s);
+    v.restore();
+    const float ax = tx + tw + 12, ay = y + h / 2;
+    v.beginPath();
+    v.moveTo(ax - 4, ay - 2);
+    v.lineTo(ax + 4, ay - 2);
+    v.lineTo(ax, ay + 3);
+    v.closePath();
+    v.fillColor(rgba({ 0x8c, 0x8c, 0x8c }));
+    v.fill();
+}
+
+// dotted line (2 px dots, 4 px pitch), vertical or horizontal
+void drawDotted(NanoVG& v, float x0, float y0, float x1, float y1, Rgb c)
+{
+    const float len = std::hypot(x1 - x0, y1 - y0);
+    const int n = int(len / 4);
+    v.beginPath();
+    for (int i = 0; i <= n; ++i) {
+        const float t = n ? float(i) / float(n) : 0.f;
+        v.rect(x0 + (x1 - x0) * t - 1, y0 + (y1 - y0) * t - 1, 2, 2);
+    }
+    v.fillColor(rgba(c));
+    v.fill();
 }

@@ -7,6 +7,7 @@ plugin embeds only the fonts of its theme (`common/ui/Theme.hpp`), as the
 | Folder | Files | Source | Changes |
 |---|---|---|---|
 | `IBMPlexMono/` | Medium (500), SemiBold (600) | github.com/google/fonts `ofl/ibmplexmono` | none (Reserved Font Name "Plex": shipped unmodified) |
+| `Mulish/` | Bold (700), ExtraBold (800) | github.com/google/fonts `ofl/mulish` (variable) | static instances (`fonttools varLib.instancer wght=700 / 800`), subset like Inter (no reserved name) |
 | `Inter/` | Bold (700), ExtraBold (800), ExtraBold Italic | github.com/rsms/inter release 4.1, `extras/ttf` | subset to Latin-1, punctuation and arrows (`*.subset.ttf`; no reserved name) |
 
 Subsetting (fontTools):
