@@ -3,7 +3,7 @@
 // Faces, by name: "mono" (IBM Plex Mono 500), "mono-sb" (600): the chrome, all themes;
 // 303 silver / graphene: "print" (Inter 700), "print-xb" (Inter 800), "logo" (Inter 800
 // italic); Mutable: "print" / "logo" (Mulish 800), "print-sm" (Mulish 700); LXR: "print"
-// (Questrial), "logo" (Michroma), "lcd" (VT323).
+// (Questrial), "logo" (Michroma), "lcd" (VT323); Befaco: "print" (Oswald 400), "print-m" (500).
 //
 // Included by DrumUI.cpp inside namespace maquina_ui, after Theme.hpp.
 // SPDX-License-Identifier: GPL-3.0-only
@@ -17,6 +17,10 @@
 #include "fonts/Inter/Inter-Bold.subset.ttf.hpp"
 #include "fonts/Inter/Inter-ExtraBold.subset.ttf.hpp"
 #include "fonts/Inter/Inter-ExtraBoldItalic.subset.ttf.hpp"
+#endif
+#if MAQUINA_THEME == MAQUINA_THEME_BEFACO
+#include "fonts/Oswald/Oswald-Regular.subset.ttf.hpp"
+#include "fonts/Oswald/Oswald-Medium.subset.ttf.hpp"
 #endif
 #if MAQUINA_THEME == MAQUINA_THEME_LXR
 #include "fonts/Michroma/Michroma-Regular.subset.ttf.hpp"
@@ -80,6 +84,10 @@ inline void loadThemeFonts(NanoVG& v)
     addFace(v, "print", k_font_inter_bold, k_font_inter_bold_size);
     addFace(v, "print-xb", k_font_inter_extrabold, k_font_inter_extrabold_size);
     addFace(v, "logo", k_font_inter_extrabolditalic, k_font_inter_extrabolditalic_size);
+#endif
+#if MAQUINA_THEME == MAQUINA_THEME_BEFACO
+    addFace(v, "print", k_font_oswald_regular, k_font_oswald_regular_size);
+    addFace(v, "print-m", k_font_oswald_medium, k_font_oswald_medium_size);
 #endif
 #if MAQUINA_THEME == MAQUINA_THEME_LXR
     addFace(v, "print", k_font_questrial_regular, k_font_questrial_regular_size);

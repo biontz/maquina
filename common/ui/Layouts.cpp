@@ -1024,6 +1024,152 @@ void makeLa50New(Layout& L)
     makeDrawer(L, py + ph);
 }
 
+// ---------------------------------------------------------------------------
+// Befaco Oneiroi, Oneiroi FX (mockups/oneiroi.html, oneiroi-fx.html): the module 1:1 (1090 x
+// 830) and the expander (204 x 830); positions in module coordinates from the mockups. The
+// randomizer is the module's own, on the panel: no drawer.
+
+void makeOneiroi(Layout& L)
+{
+    BfPanel& B = L.bf;
+    B.used = true;
+    B.fx = voiceDef().voice == maquina::kOneiroiFxVoice;
+    const float ox = 10, oy = kChromeHeaderH + 10, ex = ox + 1090 + 6;
+    B.ox = ox; B.oy = oy; B.ex = ex;
+    L.panel = { ox, oy, 1090, 830 };
+    L.noDrawer = true;
+    L.height = oy + 830 + 10;
+    // knobs: centre, scale radius, cap, main and SHIFT parameter, label, SHIFT label
+    struct K { float x, y, R; int kind; const char* sym; const char* alt; const char* label; const char* altLabel; };
+    static const K kKnobs[] = {
+        { 178, 150, 64, 0, "loop_speed", nullptr, "VARISPEED", nullptr },
+        { 322, 82, 42, 1, "loop_start", "loop_sos", "START", "SOS" },
+        { 322, 222, 42, 1, "loop_length", "loop_filter", "LENGTH", "FILTER" },
+        { 91, 380, 64, 0, "osc_pitch", "osc_octave", "PITCH", "OCTAVE" },
+        { 322, 360, 42, 1, "osc_detune", "osc_unison", "DETUNE", "UNISON" },
+        { 537, 212, 42, 2, "mod_level", nullptr, "MOD LEVEL", nullptr },
+        { 537, 372, 42, 2, "mod_speed", "mod_type", "SPEED", "TYPE" },
+        { 656, 146, 64, 0, "flt_cutoff", "flt_mode", "CUTOFF", "MODE" },
+        { 774, 222, 42, 1, "flt_reso", "flt_pos", "RESO", "POS" },
+        { 897, 146, 64, 0, "res_tune", "res_dissonance", "TUNE", "DISSONANCE" },
+        { 1017, 222, 42, 1, "res_feedback", nullptr, "FEEDBACK", nullptr },
+        { 774, 410, 64, 0, "echo_density", "echo_filter", "DENSITY", "FILTER" },
+        { 656, 456, 42, 1, "echo_repeats", nullptr, "REPEATS", nullptr },
+        { 1017, 410, 64, 0, "amb_spacetime", "amb_autopan", "SPACETIME", "AUTOPAN" },
+        { 897, 456, 42, 1, "amb_decay", nullptr, "DECAY", nullptr },
+    };
+    auto knob = [&](float x, float y, float R, int kind, const char* sym, const char* alt, const char* label,
+                    const char* altLabel, float bx) {
+        const int p = findParam(sym);
+        if (p < 0) return;
+        const float cx = bx + x, cy = oy + y;
+        Ctl c { uint32_t(p), CtlType::Knob, label, cx - R, cy - R, 2 * R, 2 * R };
+        c.ax = cx; c.ay = cy; c.size = 2 * R; c.n = uint8_t(kind); c.look = Ctl::BfKnob;
+        // label block (Oswald 17 px, then the SHIFT box, then the value)
+        const float top = cy + (kind == 0 ? 70.f : 46.f);
+        c.labelY = top + 9;
+        const int a = alt ? findParam(alt) : -1;
+        c.alt = a;
+        c.valueY = top + (a >= 0 ? 18 + 3 + 17 + 3 + 6.5f : 18 + 3 + 6.5f);
+        L.ctls.push_back(c);
+        if (a >= 0) { // the white SHIFT box: drag / wheel / double-click edit the SHIFT function
+            const float bw = float(utf8Len(altLabel)) * 7.2f + 12, by = top + 18 + 3 + 8.5f;
+            Ctl b { uint32_t(a), CtlType::Knob, altLabel, cx - bw / 2, by - 9, bw, 18 };
+            b.ax = cx; b.ay = by; b.size = 1; b.bw = bw; b.bh = 17; b.look = Ctl::BfShift;
+            L.ctls.push_back(b);
+        }
+    };
+    for (const K& k : kKnobs) knob(k.x, k.y, k.R, k.kind, k.sym, k.alt, k.label, k.altLabel, ox);
+    // filter mode / reso position badges
+    struct Bd { float x, y; const char* sym; int v; const char* t; };
+    static const Bd kBadges[] = {
+        { 590, 190, "flt_mode", 0, "LP" }, { 590, 102, "flt_mode", 1, "BP" }, { 722, 102, "flt_mode", 2, "HP" },
+        { 722, 190, "flt_mode", 3, "CF" }, { 722, 238, "flt_pos", 0, "I" }, { 740, 170, "flt_pos", 1, "II" },
+        { 812, 170, "flt_pos", 2, "III" }, { 826, 238, "flt_pos", 3, "IV" },
+    };
+    for (const Bd& b : kBadges) {
+        const int p = findParam(b.sym);
+        if (p < 0) continue;
+        const float w = float(utf8Len(b.t)) * 7.f + 8, cx = ox + b.x, cy = oy + b.y;
+        Ctl c { uint32_t(p), CtlType::Select, b.t, cx - w / 2, cy - 9, w, 18 };
+        c.ax = cx; c.ay = cy; c.size = 1; c.bw = w; c.bh = 18; c.n = uint8_t(b.v); c.look = Ctl::BfBadge;
+        L.ctls.push_back(c);
+    }
+    // SS / [WT] switch (Oneiroi)
+    if (const int p = findParam("osc2_mode"); p >= 0) {
+        Ctl c { uint32_t(p), CtlType::Switch, nullptr, ox + 196, oy + 389, 74, 58 };
+        c.ax = ox + 256; c.ay = oy + 418; c.size = 1; c.bw = 26; c.bh = 58; c.look = Ctl::BfSwitch;
+        L.ctls.push_back(c);
+    }
+    // SOURCE stepper (FX)
+    if (const int p = findParam("loop_source"); p >= 0) {
+        Ctl c { uint32_t(p), CtlType::Select, "SOURCE", ox + 178 - 92, oy + 398 - 15, 184, 30 };
+        c.ax = ox + 178; c.ay = oy + 398; c.size = 1; c.bw = 110; c.bh = 30; c.labelY = oy + 360; c.look = Ctl::GrStep;
+        L.ctls.push_back(c);
+    }
+    // faders
+    struct F { float x; const char* sym; const char* label; };
+    static const F kFaders[] = { { 182, "vol_looper", "LOOPER" }, { 276, "vol_sine", "SINE" }, { 276, "vol_input", "INPUT" },
+                                 { 372, "vol_osc2", "SS/WT" }, { 755, "mix_filter", "FILTER" },
+                                 { 851, "mix_resonator", "RESONATOR" }, { 945, "mix_echo", "ECHO" },
+                                 { 1041, "mix_ambience", "AMBIENCE" } };
+    for (const F& f : kFaders) {
+        const int p = findParam(f.sym);
+        if (p < 0) continue;
+        const float cx = ox + f.x;
+        Ctl c { uint32_t(p), CtlType::Slider, f.label, cx - 20, oy + 552, 40, 176 };
+        c.ax = cx; c.ay = oy + 560 + 80; c.size = 1; c.bw = 14; c.bh = 160; c.labelY = oy + 740; c.valueY = oy + 762;
+        c.look = Ctl::BfFader;
+        L.ctls.push_back(c);
+    }
+    // RECORD (SHIFT: CLEAR) and its CLEAR box
+    if (const int p = findParam("loop_record"); p >= 0) {
+        Ctl c { uint32_t(p), CtlType::Toggle, "RECORD", ox + 71 - 33, oy + 700 - 33, 66, 66 };
+        c.ax = ox + 71; c.ay = oy + 700; c.size = 58; c.labelY = oy + 750; c.look = Ctl::BfButton;
+        c.alt = findParam("loop_clear");
+        L.ctls.push_back(c);
+        if (c.alt >= 0) {
+            Ctl b { uint32_t(c.alt), CtlType::Toggle, "CLEAR", ox + 71 - 22, oy + 772 - 9, 44, 18 };
+            b.ax = ox + 71; b.ay = oy + 772; b.size = 1; b.bw = 44; b.bh = 17; b.look = Ctl::BfShift;
+            L.ctls.push_back(b);
+        }
+    }
+    // the module's randomizer and SHIFT (drawn and clicked by the editor)
+    B.shift = { ox + 430 - 33, oy + 415 - 33, 66, 66 };
+    B.random = { ox + 640 - 33, oy + 710 - 33, 66, 66 };
+    B.target = { ox + 584 - 13, oy + 602 - 59, 26, 118 };
+    B.amount = { ox + 664 - 13, oy + 598 - 36, 26, 72 };
+    B.prev = { ox + 512 - 11, oy + 680 - 11, 22, 22 };
+    B.next = { ox + 576 - 11, oy + 680 - 11, 22, 22 };
+    for (int k = 0; k < 4; ++k) B.rowY[k] = oy + 560 + 28.f * float(k);
+    // the expander
+    const float eo = B.fx ? -60.f : 0.f; // FX: no ENVELOPE / DRONE; SYNC and OUT move up
+    if (!B.fx) {
+        knob(58, 150, 42, 1, "env_attack", nullptr, "ATTACK", nullptr, ex);
+        knob(146, 150, 42, 1, "env_decay", nullptr, "DECAY", nullptr, ex);
+        knob(58, 296, 42, 1, "env_sustain", nullptr, "SUSTAIN", nullptr, ex);
+        knob(146, 296, 42, 1, "env_release", nullptr, "RELEASE", nullptr, ex);
+        if (const int p = findParam("env_drone"); p >= 0) {
+            Ctl c { uint32_t(p), CtlType::Toggle, "DRONE", ex + 102 - 28, oy + 416 - 28, 56, 56 };
+            c.ax = ex + 102; c.ay = oy + 416; c.size = 46; c.labelY = oy + 458; c.look = Ctl::BfButton;
+            L.ctls.push_back(c);
+        }
+    }
+    const float sy = B.fx ? 128 + 13.f : 568 + 13.f, gy = B.fx ? 302.f : 722.f;
+    (void)eo;
+    if (const int p = findParam("sync"); p >= 0) {
+        Ctl c { uint32_t(p), CtlType::Select, nullptr, ex + 102 - 68, oy + sy - 13, 136, 26 };
+        c.ax = ex + 102; c.ay = oy + sy; c.size = 1; c.bw = 60; c.bh = 26; c.look = Ctl::GrStep;
+        L.ctls.push_back(c);
+    }
+    if (const int p = findParam("gain"); p >= 0) {
+        const float cx = ex + 102, cy = oy + gy;
+        Ctl c { uint32_t(p), CtlType::Knob, nullptr, cx - 42, cy - 42, 84, 84 };
+        c.ax = cx; c.ay = cy; c.size = 84; c.n = 1; c.look = Ctl::BfKnob; c.valueY = cy + 68;
+        L.ctls.push_back(c);
+    }
+}
+
 void makeNewLayout(Layout& L)
 {
     switch (voiceDef().voice) {
@@ -1034,6 +1180,8 @@ void makeNewLayout(Layout& L)
     case maquina::kBl101Voice:
     case maquina::kBl101FxVoice: makeGraphene(L); break;
     case maquina::kLa50Voice: makeLa50New(L); break;
+    case maquina::kOneiroiVoice:
+    case maquina::kOneiroiFxVoice: makeOneiroi(L); break;
     default:
         if (maquina::isLxrVoice(voiceDef().voice)) makeLxr(L);
         break;

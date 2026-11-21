@@ -367,12 +367,15 @@ inline float oneiroiRandomKnob(float k, int amount, bool semitones, float rf)
 }
 
 // Randomize values[0 .. numAllParams(d)) in place (plugin units).
-inline void oneiroiRandomize(const VoiceDef& d, int target, int amount, float* values, std::mt19937& rng)
+// lock (optional, per randomizer group): the editor's padlocks on OSC / LOOPER / FX
+inline void oneiroiRandomize(const VoiceDef& d, int target, int amount, float* values, std::mt19937& rng,
+                             const bool* lock = nullptr)
 {
     std::uniform_real_distribution<float> unit(0.f, 1.f);
     for (uint32_t i = 0; i < d.numParams; ++i) {
         const VoiceParam& p = d.params[i];
         if (!oneiroiTargets(p.symbol, target)) continue;
+        if (const int g = randGroupOf(p.symbol); lock && g >= 0 && lock[g]) continue;
         const bool semis = oneiroi::isPitch(p);
         const float k = oneiroi::toKnob(p, values[i]);
         values[i] = float(oneiroi::fromKnob(p, oneiroiRandomKnob(k, amount, semis, unit(rng))));

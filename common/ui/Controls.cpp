@@ -787,3 +787,190 @@ void drawGrWindow(NanoVG& v, float x, float y, float w, float h, bool hot)
         v.stroke();
     }
 }
+
+// ---------------------------------------------------------------------------
+// Befaco (mockups/oneiroi.html)
+
+constexpr Rgb kBfWhite { 0xf2, 0xf2, 0xf2 };
+constexpr Rgb kBfRed { 0xe3, 0x26, 0x2a };
+constexpr Rgb kBfGrey { 0x8c, 0x8c, 0x8c };
+
+// knob: printed white 270° scale at R with a dot at each end, red value arc inside it (glow);
+// cap: 0 big knurled (C 50, white line), 1 small grey (C 30, dark dot), 2 black (white ring, dot)
+void drawBfKnob(NanoVG& v, float cx, float cy, float R, int kind, float t, bool hot)
+{
+    const float a0 = kKnobA0, a1 = kKnobA1, av = a0 + std::clamp(t, 0.f, 1.f) * (a1 - a0);
+    v.lineCap(NanoVG::BUTT);
+    v.beginPath();
+    v.arc(cx, cy, R - 1, a0, a1, NanoVG::CW);
+    v.strokeColor(rgba(kBfWhite));
+    v.strokeWidth(2);
+    v.stroke();
+    for (float a : { a0, a1 }) {
+        v.beginPath();
+        v.circle(cx + std::cos(a) * (R - 0.5f), cy + std::sin(a) * (R - 0.5f), 3.5f);
+        v.fillColor(rgba(kBfWhite));
+        v.fill();
+    }
+    if (av > a0 + 0.001f) {
+        const Rgb arc = hot ? mix(kBfRed, { 0xff, 0xff, 0xff }, 0.25f) : kBfRed;
+        v.beginPath();
+        v.arc(cx, cy, R - 6.5f, a0, av, NanoVG::CW);
+        v.strokeColor(rgba(arc, 70));
+        v.strokeWidth(7);
+        v.stroke();
+        v.beginPath();
+        v.arc(cx, cy, R - 6.5f, a0, av, NanoVG::CW);
+        v.strokeColor(rgba(arc));
+        v.strokeWidth(3);
+        v.stroke();
+    }
+    const float C = kind == 0 ? R - 14 : R - 12;
+    const float ca = std::cos(av), sa = std::sin(av);
+    circleShadow(v, cx, cy + 4, C + (kind ? 5 : 0), 9, 200);
+    if (kind == 0) { // knurled: 24 ridges, light from the top left, a darker centre disk
+        v.beginPath();
+        v.circle(cx, cy, C);
+        v.fillColor(rgba({ 0x2c, 0x2c, 0x2c }));
+        v.fill();
+        v.beginPath();
+        for (int i = 0; i < 24; ++i) {
+            const float b0 = float(i) * float(M_PI) / 12.f + 7.f * float(M_PI) / 180.f, b1 = float(i + 1) * float(M_PI) / 12.f;
+            v.moveTo(cx, cy);
+            v.arc(cx, cy, C, b0 - float(M_PI) / 2, b1 - float(M_PI) / 2, NanoVG::CW);
+            v.closePath();
+        }
+        v.fillColor(rgba({ 0x3b, 0x3b, 0x3b }));
+        v.fill();
+        v.beginPath();
+        v.circle(cx, cy, C);
+        v.fillPaint(v.radialGradient(cx - 0.16f * C, cy - 0.32f * C, 0, 1.1f * C, Color(1.f, 1.f, 1.f, 0.16f), Color(1.f, 1.f, 1.f, 0.f)));
+        v.fill();
+        const float ic = 0.68f * C;
+        v.beginPath();
+        v.circle(cx, cy, ic);
+        v.fillPaint(v.radialGradient(cx - 0.2f * ic, cy - 0.36f * ic, 0, 1.5f * ic, rgba({ 0x4b, 0x4b, 0x4b }), rgba({ 0x26, 0x26, 0x26 })));
+        v.fill();
+        v.beginPath();
+        v.moveTo(cx + ca * 0.72f * C, cy + sa * 0.72f * C);
+        v.lineTo(cx + ca * 0.04f * C, cy + sa * 0.04f * C);
+        v.strokeColor(rgba(kBfWhite));
+        v.strokeWidth(3.5f);
+        v.lineCap(NanoVG::ROUND);
+        v.stroke();
+        return;
+    }
+    // rings: grey = dark then a thin grey edge; black = a white ring
+    v.beginPath();
+    v.circle(cx, cy, C + (kind == 1 ? 5.f : 4.f));
+    v.fillColor(rgba(kind == 1 ? Rgb { 0x3a, 0x3a, 0x3a } : Rgb { 0xe6, 0xe6, 0xe6 }));
+    v.fill();
+    if (kind == 1) {
+        v.beginPath();
+        v.circle(cx, cy, C + 4);
+        v.fillColor(rgba({ 0x1d, 0x1d, 0x1d }));
+        v.fill();
+    }
+    static const float kStops[3] = { 0.f, 0.55f, 1.f };
+    const Rgb grey[3] = { { 0xe2, 0xe2, 0xe2 }, { 0xb4, 0xb4, 0xb4 }, { 0x8a, 0x8a, 0x8a } };
+    const Rgb black[3] = { { 0x3a, 0x3a, 0x3a }, { 0x06, 0x06, 0x06 }, { 0x06, 0x06, 0x06 } };
+    static const float kBlackStops[3] = { 0.f, 0.7f, 1.f };
+    fillRadialStops(v, [&] { v.circle(cx, cy, C); }, cx - 0.2f * C, cy - 0.36f * C, 1.6f * C, kind == 1 ? kStops : kBlackStops,
+                    kind == 1 ? grey : black, 3);
+    const float dr = 0.68f * C - 3.5f;
+    v.beginPath();
+    v.circle(cx + ca * dr, cy + sa * dr, 3.5f);
+    v.fillColor(rgba(kind == 1 ? Rgb { 0x1d, 0x1d, 0x1d } : kBfWhite));
+    v.fill();
+}
+
+// fader: black slot (14 wide) with a thin edge, glossy red pill cap (24 x 44); t = 0..1
+void drawBfFader(NanoVG& v, float cx, float top, float h, float t, bool hot)
+{
+    v.beginPath();
+    v.roundedRect(cx - 7, top, 14, h, 7);
+    v.fillColor(rgba({ 0, 0, 0 }));
+    v.fill();
+    v.strokeColor(rgba({ 0x26, 0x26, 0x26 }));
+    v.strokeWidth(1);
+    v.stroke();
+    const float cy = top + (1.f - std::clamp(t, 0.f, 1.f)) * (h - 44);
+    v.beginPath();
+    v.roundedRect(cx - 14, cy - 4, 28, 56, 13);
+    v.fillPaint(v.boxGradient(cx - 12, cy, 24, 44, 11, 10, Color(227 / 255.f, 20 / 255.f, 28 / 255.f, 0.35f), Color(0, 0, 0, 0.f)));
+    v.fill();
+    static const float kStops[3] = { 0.f, 0.45f, 1.f };
+    const Rgb cols[3] = { hot ? Rgb { 0xff, 0xc0, 0xc0 } : Rgb { 0xff, 0x9a, 0x9a }, { 0xe3, 0x14, 0x1c }, { 0x8f, 0x0a, 0x10 } };
+    fillRadialStops(v, [&] { v.roundedRect(cx - 12, cy, 24, 44, 11); }, cx - 2.4f, cy + 12.3f, 30.f, kStops, cols, 3);
+}
+
+// the tick ladder between faders: 7 white bars, 28 -> 8 px wide, over h
+void drawBfLadder(NanoVG& v, float cx, float top, float h)
+{
+    static const float kW[7] = { 28, 26, 24, 20, 16, 12, 8 };
+    v.beginPath();
+    for (int k = 0; k < 7; ++k) v.roundedRect(cx - kW[k] / 2, top + (h - 4) * float(k) / 6.f, kW[k], 4, 2);
+    v.fillColor(rgba(kBfWhite));
+    v.fill();
+}
+
+// round push button (d 58 or 46) in a dark ring; on: a red glow round it
+void drawBfButton(NanoVG& v, float cx, float cy, float d, bool on, bool hot)
+{
+    const float r = d / 2;
+    if (on) {
+        v.beginPath();
+        v.circle(cx, cy, r + 16);
+        v.fillPaint(v.radialGradient(cx, cy, r, r + 16, Color(1.f, 42 / 255.f, 48 / 255.f, 0.45f), Color(1.f, 42 / 255.f, 48 / 255.f, 0.f)));
+        v.fill();
+    }
+    circleShadow(v, cx, cy + 4, r + 4, 9, 200);
+    v.beginPath();
+    v.circle(cx, cy, r + 4);
+    v.fillColor(rgba({ 0x1d, 0x1d, 0x1d }));
+    v.fill();
+    v.beginPath();
+    v.circle(cx, cy, r);
+    v.fillPaint(v.radialGradient(cx - 0.2f * r, cy - 0.36f * r, 0, 1.4f * r, rgba(hot ? Rgb { 0x80, 0x80, 0x80 } : Rgb { 0x6a, 0x6a, 0x6a }),
+                                 rgba({ 0x3a, 0x3a, 0x3a })));
+    v.fill();
+}
+
+// LED (13 px): off dark red (or a given colour), on lit red with a glow
+void drawBfLed(NanoVG& v, float cx, float cy, float level, Rgb off = { 0x3a, 0x14, 0x16 })
+{
+    v.beginPath();
+    v.circle(cx, cy, 6.5f);
+    v.fillColor(rgba(off));
+    v.fill();
+    if (level <= 0.01f) return;
+    v.beginPath();
+    v.circle(cx, cy, 6.5f + 13);
+    v.fillPaint(v.radialGradient(cx, cy, 4, 19.5f, Color(1.f, 42 / 255.f, 48 / 255.f, 0.55f * level), Color(1.f, 42 / 255.f, 48 / 255.f, 0.f)));
+    v.fill();
+    static const float kStops[3] = { 0.f, 0.55f, 1.f };
+    const Rgb cols[3] = { { 0xff, 0xb0, 0xb0 }, { 0xff, 0x2a, 0x30 }, { 0xa3, 0x14, 0x1a } };
+    v.globalAlpha(level);
+    fillRadialStops(v, [&] { v.circle(cx, cy, 6.5f); }, cx - 1.3f, cy - 2, 9.f, kStops, cols, 3);
+    v.globalAlpha(1.f);
+}
+
+// ribbed slide switch (26 wide): well with a thin edge, a 30 px ribbed lever at row k of n
+void drawBfSwitch(NanoVG& v, float cx, float cy, float h, int n, int k, bool hot)
+{
+    const float x = cx - 13, y = cy - h / 2;
+    v.beginPath();
+    v.roundedRect(x, y, 26, h, 4);
+    v.fillColor(rgba({ 0x05, 0x05, 0x05 }));
+    v.fill();
+    v.strokeColor(rgba({ 0x33, 0x33, 0x33 }));
+    v.strokeWidth(1);
+    v.stroke();
+    const float ly = y + 3 + (n > 1 ? (h - 36) * float(k) / float(n - 1) : 0.f);
+    for (int i = 0; i < 10; ++i) {
+        v.beginPath();
+        v.rect(x + 3, ly + i * 3, 20, 3);
+        v.fillColor(rgba(i % 2 ? Rgb { 0x3a, 0x3a, 0x3a } : hot ? Rgb { 0x70, 0x70, 0x70 } : Rgb { 0x5a, 0x5a, 0x5a }));
+        v.fill();
+    }
+}

@@ -220,6 +220,15 @@ Random groups (MODEL, RESONATOR, POLY, TUNE) match.
 
 All parameters on the board (Oneiroi 42, FX 32).
 
+As built (step 6, `makeOneiroi`): positions from the mockups; no drawer (the window is
+1320 × 896). SHIFT latches (decision 2): while lit, every knob with a SHIFT box edits its SHIFT
+function (arc and the first value show it) and RECORD clears; the white boxes can be dragged,
+wheeled or double-clicked at any time. Filter mode / reso position badges set the value.
+Randomizer: the target lever and row names pick ALL / OSC / LOOPER / FX (FX: no OSC), the
+padlocks lock OSC / LOOPER / FX (the existing per-group lock flags in `rand_levels`, honoured by
+`oneiroiRandomize`), AMOUNT Full / Mid / Low, ◀ undo / ▶ redo of the last roll (their LEDs show
+which is possible). Oswald (400, 500) added.
+
 ### Plethora (`plethora`, 1320 × 760)
 
 | Board | Symbol |

@@ -19,6 +19,8 @@
 #ifndef MAQUINA_THEME
 #if defined(MAQUINA_VOICE_INDEX) && MAQUINA_VOICE_INDEX >= 0 && MAQUINA_VOICE_INDEX <= 4 // Kick, Tom, Snare, Cymbal, HiHat
 #define MAQUINA_THEME MAQUINA_THEME_LXR
+#elif MAQUINA_VOICE_INDEX == 7 || MAQUINA_VOICE_INDEX == 8 // Oneiroi, Oneiroi FX
+#define MAQUINA_THEME MAQUINA_THEME_BEFACO
 #elif MAQUINA_VOICE_INDEX >= 14 && MAQUINA_VOICE_INDEX <= 16 // BL-101, BL-101 FX, LA-50
 #define MAQUINA_THEME MAQUINA_THEME_GRAPHENE
 #elif MAQUINA_VOICE_INDEX == 12 // Acida
@@ -137,6 +139,17 @@ constexpr Theme kGraphene {
       150, 6.f, 3.f },
 };
 
+// Befaco (Oneiroi, Oneiroi FX): black module panel, white scales, red value arcs, red fader
+// caps (mockups/oneiroi.html); the knobs are drawn by drawBfKnob, not KnobStyle
+constexpr Theme kBefaco {
+    1320.f,
+    { 0xe3, 0x26, 0x2a }, { 0xff, 0x4a, 0x50 }, { 0xff, 0xff, 0xff },
+    { 0x5a, 0x2a, 0x2c }, { 0x3a, 0x22, 0x24 },
+    { 0x0b, 0x0b, 0x0b }, 4.f,
+    { 0xf2, 0xf2, 0xf2 }, { 0x8c, 0x8c, 0x8c },
+    {},
+};
+
 constexpr Theme withWidth(Theme t, float w) { t.width = w; return t; }
 constexpr Theme kGrapheneLa50 = withWidth(kGraphene, 1240.f); // the PG-1000 field is wider
 
@@ -172,6 +185,7 @@ constexpr const Theme& theme()
     return kTheme == ThemeId::Silver303 ? kSilver303
          : kTheme == ThemeId::Mutable   ? kMutable
          : kTheme == ThemeId::Lxr       ? kLxr
+         : kTheme == ThemeId::Befaco    ? kBefaco
          : kTheme == ThemeId::Graphene  ? (MAQUINA_VOICE_INDEX == 16 ? kGrapheneLa50 : kGraphene)
                                         : kClassicTheme;
 }
