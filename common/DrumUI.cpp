@@ -477,7 +477,10 @@ struct LxrStrip {
 // Befaco Oneiroi: the module's own randomizer and SHIFT on the panel (no drawer)
 struct BfPanel {
     bool used = false, fx = false;
+    bool plethora = false;        // Plethora: PROG A / B digits, PROGRAM button
+    Box digit[2] {}, program {};
     float ox = 0, oy = 0, ex = 0; // the module's and the expander's top-left corners
+    float ew = 204;               // the expander's width (Plethora: 300)
     Box shift {}, random {}, prev {}, next {}, target {}, amount {};
     float rowY[4] {};             // ALL OSC LOOPER FX label rows (FX: no OSC)
 };
@@ -1321,7 +1324,7 @@ protected:
         if (kTheme == ThemeId::Lxr) drawLxrPanel(*this, L.panel.x, L.panel.y, L.panel.w, L.panel.h, T.panelRadius);
         if (kTheme == ThemeId::Graphene) drawGrPanel(*this, L.panel.x, L.panel.y, L.panel.w, L.panel.h, T.panelRadius);
         if (L.bf.used)
-            for (const Box& b : { L.panel, Box { L.bf.ex, L.panel.y, 204, L.panel.h } }) {
+            for (const Box& b : { L.panel, Box { L.bf.ex, L.panel.y, L.bf.ew, L.panel.h } }) {
                 boxShadow(*this, b.x, b.y, b.w, b.h, 4, 8, 22, 180);
                 beginPath();
                 roundedRect(b.x, b.y, b.w, b.h, 4);
@@ -1450,6 +1453,37 @@ protected:
         textLetterSpacing(0);
         useFace(*this, "mono");
         drawChromeButton(*this, bb.x, bb.y, bb.w, bb.h, "BACK", false, fRunActive);
+        // per channel (Plethora): A [RND ON] [ROLL], a rule before them; open drawer only
+        if (fDrawerOpen && !fSections.empty()) {
+            beginPath();
+            rect(fSections[0].x - 16, L.drawer.y + 14, 1, kChromeDrawerH - 28);
+            fillColor(col(kChromeLine));
+            fill();
+            for (const Section& sec : fSections) {
+                if (sec.osc < 0) continue;
+                static const char* const kCh[3] = { "A", "B", "C" };
+                const bool on = fRand.oscOn[sec.osc];
+                useFace(*this, "mono-sb");
+                fontPx(*this, 11);
+                textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+                fillColor(col(kChromeText));
+                text(sec.x, sec.y + 12, kCh[sec.osc], nullptr);
+                useFace(*this, "mono");
+                const Box& o = sec.randOn;
+                beginPath();
+                roundedRect(o.x + 0.5f, o.y + 0.5f, o.w - 1, o.h - 1, 6);
+                fillColor(col(on ? Rgb { 0x2a, 0x12, 0x14 } : kChromeBtn));
+                fill();
+                strokeColor(col(on ? T.accent : kChromeBtnLine));
+                strokeWidth(1);
+                stroke();
+                fontPx(*this, 11);
+                textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+                fillColor(col(on ? Rgb { 0xff, 0x8a, 0x8d } : kChromeText2));
+                text(o.x + o.w / 2, o.y + o.h / 2 + 1, on ? "RND ON" : "RND OFF", nullptr);
+                drawChromeButton(*this, sec.roll.x, sec.roll.y, sec.roll.w, sec.roll.h, "ROLL", false);
+            }
+        }
         // the fold toggle: [RANGES ▾] folded, [▴] open
         const Box& tb = fDrawerOpen ? R.openToggle : R.foldToggle;
         drawChromeButton(*this, tb.x, tb.y, tb.w, tb.h, nullptr, false);
@@ -2083,8 +2117,9 @@ protected:
         char buf[48];
         switch (c.look) {
         case Ctl::BfKnob: {
-            drawBfKnob(*this, c.ax, c.ay, c.size / 2, c.n, valueFraction(p), hot);
-            if (c.label) bfText(c.label, c.ax, c.labelY, 17, kBfWhite);
+            const float px = c.bh > 0 ? c.bh : 17.f;
+            drawBfKnob(*this, c.ax, c.ay, c.size / 2, c.n, valueFraction(p), hot, c.bw);
+            if (c.label) bfText(c.label, c.ax, c.labelY, px, kBfWhite, c.n >= 3 ? "print-m" : "print");
             // the value; with a SHIFT function: "main · shift", the edited one first while SHIFT is on
             valueText(c.param, buf, sizeof buf);
             std::string v = buf;
@@ -2094,7 +2129,8 @@ protected:
                 v = fShift ? std::string(a) + " \xc2\xb7 " + buf : v + " \xc2\xb7 " + a;
             }
             if (!c.label) v = std::string("GAIN  ") + v; // OUT: GAIN +0 dB on one line
-            bfText(v.c_str(), c.ax, c.valueY, c.label ? 10.5f : 13.f, c.label ? kBfGrey : kBfWhite, c.label ? "mono" : "print");
+            bfText(v.c_str(), c.ax, c.valueY, c.label ? 10.5f : c.bh > 0 ? c.bh : 13.f, c.label ? kBfGrey : kBfWhite,
+                   c.label ? "mono" : "print-m");
             break;
         }
         case Ctl::BfShift:
@@ -2121,12 +2157,66 @@ protected:
             valueText(p, buf, sizeof buf);
             bfText(buf, c.ax, c.valueY, 10.5f, kBfGrey, "mono");
             break;
-        case Ctl::BfButton:
-            drawBfButton(*this, c.ax, c.ay, c.size, fValues[c.param] >= 0.5f && c.size > 50, hot);
-            bfText(c.label, c.ax, c.labelY, 17, kBfWhite);
-            if (c.size < 50) drawBfLed(*this, c.ax + 38, c.ay - 22, fValues[c.param] >= 0.5f ? 1.f : 0.f); // DRONE
+        case Ctl::BfButton: // RECORD glows while on; the others have an LED (ledX, prevX)
+            drawBfButton(*this, c.ax, c.ay, c.size, fValues[c.param] >= 0.5f && c.ledX <= 0, hot);
+            bfText(c.label, c.ax, c.labelY, c.bh > 0 ? c.bh : 17.f, kBfWhite, c.bh > 0 ? "print-m" : "print");
+            if (c.ledX > 0) drawBfLed(*this, c.ledX, c.prevX, fValues[c.param] >= 0.5f ? 1.f : 0.f);
             break;
-        case Ctl::BfSwitch: { // SS / [WT]
+        case Ctl::Window: { // Plethora: the algorithm readouts, MODE (click = the list)
+            beginPath();
+            roundedRect(c.ax - c.bw / 2, c.ay - c.bh / 2, c.bw, c.bh, 3);
+            fillColor(col({ 0x0a, 0x0a, 0x0a }));
+            fill();
+            strokeColor(col(hot ? kBfRed : Rgb { 0x33, 0x33, 0x33 }));
+            strokeWidth(1);
+            stroke();
+            valueText(c.param, buf, sizeof buf);
+            useFace(*this, "mono");
+            fontPx(*this, 12);
+            const float tw = textWidth(buf);
+            textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+            fillColor(col({ 0xff, 0x6b, 0x6e }));
+            text(c.ax - 8, c.ay + 1, buf, nullptr);
+            const float ax = c.ax - 8 + tw / 2 + 12;
+            beginPath();
+            moveTo(ax - 4, c.ay - 2); lineTo(ax + 4, c.ay - 2); lineTo(ax, c.ay + 3); closePath();
+            fillColor(col(kBfGrey));
+            fill();
+            if (c.label) bfText(c.label, c.ax, c.labelY, 12, kBfWhite, "print-m");
+            break;
+        }
+        case Ctl::BfSwitch:
+            if (c.n == 3) { // HP / BP / LP, HP on top
+                const int cur = intOf(int(c.param));
+                drawBfSwitch(*this, c.ax, c.ay, c.bh, 3, 2 - cur, hot);
+                static const char* const kT[3] = { "HP", "BP", "LP" };
+                for (int k = 0; k < 3; ++k)
+                    bfText(kT[k], c.labelX, c.ay - 22 + 22.f * float(k), 13, 2 - k == cur ? kBfWhite : kBfGrey, "print-m");
+                break;
+            }
+            if (c.n == 2) { // SOURCE: GRITTY | WHITE, horizontal
+                const int cur = intOf(int(c.param));
+                const float x = c.ax - c.bw / 2, y = c.ay - c.bh / 2;
+                beginPath();
+                roundedRect(x, y, c.bw, c.bh, 3);
+                fillColor(col({ 0x05, 0x05, 0x05 }));
+                fill();
+                strokeColor(col({ 0xe6, 0xe6, 0xe6 }));
+                strokeWidth(1.5f);
+                stroke();
+                const float lx = x + 3 + (cur ? c.bw - 36 : 0.f);
+                for (int i = 0; i < 10; ++i) {
+                    beginPath();
+                    rect(lx + i * 3, y + 3, 3, c.bh - 6);
+                    fillColor(col(i % 2 ? Rgb { 0x3a, 0x3a, 0x3a } : hot ? Rgb { 0x80, 0x80, 0x80 } : Rgb { 0x6a, 0x6a, 0x6a }));
+                    fill();
+                }
+                bfBox("SOURCE", c.ax, c.ay + 32, 14, false);
+                bfText("GRITTY", c.ax - 50, c.ay + 70, 15, cur == 0 ? kBfWhite : kBfGrey, "print-m");
+                bfText("WHITE", c.ax + 50, c.ay + 70, 15, cur == 1 ? kBfWhite : kBfGrey, "print-m");
+                break;
+            }
+            { // Oneiroi: SS / [WT]
             const int cur = intOf(int(c.param));
             drawBfSwitch(*this, c.ax, c.ay, c.bh, 2, cur, hot);
             useFace(*this, "print");
@@ -2171,9 +2261,89 @@ protected:
             if (!std::strcmp(maquina::kRandGroups[g].key, kKeys[row])) return g;
         return -1;
     }
+    // Plethora: a channel's program (or bank) step on the digit; wraps inside the bank
+    void pleStep(int ch, int d)
+    {
+        const int p = findParam(ch ? "b_algo" : "a_algo");
+        if (p < 0) return;
+        const int v = intOf(p), bank = v / 10, prog = v % 10;
+        const int nv = fPleBank ? ((bank + d) % 6 + 6) % 6 * 10 + prog : bank * 10 + ((prog + d) % 10 + 10) % 10;
+        setValue(uint32_t(p), float(nv), true);
+    }
+    void drawPlethoraPanel()
+    {
+        const BfPanel& B = layout().bf;
+        const float ox = B.ox, oy = B.oy, ex = B.ex;
+        bfText("PLETHORA", ox + 497, oy + 24, 24, kBfWhite, "print-m");
+        for (const float lx : { 30.f, 584.f }) {
+            beginPath();
+            rect(ox + lx, oy + 396, 380, 1.5f);
+            fillColor(col(kBfWhite));
+            fill();
+        }
+        // PROG A / PROG B: a red 7-segment-style digit each (program 1-10, 10 as 0; bank mode: 1-6)
+        for (int k = 0; k < 2; ++k) {
+            const Box& b = B.digit[k];
+            beginPath();
+            roundedRect(b.x, b.y, b.w, b.h, 3);
+            fillColor(col({ 0x0a, 0x02, 0x02 }));
+            fill();
+            strokeColor(col({ 0x2c, 0x12, 0x12 }));
+            strokeWidth(1);
+            stroke();
+            const int p = findParam(k ? "b_algo" : "a_algo");
+            const int v = p >= 0 ? intOf(p) : 0;
+            char d[16];
+            std::snprintf(d, sizeof d, "%d", fPleBank ? v / 10 + 1 : (v % 10 + 1) % 10);
+            useFace(*this, "mono-sb");
+            fontPx(*this, 66);
+            textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+            const bool sel = k == fPleSel;
+            glowText(*this, b.x + b.w / 2, b.y + b.h / 2 + 3, d, sel ? Rgb { 0xff, 0x1e, 0x1e } : Rgb { 0x7a, 0x14, 0x14 }, 9, sel ? 190 : 60);
+            bfText(k ? "PROG B" : "PROG A", b.x + b.w / 2, oy + 184, 15, sel ? kBfWhite : kBfGrey, "print-m");
+        }
+        drawBfLed(*this, ox + 470, oy + 218, fPleBank ? 1.f : 0.f, { 0x4a, 0x14, 0x16 });
+        bfText("BANK", ox + 506, oy + 218, 12, kBfWhite, "print-m");
+        bfText("[TAP=A/B]", ox + 497, oy + 244, 13, kBfWhite, "print-m");
+        { // PROGRAM: black button with a white ring
+            const float cx = ox + 497, cy = oy + 290;
+            circleShadow(*this, cx, cy + 5, 37, 10, 255);
+            beginPath();
+            circle(cx, cy, 36.5f);
+            fillColor(col(kBfWhite));
+            fill();
+            beginPath();
+            circle(cx, cy, 35);
+            fillColor(col({ 0x0a, 0x0a, 0x0a }));
+            fill();
+            beginPath();
+            circle(cx, cy, 31);
+            fillPaint(radialGradient(cx - 6, cy - 11, 0, 44, col(fPleDown ? Rgb { 0x55, 0x55, 0x55 } : Rgb { 0x3c, 0x3c, 0x3c }), col({ 0x0a, 0x0a, 0x0a })));
+            fill();
+        }
+        bfText("PROGRAM", ox + 497, oy + 342, 17, kBfWhite, "print-m");
+        bfText("[HOLD=BANK]", ox + 497, oy + 362, 12, kBfWhite, "print-m");
+        useFace(*this, "mono-sb");
+        fontPx(*this, 13);
+        textLetterSpacing(13 * 0.3f);
+        textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+        fillColor(col(kBfGrey));
+        text(ox + 497, oy + 562, "MAQUINA", nullptr);
+        textLetterSpacing(0);
+        // the expander
+        bfText("EXT", ex + 150, oy + 24, 22, kBfWhite, "print-m");
+        static const char* const kCh[3] = { "A", "B", "C" };
+        for (int k = 0; k < 3; ++k) bfText(kCh[k], ex + 56 + 94.f * float(k), oy + 66, 26, kBfWhite, "print-m");
+        beginPath();
+        rect(ex + 20, oy + 494, 260, 1.5f);
+        fillColor(col({ 0x3a, 0x3a, 0x3a }));
+        fill();
+        useFace(*this, "mono");
+    }
     void drawBefacoPanel()
     {
         const BfPanel& B = layout().bf;
+        if (B.plethora) { drawPlethoraPanel(); return; }
         const float ox = B.ox, oy = B.oy, ex = B.ex;
         auto title = [&](const char* t, float x, float y, float px = 27, float sp = 0.02f) {
             useFace(*this, "print-m");
@@ -2257,6 +2427,12 @@ protected:
     {
         const BfPanel& B = layout().bf;
         if (!B.used) return false;
+        if (B.plethora) {
+            for (int k = 0; k < 2; ++k)
+                if (B.digit[k].hit(x, y)) { fPleSel = k; repaint(); return true; }
+            if (B.program.hit(x, y)) { fPleDown = std::max<uint>(1, fClickTime); repaint(); return true; }
+            return false;
+        }
         if (B.shift.hit(x, y)) { fShift = !fShift; repaint(); return true; }
         if (B.random.hit(x, y)) { doRandom(); return true; }
         if (B.prev.hit(x, y)) { if (fRunActive && !fRedo) doBack(); return true; }
@@ -5027,9 +5203,13 @@ protected:
     }
 
     // the position a click at y picks
-    int switchPosAt(const Ctl& c, float y) const
+    int switchPosAt(const Ctl& c, float y, float x = 0) const
     {
-        if (c.look == Ctl::BfSwitch) return y < c.ay ? 0 : 1; // SS / [WT]
+        if (c.look == Ctl::BfSwitch) {
+            if (c.n == 3) return 2 - std::clamp(int((y - (c.ay - c.bh / 2)) / (c.bh / 3)), 0, 2); // HP on top
+            if (c.n == 2) return x >= c.ax ? 1 : 0;                                                // GRITTY | WHITE
+            return y < c.ay ? 0 : 1;                                                              // SS / [WT]
+        }
         if (c.look == Ctl::GrSwitch) { // graphene: 20 px a position, the last value on top
             const int n = std::max<int>(1, paramAt(voiceDef(), c.param).numLabels);
             const int row = std::clamp(int((y - (c.ay - c.bh / 2)) / 20.f), 0, n - 1);
@@ -5591,6 +5771,13 @@ protected:
         const float x = float(ev.pos.getX()) / s, y = float(ev.pos.getY()) / s;
 
         if (!ev.press) {
+            if (fPleDown) { // Plethora PROGRAM: tap = A / B, hold (0.5 s) = bank mode
+                if (ev.time - fPleDown >= 500) fPleBank = !fPleBank;
+                else fPleSel ^= 1;
+                fPleDown = 0;
+                repaint();
+                return true;
+            }
             if (fEnvDrag) { la50EnvRelease(); return true; }
             if (fMomentary >= 0) { // Oneiroi's CLEAR: a button
                 setValue(uint32_t(fMomentary), 0.f, true);
@@ -5691,7 +5878,7 @@ protected:
             }
         }
         for (const Section& sec : fSections) {
-            if (sec.osc < 0) continue;
+            if (sec.osc < 0 || (kNew && !fDrawerOpen)) continue;
             if (sec.roll.hit(x, y)) { doRandom(sec.osc); return true; }
             if (sec.randOn.hit(x, y)) {
                 fRand.oscOn[sec.osc] = !fRand.oscOn[sec.osc];
@@ -5759,6 +5946,7 @@ protected:
         }
 
         if (kTheme == ThemeId::Lxr && lxrStripClick(x, y)) { repaint(); return true; }
+        fClickTime = ev.time;
         if (kTheme == ThemeId::Befaco && bfClick(x, y)) return true;
         const Ctl* c = ctlAt(x, y);
         if (c == nullptr)
@@ -5784,7 +5972,7 @@ protected:
             if (c->look == Ctl::LxrFader) fLaDragPixels = c->bh - 26; // the cap follows the mouse
             break;
         case CtlType::Switch:
-            setValue(c->param, float(switchPosAt(*c, y)), true);
+            setValue(c->param, float(switchPosAt(*c, y, x)), true);
             break;
         case CtlType::Toggle:
             if (!std::strcmp(paramAt(voiceDef(), c->param).symbol, "loop_clear")) { // momentary
@@ -5892,6 +6080,12 @@ protected:
             }
             return true;
         }
+        if (layout().bf.plethora)
+            for (int k = 0; k < 2; ++k)
+                if (layout().bf.digit[k].hit(x, y)) {
+                    if (step != 0.f) { fPleSel = k; pleStep(k, int(step)); }
+                    return true;
+                }
         const Ctl* c = ctlAt(x, y);
         if (c == nullptr) return false;
         if (step != 0.f) setValue(effParam(*c), fValues[effParam(*c)] + step, true);
@@ -5984,6 +6178,10 @@ private:
     bool fRunActive = false;      // BACK available
     bool fRedo = false;           // Oneiroi: the next UNDO press is a REDO
     bool fShift = false;          // Oneiroi (new look): SHIFT latched
+    int fPleSel = 0;              // Plethora (new look): the program display's channel (A / B)
+    bool fPleBank = false;        //   bank mode (PROGRAM held)
+    uint fPleDown = 0;            //   PROGRAM pressed at (0: not pressed)
+    uint fClickTime = 0;          // the press being handled (its event time)
     int fMomentary = -1;          // Oneiroi CLEAR held down
     bool fApplying = false;       // our own randomize/back edits in flight
     std::mt19937 fRng { std::random_device {}() };

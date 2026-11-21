@@ -244,6 +244,13 @@ which is possible). Oswald (400, 500) added.
 Mismatch: the SOURCE switch has **three** positions (GRITTY / FILTERED / WHITE); `c_source`
 has two (Gritty, White). Question 9.
 
+As built (step 7, `makePlethora`): positions from the mockup (module 994 × 580, EXT 300 wide).
+PROGRAM: a tap switches the display between A and B, a hold (0.5 s) toggles bank mode (BANK
+LED); a click on a digit selects that channel, the wheel on a digit steps its program within
+the bank (bank mode: its bank, keeping the program). The readouts under the CUTOFFs and MODE
+open the list. SOURCE is GRITTY | WHITE (decision 9). The drawer keeps RND ON / ROLL per
+channel on its right (shown with the drawer open).
+
 ### Dredrum (`dredrum`, 1100 × 640)
 
 | Board | Symbol |

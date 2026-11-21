@@ -796,8 +796,10 @@ constexpr Rgb kBfRed { 0xe3, 0x26, 0x2a };
 constexpr Rgb kBfGrey { 0x8c, 0x8c, 0x8c };
 
 // knob: printed white 270° scale at R with a dot at each end, red value arc inside it (glow);
-// cap: 0 big knurled (C 50, white line), 1 small grey (C 30, dark dot), 2 black (white ring, dot)
-void drawBfKnob(NanoVG& v, float cx, float cy, float R, int kind, float t, bool hot)
+// cap (radius C, 0 = the Oneiroi default): 0 big knurled (white line), 1 small grey (dark dot),
+// 2 black with a white ring (white dot); Plethora: 3 silver (white dot), 4 white (black dot),
+// 5 black (white dot), 6 smoky knurled (white line), 7 white knurled (black line)
+void drawBfKnob(NanoVG& v, float cx, float cy, float R, int kind, float t, bool hot, float C = 0)
 {
     const float a0 = kKnobA0, a1 = kKnobA1, av = a0 + std::clamp(t, 0.f, 1.f) * (a1 - a0);
     v.lineCap(NanoVG::BUTT);
@@ -825,8 +827,60 @@ void drawBfKnob(NanoVG& v, float cx, float cy, float R, int kind, float t, bool 
         v.strokeWidth(3);
         v.stroke();
     }
-    const float C = kind == 0 ? R - 14 : R - 12;
+    if (C <= 0) C = kind == 0 ? R - 14 : R - 12;
     const float ca = std::cos(av), sa = std::sin(av);
+    if (kind >= 3) { // Plethora: a dark 4 px ring round every cap
+        circleShadow(v, cx, cy + 5, C + 4, 12, 215);
+        v.beginPath();
+        v.circle(cx, cy, C + 4);
+        v.fillColor(rgba({ 0x0c, 0x0c, 0x0c }));
+        v.fill();
+        if (kind >= 6) { // knurled: smoky / white ridges, a lit centre disk, a line pointer
+            const bool w = kind == 7;
+            v.beginPath();
+            v.circle(cx, cy, C);
+            v.fillColor(rgba(w ? Rgb { 0xd9, 0xd9, 0xd6 } : Rgb { 0x5d, 0x5d, 0x5f }));
+            v.fill();
+            v.beginPath();
+            for (int i = 0; i < 20; ++i) {
+                const float b0 = float(i) * float(M_PI) / 10.f + 8.f * float(M_PI) / 180.f, b1 = float(i + 1) * float(M_PI) / 10.f;
+                v.moveTo(cx, cy);
+                v.arc(cx, cy, C, b0 - float(M_PI) / 2, b1 - float(M_PI) / 2, NanoVG::CW);
+                v.closePath();
+            }
+            v.fillColor(rgba(w ? Rgb { 0xf4, 0xf4, 0xf2 } : Rgb { 0x7a, 0x7a, 0x7c }));
+            v.fill();
+            v.beginPath();
+            v.circle(cx, cy, C);
+            v.fillPaint(v.radialGradient(cx - 0.16f * C, cy - 0.32f * C, 0, 1.1f * C, Color(1.f, 1.f, 1.f, w ? 0.6f : 0.25f), Color(1.f, 1.f, 1.f, 0.f)));
+            v.fill();
+            const float ic = 0.66f * C;
+            v.beginPath();
+            v.circle(cx, cy, ic);
+            v.fillPaint(v.radialGradient(cx - 0.2f * ic, cy - 0.36f * ic, 0, 1.6f * ic, rgba(w ? Rgb { 0xff, 0xff, 0xff } : Rgb { 0xa5, 0xa6, 0xa8 }),
+                                         rgba(w ? Rgb { 0xd5, 0xd5, 0xd2 } : Rgb { 0x56, 0x57, 0x5a })));
+            v.fill();
+            v.beginPath();
+            v.moveTo(cx + ca * 0.76f * C, cy + sa * 0.76f * C);
+            v.lineTo(cx + ca * 0.0f * C, cy + sa * 0.0f * C);
+            v.strokeColor(rgba(w ? Rgb { 0x11, 0x11, 0x11 } : Rgb { 0xf7, 0xf7, 0xf7 }));
+            v.strokeWidth(5);
+            v.lineCap(NanoVG::ROUND);
+            v.stroke();
+            return;
+        }
+        static const float kStops[3] = { 0.f, 0.55f, 1.f };
+        static const Rgb kCaps[3][3] = { { { 0xf0, 0xf1, 0xf3 }, { 0xa9, 0xab, 0xaf }, { 0x6f, 0x71, 0x75 } },
+                                         { { 0xff, 0xff, 0xff }, { 0xe6, 0xe6, 0xe4 }, { 0xb9, 0xb9, 0xb6 } },
+                                         { { 0x4a, 0x4a, 0x4a }, { 0x14, 0x14, 0x14 }, { 0x05, 0x05, 0x05 } } };
+        fillRadialStops(v, [&] { v.circle(cx, cy, C); }, cx - 0.16f * C, cy - 0.4f * C, 1.6f * C, kStops, kCaps[kind - 3], 3);
+        const float dr = 0.74f * C - 4;
+        v.beginPath();
+        v.circle(cx + ca * dr, cy + sa * dr, 4);
+        v.fillColor(rgba(kind == 4 ? Rgb { 0x11, 0x11, 0x11 } : Rgb { 0xf7, 0xf7, 0xf7 }));
+        v.fill();
+        return;
+    }
     circleShadow(v, cx, cy + 4, C + (kind ? 5 : 0), 9, 200);
     if (kind == 0) { // knurled: 24 ridges, light from the top left, a darker centre disk
         v.beginPath();

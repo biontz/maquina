@@ -116,7 +116,7 @@ const HeaderGeo& headerGeo()
 // ---------------------------------------------------------------------------
 // random drawer: [RANDOM]/[BACK] | one group per random target
 
-void makeDrawer(Layout& L, float panelBottom)
+void makeDrawer(Layout& L, float panelBottom, bool channels = false)
 {
     const float y = panelBottom + kChromeInset;
     L.drawer = { 0, y, kWidth, kChromeDrawerH };
@@ -139,7 +139,18 @@ void makeDrawer(Layout& L, float panelBottom)
     R.foldRandom = { 16, y + 10, 104, 26 };
     R.foldBack = { 16 + 104 + 10, y + 10, 104, 26 };
     R.foldToggle = { kWidth - 16 - 112, y + 10, 112, 26 };
-    const float right = R.openToggle.x - 22;
+    float right = R.openToggle.x - 22;
+    if (channels) { // per channel: [A] [RND ON] [ROLL], three rows, a rule before them
+        const float rollX = right - 50, onX = rollX - 6 - 64;
+        for (int k = 0; k < 3; ++k) {
+            Section sec { "", onX - 20, y + 8 + 28.f * float(k), 20 + 64 + 6 + 50, 24 };
+            sec.osc = k;
+            sec.randOn = { onX, sec.y, 64, 24 };
+            sec.roll = { rollX, sec.y, 50, 24 };
+            L.sections.push_back(sec);
+        }
+        right = onX - 20 - 24;
+    }
     const float gap = n > 8 ? 10.f : 26.f, cw = (right - x - gap * float(n - 1)) / float(std::max(1, n));
     for (int i = 0; i < maquina::kNumRandGroups; ++i) {
         R.cell[i] = { x, cy - 25, R.used[i] ? cw : 0.f, R.used[i] ? 50.f : 0.f };
@@ -1152,6 +1163,7 @@ void makeOneiroi(Layout& L)
         if (const int p = findParam("env_drone"); p >= 0) {
             Ctl c { uint32_t(p), CtlType::Toggle, "DRONE", ex + 102 - 28, oy + 416 - 28, 56, 56 };
             c.ax = ex + 102; c.ay = oy + 416; c.size = 46; c.labelY = oy + 458; c.look = Ctl::BfButton;
+            c.ledX = ex + 140; c.prevX = oy + 394;
             L.ctls.push_back(c);
         }
     }
@@ -1170,6 +1182,106 @@ void makeOneiroi(Layout& L)
     }
 }
 
+// Befaco Plethora (mockups/plethora.html): A left, the program display centre, B mirrored
+// right, C under the rules; the expander holds the envelopes, levels and mutes
+void makePlethora(Layout& L)
+{
+    BfPanel& B = L.bf;
+    B.used = true;
+    B.plethora = true;
+    const float ox = 10, oy = kChromeHeaderH + 10, ex = ox + 994 + 6;
+    B.ox = ox; B.oy = oy; B.ex = ex;
+    B.ew = 300;
+    L.panel = { ox, oy, 994, 580 };
+    // knob: centre, scale radius, cap radius, cap kind, label top offset, label px
+    auto knob = [&](float bx, float x, float y, float R, float C, int kind, const char* sym, const char* label, float top, float px) {
+        const int p = findParam(sym);
+        if (p < 0) return;
+        const float cx = bx + x, cy = oy + y;
+        Ctl c { uint32_t(p), CtlType::Knob, label, cx - R, cy - R, 2 * R, 2 * R };
+        c.ax = cx; c.ay = cy; c.size = 2 * R; c.n = uint8_t(kind); c.bw = C; c.bh = px; c.look = Ctl::BfKnob;
+        c.labelY = cy + top + 9;
+        c.valueY = cy + top + 18 + 1 + 6.5f;
+        L.ctls.push_back(c);
+    };
+    knob(ox, 70, 100, 40, 29, 3, "a_x", "X A", 46, 17);
+    knob(ox, 70, 230, 40, 29, 3, "a_y", "Y A", 46, 17);
+    knob(ox, 215, 170, 78, 60, 6, "a_cutoff", "CUTOFF", 84, 17);
+    knob(ox, 355, 100, 40, 29, 3, "a_reso", "RES", 46, 17);
+    knob(ox, 924, 100, 40, 29, 4, "b_x", "X B", 46, 17);
+    knob(ox, 924, 230, 40, 29, 4, "b_y", "Y B", 46, 17);
+    knob(ox, 779, 170, 78, 60, 7, "b_cutoff", "CUTOFF", 84, 17);
+    knob(ox, 639, 100, 40, 29, 4, "b_reso", "RES", 46, 17);
+    knob(ox, 80, 460, 40, 29, 5, "c_grit", "GRIT QTY", 46, 17);
+    knob(ox, 220, 460, 40, 29, 5, "c_reso", "RES", 46, 17);
+    knob(ox, 497, 452, 50, 38, 6, "c_cutoff", "CUTOFF", 56, 17);
+    // HP / BP / LP switches (HP on top), labels left of them
+    auto ftype = [&](float x, float y, const char* sym) {
+        const int p = findParam(sym);
+        if (p < 0) return;
+        Ctl c { uint32_t(p), CtlType::Switch, nullptr, ox + x - 42, oy + y - 33, 56, 66 };
+        c.ax = ox + x; c.ay = oy + y; c.size = 1; c.bw = 22; c.bh = 66; c.n = 3; c.labelX = ox + x - 28;
+        c.look = Ctl::BfSwitch;
+        L.ctls.push_back(c);
+    };
+    ftype(362, 248, "a_ftype");
+    ftype(660, 248, "b_ftype");
+    ftype(366, 450, "c_ftype");
+    // SOURCE: GRITTY | WHITE (decision 9: two positions)
+    if (const int p = findParam("c_source"); p >= 0) {
+        Ctl c { uint32_t(p), CtlType::Switch, nullptr, ox + 740, oy + 440, 180, 100 };
+        c.ax = ox + 820; c.ay = oy + 458; c.size = 1; c.bw = 96; c.bh = 24; c.n = 2; c.look = Ctl::BfSwitch;
+        L.ctls.push_back(c);
+    }
+    // algorithm readouts (click = the list)
+    for (int k = 0; k < 2; ++k)
+        if (const int p = findParam(k ? "b_algo" : "a_algo"); p >= 0) {
+            const float cx = ox + (k ? 779.f : 215.f), cy = oy + 330;
+            Ctl c { uint32_t(p), CtlType::Select, nullptr, cx - 110, cy - 13, 220, 26 };
+            c.ax = cx; c.ay = cy; c.size = 1; c.bw = 220; c.bh = 26; c.look = Ctl::Window;
+            L.ctls.push_back(c);
+        }
+    B.digit[0] = { ox + 461 - 29, oy + 128 - 42, 58, 84 };
+    B.digit[1] = { ox + 533 - 29, oy + 128 - 42, 58, 84 };
+    B.program = { ox + 497 - 35, oy + 290 - 35, 70, 70 };
+    // the expander: A (silver), B (white), C (black) columns
+    static const char* const kCh[3] = { "a_", "b_", "c_" };
+    for (int k = 0; k < 3; ++k) {
+        const float x = 56 + 94.f * float(k);
+        char sym[24];
+        static const char* const kRows[3][2] = { { "attack", "ATTACK" }, { "decay", "DECAY" }, { "level", "LEVEL" } };
+        for (int r = 0; r < 3; ++r) {
+            std::snprintf(sym, sizeof sym, "%s%s", kCh[k], kRows[r][0]);
+            knob(ex, x, 126 + 96.f * float(r), 30, 21, 3 + k, sym, kRows[r][1], 34, 14);
+        }
+        std::snprintf(sym, sizeof sym, "%smute", kCh[k]);
+        if (const int p = findParam(sym); p >= 0) {
+            Ctl c { uint32_t(p), CtlType::Toggle, "MUTE", ex + x - 24, oy + 392, 48, 88 };
+            c.ax = ex + x; c.ay = oy + 436; c.size = 36; c.bh = 14; c.labelY = oy + 470;
+            c.ledX = ex + x; c.prevX = oy + 404; c.look = Ctl::BfButton;
+            L.ctls.push_back(c);
+        }
+    }
+    if (const int p = findParam("env_sync"); p >= 0) {
+        Ctl c { uint32_t(p), CtlType::Toggle, "ENV SYNC", ex + 48 - 30, oy + 508, 60, 66 };
+        c.ax = ex + 48; c.ay = oy + 542; c.size = 24; c.bh = 12; c.labelY = oy + 566;
+        c.ledX = ex + 48; c.prevX = oy + 518; c.look = Ctl::BfButton;
+        L.ctls.push_back(c);
+    }
+    if (const int p = findParam("trig_mode"); p >= 0) {
+        Ctl c { uint32_t(p), CtlType::Select, "MODE", ex + 148 - 34, oy + 538 - 13, 68, 26 };
+        c.ax = ex + 148; c.ay = oy + 538; c.size = 1; c.bw = 68; c.bh = 26; c.labelY = oy + 566; c.look = Ctl::Window;
+        L.ctls.push_back(c);
+    }
+    if (const int p = findParam("gain"); p >= 0) {
+        Ctl c { uint32_t(p), CtlType::Knob, nullptr, ex + 248 - 22, oy + 534 - 22, 44, 44 };
+        c.ax = ex + 248; c.ay = oy + 534; c.size = 44; c.n = 5; c.bw = 15; c.bh = 12; c.valueY = oy + 566;
+        c.look = Ctl::BfKnob;
+        L.ctls.push_back(c);
+    }
+    makeDrawer(L, oy + 580, true);
+}
+
 void makeNewLayout(Layout& L)
 {
     switch (voiceDef().voice) {
@@ -1182,6 +1294,7 @@ void makeNewLayout(Layout& L)
     case maquina::kLa50Voice: makeLa50New(L); break;
     case maquina::kOneiroiVoice:
     case maquina::kOneiroiFxVoice: makeOneiroi(L); break;
+    case maquina::kPlethoraVoice: makePlethora(L); break;
     default:
         if (maquina::isLxrVoice(voiceDef().voice)) makeLxr(L);
         break;
