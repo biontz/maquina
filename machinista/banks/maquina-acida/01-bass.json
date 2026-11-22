@@ -4,6 +4,21 @@
  "name": "Bass",
  "patches": [
   {
+   "name": "Acida 06 Deep 303 Bass",
+   "controls": {
+    "tune": 0,
+    "cutoff": 35,
+    "resonance": 40,
+    "env_mod": 25,
+    "decay": 80,
+    "accent": 60,
+    "waveform": 1,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  },
+  {
    "name": "Pluck Bass",
    "controls": {
     "tune": 0,
