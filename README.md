@@ -5,9 +5,8 @@ Raspberry Pi made for Native Instruments' Maschine controllers (see [Machinista]
 below), and just as much for use in a **DAW**. Tested in Bitwig Studio on Linux, and in Ableton Live and
 Bitwig Studio on macOS. Not yet tested on the Pi.
 
-**Download (macOS):** [Releases](https://github.com/biontz/maquina/releases): all plugins in
-one disk image, or one per instrument (with its FX version). Linux and the Pi: build from
-source, see [Building](#building).
+**Download (macOS):** see [Downloads](#downloads): all plugins in one disk image, or one per
+instrument (with its FX version). Linux and the Pi: build from source, see [Building](#building).
 
 Seventeen instrument and effect plugins, each built from the open-source code of a
 hardware instrument (or, for Acida, of a classic software one):
@@ -75,6 +74,43 @@ Apple Silicon, CLAP + VST3); Windows later.
 > plugins (the logo is not included), nor are Roland's model names.
 > LA-50 is not affiliated with Roland; "D-50" is used only to say which patch
 > format it reads. Roland's PCM waves and factory patches are not included.
+
+## Downloads
+
+macOS (CLAP + VST3, universal: Intel + Apple Silicon, macOS 10.15 or later), from the
+[v0.2.0 release](https://github.com/biontz/maquina/releases/tag/v0.2.0)
+([all releases](https://github.com/biontz/maquina/releases)):
+
+| File | What |
+| --- | --- |
+| [`Maquina-v0.2.0-macOS.dmg`](https://github.com/biontz/maquina/releases/download/v0.2.0/Maquina-v0.2.0-macOS.dmg) | all 17 plugins, disk image |
+| [`Maquina-Kick-v0.2.0-macOS.dmg`](https://github.com/biontz/maquina/releases/download/v0.2.0/Maquina-Kick-v0.2.0-macOS.dmg) | Kick, disk image |
+| [`Maquina-Tom-v0.2.0-macOS.dmg`](https://github.com/biontz/maquina/releases/download/v0.2.0/Maquina-Tom-v0.2.0-macOS.dmg) | Tom, disk image |
+| [`Maquina-Snare-v0.2.0-macOS.dmg`](https://github.com/biontz/maquina/releases/download/v0.2.0/Maquina-Snare-v0.2.0-macOS.dmg) | Snare, disk image |
+| [`Maquina-Cymbal-v0.2.0-macOS.dmg`](https://github.com/biontz/maquina/releases/download/v0.2.0/Maquina-Cymbal-v0.2.0-macOS.dmg) | Cymbal, disk image |
+| [`Maquina-HiHat-v0.2.0-macOS.dmg`](https://github.com/biontz/maquina/releases/download/v0.2.0/Maquina-HiHat-v0.2.0-macOS.dmg) | HiHat, disk image |
+| [`Maquina-Dredrum-v0.2.0-macOS.dmg`](https://github.com/biontz/maquina/releases/download/v0.2.0/Maquina-Dredrum-v0.2.0-macOS.dmg) | Dredrum, disk image |
+| [`Maquina-Plethora-v0.2.0-macOS.dmg`](https://github.com/biontz/maquina/releases/download/v0.2.0/Maquina-Plethora-v0.2.0-macOS.dmg) | Plethora, disk image |
+| [`Maquina-Oneiroi-v0.2.0-macOS.dmg`](https://github.com/biontz/maquina/releases/download/v0.2.0/Maquina-Oneiroi-v0.2.0-macOS.dmg) | Oneiroi and Oneiroi FX, disk image |
+| [`Maquina-Klang-v0.2.0-macOS.dmg`](https://github.com/biontz/maquina/releases/download/v0.2.0/Maquina-Klang-v0.2.0-macOS.dmg) | Klang, disk image |
+| [`Maquina-Klong-v0.2.0-macOS.dmg`](https://github.com/biontz/maquina/releases/download/v0.2.0/Maquina-Klong-v0.2.0-macOS.dmg) | Klong and Klong FX, disk image |
+| [`Maquina-Acida-v0.2.0-macOS.dmg`](https://github.com/biontz/maquina/releases/download/v0.2.0/Maquina-Acida-v0.2.0-macOS.dmg) | Acida and Acida FX, disk image |
+| [`Maquina-BL101-v0.2.0-macOS.dmg`](https://github.com/biontz/maquina/releases/download/v0.2.0/Maquina-BL101-v0.2.0-macOS.dmg) | BL-101 and BL-101 FX, disk image |
+| [`Maquina-LA50-v0.2.0-macOS.dmg`](https://github.com/biontz/maquina/releases/download/v0.2.0/Maquina-LA50-v0.2.0-macOS.dmg) | LA-50, disk image |
+| [`Maquina-macOS-v0.2.0.zip`](https://github.com/biontz/maquina/releases/download/v0.2.0/Maquina-macOS-v0.2.0.zip) | all plugins as a zip, for installing by hand |
+| [`SHA256SUMS.txt`](https://github.com/biontz/maquina/releases/download/v0.2.0/SHA256SUMS.txt) | checksums of all files |
+
+The plugins are signed only ad hoc, so macOS quarantines them: open the disk image(s), then
+paste this into Terminal (Cmd+Space, "Terminal") to install them and clear the quarantine:
+
+```
+for v in /Volumes/Maquina*/; do MAQUINA_INSTALL_YES=1 sh "$v/Install Maquina.command"; done
+```
+
+Then restart the DAW or rescan plugins. Other ways are in `INSTALL-macOS.txt` and
+`INSTALL-with-AI.md` inside each disk image. Ableton Live loads VST3 only; Logic and
+GarageBand (AU only) can't load them. Linux (x86_64) and the Raspberry Pi: build from
+source, see [Building](#building). The source of a release is its tag.
 
 ## How it stays close to the hardware
 
