@@ -38,6 +38,7 @@ BUNDLES = {
     "acida": "MaquinaAcida",  # Acida FX: an effect, as Oneiroi FX
     "bl101": "MaquinaBL101",  # BL-101 FX: an effect, as Oneiroi FX
     "la50": "MaquinaLA50",
+    "strings": "MaquinaStrings",
 }
 
 PORT_RE = re.compile(
@@ -112,6 +113,11 @@ QUIRKS = {
         "LA synthesis playing D-50 patches: Upper / Lower tone, 2 partials each (synth waves, PCM stand-ins).",
         "Pages: the main knobs per tone; the full D-50 parameter set is in the desktop editor.",
         "Import .syx banks in the desktop editor; they arrive here as presets.",
+    ],
+    "strings": [
+        "String machine (REGISTER: Cello .. Organ) layered with a wavetable voice (BANK, POS X, MORPH Y).",
+        "BLEND fades strings -> wave; SHIFT / TIME move it over each note; KEYS splits the keyboard.",
+        "Editor-first build: the sound engine is not in yet, the plugin is silent.",
     ],
     "bl101": [
         "8-voice analog-modelling synth from the S1Vave firmware: VCO (pulse, saw, sub, noise), 4-pole VCF, ADSR.",

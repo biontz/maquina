@@ -3,8 +3,9 @@
 # Dredrum, MAQUINA_PLETHORA = 1 for Maquina Plethora, MAQUINA_ONEIROI = 1 for
 # Maquina Oneiroi / Oneiroi FX, MAQUINA_KLANG = 1 for Maquina Klang,
 # MAQUINA_KLONG = 1 for Maquina Klong / Klong FX, MAQUINA_ACIDA = 1 for Maquina
-# Acida / Acida FX, MAQUINA_BL101 = 1 for Maquina BL-101 / BL-101 FX), then
-# include this file.
+# Acida / Acida FX, MAQUINA_BL101 = 1 for Maquina BL-101 / BL-101 FX,
+# MAQUINA_LA50 = 1 for Maquina LA-50, MAQUINA_STRINGS = 1 for Maquina Strings),
+# then include this file.
 
 # the repository root, from where this file is (plugins sit at different depths)
 MAQUINA_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))..)
@@ -33,7 +34,7 @@ FILES_DSP += Engine.cpp
 endif
 # Maquina Klang / Klong: the host with the Mutable headers in its own
 # translation unit; the Mutable code itself is libklang.a / libklong.a
-ifneq ($(MAQUINA_KLANG)$(MAQUINA_KLONG)$(MAQUINA_ACIDA)$(MAQUINA_BL101)$(MAQUINA_LA50),)
+ifneq ($(MAQUINA_KLANG)$(MAQUINA_KLONG)$(MAQUINA_ACIDA)$(MAQUINA_BL101)$(MAQUINA_LA50)$(MAQUINA_STRINGS),)
 FILES_DSP += Engine.cpp
 endif
 
@@ -91,6 +92,10 @@ ifeq ($(MAQUINA_LA50),1)
 BUILD_CXX_FLAGS += -DMAQUINA_LA50=1
 LINK_FLAGS += $(ENGINE_BUILD)/liblasynth.a
 $(lv2_dsp) $(clap) $(vst3) $(jack): $(ENGINE_BUILD)/liblasynth.a
+endif
+# MAQUINA_STRINGS=1: Maquina Strings (StringsHost; the editor-first skeleton has no engine library yet)
+ifeq ($(MAQUINA_STRINGS),1)
+BUILD_CXX_FLAGS += -DMAQUINA_STRINGS=1
 endif
 BUILD_CXX_FLAGS += -std=gnu++17 -DMAQUINA_VOICE_INDEX=$(MAQUINA_VOICE_INDEX) $(MAQUINA_INCLUDES)
 LINK_FLAGS += $(ENGINE_BUILD)/libmaquinaengine.a -lm

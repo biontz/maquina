@@ -197,6 +197,19 @@ PAGES["la50"] = [
               "patch_hold_mode", "patch_u_key_shift", "patch_l_key_shift"]),
 ]
 
+# Maquina Strings: the strings, the wave layer, filter + blend motion, amp + effects, then vibrato,
+# unison and the rest (provisional until the engine is in)
+PAGES["strings"] = [
+    ("STRINGS", ["@bank", "@patch", "register", "shape", "detune", "tone", "blend", "keys"]),
+    ("WAVE", ["wave_bank", "wave_x", "wave_y", "wave_octave", "wave_lfo_rate", "wave_lfo_depth", "wave_env_pos",
+              "layer_detune"]),
+    ("FILTER / BLEND", ["filter_mode", "filter_cutoff", "filter_reso", "filter_env", "filter_keytrack",
+                        "blend_shift", "blend_time", "blend_velo"]),
+    ("AMP / FX", ["attack", "decay", "sustain", "release", "fx_mode", "fx_amount", "reverb", "gain"]),
+    ("VIBRATO / MORE", ["vibrato", "vib_depth", "vib_delay", "velocity", "fx_slow", "fx_fast", "wave_unison",
+                        "wave_spread"]),
+]
+
 # Machinista profiles that differ from PAGES: only these pages, and the
 # profile (and its preset banks) only holds the parameters on them; the rest
 # keep their defaults. Maquina Plethora on Machinista = channel A only (B and
@@ -234,6 +247,7 @@ CLAP_FILL = {
     "bl101": ["modulator_sync", "modulator_fast"],
     "bl101_fx": ["rev_level", "rev_type"],
     "la50": ["u_p1_tvf_cutoff", "l_p1_tvf_cutoff"],
+    "strings": ["vibrato", "vib_delay"],
 }
 
 

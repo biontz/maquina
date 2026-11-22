@@ -8,6 +8,7 @@
   openrb/acida/           OpenRB-338 (ReBirth RB-338 reimplementation): acida + acida_fx
   s1vave/bl101/           S1Vave (SH-101-style firmware): bl101 + bl101_fx
   lasynth/la50/           LA synthesis playing D-50 patches (dsynkant + Munt): la50
+  stringmachine/strings/  string machine (after jpcima's string-machine) + Plaits wavetables: strings
 
 each with engine/, third_party/, plugins/<plugin>/ and presets/<voice>/.
 """
@@ -25,6 +26,7 @@ KLONG = os.path.join(ROOT, "mutable-instruments", "klong")
 ACIDA = os.path.join(ROOT, "openrb", "acida")
 BL101 = os.path.join(ROOT, "s1vave", "bl101")
 LA50 = os.path.join(ROOT, "lasynth", "la50")
+STRINGS = os.path.join(ROOT, "stringmachine", "strings")
 
 LXR_FW = os.path.join(DRUM02, "third_party", "lxr-firmware")
 
@@ -39,6 +41,7 @@ MODULE_OF = {
     "acida": ACIDA, "acida_fx": ACIDA,
     "bl101": BL101, "bl101_fx": BL101,
     "la50": LA50,
+    "strings": STRINGS,
 }
 
 

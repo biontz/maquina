@@ -29,7 +29,7 @@ PRESETS_HPP = os.path.join(COMMON, "Presets.hpp")
 RANDOM_HPP = os.path.join(COMMON, "Randomizer.hpp")
 OUT_HPP = os.path.join(COMMON, "FactoryPresets.generated.hpp")
 VOICES = ["kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora", "oneiroi", "oneiroi_fx",
-          "klang", "klong", "klong_fx", "acida", "acida_fx", "bl101", "bl101_fx", "la50"]
+          "klang", "klong", "klong_fx", "acida", "acida_fx", "bl101", "bl101_fx", "la50", "strings"]
 
 
 def c_str(s):

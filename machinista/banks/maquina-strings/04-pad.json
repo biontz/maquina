@@ -1,0 +1,50 @@
+{
+ "schema": 1,
+ "uri": "urn:maquina:strings",
+ "name": "Pad",
+ "patches": [
+  {
+   "name": "Glass Orchestra",
+   "controls": {
+    "register": 42,
+    "shape": 2,
+    "detune": 6,
+    "tone": 50,
+    "vibrato": 10,
+    "vib_delay": 6,
+    "blend": 40,
+    "keys": 0,
+    "wave_bank": 0,
+    "wave_x": 35,
+    "wave_y": 60,
+    "wave_octave": 0,
+    "wave_lfo_rate": 66,
+    "wave_lfo_depth": 25,
+    "wave_env_pos": 30,
+    "layer_detune": 7,
+    "filter_mode": 0,
+    "filter_cutoff": 84,
+    "filter_reso": 60,
+    "filter_env": 36,
+    "filter_keytrack": 50,
+    "blend_shift": 40,
+    "blend_time": 93,
+    "blend_velo": 30,
+    "attack": 83,
+    "decay": 91,
+    "sustain": 100,
+    "release": 96,
+    "fx_mode": 0,
+    "fx_amount": 70,
+    "reverb": 40,
+    "vib_depth": 30,
+    "velocity": 0,
+    "fx_slow": 30,
+    "fx_fast": 30,
+    "wave_unison": 1,
+    "wave_spread": 12,
+    "gain": 0
+   }
+  }
+ ]
+}

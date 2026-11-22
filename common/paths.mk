@@ -13,6 +13,8 @@
 #                           the DSP built as libbl101.a (s1vave/Makefile)
 #   lasynth/la50/           LA synthesis playing D-50 patches (dsynkant + Munt's LA32): LA-50,
 #                           the engine built as liblasynth.a (lasynth/Makefile)
+#   stringmachine/strings/  a string machine (after jpcima's string-machine) + Plaits' wavetables:
+#                           Strings (the editor-first skeleton: a silent stub host for now)
 #
 # each with engine/ (port + host class), third_party/ (vendored sources),
 # plugins/<plugin>/ and presets/<voice>/; common/ is shared by all plugins.
@@ -27,6 +29,7 @@ KLONG_DIR    := $(MUTABLE_DIR)/klong
 ACIDA_DIR    := $(MAQUINA_ROOT)/openrb/acida
 BL101_DIR    := $(MAQUINA_ROOT)/s1vave/bl101
 LA50_DIR     := $(MAQUINA_ROOT)/lasynth/la50
+STRINGS_DIR  := $(MAQUINA_ROOT)/stringmachine/strings
 LXR_FW_INC   := $(DRUM02_DIR)/third_party/lxr-firmware/Core/Inc
 
 # plugin directories, in build order
@@ -37,14 +40,14 @@ PLUGIN_DIRS := $(addprefix drum02/plugins/,kick tom snare cymbal hihat) \
 	mutable-instruments/klong/plugins/klong-fx \
 	openrb/acida/plugins/acida openrb/acida/plugins/acida-fx \
 	s1vave/bl101/plugins/bl101 s1vave/bl101/plugins/bl101-fx \
-	lasynth/la50/plugins/la50
+	lasynth/la50/plugins/la50 stringmachine/strings/plugins/strings
 
 # every plugin and tool: shared code, the host classes, and the LXR firmware
 # headers (VoiceTypes.hpp uses its Parameters.h)
 MAQUINA_INCLUDES := -I$(MAQUINA_ROOT)/common -I$(DRUM02_DIR)/engine -I$(DRUM02_DIR)/engine/fw_shim \
 	-I$(LXR_FW_INC) -I$(DREDRUM_DIR)/engine -I$(PLETHORA_DIR)/engine -I$(ONEIROI_DIR)/engine \
 	-I$(KLANG_DIR)/engine -I$(KLONG_DIR)/engine -I$(ACIDA_DIR)/engine -I$(BL101_DIR)/engine \
-	-I$(LA50_DIR)/engine
+	-I$(LA50_DIR)/engine -I$(STRINGS_DIR)/engine
 
 # the vendored Noise Plethora port + its VCV Rack stand-in
 PLETHORA_INCLUDES := -I$(PLETHORA_DIR)/engine/compat -I$(PLETHORA_DIR)/third_party/noise-plethora/src

@@ -11,7 +11,7 @@
 #define MAQUINA_THEME_GRAPHENE 2  // BL-101, BL-101 FX, LA-50
 #define MAQUINA_THEME_LXR 3       // Kick, Tom, Snare, Cymbal, HiHat
 #define MAQUINA_THEME_BEFACO 4    // Oneiroi, Oneiroi FX, Plethora
-#define MAQUINA_THEME_MUTABLE 5   // Klang, Klong, Klong FX
+#define MAQUINA_THEME_MUTABLE 5   // Klang, Klong, Klong FX, Strings
 #define MAQUINA_THEME_ERICA 6     // Dredrum
 
 #ifndef MAQUINA_THEME
@@ -25,7 +25,7 @@
 #define MAQUINA_THEME MAQUINA_THEME_GRAPHENE
 #elif MAQUINA_VOICE_INDEX == 12 || MAQUINA_VOICE_INDEX == 13 // Acida, Acida FX
 #define MAQUINA_THEME MAQUINA_THEME_SILVER303
-#elif MAQUINA_VOICE_INDEX >= 9 && MAQUINA_VOICE_INDEX <= 11 // Klang, Klong, Klong FX
+#elif (MAQUINA_VOICE_INDEX >= 9 && MAQUINA_VOICE_INDEX <= 11) || MAQUINA_VOICE_INDEX == 17 // Klang, Klong, Klong FX, Strings
 #define MAQUINA_THEME MAQUINA_THEME_MUTABLE
 #else
 #error "no editor theme for this MAQUINA_VOICE_INDEX (common/ui/Theme.hpp)"
@@ -160,6 +160,7 @@ constexpr Theme kErica {
 
 constexpr Theme withWidth(Theme t, float w) { t.width = w; return t; }
 constexpr Theme kGrapheneLa50 = withWidth(kGraphene, 1240.f); // the PG-1000 field is wider
+constexpr Theme kMutableStrings = withWidth(kMutable, 1100.f); // Strings: two layers side by side
 
 // LXR black (Kick, Tom, Snare, Cymbal, HiHat): matte black, thin red rings, grey caps,
 // red display digits (mockups/kick-lxr.html)
@@ -181,7 +182,7 @@ constexpr Theme kLxr {
 constexpr const Theme& theme()
 {
     return kTheme == ThemeId::Silver303 ? kSilver303
-         : kTheme == ThemeId::Mutable   ? kMutable
+         : kTheme == ThemeId::Mutable   ? (MAQUINA_VOICE_INDEX == 17 ? kMutableStrings : kMutable)
          : kTheme == ThemeId::Lxr       ? kLxr
          : kTheme == ThemeId::Befaco    ? kBefaco
          : kTheme == ThemeId::Erica     ? kErica

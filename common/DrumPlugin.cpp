@@ -26,6 +26,8 @@
 #include "Bl101Host.hpp"
 #elif MAQUINA_LA50
 #include "La50Host.hpp"
+#elif MAQUINA_STRINGS
+#include "StringsHost.hpp"
 #else
 #include "EngineHost.hpp"
 #endif
@@ -56,6 +58,8 @@ using Engine = maquina::AcidaHost; // Maquina Acida / Acida FX: OpenRB-338's 303
 using Engine = maquina::Bl101Host; // Maquina BL-101 / BL-101 FX: S1Vave's synth and effects
 #elif MAQUINA_LA50
 using Engine = maquina::La50Host; // Maquina LA-50: LA synthesis playing D-50 patches
+#elif MAQUINA_STRINGS
+using Engine = maquina::StringsHost; // Maquina Strings: string machine + wavetables (skeleton: silent)
 #else
 using Engine = maquina::EngineHost;  // the LXR-02 firmware engine
 #endif
@@ -132,9 +136,15 @@ static const char* const kLa50PageNames[8] = { "Patch", "Upper Common", "Upper P
                                                "Lower Common", "Lower Partial 1", "Lower Partial 2", "Mix" };
 static const char* const kLa50PageSymbols[8] = { "patch", "upper", "upper_p1", "upper_p2", "lower", "lower_p1",
                                                  "lower_p2", "mix" };
+// Maquina Strings: 8 groups of 4 + MORE (tools/gen_params.py STRINGS_PAGE_TITLES; Gain is on FX, page 7)
+static const char* const kStringsPageNames[9] = { "Strings", "Vibrato / Blend", "Wave", "Wave Mod", "Filter",
+                                                  "Motion", "Amp", "FX", "More" };
+static const char* const kStringsPageSymbols[9] = { "strings", "vibrato", "wave", "wave_mod", "filter",
+                                                    "motion", "amp", "fx", "more" };
 static bool isDredrum() { return voiceDef().voice == maquina::kDredrumVoice; }
 static bool isPlethora() { return voiceDef().voice == maquina::kPlethoraVoice; }
 static bool isOneiroi() { return maquina::isOneiroi(voiceDef().voice); }
+static bool isStrings() { return maquina::isStrings(voiceDef().voice); }
 static bool isKlang() { return voiceDef().voice == maquina::kKlangVoice; }
 static bool isKlong() { return maquina::isKlong(voiceDef().voice); }
 static bool isAcida() { return maquina::isAcida(voiceDef().voice); }
@@ -191,6 +201,10 @@ protected:
         if (voiceDef().voice == maquina::kAcidaFxVoice)
             return "Distortion, PCF filter, compressor and tempo delay from OpenRB-338, a reimplementation of "
                    "the ReBirth RB-338 engine (unofficial; not affiliated with Reason Studios or Roland).";
+        if (isStrings())
+            return "String machine after jpcima's string-machine layered with Plaits-style wavetables: register "
+                   "morph, blend / split, filter, ensemble and effects (unofficial; not affiliated with their "
+                   "authors or with Mutable Instruments).";
         if (isLa50())
             return "LA-synthesis synth that plays D-50 patches (import .syx banks): two tones of two partials, "
                    "synth waves after Munt's LA32 model, chorus, EQ, reverb (unofficial; not affiliated with Roland).";
@@ -216,6 +230,7 @@ protected:
                : isAcida()    ? "https://github.com/pingw33n/openrb-338"
                : isBl101()    ? "https://github.com/AndrewGG88/S1Vave"
                : isLa50()     ? "https://github.com/ngeiswei/dsynkant"
+               : isStrings()  ? "https://github.com/jpcima/string-machine"
                               : "https://github.com/erica-synths/lxr-desktop-app";
     }
     const char* getLicense() const override { return "GPL-3.0-only"; }
@@ -233,6 +248,11 @@ protected:
             const bool fx = voiceDef().voice == maquina::kAcidaFxVoice;
             group.name = (fx ? kAcidaFxPageNames : kAcidaPageNames)[page & 7];
             group.symbol = (fx ? kAcidaFxPageSymbols : kAcidaPageSymbols)[page & 7];
+            return;
+        }
+        if (isStrings()) {
+            group.name = kStringsPageNames[page % 9];
+            group.symbol = kStringsPageSymbols[page % 9];
             return;
         }
         if (isLa50()) {
@@ -432,8 +452,8 @@ protected:
                 fEngine.noteOn(ev.frame, ev.data[1], ev.data[2]);
             else if (status == 0x80 || status == 0x90)
                 fEngine.noteOff(ev.frame, ev.data[1]);
-#if MAQUINA_BL101 || MAQUINA_LA50
-            // Maquina BL-101 / LA-50: the bender, the mod wheel (vibrato), sustain, all notes off
+#if MAQUINA_BL101 || MAQUINA_LA50 || MAQUINA_STRINGS
+            // Maquina BL-101 / LA-50 / Strings: the bender, the mod wheel (vibrato), sustain, all notes off
             else if (status == 0xE0)
                 fEngine.pitchBend(ev.frame, int32_t(ev.data[1] | (ev.data[2] << 7)) - 8192);
             else if (status == 0xB0)

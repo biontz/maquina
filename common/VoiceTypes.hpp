@@ -43,6 +43,7 @@ constexpr uint8_t kAcidaFxVoice = 24;   // Maquina Acida FX (OpenRB-338's distor
 constexpr uint8_t kBl101Voice = 25;     // Maquina BL-101 (s1vave/bl101/engine/, S1Vave's synth)
 constexpr uint8_t kBl101FxVoice = 26;   // Maquina BL-101 FX (S1Vave's chorus, delay, reverb, lo-fi)
 constexpr uint8_t kLa50Voice = 27;      // Maquina LA-50 (lasynth/la50/engine/, LA synthesis playing D-50 patches)
+constexpr uint8_t kStringsVoice = 28;   // Maquina Strings (stringmachine/strings/engine/, string machine + wavetables)
 // the LXR-02 voices (EngineHost); everything else is a Maquina port of another device
 inline bool isLxrVoice(uint8_t voice) { return voice < kDredrumVoice; }
 inline bool isOneiroi(uint8_t voice) { return voice == kOneiroiVoice || voice == kOneiroiFxVoice; }
@@ -52,6 +53,7 @@ inline bool isMutable(uint8_t voice) { return voice == kKlangVoice || isKlong(vo
 inline bool isAcida(uint8_t voice) { return voice == kAcidaVoice || voice == kAcidaFxVoice; }
 inline bool isBl101(uint8_t voice) { return voice == kBl101Voice || voice == kBl101FxVoice; }
 inline bool isLa50(uint8_t voice) { return voice == kLa50Voice; }
+inline bool isStrings(uint8_t voice) { return voice == kStringsVoice; }
 // voices built from 3 channels/oscillators with their own random ROLL/RND
 // switches; no extra (LXR) parameters
 inline bool hasChannels(uint8_t voice) { return voice == kDredrumVoice || voice == kPlethoraVoice; }
@@ -59,7 +61,7 @@ inline bool hasChannels(uint8_t voice) { return voice == kDredrumVoice || voice 
 struct VoiceDef {
     const char* id;
     const char* name;
-    uint8_t voice;        // engine voice slot (LxrVoice), or kDredrumVoice ... kLa50Voice
+    uint8_t voice;        // engine voice slot (LxrVoice), or kDredrumVoice ... kStringsVoice
     const VoiceParam* params;
     uint32_t numParams;
 };

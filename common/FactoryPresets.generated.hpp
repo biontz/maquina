@@ -712,6 +712,11 @@ static const FactoryPreset k_la50_presets[] = {
     { "Reso Zap", "FX", "bright, short", k_la50_pv15, 21 },
 };
 
+static const PresetValue k_strings_pv0[] = { { 0, 0 } };
+static const FactoryPreset k_strings_presets[] = {
+    { "Glass Orchestra", "Pad", "long, soft, modulated", k_strings_pv0, 0 },
+};
+
 struct VoicePresets { const FactoryPreset* presets; uint32_t count; };
 // in k_voices order
 static const VoicePresets k_factory_presets[] = {
@@ -732,6 +737,7 @@ static const VoicePresets k_factory_presets[] = {
     { k_bl101_presets, 64 },
     { k_bl101_fx_presets, 14 },
     { k_la50_presets, 16 },
+    { k_strings_presets, 1 },
 };
 
 } // namespace maquina

@@ -1,0 +1,590 @@
+{
+  "schema": 1,
+  "id": "maquina-strings",
+  "uri": "urn:maquina:strings",
+  "title": "Maquina Strings",
+  "provider": "parameter-bank",
+  "bank_format": "json",
+  "extensions": [
+    ".json"
+  ],
+  "parameters": [
+    {
+      "index": 5,
+      "symbol": "register",
+      "name": "REGISTER",
+      "default": 42,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 6,
+      "symbol": "shape",
+      "name": "SHAPE",
+      "default": 2,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "SAW"
+        ],
+        [
+          1,
+          "PWM"
+        ],
+        [
+          2,
+          "MIX"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 7,
+      "symbol": "detune",
+      "name": "DETUNE",
+      "default": 6,
+      "min": 0,
+      "max": 25,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 8,
+      "symbol": "tone",
+      "name": "TONE",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 9,
+      "symbol": "vibrato",
+      "name": "VIBRATO",
+      "default": 10,
+      "min": 0,
+      "max": 30,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 10,
+      "symbol": "vib_delay",
+      "name": "VIB DELAY",
+      "default": 6,
+      "min": 0,
+      "max": 30,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 11,
+      "symbol": "blend",
+      "name": "BLEND",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 12,
+      "symbol": "keys",
+      "name": "KEYS",
+      "default": 0,
+      "min": 0,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "LAYER"
+        ],
+        [
+          1,
+          "WAVE LOW"
+        ],
+        [
+          2,
+          "WAVE HIGH"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 13,
+      "symbol": "wave_bank",
+      "name": "BANK",
+      "default": 0,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "A"
+        ],
+        [
+          1,
+          "B"
+        ],
+        [
+          2,
+          "C"
+        ],
+        [
+          3,
+          "D"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 14,
+      "symbol": "wave_x",
+      "name": "POS X",
+      "default": 35,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 15,
+      "symbol": "wave_y",
+      "name": "MORPH Y",
+      "default": 60,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 16,
+      "symbol": "wave_octave",
+      "name": "OCTAVE",
+      "default": 0,
+      "min": -2,
+      "max": 2,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 17,
+      "symbol": "wave_lfo_rate",
+      "name": "LFO RATE",
+      "default": 66,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 18,
+      "symbol": "wave_lfo_depth",
+      "name": "LFO DEPTH",
+      "default": 25,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 19,
+      "symbol": "wave_env_pos",
+      "name": "ENV > POS",
+      "default": 30,
+      "min": -100,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 20,
+      "symbol": "layer_detune",
+      "name": "LAYER DET",
+      "default": 7,
+      "min": 0,
+      "max": 25,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 21,
+      "symbol": "filter_mode",
+      "name": "FLT MODE",
+      "default": 0,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "LP"
+        ],
+        [
+          1,
+          "BP"
+        ],
+        [
+          2,
+          "HP"
+        ],
+        [
+          3,
+          "COMB"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 22,
+      "symbol": "filter_cutoff",
+      "name": "CUTOFF",
+      "default": 84,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 23,
+      "symbol": "filter_reso",
+      "name": "RESO",
+      "default": 60,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 24,
+      "symbol": "filter_env",
+      "name": "FLT ENV",
+      "default": 36,
+      "min": -100,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 25,
+      "symbol": "filter_keytrack",
+      "name": "KEYTRACK",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 26,
+      "symbol": "blend_shift",
+      "name": "SHIFT",
+      "default": 40,
+      "min": -100,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 27,
+      "symbol": "blend_time",
+      "name": "BLND TIME",
+      "default": 93,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 28,
+      "symbol": "blend_velo",
+      "name": "BLND VELO",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 29,
+      "symbol": "attack",
+      "name": "ATTACK",
+      "default": 83,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 30,
+      "symbol": "decay",
+      "name": "DECAY",
+      "default": 91,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 31,
+      "symbol": "sustain",
+      "name": "SUSTAIN",
+      "default": 100,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 32,
+      "symbol": "release",
+      "name": "RELEASE",
+      "default": 96,
+      "min": 0,
+      "max": 127,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 33,
+      "symbol": "fx_mode",
+      "name": "FX MODE",
+      "default": 0,
+      "min": 0,
+      "max": 3,
+      "integer": true,
+      "toggle": false,
+      "log": false,
+      "choices": [
+        [
+          0,
+          "ENSEMBLE"
+        ],
+        [
+          1,
+          "PHASER"
+        ],
+        [
+          2,
+          "CHORUS"
+        ],
+        [
+          3,
+          "FORMANT"
+        ]
+      ],
+      "choice": true
+    },
+    {
+      "index": 34,
+      "symbol": "fx_amount",
+      "name": "FX AMOUNT",
+      "default": 70,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 35,
+      "symbol": "reverb",
+      "name": "REVERB",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 36,
+      "symbol": "vib_depth",
+      "name": "VIB DEPTH",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 37,
+      "symbol": "velocity",
+      "name": "VELOCITY",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 38,
+      "symbol": "fx_slow",
+      "name": "FX SLOW",
+      "default": 30,
+      "min": 0,
+      "max": 60,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 39,
+      "symbol": "fx_fast",
+      "name": "FX FAST",
+      "default": 30,
+      "min": 0,
+      "max": 60,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 40,
+      "symbol": "wave_unison",
+      "name": "UNISON",
+      "default": 1,
+      "min": 1,
+      "max": 4,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 41,
+      "symbol": "wave_spread",
+      "name": "SPREAD",
+      "default": 12,
+      "min": 0,
+      "max": 50,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 42,
+      "symbol": "gain",
+      "name": "GAIN",
+      "default": 0,
+      "min": -24,
+      "max": 12,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    }
+  ],
+  "pages": [
+    {
+      "title": "STRINGS",
+      "controls": [
+        "@bank",
+        "@patch",
+        "register",
+        "shape",
+        "detune",
+        "tone",
+        "blend",
+        "keys"
+      ]
+    },
+    {
+      "title": "WAVE",
+      "controls": [
+        "wave_bank",
+        "wave_x",
+        "wave_y",
+        "wave_octave",
+        "wave_lfo_rate",
+        "wave_lfo_depth",
+        "wave_env_pos",
+        "layer_detune"
+      ]
+    },
+    {
+      "title": "FILTER / BLEND",
+      "controls": [
+        "filter_mode",
+        "filter_cutoff",
+        "filter_reso",
+        "filter_env",
+        "filter_keytrack",
+        "blend_shift",
+        "blend_time",
+        "blend_velo"
+      ]
+    },
+    {
+      "title": "AMP / FX",
+      "controls": [
+        "attack",
+        "decay",
+        "sustain",
+        "release",
+        "fx_mode",
+        "fx_amount",
+        "reverb",
+        "gain"
+      ]
+    },
+    {
+      "title": "VIBRATO / MORE",
+      "controls": [
+        "vibrato",
+        "vib_depth",
+        "vib_delay",
+        "velocity",
+        "fx_slow",
+        "fx_fast",
+        "wave_unison",
+        "wave_spread"
+      ]
+    }
+  ],
+  "quirks": [
+    "String machine (REGISTER: Cello .. Organ) layered with a wavetable voice (BANK, POS X, MORPH Y).",
+    "BLEND fades strings -> wave; SHIFT / TIME move it over each note; KEYS splits the keyboard.",
+    "Editor-first build: the sound engine is not in yet, the plugin is silent."
+  ]
+}

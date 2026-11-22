@@ -1361,5 +1361,92 @@
         ]
       }
     ]
+  },
+  "strings": {
+    "name": "Strings",
+    "pages": [
+      {
+        "title": "STRINGS",
+        "controls": [
+          "register",
+          "shape",
+          "detune",
+          "tone"
+        ]
+      },
+      {
+        "title": "VIBRATO / BLEND",
+        "controls": [
+          "vibrato",
+          "vib_delay",
+          "blend",
+          "keys"
+        ]
+      },
+      {
+        "title": "WAVE",
+        "controls": [
+          "wave_bank",
+          "wave_x",
+          "wave_y",
+          "wave_octave"
+        ]
+      },
+      {
+        "title": "WAVE MOD",
+        "controls": [
+          "wave_lfo_rate",
+          "wave_lfo_depth",
+          "wave_env_pos",
+          "layer_detune"
+        ]
+      },
+      {
+        "title": "FILTER",
+        "controls": [
+          "filter_mode",
+          "filter_cutoff",
+          "filter_reso",
+          "filter_env"
+        ]
+      },
+      {
+        "title": "MOTION",
+        "controls": [
+          "filter_keytrack",
+          "blend_shift",
+          "blend_time",
+          "blend_velo"
+        ]
+      },
+      {
+        "title": "AMP",
+        "controls": [
+          "attack",
+          "decay",
+          "sustain",
+          "release"
+        ]
+      },
+      {
+        "title": "FX",
+        "controls": [
+          "fx_mode",
+          "fx_amount",
+          "reverb"
+        ]
+      },
+      {
+        "title": "MORE",
+        "controls": [
+          "vib_depth",
+          "velocity",
+          "fx_slow",
+          "fx_fast",
+          "wave_unison",
+          "wave_spread"
+        ]
+      }
+    ]
   }
 }

@@ -116,7 +116,7 @@ void makeDrawer(Layout& L, float panelBottom, bool channels = false)
     for (int i = 0; i < maquina::kNumRandGroups; ++i) {
         R.used[i] = false;
         for (uint32_t k = 0; k < voiceDef().numParams && !R.used[i]; ++k)
-            R.used[i] = maquina::randGroupOf(voiceDef().params[k].symbol) == i;
+            R.used[i] = maquina::randGroupOf(voiceDef().params[k].symbol, voiceDef().voice) == i;
         n += R.used[i];
     }
     float x = 16 + 104 + (n > 8 ? 18 : 26); // many groups (LXR: 10): tighter

@@ -122,6 +122,13 @@ static const ClapRemotePage k_la50_remote_pages[] = {
     { "LOWER COMMON", { "l_structure", "l_partial_balance", "l_partial_mute", "l_lfo1_rate", "l_pmod_lfo", "l_chorus_type", "l_chorus_balance", "l_lfo1_wave" } },
     { "PLAY", { "patch_split_point", "patch_bender_range", "patch_after_bend", "patch_porta_time", "patch_porta_mode", "patch_hold_mode", "patch_u_key_shift", "patch_l_key_shift" } },
 };
+static const ClapRemotePage k_strings_remote_pages[] = {
+    { "STRINGS", { "register", "shape", "detune", "tone", "blend", "keys", "vibrato", "vib_delay" } },
+    { "WAVE", { "wave_bank", "wave_x", "wave_y", "wave_octave", "wave_lfo_rate", "wave_lfo_depth", "wave_env_pos", "layer_detune" } },
+    { "FILTER / BLEND", { "filter_mode", "filter_cutoff", "filter_reso", "filter_env", "filter_keytrack", "blend_shift", "blend_time", "blend_velo" } },
+    { "AMP / FX", { "attack", "decay", "sustain", "release", "fx_mode", "fx_amount", "reverb", "gain" } },
+    { "VIBRATO / MORE", { "vibrato", "vib_depth", "vib_delay", "velocity", "fx_slow", "fx_fast", "wave_unison", "wave_spread" } },
+};
 
 static const ClapRemotePages k_remote_pages[] = {
     { k_kick_remote_pages, sizeof(k_kick_remote_pages) / sizeof(k_kick_remote_pages[0]) },
@@ -141,4 +148,5 @@ static const ClapRemotePages k_remote_pages[] = {
     { k_bl101_remote_pages, sizeof(k_bl101_remote_pages) / sizeof(k_bl101_remote_pages[0]) },
     { k_bl101_fx_remote_pages, sizeof(k_bl101_fx_remote_pages) / sizeof(k_bl101_fx_remote_pages[0]) },
     { k_la50_remote_pages, sizeof(k_la50_remote_pages) / sizeof(k_la50_remote_pages[0]) },
+    { k_strings_remote_pages, sizeof(k_strings_remote_pages) / sizeof(k_strings_remote_pages[0]) },
 };

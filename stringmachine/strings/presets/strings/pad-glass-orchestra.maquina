@@ -1,0 +1,44 @@
+# Maquina factory preset
+# design: the approved panel mockup's sound (Viola register, saw + PWM, wave layer fading in over
+# 2.4 s, ensemble). Editor-first build: the engine is not in yet, so it is silent for now.
+voice = strings
+name = Glass Orchestra
+category = Pad
+tags = long, soft, modulated
+register = 42
+shape = Mix
+detune = 6
+tone = 50
+vibrato = 10
+vib_depth = 30
+vib_delay = 6
+blend = 40
+keys = Layer
+wave_bank = A
+wave_x = 35
+wave_y = 60
+wave_octave = 0
+wave_lfo_rate = 66
+wave_lfo_depth = 25
+wave_env_pos = 30
+layer_detune = 7
+wave_unison = 1
+wave_spread = 12
+filter_mode = LP
+filter_cutoff = 84
+filter_reso = 60
+filter_env = 36
+filter_keytrack = 50
+blend_shift = 40
+blend_time = 93
+blend_velo = 30
+attack = 83
+decay = 91
+sustain = 100
+release = 96
+velocity = 0
+fx_mode = Ensemble
+fx_amount = 70
+fx_slow = 30
+fx_fast = 30
+reverb = 40

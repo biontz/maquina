@@ -51,7 +51,7 @@ int main()
                     randomize(d, rs, v.data(), rng);
                     for (uint32_t i = 0; i < n; ++i) {
                         const VoiceParam& p = paramAt(d, i);
-                        const int g = randGroupOf(p.symbol);
+                        const int g = randGroupOf(p.symbol, d.voice);
                         if (v[i] != std::round(v[i]) || v[i] < lo(p) || v[i] > hi(p)) {
                             std::printf("%s.%s: %g out of range\n", d.id, p.symbol, v[i]); ++bad;
                         }
@@ -89,7 +89,7 @@ int main()
                                  : maquina::hasChannels(d.voice)
                                      ? !std::strcmp(p.symbol, "trig_mode") || std::strstr(p.symbol, "_mute") != nullptr
                                      : p.page == 7;
-            if (randGroupOf(p.symbol) < 0 && !trigger) {
+            if (randGroupOf(p.symbol, d.voice) < 0 && !trigger) {
                 std::printf("%s.%s is in no randomize group\n", d.id, p.symbol); ++bad;
             }
         }

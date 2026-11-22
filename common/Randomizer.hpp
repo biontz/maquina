@@ -30,15 +30,35 @@
 
 namespace maquina {
 
+constexpr uint8_t kAnyVoice = 0xff;
+
 struct RandGroup {
     const char* key;   // state key, stable
     const char* title; // label in the editor
     bool defLock;
     uint8_t defMin, defMax; // %
     const char* symbols[20];
+    // the only voice (VoiceDef::voice) the group is for, or kAnyVoice. A voice's groups come
+    // first, so its symbols can share names with other plugins' (Maquina Strings: "decay",
+    // "filter_reso") without landing in their groups.
+    uint8_t voice = kAnyVoice;
 };
 
 static const RandGroup kRandGroups[] = {
+    // Maquina Strings (its own groups: their symbols are also other plugins'). Amp, effects and
+    // the keys / octave locked: they change the playing, not the sound's colour.
+    { "sstr", "STRINGS", false, 0, 100, { "register", "shape", "detune", "tone" }, kStringsVoice },
+    { "svib", "VIBRATO", false, 0, 100, { "vibrato", "vib_depth", "vib_delay" }, kStringsVoice },
+    { "swave", "WAVE", false, 0, 100, { "wave_bank", "wave_x", "wave_y", "wave_unison", "wave_spread" },
+      kStringsVoice },
+    { "swmod", "WAVE MOD", false, 0, 100, { "wave_lfo_rate", "wave_lfo_depth", "wave_env_pos" }, kStringsVoice },
+    { "sblend", "BLEND", false, 0, 100, { "blend", "blend_shift", "blend_time", "blend_velo", "layer_detune" },
+      kStringsVoice },
+    { "sfilt", "FILTER", false, 20, 100,
+      { "filter_mode", "filter_cutoff", "filter_reso", "filter_env", "filter_keytrack" }, kStringsVoice },
+    { "samp", "AMP", true, 0, 100, { "attack", "decay", "sustain", "release", "velocity" }, kStringsVoice },
+    { "sfx", "FX", true, 0, 100, { "fx_mode", "fx_amount", "fx_slow", "fx_fast", "reverb" }, kStringsVoice },
+    { "skeys", "KEYS", true, 0, 100, { "keys", "wave_octave" }, kStringsVoice },
     { "osc", "OSC", false, 0, 100,
       { "osc_coarse", "osc_fine", "osc_wave", "osc_pwm", "noise_freq", "noise_mix", "fm_amount", "fm_freq",
         "fm_wave", "fm_mode", "mod1_freq", "mod1_gain", "mod1_wave", "mod2_freq", "mod2_gain", "mod2_wave" } },
@@ -156,8 +176,15 @@ inline bool symbolMatches(const char* pattern, const char* symbol)
     return std::strcmp(pattern, symbol) == 0;
 }
 
+// is group g one of this voice's (its own, or a group for any voice)
+inline bool randGroupFor(int g, uint8_t voice)
+{
+    return kRandGroups[g].voice == kAnyVoice || kRandGroups[g].voice == voice;
+}
+
 inline bool randGroupUsed(const VoiceDef& d, int g)
 {
+    if (!randGroupFor(g, d.voice)) return false;
     for (const char* sym : kRandGroups[g].symbols)
         for (uint32_t i = 0; sym && i < d.numParams; ++i)
             if (symbolMatches(sym, d.params[i].symbol)) return true;
@@ -178,10 +205,12 @@ inline int channelOf(const VoiceDef& d, const char* symbol)
     return -1;
 }
 
-inline int randGroupOf(const char* symbol)
+// the group of a voice's parameter: the first of its groups matching the symbol, -1 for none
+inline int randGroupOf(const char* symbol, uint8_t voice)
 {
     for (int g = 0; g < kNumRandGroups; ++g)
-        for (const char* sym : kRandGroups[g].symbols)
+        if (randGroupFor(g, voice))
+            for (const char* sym : kRandGroups[g].symbols)
             if (sym && symbolMatches(sym, symbol)) return g;
     return -1;
 }
@@ -306,7 +335,7 @@ inline void randomize(const VoiceDef& d, const RandSettings& rs, float* values, 
 {
     for (uint32_t i = 0; i < numAllParams(d); ++i) {
         const VoiceParam& p = paramAt(d, i);
-        const int g = randGroupOf(p.symbol);
+        const int g = randGroupOf(p.symbol, d.voice);
         if (g < 0 || rs.lock[g]) continue;
         const int osc = channelOf(d, p.symbol);
         if (onlyOsc >= 0 ? osc != onlyOsc : (osc >= 0 && !rs.oscOn[osc])) continue;
@@ -338,7 +367,7 @@ static const char* const kOneiroiAmountLabels[] = { "Full", "Mid", "Low" };
 
 inline bool oneiroiTargets(const char* symbol, int target)
 {
-    const int g = randGroupOf(symbol);
+    const int g = randGroupOf(symbol, kOneiroiVoice); // (Oneiroi and Oneiroi FX share their groups)
     if (g < 0) return false;
     const char* key = kRandGroups[g].key;
     switch (target) {
@@ -375,7 +404,7 @@ inline void oneiroiRandomize(const VoiceDef& d, int target, int amount, float* v
     for (uint32_t i = 0; i < d.numParams; ++i) {
         const VoiceParam& p = d.params[i];
         if (!oneiroiTargets(p.symbol, target)) continue;
-        if (const int g = randGroupOf(p.symbol); lock && g >= 0 && lock[g]) continue;
+        if (const int g = randGroupOf(p.symbol, d.voice); lock && g >= 0 && lock[g]) continue;
         const bool semis = oneiroi::isPitch(p);
         const float k = oneiroi::toKnob(p, values[i]);
         values[i] = float(oneiroi::fromKnob(p, oneiroiRandomKnob(k, amount, semis, unit(rng))));

@@ -25,6 +25,7 @@ CLICK switch). It is appended after the LXR voices, then Maquina Plethora
 then Maquina Oneiroi and Oneiroi FX (oneiroi_params below).
 """
 import json
+import math
 import os
 import re
 import subprocess
@@ -687,6 +688,96 @@ def la50_params():
     return params, [pg for pg in pages if pg["controls"]]
 
 
+# Maquina Strings (string machine + Plaits wavetables): stringmachine/strings/
+STRINGS_VOICE = 28
+# port groups (LV2 / Zynthian: 8 groups of 4 + MORE; common/DrumPlugin.cpp kStringsPageNames).
+# Page 7 holds the extra Gain (ExtraParams.hpp), so FX is page 7.
+STRINGS_PAGE_TITLES = {0: "STRINGS", 1: "VIBRATO / BLEND", 2: "WAVE", 3: "WAVE MOD", 4: "FILTER", 5: "MOTION",
+                       6: "AMP", 7: "FX", 8: "MORE"}
+# log-mapped parameters (stringmachine/strings/engine/StringsUnits.hpp): lo, default, hi; 127 steps
+# bending at the default (the knee)
+STRINGS_LOG = {"wave_lfo_rate": (0.05, 0.8, 10.0), "filter_cutoff": (20.0, 1800.0, 18000.0),
+               "blend_time": (0.05, 2.4, 10.0), "attack": (0.001, 0.42, 10.0), "decay": (0.001, 1.2, 20.0),
+               "release": (0.001, 1.8, 20.0)}
+
+
+def log_knee(lo, default, hi):
+    """StringsUnits.hpp logKnee(): the step holding the default (lround)"""
+    return int(math.floor(127 * math.log(default / lo) / math.log(hi / lo) + 0.5))
+
+
+def strings_params():
+    """Maquina Strings parameters (the editor-first skeleton: the engine comes later). Values are whole
+    steps; StringsUnits.hpp says what they mean (Hz, s, ct)."""
+    params = []
+
+    def p(symbol, short, page, kind, default, fwmax=100, offset=0, labels=None):
+        params.append(dict(symbol=symbol, name=short, short=short, page=page, kind=kind, fwmax=fwmax,
+                           offset=offset, labels=labels, default=default))
+
+    def logp(symbol, short, page):
+        p(symbol, short, page, "Int", log_knee(*STRINGS_LOG[symbol]), 127)
+
+    # STRINGS: the register morph (Cello .. Organ), the oscillators, tone
+    p("register", "Register", 0, "Int", 42)
+    p("shape", "Shape", 0, "Enum", 2, 2, labels=["Saw", "PWM", "Mix"])
+    p("detune", "Detune", 0, "Int", 6, 25)             # cents
+    p("tone", "Tone", 0, "Int", 50)
+    # VIBRATO (delayed) + the layers' blend and key split
+    p("vibrato", "Vibrato", 1, "Int", 10, 30)          # 5.0 .. 8.0 Hz
+    p("vib_delay", "Vib Delay", 1, "Int", 6, 30)       # 0 .. 3 s
+    p("blend", "Blend", 1, "Int", 40)                  # 0 strings .. 100 wave
+    p("keys", "Keys", 1, "Enum", 0, 2, labels=["Layer", "Wave Low", "Wave High"])
+    # WAVE: Plaits' wavetables (4 banks of 8 x 8)
+    p("wave_bank", "Bank", 2, "Enum", 0, 3, labels=["A", "B", "C", "D"])
+    p("wave_x", "Pos X", 2, "Int", 35)
+    p("wave_y", "Morph Y", 2, "Int", 60)
+    p("wave_octave", "Octave", 2, "Int", 0, 4, -2)
+    logp("wave_lfo_rate", "LFO Rate", 3)
+    p("wave_lfo_depth", "LFO Depth", 3, "Int", 25)
+    p("wave_env_pos", "Env > Pos", 3, "Int", 30, 200, -100)
+    p("layer_detune", "Layer Det", 3, "Int", 7, 25)    # cents
+    # FILTER (the wave layer's): LP / BP / HP / COMB
+    p("filter_mode", "Flt Mode", 4, "Enum", 0, 3, labels=["LP", "BP", "HP", "Comb"])
+    logp("filter_cutoff", "Cutoff", 4)
+    p("filter_reso", "Reso", 4, "Int", 60)
+    p("filter_env", "Flt Env", 4, "Int", 36, 200, -100)
+    # MOTION: filter key tracking, the blend over note time and by velocity
+    p("filter_keytrack", "Keytrack", 5, "Int", 50)     # %
+    p("blend_shift", "Shift", 5, "Int", 40, 200, -100)
+    logp("blend_time", "Blnd Time", 5)
+    p("blend_velo", "Blnd Velo", 5, "Int", 30)
+    # AMP
+    logp("attack", "Attack", 6)
+    logp("decay", "Decay", 6)
+    p("sustain", "Sustain", 6, "Int", 100)
+    logp("release", "Release", 6)
+    # FX (+ the extra Gain on this page)
+    p("fx_mode", "FX Mode", 7, "Enum", 0, 3, labels=["Ensemble", "Phaser", "Chorus", "Formant"])
+    p("fx_amount", "FX Amount", 7, "Int", 70)
+    p("reverb", "Reverb", 7, "Int", 40)
+    # MORE: off the Machinista pages' main row
+    p("vib_depth", "Vib Depth", 8, "Int", 30)          # 0 = off
+    p("velocity", "Velocity", 8, "Int", 0)             # 0 = off
+    p("fx_slow", "FX Slow", 8, "Int", 30, 60)          # 0.30 .. 0.90 Hz
+    p("fx_fast", "FX Fast", 8, "Int", 30, 60)          # 3.0 .. 9.0 Hz
+    # the wave layer's unison: voices per note (1 = off) and their detune spread
+    p("wave_unison", "Unison", 8, "Int", 1, 3, 1)      # 1 .. 4 voices
+    p("wave_spread", "Spread", 8, "Int", 12, 50)       # cents
+    for q in params:
+        q.update(par="0", fwmin=0, modtargets=None)
+        if len(q["short"]) > MAX_SHORT_NAME:
+            sys.exit(f"strings: '{q['short']}' is longer than {MAX_SHORT_NAME} characters")
+        lo, hi = q["offset"], q["fwmax"] + q["offset"]
+        if q["kind"] == "Enum":
+            lo, hi = 0, len(q["labels"]) - 1
+        if not lo <= q["default"] <= hi:
+            sys.exit(f"strings: {q['symbol']}: default {q['default']} outside {lo}..{hi}")
+    pages = [dict(title=t, controls=[q["symbol"] for q in params if q["page"] == i])
+             for i, t in sorted(STRINGS_PAGE_TITLES.items())]
+    return params, [pg for pg in pages if pg["controls"]]
+
+
 NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 
 
@@ -974,6 +1065,9 @@ def main():
     l_params, l_pages = la50_params()
     plugins_out.append(dict(id="la50", name="LA-50", voice=LA50_VOICE, params=l_params))
     layout["la50"] = dict(name="LA-50", pages=l_pages)
+    s_params, s_pages = strings_params()
+    plugins_out.append(dict(id="strings", name="Strings", voice=STRINGS_VOICE, params=s_params))
+    layout["strings"] = dict(name="Strings", pages=s_pages)
 
     write_header(plugins_out)
     os.makedirs(os.path.join(ROOT, "machinista"), exist_ok=True)
@@ -990,7 +1084,7 @@ def cstr(s):
 
 def write_header(plugins):
     o = []
-    o.append("// GENERATED by tools/gen_params.py from the LXR firmware UI tables (+ Dredrum, Plethora, Oneiroi, Klang, Klong, Acida, BL-101, LA-50). Do not edit.")
+    o.append("// GENERATED by tools/gen_params.py from the LXR firmware UI tables (+ Dredrum, Plethora, Oneiroi, Klang, Klong, Acida, BL-101, LA-50, Strings). Do not edit.")
     o.append("// SPDX-License-Identifier: GPL-3.0-only")
     o.append("#pragma once")
     o.append("#include \"VoiceTypes.hpp\"")

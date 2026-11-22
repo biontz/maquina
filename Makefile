@@ -339,7 +339,7 @@ macos-dmg:
 # one small disk image per instrument, its FX version included (the GitHub release's
 # single downloads): dist/Maquina-<Name>-<version>-macOS.dmg, each with the installer,
 # the notes and an install test. Groups whose bundles are not in bin-macos/ are skipped.
-MACOS_DMG_GROUPS := Kick Tom Snare Cymbal HiHat Dredrum Plethora Oneiroi Klang Klong Acida BL101 LA50
+MACOS_DMG_GROUPS := Kick Tom Snare Cymbal HiHat Dredrum Plethora Oneiroi Klang Klong Acida BL101 LA50 Strings
 macos-dmg-each:
 	@mkdir -p dist build
 	@for g in $(MACOS_DMG_GROUPS); do \
