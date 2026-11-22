@@ -59,7 +59,7 @@ using Engine = maquina::Bl101Host; // Maquina BL-101 / BL-101 FX: S1Vave's synth
 #elif MAQUINA_LA50
 using Engine = maquina::La50Host; // Maquina LA-50: LA synthesis playing D-50 patches
 #elif MAQUINA_STRINGS
-using Engine = maquina::StringsHost; // Maquina Strings: string machine + wavetables (skeleton: silent)
+using Engine = maquina::StringsHost; // Maquina Strings: string machine + wavetables
 #else
 using Engine = maquina::EngineHost;  // the LXR-02 firmware engine
 #endif

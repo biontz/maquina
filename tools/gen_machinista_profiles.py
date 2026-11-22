@@ -117,7 +117,7 @@ QUIRKS = {
     "strings": [
         "String machine (REGISTER: Cello .. Organ) layered with a wavetable voice (BANK, POS X, MORPH Y).",
         "BLEND fades strings -> wave; SHIFT / TIME move it over each note; KEYS splits the keyboard.",
-        "Editor-first build: the sound engine is not in yet, the plugin is silent.",
+        "8 voices; FILTER (LP/BP/HP/COMB) shapes the wave layer; ENSEMBLE / PHASER / CHORUS / FORMANT + reverb.",
     ],
     "bl101": [
         "8-voice analog-modelling synth from the S1Vave firmware: VCO (pulse, saw, sub, noise), 4-pole VCF, ADSR.",

@@ -14,7 +14,7 @@
 #   lasynth/la50/           LA synthesis playing D-50 patches (dsynkant + Munt's LA32): LA-50,
 #                           the engine built as liblasynth.a (lasynth/Makefile)
 #   stringmachine/strings/  a string machine (after jpcima's string-machine) + Plaits' wavetables:
-#                           Strings (the editor-first skeleton: a silent stub host for now)
+#                           Strings, the engine built as libstrings.a (stringmachine/Makefile)
 #
 # each with engine/ (port + host class), third_party/ (vendored sources),
 # plugins/<plugin>/ and presets/<voice>/; common/ is shared by all plugins.

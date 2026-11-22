@@ -60,7 +60,7 @@ PY
 # output (the parameter is set before the first block, so no ramp)
 echo "== gain"
 for n in kick tom snare cymbal hihat dredrum plethora oneiroi oneiroi-fx klang klong klong-fx acida acida-fx \
-        bl-101 bl-101-fx la-50; do
+        bl-101 bl-101-fx la-50 strings; do
     for g in 0 6 -12; do
         $QEMU "$TOOLS/lv2_render" urn:maquina:$n 48000 2 "$OUT/$n-gain$g.wav" gain=$g >/dev/null
     done
@@ -72,7 +72,7 @@ def rms(n, g):
     return math.sqrt(sum(x * x for x in a) / len(a))
 ok = True
 for n in ("kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora", "oneiroi", "oneiroi-fx", "klang",
-          "klong", "klong-fx", "acida", "acida-fx", "bl-101", "bl-101-fx", "la-50"):
+          "klong", "klong-fx", "acida", "acida-fx", "bl-101", "bl-101-fx", "la-50", "strings"):
     dbs = [20 * math.log10(rms(n, g) / rms(n, 0)) for g in (6, -12)]
     good = abs(dbs[0] - 6) < 0.05 and abs(dbs[1] + 12) < 0.05
     ok &= good
@@ -239,6 +239,14 @@ $QEMU "$TOOLS/lv2_render" urn:maquina:la-50 48000 3 "$OUT/la-50-twin.wav" --twin
     twin:u_p1_tvf_cutoff=20 twin:u_structure=1 twin:patch_key_mode=1 | sed -n 's/^  twin/  twin/p' || fail=1
 for rate in 44100 48000 96000; do
     $QEMU "$TOOLS/lv2_render" urn:maquina:la-50 $rate 3 "$OUT/la-50-$rate.wav" | sed 's/^/  /' || fail=1
+done
+
+# Maquina Strings: behaviour is tools/strings_test; here the built plugin: isolation, sample rates
+echo "== strings"
+$QEMU "$TOOLS/lv2_render" urn:maquina:strings 48000 3 "$OUT/strings-twin.wav" --twin \
+    twin:register=0 twin:blend=100 twin:filter_mode=3 twin:fx_mode=2 | sed -n 's/^  twin/  twin/p' || fail=1
+for rate in 44100 48000 96000; do
+    $QEMU "$TOOLS/lv2_render" urn:maquina:strings $rate 3 "$OUT/strings-$rate.wav" | sed 's/^/  /' || fail=1
 done
 
 [ $fail -eq 0 ] && echo "test_plugins: PASSED" || { echo "test_plugins: FAILED"; exit 1; }

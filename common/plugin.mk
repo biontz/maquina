@@ -93,9 +93,12 @@ BUILD_CXX_FLAGS += -DMAQUINA_LA50=1
 LINK_FLAGS += $(ENGINE_BUILD)/liblasynth.a
 $(lv2_dsp) $(clap) $(vst3) $(jack): $(ENGINE_BUILD)/liblasynth.a
 endif
-# MAQUINA_STRINGS=1: Maquina Strings (StringsHost; the editor-first skeleton has no engine library yet)
+# MAQUINA_STRINGS=1: Maquina Strings (StringsHost); the engine is libstrings.a (stringmachine/Makefile),
+# Plaits' wave tables come from libklang.a
 ifeq ($(MAQUINA_STRINGS),1)
 BUILD_CXX_FLAGS += -DMAQUINA_STRINGS=1
+LINK_FLAGS += $(ENGINE_BUILD)/libstrings.a $(ENGINE_BUILD)/libklang.a
+$(lv2_dsp) $(clap) $(vst3) $(jack): $(ENGINE_BUILD)/libstrings.a $(ENGINE_BUILD)/libklang.a
 endif
 BUILD_CXX_FLAGS += -std=gnu++17 -DMAQUINA_VOICE_INDEX=$(MAQUINA_VOICE_INDEX) $(MAQUINA_INCLUDES)
 LINK_FLAGS += $(ENGINE_BUILD)/libmaquinaengine.a -lm

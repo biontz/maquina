@@ -26,6 +26,7 @@ engine:
 	$(MAKE) -C openrb
 	$(MAKE) -C s1vave
 	$(MAKE) -C lasynth
+	$(MAKE) -C stringmachine
 
 # local fixes to the DPF submodule (patches/dpf/*.patch), applied once;
 # a patch that is already applied is skipped
@@ -68,6 +69,10 @@ BL101_TEST_FLAGS := -O2 -std=gnu++17 -fwrapv $(MAQUINA_INCLUDES) -Itools/bl101_r
 BL101_SCENARIOS := $(sort $(wildcard tools/bl101_ref/scenarios/*.txt))
 # Maquina LA-50: behaviour checks + the C++ .syx reader against tools/d50_syx.py
 LA50_TEST_FLAGS := -O2 -std=gnu++17 $(MAQUINA_INCLUDES) tools/la50_test/la50_test.cpp $(LA50_DIR)/plugins/la50/Engine.cpp
+# Maquina Strings: behaviour checks (pitch, layers, voices, vibrato, effects, fuzz, host) and the CPU bench
+STRINGS_TEST_FLAGS := -O2 -std=gnu++17 $(MAQUINA_INCLUDES) tools/strings_test/strings_test.cpp \
+	$(STRINGS_DIR)/plugins/strings/Engine.cpp
+STRINGS_BENCH_FLAGS := -O2 -std=gnu++17 -I$(STRINGS_DIR)/engine tools/strings_bench/strings_bench.cpp
 tools: ENGINE_DIR := build/engine
 test-aarch64: ENGINE_DIR := build/engine-aarch64
 
@@ -100,6 +105,8 @@ tools: engine
 	$(CXX) $(ACIDA_TEST_FLAGS) build/engine/libacida.a -o build/tools/acida_test
 	$(CXX) $(BL101_TEST_FLAGS) build/engine/libbl101.a -o build/tools/bl101_test
 	$(CXX) $(LA50_TEST_FLAGS) build/engine/liblasynth.a -o build/tools/la50_test
+	$(CXX) $(STRINGS_TEST_FLAGS) build/engine/libstrings.a build/engine/libklang.a -o build/tools/strings_test
+	$(CXX) $(STRINGS_BENCH_FLAGS) build/engine/libstrings.a build/engine/libklang.a -o build/tools/strings_bench
 
 # engine fidelity + isolation, state completeness, resampler quality, GUI
 # defaults, randomizer rules, LV2 validation, every plugin rendered through a real
@@ -123,6 +130,7 @@ test: all tools
 	build/tools/acida_test --host
 	$(MAKE) --no-print-directory bl101-check
 	$(MAKE) --no-print-directory la50-check
+	build/tools/strings_test
 	@if command -v cargo >/dev/null; then $(MAKE) --no-print-directory acida-check; \
 	else echo "acida-check: SKIPPED (needs cargo for the Rust reference)"; fi
 	@if command -v avr-gcc >/dev/null && [ -e /usr/include/simavr/sim_avr.h ]; then \
@@ -228,6 +236,7 @@ aarch64: $(SYSROOT_A64)/usr/lib/aarch64-linux-gnu/libc.so dpf-patches
 	$(MAKE) -C openrb $(A64_ENV) ENGINE_BUILD=$(CURDIR)/build/engine-aarch64
 	$(MAKE) -C s1vave $(A64_ENV) ENGINE_BUILD=$(CURDIR)/build/engine-aarch64
 	$(MAKE) -C lasynth $(A64_ENV) ENGINE_BUILD=$(CURDIR)/build/engine-aarch64
+	$(MAKE) -C stringmachine $(A64_ENV) ENGINE_BUILD=$(CURDIR)/build/engine-aarch64
 	@for p in $(PLUGIN_DIRS); do $(MAKE) -C $$p $(A64_ENV) TARGETS="lv2_dsp clap vst3" || exit 1; done
 	clang $(A64_FLAGS) dpf/utils/lv2-ttl-generator/lv2_ttl_generator.c -ldl -o build/aarch64/lv2_ttl_generator
 	@for b in bin-aarch64/*.lv2; do \
@@ -258,6 +267,14 @@ test-aarch64: aarch64
 	$(QEMU_A64) build/tools-aarch64/bl101_test --host
 	clang++ $(A64_FLAGS) $(LA50_TEST_FLAGS) build/engine-aarch64/liblasynth.a -o build/tools-aarch64/la50_test
 	$(QEMU_A64) build/tools-aarch64/la50_test
+	clang++ $(A64_FLAGS) $(STRINGS_TEST_FLAGS) build/engine-aarch64/libstrings.a build/engine-aarch64/libklang.a \
+		-o build/tools-aarch64/strings_test
+	$(QEMU_A64) build/tools-aarch64/strings_test
+
+# Maquina Strings: the engine's CPU load per scenario on this computer, with a Pi 4 estimate
+# (tools/strings_bench: load x 5, see there)
+strings-bench: tools
+	build/tools/strings_bench
 
 # ---------------------------------------------------------------------------
 # macOS (on a Mac; CI: .github/workflows/macos.yml): universal CLAP + VST3
@@ -294,6 +311,7 @@ macos-x86_64 macos-arm64: macos-%: dpf-patches
 	$(MAKE) -C openrb $(call macos_env,$*) ENGINE_BUILD=$(CURDIR)/build/engine-macos-$*
 	$(MAKE) -C s1vave $(call macos_env,$*) ENGINE_BUILD=$(CURDIR)/build/engine-macos-$*
 	$(MAKE) -C lasynth $(call macos_env,$*) ENGINE_BUILD=$(CURDIR)/build/engine-macos-$*
+	$(MAKE) -C stringmachine $(call macos_env,$*) ENGINE_BUILD=$(CURDIR)/build/engine-macos-$*
 	@for p in $(MACOS_PLUGINS); do $(MAKE) -C $$p $(call macos_env,$*) TARGETS="clap vst3" || exit 1; done
 
 macos: $(MACOS_ARCHS:%=macos-%)
@@ -360,8 +378,9 @@ clean:
 	$(MAKE) -C openrb clean
 	$(MAKE) -C s1vave clean
 	$(MAKE) -C lasynth clean
+	$(MAKE) -C stringmachine clean
 	$(MAKE) clean -C dpf/utils/lv2-ttl-generator
 	rm -rf bin build bin-macos bin-macos-* dist
 
 .PHONY: presets all engine dpf-patches plugins gen tools test install clean aarch64 test-aarch64 dredrum-flash dredrum-check \
-	oneiroi-check acida-ref acida-check bl101-ref bl101-check la50-check macos macos-test macos-dist macos-dmg macos-dmg-each
+	oneiroi-check acida-ref acida-check bl101-ref bl101-check la50-check strings-bench macos macos-test macos-dist macos-dmg macos-dmg-each
