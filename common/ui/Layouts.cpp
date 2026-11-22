@@ -27,6 +27,9 @@ Credit creditOf(uint8_t v)
     if (maquina::isAcida(v)) return { "based on OpenRB-338 \xc2\xb7 unofficial", "OpenRB-338 \xc2\xb7 unofficial" };
     if (maquina::isBl101(v))
         return { "based on S1Vave by Andrew GG \xc2\xb7 unofficial", "after S1Vave \xc2\xb7 unofficial" };
+    if (maquina::isStrings(v))
+        return { "after jpcima string-machine \xc2\xb7 MI Plaits \xc2\xb7 unofficial",
+                 "string-machine, Plaits \xc2\xb7 unofficial" };
     if (maquina::isLa50(v))
         return { "LA synthesis \xc2\xb7 reads D-50 patches \xc2\xb7 dsynkant, Munt \xc2\xb7 unofficial",
                  "LA synthesis \xc2\xb7 dsynkant, Munt \xc2\xb7 unofficial" };
@@ -332,6 +335,144 @@ void makeKlong(Layout& L)
     if (fx) addWindow(L, "note_source", "Notes", rc, oy + 150 + 14, 120, 28, oy + 178 + 8 + 7.8f);
     const float gy = oy + (fx ? 268 : 212);
     addKnob(L, "gain", "Gain", ox + 640, gy + 40 + 7.8f, gy, gy + 40 + 24.4f, 52, 140);
+    makeDrawer(L, py + ph);
+}
+
+// ---------------------------------------------------------------------------
+// Maquina Strings: the Mutable grey at 1100 px (the approved mockup, Plugin Design "Strings
+// panel"): three rows, the strings on the left (5/12), the wave layer on the right (7/12).
+// Knob rings glow in their layer's colour: amber STRINGS, cyan WAVE + FILTER, the theme's green
+// BLEND, AMP, FX.
+
+constexpr Rgb kStrAmber { 0xf0, 0xa0, 0x30 }, kStrCyan { 0x3f, 0xc1, 0xc9 }, kStrGreen { 0x3f, 0xd3, 0x4a };
+
+void makeStrings(Layout& L)
+{
+    // ph 684 (the mockup's 683 + 1): the window stays an even number of pixels tall at 100 %
+    // (845 px drew garbage over the panel on a 2x XWayland desktop)
+    const float px = kChromeInset, py = kChromeHeaderH + kChromeInset, pw = kWidth - 2 * kChromeInset, ph = 684;
+    L.panel = { px, py, pw, ph };
+    auto Y = [&](float ry) { return py + ry; }; // panel rows (mockup y - 62)
+    const float lx0 = 44, lx1 = 450, rx0 = 476, rx1 = 1056; // the two columns
+
+    auto title = [&](float x0, float x1, float ry, const char* t, bool led, Rgb c) {
+        Deco d { Deco::Title, { x0, Y(ry), x1 - x0, 0 }, t };
+        d.led = led;
+        d.rgb = c;
+        L.decos.push_back(d);
+    };
+    // a knob with its layer's LED ring; label and value under it
+    auto knob = [&](const char* sym, const char* label, float cx, float ky, float size, Rgb ring) -> Ctl& {
+        const bool small = size < 45;
+        const float ly = ky + size / 2 + (small ? 11 : 16), vy = ly + 16;
+        Ctl& c = addKnob(L, sym, label, cx, Y(ly), Y(ky), Y(vy), size, small ? 70.f : 80.f);
+        c.led = true;
+        c.ledRgb = ring;
+        c.bigLabel = true;
+        return c;
+    };
+    auto seg = [&](const char* sym, Box b, int cols, const char* const* labels) -> Ctl* {
+        const int p = findParam(sym);
+        if (p < 0) return nullptr;
+        Ctl c { uint32_t(p), CtlType::Select, nullptr, b.x, b.y, b.w, b.h };
+        c.ax = b.x + b.w / 2; c.ay = b.y + b.h / 2; c.size = 1; c.bw = b.w; c.bh = b.h;
+        c.look = Ctl::Seg; c.cols = uint8_t(cols); c.segLabels = labels;
+        L.ctls.push_back(c);
+        return &L.ctls.back();
+    };
+    auto graph = [&](GraphKind k, Box b, const char* a, const char* bb, const char* cc) {
+        Graph g { k, b.x, b.y, b.w, b.h };
+        g.p[0] = findParam(a); g.p[1] = findParam(bb); g.p[2] = findParam(cc);
+        L.graphs.push_back(g);
+    };
+
+    // title row: the logo, KEYS [LAYER | WAVE LOW | WAVE HIGH]
+    L.decos.push_back({ Deco::Logo, { lx0, Y(39) - 17, 200, 34 } });
+    { Deco d { Deco::Title, { 782, Y(39), 0, 0 }, "Keys" }; L.decos.push_back(d); }
+    static const char* const kKeys[] = { "Layer", "Wave Low", "Wave High" };
+    seg("keys", { 835, Y(24), 220, 30 }, 0, kKeys);
+
+    // ---- row 1: STRINGS | WAVE
+    title(lx0, lx1, 74, "Strings", true, kStrAmber);
+    title(rx0, rx1, 74, "Wave", true, kStrCyan);
+    {
+        Ctl& r = knob("register", "Register", 92, 168, 72, kStrAmber);
+        r.labelY = Y(223); r.valueY = 0; // the station list says where it is
+        r.y = Y(118); r.h = Y(232) - r.y;
+        const int p = findParam("register");
+        if (p >= 0) { // the stations: click = jump there
+            Ctl c { uint32_t(p), CtlType::Select, nullptr, 154, Y(110), 112, 94 };
+            c.ay = Y(119); c.ledX = 162; c.ledRgb = kStrAmber; c.look = Ctl::Stations;
+            L.ctls.push_back(c);
+        }
+    }
+    seg("shape", { 158, Y(208), 117, 26 }, 0, nullptr);
+    knob("detune", "Detune", 329, 110, 46, kStrAmber);
+    knob("tone", "Tone", 409, 110, 46, kStrAmber);
+    knob("vibrato", "Vibrato", 329, 201, 46, kStrAmber);
+    knob("vib_delay", "Vib Delay", 409, 201, 46, kStrAmber);
+
+    graph(GraphKind::WaveTerrain, { rx0, Y(101), 236, 112 }, "wave_bank", "wave_x", "wave_y");
+    if (const int p = findParam("wave_bank"); p >= 0) { // BANK (A) (B) (C) (D)
+        Ctl c { uint32_t(p), CtlType::Select, "Bank", rx0, Y(231) - 14, 170, 28 };
+        c.ay = Y(231); c.labelX = rx0; c.n = 4; c.look = Ctl::RoundSel;
+        for (int k = 0; k < 4; ++k) c.xs[k] = 536 + 30 * k;
+        L.ctls.push_back(c);
+    }
+    static const struct { const char* sym; const char* label; } kWave[2][4] = {
+        { { "wave_x", "Pos X" }, { "wave_y", "Morph Y" }, { "wave_octave", "Octave" }, { "wave_unison", "Unison" } },
+        { { "wave_lfo_rate", "LFO Rate" }, { "wave_lfo_depth", "LFO Depth" }, { "wave_env_pos", "Env \xe2\x80\xba Pos" },
+          { "wave_spread", "Spread" } },
+    };
+    for (int row = 0; row < 2; ++row)
+        for (int k = 0; k < 4; ++k)
+            knob(kWave[row][k].sym, kWave[row][k].label, 771 + 82 * k, row ? 201 : 110, 46, kStrCyan);
+
+    // ---- row 2: BLEND | FILTER
+    title(lx0, lx1, 277, "Blend", false, {});
+    {
+        Deco a { Deco::Led, { 48, Y(336), 1, 0 }, "Strings" };
+        a.rgb = kStrAmber;
+        Deco b { Deco::Led, { 446, Y(336), -1, 0 }, "Wave" };
+        b.rgb = kStrCyan;
+        L.decos.push_back(a);
+        L.decos.push_back(b);
+        if (const int p = findParam("blend"); p >= 0) {
+            Ctl c { uint32_t(p), CtlType::Knob, nullptr, 120, Y(322), 272, 28 };
+            c.ax = 131; c.ay = Y(336); c.bw = 250; c.look = Ctl::HFader;
+            L.ctls.push_back(c);
+        }
+    }
+    graph(GraphKind::BlendCurve, { lx0, Y(361), 112, 62 }, "blend", "blend_shift", "blend_time");
+    knob("blend_shift", "Shift", 201, 378, 34, kStrGreen);
+    knob("blend_time", "Time", 273, 378, 34, kStrGreen);
+    knob("blend_velo", "Velo", 343, 378, 34, kStrGreen);
+    knob("layer_detune", "Detune", 413, 378, 34, kStrGreen);
+
+    title(rx0, rx1, 277, "Filter", true, kStrCyan);
+    seg("filter_mode", { rx0, Y(311), 236, 30 }, 0, nullptr);
+    graph(GraphKind::FilterResp, { rx0, Y(348), 236, 92 }, "filter_mode", "filter_cutoff", "filter_reso");
+    knob("filter_cutoff", "Cutoff", 766, 358, 46, kStrCyan);
+    knob("filter_reso", "Reso", 849, 358, 46, kStrCyan);
+    knob("filter_env", "Env", 931, 358, 46, kStrCyan);
+    knob("filter_keytrack", "Keytrack", 1015, 358, 46, kStrCyan);
+
+    // ---- row 3: AMP | ENSEMBLE / FX
+    title(lx0, lx1, 479, "Amp", false, {});
+    static const struct { const char* sym; const char* label; } kAmp[5] = {
+        { "attack", "Attack" }, { "decay", "Decay" }, { "sustain", "Sustain" }, { "release", "Release" },
+        { "velocity", "Velo" },
+    };
+    for (int k = 0; k < 5; ++k) knob(kAmp[k].sym, kAmp[k].label, 84 + 81 * k, 560, 46, kStrGreen);
+
+    title(rx0, rx1, 479, "Ensemble / FX", false, {});
+    seg("fx_mode", { rx0, Y(547), 178, 61 }, 2, nullptr);
+    static const struct { const char* sym; const char* label; } kFx[5] = {
+        { "fx_amount", "Amount" }, { "fx_slow", "Slow" }, { "fx_fast", "Fast" }, { "reverb", "Reverb" },
+        { "gain", "Gain" },
+    };
+    for (int k = 0; k < 5; ++k) knob(kFx[k].sym, kFx[k].label, 706 + 77.75f * k, 560, 46, kStrGreen);
+
     makeDrawer(L, py + ph);
 }
 
@@ -1438,6 +1579,7 @@ void makeNewLayout(Layout& L)
     case maquina::kBl101Voice:
     case maquina::kBl101FxVoice: makeGraphene(L); break;
     case maquina::kLa50Voice: makeLa50New(L); break;
+    case maquina::kStringsVoice: makeStrings(L); break;
     case maquina::kOneiroiVoice:
     case maquina::kOneiroiFxVoice: makeOneiroi(L); break;
     case maquina::kPlethoraVoice: makePlethora(L); break;

@@ -32,7 +32,8 @@ acida Acida|Classic Acid
 acida-fx AcidaFX|Full Chain
 bl101 BL101|Warm Reso Poly
 bl101-fx BL101FX|Dotted Hall
-la50 LA50|Glass Pad'
+la50 LA50|Glass Pad
+strings Strings|Glass Orchestra'
 
 echo "$list" | while IFS='|' read -r ids preset; do
     id=${ids% *}; bin=bin/Maquina${ids#* }

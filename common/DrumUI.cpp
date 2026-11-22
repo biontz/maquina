@@ -44,6 +44,7 @@
 #endif
 #include "FactoryPresets.generated.hpp"
 #include "VoiceTables.generated.hpp"
+#include "StringsUnits.hpp" // Maquina Strings: step -> Hz / s / ct (stringmachine/strings/engine/)
 
 START_NAMESPACE_DISTRHO
 
@@ -130,11 +131,64 @@ void fmtTime(char* buf, size_t n, double t)
     else std::snprintf(buf, n, "%.2f s", t);
 }
 
+// a number with up to `decimals` decimals, trailing zeros (and the point) dropped: 6 / 0.8 / 0.05
+void fmtTrim(char* buf, size_t n, double v, int decimals)
+{
+    std::snprintf(buf, n, "%.*f", decimals, v);
+    if (std::strchr(buf, '.')) {
+        size_t k = std::strlen(buf);
+        while (k > 0 && buf[k - 1] == '0') buf[--k] = 0;
+        if (k > 0 && buf[k - 1] == '.') buf[--k] = 0;
+    }
+}
+
+// Maquina Strings: a value in the panel's units (StringsUnits.hpp); false = the generic text
+bool stringsValueText(const VoiceParam& p, int iv, char* buf, size_t n)
+{
+    namespace su = maquina::strings;
+    char num[24];
+    auto is = [&](const char* sym) { return std::strcmp(p.symbol, sym) == 0; };
+    auto hz = [&](double f) {
+        if (f >= 1000.0) { fmtTrim(num, sizeof num, f / 1000.0, 1); std::snprintf(buf, n, "%s kHz", num); return; }
+        fmtTrim(num, sizeof num, f, f < 0.1 ? 2 : f < 10.0 ? 1 : 0);
+        std::snprintf(buf, n, "%s Hz", num);
+    };
+    auto seconds = [&](double t) {
+        if (t < 1.0) { std::snprintf(buf, n, "%.0f ms", t * 1000.0); return; }
+        fmtTrim(num, sizeof num, t, 1);
+        std::snprintf(buf, n, "%s s", num);
+    };
+    if (is("detune") || is("layer_detune") || is("wave_spread")) std::snprintf(buf, n, "%d ct", iv);
+    else if (is("vibrato")) hz(su::vibratoHz(iv));
+    else if (is("vib_delay")) { fmtTrim(num, sizeof num, su::vibDelaySeconds(iv), 1); std::snprintf(buf, n, "%s s", num); }
+    else if (is("vib_depth") || is("velocity")) { if (iv <= 0) std::snprintf(buf, n, "OFF"); else std::snprintf(buf, n, "%d", iv); }
+    else if (is("wave_unison")) { if (iv <= 1) std::snprintf(buf, n, "OFF"); else std::snprintf(buf, n, "%d", iv); }
+    else if (is("wave_octave")) { if (iv == 0) std::snprintf(buf, n, "0"); else std::snprintf(buf, n, "%+d", iv); }
+    else if (is("wave_lfo_rate")) hz(su::logValue(su::kWaveLfoRate, iv));
+    else if (is("filter_cutoff")) hz(su::logValue(su::kFilterCutoff, iv));
+    else if (is("filter_keytrack")) std::snprintf(buf, n, "%d%%", iv);
+    else if (is("blend_time")) seconds(su::logValue(su::kBlendTime, iv));
+    else if (is("attack")) seconds(su::logValue(su::kAttack, iv));
+    else if (is("decay")) seconds(su::logValue(su::kDecay, iv));
+    else if (is("release")) seconds(su::logValue(su::kRelease, iv));
+    else if (is("fx_slow")) { fmtTrim(num, sizeof num, su::fxSlowHz(iv), 2); std::snprintf(buf, n, "%s Hz", num); }
+    else if (is("fx_fast")) hz(su::fxFastHz(iv));
+    else if (is("register")) std::snprintf(buf, n, "%s %d", su::kStationNames[su::nearestStation(iv)], iv);
+    else return false;
+    return true;
+}
+
 // ---------------------------------------------------------------------------
 // panel description: sections in display order, items by LV2 symbol
 
 // Draw / Chop: Maquina BL-101's OSC DRAW table (draw_1..16) and CHOP masks
-enum class GraphKind { None, Amp, Pitch, Draw, Chop };
+// Maquina Strings' displays (no clicks): the wavetable terrain, the blend over note time, the
+// filter's response
+enum class GraphKind { None, Amp, Pitch, Draw, Chop, WaveTerrain, BlendCurve, FilterResp };
+inline bool isDisplayGraph(GraphKind k)
+{
+    return k == GraphKind::WaveTerrain || k == GraphKind::BlendCurve || k == GraphKind::FilterResp;
+}
 // how an item is shown: by its kind (knob / selector / toggle), or as
 // Maquina BL-101's panel controls: a vertical slider, a slide switch
 enum class ItemStyle : uint8_t { Auto, Slider, Switch, Narrow }; // Narrow: a slim selector
@@ -320,7 +374,17 @@ struct Ctl {
     enum Look : uint8_t { Plain, Window, Cluster, LedButton, Segments, LxrSel, LxrToggle, LxrFader,
                           GrSlider, GrSwitch, GrLed, GrStep, GrWin, GrChip,
                           BfKnob, BfShift, BfBadge, BfFader, BfButton, BfSwitch,
-                          ErKnob, ErButton, ErBat } look = Plain; // Erica (Dredrum); the wave windows use LxrSel
+                          ErKnob, ErButton, ErBat, // Erica (Dredrum); the wave windows use LxrSel
+                          // Maquina Strings: Seg = segmented switch (n options, cols per row, bw x bh
+                          // at ax, ay), RoundSel = round letter buttons at xs[], Stations = REGISTER's
+                          // station list (LEDs at ledX, rows from ay, 18.5 px apart), HFader =
+                          // horizontal fader (track from ax, bw long, at ay)
+                          Seg, RoundSel, Stations, HFader } look = Plain;
+    // Maquina Strings: the knob ring's LED colour (led = true) and a full-size label on small knobs
+    Rgb ledRgb {};
+    bool led = false, bigLabel = false;
+    uint8_t cols = 0; // Seg: options per row (0: all in one row)
+    const char* const* segLabels = nullptr; // Seg: shown instead of the parameter's labels
     int alt = -1; // Befaco: the parameter this control edits while SHIFT is latched
     // Cluster: a row of n items (LEDs or colour dots) at xs[], picking a value of the bank
     // shown; optional round buttons (prevX: one back, stepX: one on, both wrap) and an LED
@@ -336,6 +400,9 @@ struct Graph {
     // CHOP: overtone, the mask selectors and the Custom bits per source
     int mode = -1, first = -1;
     int mask[4] = { -1, -1, -1, -1 }, bitsLo[4] = { -1, -1, -1, -1 }, bitsHi[4] = { -1, -1, -1, -1 };
+    // Maquina Strings' displays: the parameters they follow (WaveTerrain: bank, x, y;
+    // BlendCurve: blend, shift, time; FilterResp: mode, cutoff, reso)
+    int p[3] = { -1, -1, -1 };
 };
 struct Box { float x, y, w, h; bool hit(float px, float py) const { return px >= x && px < x + w && py >= y && py < y + h; } };
 struct Section {
@@ -422,9 +489,14 @@ struct La50Panel {
 
 // the new look's panel decorations: printed rules, the logo block
 struct Deco {
-    enum Kind { VRule, HRule, Logo, Dotted, RuleText, Divider, LxrBox, GrSection, Heading, Seam, Pixel } kind;
+    // Title (Maquina Strings): a left-aligned bold title, a rule from it to b.x + b.w (none when
+    // b.w = 0), an LED before it when led; Led: an LED at (b.x, b.y)
+    enum Kind { VRule, HRule, Logo, Dotted, RuleText, Divider, LxrBox, GrSection, Heading, Seam, Pixel, Title,
+                Led } kind;
     Box b;
     const char* text = nullptr; // RuleText: the title in the rule; LxrBox: the section title
+    Rgb rgb {};
+    bool led = false;
 };
 
 // LXR: the top strip's display and page buttons. A page holds up to 8 parameters, shown
@@ -808,6 +880,7 @@ protected:
         const float v = fValues[i];
         const VoiceParam& p = paramAt(voiceDef(), i);
         const int iv = int(std::lround(v));
+        if (maquina::isStrings(voiceDef().voice) && stringsValueText(p, iv, buf, n)) return;
         if (p.kind == ParamKind::Int && !std::strcmp(p.symbol, "osc_pitch")) {
             std::snprintf(buf, n, "%+.1f st", double(iv) / 10.0); // Oneiroi: tenths of a semitone
         } else if (!std::strcmp(p.symbol, "env_attack")) { // Oneiroi's envelope (OneiroiControls.hpp)
@@ -1165,6 +1238,45 @@ protected:
             useFace(*this, "mono");
             break;
         }
+        case Deco::Title: { // Maquina Strings: (LED) TITLE ────────
+            float x = d.b.x;
+            if (d.led) {
+                drawSmallLed(x + 4, d.b.y, true, d.rgb);
+                x += 18;
+            }
+            std::string t = d.text ? d.text : "";
+            for (char& ch : t) ch = char(std::toupper(ch));
+            useFace(*this, "print");
+            fontPx(*this, 13);
+            textLetterSpacing(13 * 0.1f);
+            textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+            fillColor(col(T.print));
+            text(x, d.b.y, t.c_str(), nullptr);
+            const float tw = textWidth(t.c_str());
+            textLetterSpacing(0);
+            if (d.b.w > 0 && x + tw + 12 < d.b.x + d.b.w) {
+                beginPath();
+                rect(x + tw + 12, d.b.y - 0.75f, d.b.x + d.b.w - (x + tw + 12), 1.5f);
+                fill();
+            }
+            useFace(*this, "mono");
+            break;
+        }
+        case Deco::Led:
+            drawSmallLed(d.b.x, d.b.y, true, d.rgb);
+            if (d.text) { // its label, after (b.w > 0) or before it
+                std::string t = d.text;
+                for (char& ch : t) ch = char(std::toupper(ch));
+                useFace(*this, "print");
+                fontPx(*this, 11);
+                textLetterSpacing(11 * 0.08f);
+                textAlign((d.b.w >= 0 ? ALIGN_LEFT : ALIGN_RIGHT) | ALIGN_MIDDLE);
+                fillColor(col(T.print));
+                text(d.b.w >= 0 ? d.b.x + 10 : d.b.x - 10, d.b.y + 0.5f, t.c_str(), nullptr);
+                textLetterSpacing(0);
+                useFace(*this, "mono");
+            }
+            break;
         case Deco::Pixel: // Dredrum: a grey 7 px square
             beginPath();
             rect(d.b.x, d.b.y, d.b.w, d.b.h);
@@ -1318,9 +1430,34 @@ protected:
         setValue(param, float(v), true);
     }
     // a click on a new-look control with its own behaviour; false: the type's default
-    bool lookClick(const Ctl& c, float x, bool dbl)
+    bool lookClick(const Ctl& c, float x, float y, bool dbl)
     {
         switch (c.look) {
+        case Ctl::Seg: { // the option under the mouse
+            const VoiceParam& p = paramAt(voiceDef(), c.param);
+            const int n = c.n ? c.n : p.numLabels, cols = c.cols ? c.cols : n, rows = (n + cols - 1) / cols;
+            const float x0 = c.ax - c.bw / 2, y0 = c.ay - c.bh / 2;
+            const int cx = std::clamp(int((x - x0) / (c.bw / float(cols))), 0, cols - 1);
+            const int cy = std::clamp(int((y - y0) / (c.bh / float(rows))), 0, rows - 1);
+            if (y >= y0 && y < y0 + c.bh) setValue(c.param, float(std::min(n - 1, cy * cols + cx)), true);
+            return true;
+        }
+        case Ctl::RoundSel:
+            for (int k = 0; k < c.n; ++k)
+                if (std::fabs(x - c.xs[k]) <= 13) { setValue(c.param, float(k), true); return true; }
+            return true;
+        case Ctl::Stations: { // a station's row: REGISTER jumps to it
+            const int k = int(std::floor((y - (c.ay - 9.25f)) / 18.5f));
+            if (k >= 0 && k < maquina::strings::kNumStations)
+                setValue(c.param, float(maquina::strings::stationValue(k)), true);
+            return true;
+        }
+        case Ctl::HFader: // the cap jumps to the mouse, then follows it
+            if (dbl) { setValue(c.param, defOf(c.param), true); return true; }
+            setValue(c.param, minOf(c.param) + std::clamp((x - c.ax) / c.bw, 0.f, 1.f) * (maxOf(c.param) - minOf(c.param)),
+                     true);
+            beginDrag(int(c.param), x, y, 0);
+            return true;
         case Ctl::Cluster: {
             if (c.prevX > 0 && std::fabs(x - c.prevX) <= 17) { stepWrap(c.param, -1); return true; }
             if (c.stepX > 0 && std::fabs(x - c.stepX) <= 17) { stepWrap(c.param, 1); return true; }
@@ -1356,7 +1493,33 @@ protected:
         }
     }
 
-    // Mutable light grey (Klang, Klong, Klong FX)
+    // Maquina Strings: FILTER's knobs read FREQ / FEEDBACK in COMB mode
+    const char* stringsLabel(const Ctl& c) const
+    {
+        if (!maquina::isStrings(voiceDef().voice) || !c.label) return c.label;
+        static const int mode = findParam("filter_mode");
+        if (mode < 0 || intOf(mode) != 3) return c.label;
+        const char* sym = paramAt(voiceDef(), c.param).symbol;
+        if (!std::strcmp(sym, "filter_cutoff")) return "Freq";
+        if (!std::strcmp(sym, "filter_reso")) return "Feedback";
+        return c.label;
+    }
+    // an 8 px LED (REGISTER's stations, section titles, the blend fader's ends)
+    void drawSmallLed(float cx, float cy, bool on, Rgb c)
+    {
+        if (on) {
+            beginPath();
+            circle(cx, cy, 9);
+            fillPaint(radialGradient(cx, cy, 2, 9, col(c, 140), col(c, 0)));
+            fill();
+        }
+        beginPath();
+        circle(cx, cy, 4);
+        fillColor(col(on ? c : Rgb { 0xb4, 0xb4, 0xb0 }));
+        fill();
+    }
+
+    // Mutable light grey (Klang, Klong, Klong FX, Strings)
     void drawCtlMutable(const Ctl& c)
     {
         const Theme& T = theme();
@@ -1384,10 +1547,105 @@ protected:
         };
         switch (c.look) {
         case Ctl::Plain: { // a knob
-            const bool small = c.size < 45, left = c.labelX > 0;
-            drawKnobStyled(*this, T.knob, c.ax, c.ay, c.size, valueFraction(c.param), hot);
-            label(c.label, left ? c.labelX : c.ax, c.labelY, small, left);
-            value(buf, left ? c.labelX : c.ax, c.valueY, left);
+            const bool small = c.size < 45 && !c.bigLabel, left = c.labelX > 0;
+            drawKnobStyled(*this, T.knob, c.ax, c.ay, c.size, valueFraction(c.param), hot, c.led ? &c.ledRgb : nullptr);
+            label(stringsLabel(c), left ? c.labelX : c.ax, c.labelY, small, left);
+            if (c.valueY > 0) value(buf, left ? c.labelX : c.ax, c.valueY, left);
+            break;
+        }
+        case Ctl::Seg: { // [A | B | C]: a light well, the chosen option black
+            const VoiceParam& p = paramAt(voiceDef(), c.param);
+            const int n = c.n ? c.n : p.numLabels, cols = c.cols ? c.cols : n, rows = (n + cols - 1) / cols;
+            const float x = c.ax - c.bw / 2, y = c.ay - c.bh / 2, pad = 3;
+            const float sw = (c.bw - 2 * pad) / float(cols), sh = (c.bh - 2 * pad) / float(rows);
+            beginPath();
+            roundedRect(x, y, c.bw, c.bh, 6);
+            fillColor(col({ 0xd2, 0xd2, 0xce }));
+            fill();
+            const int cur = intOf(int(c.param));
+            for (int k = 0; k < n; ++k) {
+                const float sx = x + pad + sw * float(k % cols), sy = y + pad + sh * float(k / cols);
+                if (k == cur) {
+                    beginPath();
+                    roundedRect(sx, sy, sw, sh, 4);
+                    fillColor(col(hot ? Rgb { 0x2a, 0x2a, 0x2a } : Rgb { 0x1a, 0x1a, 0x1a }));
+                    fill();
+                }
+                std::string t = c.segLabels ? c.segLabels[k] : (k < p.numLabels ? p.labels[k] : "");
+                for (char& ch : t) ch = char(std::toupper(ch));
+                useFace(*this, "mono-sb");
+                const float px = sh < 24 ? 10.f : 11.f;
+                fontPx(*this, px);
+                textLetterSpacing(px * 0.06f);
+                textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+                fillColor(col(k == cur ? Rgb { 0xf4, 0xf4, 0xf2 } : Rgb { 0x1a, 0x1a, 0x1a }));
+                text(sx + sw / 2, sy + sh / 2 + 0.5f, t.c_str(), nullptr);
+                textLetterSpacing(0);
+            }
+            if (c.label) label(c.label, c.labelX > 0 ? c.labelX : c.ax, c.labelY, true, c.labelX > 0);
+            break;
+        }
+        case Ctl::RoundSel: { // BANK (A) (B) (C) (D)
+            const VoiceParam& p = paramAt(voiceDef(), c.param);
+            const int cur = intOf(int(c.param));
+            if (c.label) label(c.label, c.labelX, c.ay, true, true);
+            for (int k = 0; k < c.n && k < p.numLabels; ++k) {
+                const bool sel = k == cur;
+                beginPath();
+                circle(c.xs[k], c.ay, 12);
+                fillColor(col(sel ? Rgb { 0x1a, 0x1a, 0x1a } : Rgb { 0xfb, 0xfb, 0xf9 }));
+                fill();
+                strokeColor(col(sel ? Rgb { 0x1a, 0x1a, 0x1a } : Rgb { 0xbd, 0xbd, 0xb9 }));
+                strokeWidth(2);
+                stroke();
+                useFace(*this, "mono-sb");
+                fontPx(*this, 11);
+                textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+                fillColor(col(sel ? Rgb { 0xf4, 0xf4, 0xf2 } : Rgb { 0x1a, 0x1a, 0x1a }));
+                text(c.xs[k], c.ay + 0.5f, p.labels[k], nullptr);
+            }
+            break;
+        }
+        case Ctl::Stations: { // REGISTER's stations: the nearest one lit
+            const int near = maquina::strings::nearestStation(intOf(int(c.param)));
+            for (int k = 0; k < maquina::strings::kNumStations; ++k) {
+                const float y = c.ay + 18.5f * float(k);
+                drawSmallLed(c.ledX, y, k == near, c.ledRgb);
+                std::string t = maquina::strings::kStationNames[k];
+                for (char& ch : t) ch = char(std::toupper(ch));
+                useFace(*this, k == near ? "mono-sb" : "mono");
+                fontPx(*this, 11);
+                textLetterSpacing(11 * 0.04f);
+                textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+                fillColor(col(k == near ? T.print : Rgb { 0x55, 0x55, 0x4f }));
+                text(c.ledX + 12, y + 0.5f, t.c_str(), nullptr);
+                textLetterSpacing(0);
+            }
+            break;
+        }
+        case Ctl::HFader: { // the blend fader: dark up to the cap, light after it
+            const float t = valueFraction(c.param), x0 = c.ax, x1 = c.ax + c.bw, cx = x0 + t * c.bw;
+            beginPath();
+            roundedRect(x0, c.ay - 1.5f, c.bw, 3, 1.5f);
+            fillColor(col({ 0xb8, 0xb8, 0xb4 }));
+            fill();
+            beginPath();
+            roundedRect(x0, c.ay - 1.5f, cx - x0, 3, 1.5f);
+            fillColor(col(T.print));
+            fill();
+            (void)x1;
+            boxShadow(*this, cx - 11, c.ay - 11, 22, 22, 4, 2, 4, 90);
+            beginPath();
+            roundedRect(cx - 11, c.ay - 11, 22, 22, 4);
+            fillColor(col(hot ? Rgb { 0xf0, 0xf0, 0xee } : Rgb { 0xfb, 0xfb, 0xf9 }));
+            fill();
+            strokeColor(col(T.print));
+            strokeWidth(2);
+            stroke();
+            beginPath();
+            rect(cx - 5, c.ay - 1, 10, 2);
+            fillColor(col(T.print));
+            fill();
             break;
         }
         case Ctl::Window:
@@ -3964,10 +4222,111 @@ protected:
     }
     void drawGraph(const Graph& g)
     {
+        if (isDisplayGraph(g.kind)) { drawStringsDisplay(g); return; }
         if (g.kind == GraphKind::Draw) drawDrawGraphGr(g);
         else if (g.kind == GraphKind::Chop) drawChopGraphGr(g);
         else drawGraphLxr(g);
     }
+    // ---- Maquina Strings' black displays
+    // the wave layer's colour (WAVE, FILTER), the strings' (STRINGS)
+    static constexpr Rgb kStringsAmber { 0xf0, 0xa0, 0x30 }, kWaveCyan { 0x3f, 0xc1, 0xc9 };
+    void drawStringsDisplay(const Graph& g)
+    {
+        namespace su = maquina::strings;
+        beginPath();
+        roundedRect(g.x, g.y, g.w, g.h, 4);
+        fillColor(col({ 0x14, 0x14, 0x14 }));
+        fill();
+        save();
+        scissor(g.x + 1, g.y + 1, g.w - 2, g.h - 2);
+        lineJoin(ROUND);
+        lineCap(ROUND);
+        auto val = [&](int k) { return g.p[k] >= 0 ? fValues[uint32_t(g.p[k])] : 0.f; };
+        if (g.kind == GraphKind::WaveTerrain) {
+            // a stand-in for the bank's 8 x 8 waves (the engine brings Plaits' tables): rows of
+            // waves receding up and to the right; MORPH Y picks the row drawn in cyan, POS X and
+            // the bank shape the waves
+            const int bank = int(val(0)), rows = 7;
+            const float px = val(1) / 100.f, py = val(2) / 100.f;
+            const int front = std::clamp(int(std::lround(py * float(rows - 1))), 0, rows - 1);
+            const float sx = g.w / 236.f, sy = g.h / 112.f;
+            auto wave = [&](float t, float m) {
+                const float saw = 2.f * (t - std::floor(t + 0.5f));
+                const float sine = std::sin(2.f * float(M_PI) * t);
+                const float fold = std::sin(2.f * float(M_PI) * t +
+                                            (1.2f + 0.6f * float(bank)) * m * (0.4f + 1.6f * px) *
+                                                std::sin(float(2 + bank) * float(M_PI) * t));
+                return (1.f - m) * sine + m * (0.5f * saw + 0.5f * fold);
+            };
+            for (int j = rows - 1; j >= 0; --j) {
+                const float m = float(j) / float(rows - 1), ox = g.x + (12 + j * 13) * sx, oy = g.y + (40 + j * 9) * sy;
+                const bool lit = j == front;
+                beginPath();
+                for (int i = 0; i <= 60; ++i) {
+                    const float t = float(i) / 60.f, x = ox + t * 132 * sx, y = oy - wave(t, m) * (lit ? 24 : 16) * sy;
+                    if (i == 0) moveTo(x, y);
+                    else lineTo(x, y);
+                }
+                strokeColor(col(lit ? kWaveCyan : Rgb { 0x4a, 0x55, 0x58 }));
+                strokeWidth(lit ? 2.2f : 1.1f);
+                stroke();
+            }
+        } else if (g.kind == GraphKind::BlendCurve) {
+            // the strings (amber) and wave (cyan) levels over a note: from BLEND, moved by SHIFT
+            // over TIME (shown over 1.5 x TIME)
+            const float b0 = val(0) / 100.f, b1 = std::clamp(b0 + val(1) / 100.f, 0.f, 1.f);
+            const float T = su::logValue(su::kBlendTime, int(val(2))), span = 1.5f * T;
+            for (int layer = 0; layer < 2; ++layer) {
+                beginPath();
+                for (int i = 0; i <= 40; ++i) {
+                    const float t = float(i) / 40.f * span;
+                    const float w = b0 + (b1 - b0) * (1.f - std::exp(-3.f * t / std::max(T, 1e-3f)));
+                    const float lvl = layer ? w : 1.f - w;
+                    const float x = g.x + 4 + float(i) / 40.f * (g.w - 8), y = g.y + g.h - 6 - lvl * (g.h - 12);
+                    if (i == 0) moveTo(x, y);
+                    else lineTo(x, y);
+                }
+                strokeColor(col(layer ? kWaveCyan : kStringsAmber));
+                strokeWidth(1.8f);
+                stroke();
+            }
+        } else { // FilterResp: |H| on a log axis 20 Hz .. 20 kHz
+            const int mode = int(val(0));
+            const float fc = su::logValue(su::kFilterCutoff, int(val(1))), reso = val(2) / 100.f;
+            const float q = 0.5f + reso * reso * 9.5f, fb = std::min(0.97f, reso * 0.97f);
+            const float top = 16.f, bottom = -30.f; // dB
+            const float zero = g.y + 6 + (g.h - 12) * top / (top - bottom);
+            beginPath(); // the 0 dB line
+            rect(g.x + 4, zero, g.w - 8, 1);
+            fillColor(col({ 0x2e, 0x2e, 0x2e }));
+            fill();
+            beginPath();
+            const int N = 160;
+            for (int i = 0; i <= N; ++i) {
+                const float u = float(i) / float(N), f = 20.f * std::pow(1000.f, u);
+                float db;
+                if (mode == 3) { // comb: 1 / (1 - g e^-jwT), teeth at multiples of the frequency
+                    const float ph = 2.f * float(M_PI) * f / fc;
+                    const float re = 1.f - fb * std::cos(ph), im = fb * std::sin(ph);
+                    db = -20.f * std::log10(std::sqrt(re * re + im * im)) - 6.f;
+                } else { // 2-pole state variable: LP / BP / HP
+                    const float w = f / fc, w2 = w * w;
+                    const float den = std::sqrt((1 - w2) * (1 - w2) + (w / q) * (w / q));
+                    const float numr = mode == 0 ? 1.f : mode == 2 ? w2 : w / q;
+                    db = 20.f * std::log10(numr / den + 1e-6f);
+                }
+                db = std::clamp(db, bottom, top);
+                const float x = g.x + 4 + u * (g.w - 8), y = g.y + 6 + (g.h - 12) * (top - db) / (top - bottom);
+                if (i == 0) moveTo(x, y);
+                else lineTo(x, y);
+            }
+            strokeColor(col(kWaveCyan));
+            strokeWidth(1.8f);
+            stroke();
+        }
+        restore();
+    }
+
     // LA-50: an orange line in a dark window, the release mark dotted, small handles
     void drawEnvShape(const EnvGeo& g, bool hot)
     {
@@ -4930,6 +5289,7 @@ protected:
             }
             return true;
         }
+        if (const Graph* g = graphAt(x, y); g && isDisplayGraph(g->kind)) return true; // displays only
         if (const Graph* g = graphAt(x, y)) {
             const EgPoints e = egPoints(*g);
             const float height = (g->kind == GraphKind::Pitch && g->amount >= 0)
@@ -4966,7 +5326,7 @@ protected:
         fLastClickParam = c->param;
         fLastClickTime = ev.time;
 
-        if (lookClick(*c, x, dbl)) { repaint(); return true; }
+        if (lookClick(*c, x, y, dbl)) { repaint(); return true; }
         switch (c->type) {
         case CtlType::Knob:
         case CtlType::Slider:
@@ -5039,7 +5399,9 @@ protected:
                 }
             v = fDragStartValue + (fDragStartY - y) * range / (fine ? pixels * 6 : pixels);
         } else {
-            v = fDragStartValue + (x - fDragStartX) * range / (fine ? 900.f : 150.f);
+            float pixels = 150.f;
+            if (const Ctl* c = ctlFor(i); c && c->look == Ctl::HFader) pixels = c->bw; // the cap follows the mouse
+            v = fDragStartValue + (x - fDragStartX) * range / (fine ? pixels * 6 : pixels);
         }
         v = std::clamp(float(std::lround(v)), minOf(i), maxOf(i));
         if (v != fValues[i]) {
