@@ -1212,14 +1212,16 @@ protected:
             for (char& ch : t) ch = char(std::toupper(ch));
             textLetterSpacing(10.5f * 0.06f);
             const float tw = textWidth(t.c_str()), cx = d.b.x + d.b.w / 2;
+            const float ledW = d.led ? 16.f : 0.f; // an LED before the title (Klang's LOW-PASS GATE)
             textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
             fillColor(col(T.print));
-            text(cx, d.b.y, t.c_str(), nullptr);
+            text(cx + ledW / 2, d.b.y, t.c_str(), nullptr);
             textLetterSpacing(0);
             beginPath();
-            rect(d.b.x, d.b.y - 0.75f, d.b.w / 2 - tw / 2 - 6, 1.5f);
-            rect(cx + tw / 2 + 6, d.b.y - 0.75f, d.b.w / 2 - tw / 2 - 6, 1.5f);
+            rect(d.b.x, d.b.y - 0.75f, d.b.w / 2 - tw / 2 - 6 - ledW / 2, 1.5f);
+            rect(cx + tw / 2 + 6 + ledW / 2, d.b.y - 0.75f, d.b.w / 2 - tw / 2 - 6 - ledW / 2, 1.5f);
             fill();
+            if (d.led) drawSmallLed(cx - tw / 2 - ledW / 2 + 4, d.b.y, true, d.rgb);
             useFace(*this, "mono");
             break;
         }

@@ -226,6 +226,16 @@ void makeAcida(Layout& L)
 // ---------------------------------------------------------------------------
 // Mutable light grey: Klang (DESIGN-GUIDE §3.5; mockups/klang.html)
 
+// the knob rings' LED colours on the Mutable boards (Strings' scheme, used by Klang and Klong
+// too): amber = the sound source, cyan = its modulation / resonator / filter, green = level,
+// envelope, output
+constexpr Rgb kLedAmber { 0xf0, 0xa0, 0x30 }, kLedCyan { 0x3f, 0xc1, 0xc9 }, kLedGreen { 0x3f, 0xd3, 0x4a };
+inline void ledRing(Ctl& c, Rgb rgb)
+{
+    c.led = true;
+    c.ledRgb = rgb;
+}
+
 // a cluster: a row of LEDs / colour dots picking a value, round buttons, an LED
 Ctl& addCluster(Layout& L, const char* sym, const char* label, Box hit, float cy)
 {
@@ -265,25 +275,32 @@ void makeKlang(Layout& L)
     auto colX = [&](int k) { return x0 + k * (colW + gap) + colW / 2; };
     const float ky = gridY + 58, ly = gridY + 116 + 8, vy = ly + 14.5f;
     const float dy0 = vy + 13, dy1 = dy0 + 18, sy = dy1 + 26, sly = sy + 26 + 6.5f, svy = sly + 13.5f;
-    static const struct { const char* sym; const char* label; float size; const char* sub; const char* subLabel; bool win; } kCols[7] = {
-        { "coarse", "Frequency", 96, "fine", "Fine", false },
-        { "harmonics", "Harmonics", 96, "fm_env", "Env \xe2\x80\xba FM", false },
-        { "timbre", "Timbre", 70, "timbre_env", "Env \xe2\x80\xba Timbre", false },
-        { "morph", "Morph", 70, "morph_env", "Env \xe2\x80\xba Morph", false },
-        { "lpg_decay", "Decay", 70, "lpg_mode", "Mode", true },
-        { "lpg_colour", "Colour", 70, nullptr, nullptr, false },
-        { "gain", "Gain", 56, "output", "Output", true },
+    // ring colours: the oscillator amber, the envelope amounts cyan, the low-pass gate and gain green
+    static const struct { const char* sym; const char* label; float size; const char* sub; const char* subLabel; bool win;
+                          Rgb ring, subRing; } kCols[7] = {
+        { "coarse", "Frequency", 96, "fine", "Fine", false, kLedAmber, kLedAmber },
+        { "harmonics", "Harmonics", 96, "fm_env", "Env \xe2\x80\xba FM", false, kLedAmber, kLedCyan },
+        { "timbre", "Timbre", 70, "timbre_env", "Env \xe2\x80\xba Timbre", false, kLedAmber, kLedCyan },
+        { "morph", "Morph", 70, "morph_env", "Env \xe2\x80\xba Morph", false, kLedAmber, kLedCyan },
+        { "lpg_decay", "Decay", 70, "lpg_mode", "Mode", true, kLedGreen, kLedGreen },
+        { "lpg_colour", "Colour", 70, nullptr, nullptr, false, kLedGreen, kLedGreen },
+        { "gain", "Gain", 56, "output", "Output", true, kLedGreen, kLedGreen },
     };
     for (int k = 0; k < 7; ++k) {
         const float x = colX(k);
-        addKnob(L, kCols[k].sym, kCols[k].label, x, ly, ky, vy, kCols[k].size, colW);
+        ledRing(addKnob(L, kCols[k].sym, kCols[k].label, x, ly, ky, vy, kCols[k].size, colW), kCols[k].ring);
         if (!kCols[k].sub) continue;
         L.decos.push_back({ Deco::Dotted, { x, dy0, 0, dy1 - dy0 } });
         if (kCols[k].win) addWindow(L, kCols[k].sub, kCols[k].subLabel, x, sy, 104, 28, sly);
-        else addKnob(L, kCols[k].sub, kCols[k].subLabel, x, sly, sy, svy, 36, colW);
+        else ledRing(addKnob(L, kCols[k].sub, kCols[k].subLabel, x, sly, sy, svy, 36, colW), kCols[k].subRing);
     }
-    // LOW-PASS GATE over Decay and Colour
-    L.decos.push_back({ Deco::RuleText, { colX(4) - colW / 2, gridY + 2.5f, 2 * colW + gap, 0 }, "Low-pass gate" });
+    // LOW-PASS GATE over Decay and Colour, its LED in the gate's green
+    {
+        Deco d { Deco::RuleText, { colX(4) - colW / 2, gridY + 2.5f, 2 * colW + gap, 0 }, "Low-pass gate" };
+        d.led = true;
+        d.rgb = kLedGreen;
+        L.decos.push_back(d);
+    }
     makeDrawer(L, py + ph);
 }
 
@@ -313,16 +330,18 @@ void makeKlong(Layout& L)
     }
     // knobs (positions relative to the area under the top bar)
     const float ox = x0, oy = cy + 17 + 18;
-    addKnob(L, "coarse", "Frequency", ox + 110, oy + 140 + 7.8f, oy + 80, oy + 140 + 24.4f, 96, 140);
+    // ring colours: the pitch amber, the resonator cyan, gain green
+    ledRing(addKnob(L, "coarse", "Frequency", ox + 110, oy + 140 + 7.8f, oy + 80, oy + 140 + 24.4f, 96, 140), kLedAmber);
     {
         Ctl& f = addKnob(L, "fine", "Fine", ox + 182, oy + 126 + 6.5f, oy + 138, oy + 126 + 21.8f, 36, 40);
         f.labelX = ox + 182 + 28;
         f.w = ox + 182 + 28 + 50 - f.x;
+        ledRing(f, kLedAmber);
     }
-    addKnob(L, "structure", "Structure", ox + 370, oy + 140 + 7.8f, oy + 80, oy + 140 + 24.4f, 96, 140);
-    addKnob(L, "brightness", "Brightness", ox + 75, oy + 305 + 7.8f, oy + 258, oy + 305 + 24.4f, 70, 140);
-    addKnob(L, "damping", "Damping", ox + 240, oy + 305 + 7.8f, oy + 258, oy + 305 + 24.4f, 70, 140);
-    addKnob(L, "position", "Position", ox + 405, oy + 305 + 7.8f, oy + 258, oy + 305 + 24.4f, 70, 140);
+    ledRing(addKnob(L, "structure", "Structure", ox + 370, oy + 140 + 7.8f, oy + 80, oy + 140 + 24.4f, 96, 140), kLedCyan);
+    ledRing(addKnob(L, "brightness", "Brightness", ox + 75, oy + 305 + 7.8f, oy + 258, oy + 305 + 24.4f, 70, 140), kLedCyan);
+    ledRing(addKnob(L, "damping", "Damping", ox + 240, oy + 305 + 7.8f, oy + 258, oy + 305 + 24.4f, 70, 140), kLedCyan);
+    ledRing(addKnob(L, "position", "Position", ox + 405, oy + 305 + 7.8f, oy + 258, oy + 305 + 24.4f, 70, 140), kLedCyan);
     L.decos.push_back({ Deco::Dotted, { ox + 496, oy + 10, 0, py + ph - 20 - 10 - (oy + 10) } });
     // right column: OUTPUT (ODD | EVEN), NOTES (Klong FX), GAIN
     const float rc = ox + 520 + 120;
@@ -334,7 +353,7 @@ void makeKlong(Layout& L)
     }
     if (fx) addWindow(L, "note_source", "Notes", rc, oy + 150 + 14, 120, 28, oy + 178 + 8 + 7.8f);
     const float gy = oy + (fx ? 268 : 212);
-    addKnob(L, "gain", "Gain", ox + 640, gy + 40 + 7.8f, gy, gy + 40 + 24.4f, 52, 140);
+    ledRing(addKnob(L, "gain", "Gain", ox + 640, gy + 40 + 7.8f, gy, gy + 40 + 24.4f, 52, 140), kLedGreen);
     makeDrawer(L, py + ph);
 }
 
@@ -344,7 +363,7 @@ void makeKlong(Layout& L)
 // Knob rings glow in their layer's colour: amber STRINGS, cyan WAVE + FILTER, the theme's green
 // BLEND, AMP, FX.
 
-constexpr Rgb kStrAmber { 0xf0, 0xa0, 0x30 }, kStrCyan { 0x3f, 0xc1, 0xc9 }, kStrGreen { 0x3f, 0xd3, 0x4a };
+constexpr Rgb kStrAmber = kLedAmber, kStrCyan = kLedCyan, kStrGreen = kLedGreen;
 
 void makeStrings(Layout& L)
 {
