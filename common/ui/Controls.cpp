@@ -74,7 +74,11 @@ inline void boxShadow(NanoVG& v, float x, float y, float w, float h, float r, fl
 // ---------------------------------------------------------------------------
 // knob: ring (rest + value arc), skirt, cap, pointer. t = 0..1, size = outer diameter.
 
-void drawKnobStyled(NanoVG& v, const KnobStyle& k, float cx, float cy, float size, float t, bool hot)
+// led (optional): the value arc in that colour, glowing a little like an LED (a wider, faint
+// stroke of the same colour under it); nullptr = the style's own arc (Maquina Strings uses it,
+// the other plugins don't)
+void drawKnobStyled(NanoVG& v, const KnobStyle& k, float cx, float cy, float size, float t, bool hot,
+                    const Rgb* led = nullptr)
 {
     const float out = size < 45 ? k.ringOutSmall : k.ringOut;
     const float rr = size / 2 + out - k.ringW / 2;
@@ -86,9 +90,22 @@ void drawKnobStyled(NanoVG& v, const KnobStyle& k, float cx, float cy, float siz
     v.strokeWidth(k.ringW);
     v.stroke();
     if (av > kKnobA0 + 0.001f) {
+        if (led) { // the glow: two soft strokes, then the lit arc
+            v.lineCap(NanoVG::ROUND);
+            for (const auto& g : { std::pair<float, int> { k.ringW + 7.f, 34 }, { k.ringW + 3.5f, 70 } }) {
+                v.beginPath();
+                v.arc(cx, cy, rr, kKnobA0, av, NanoVG::CW);
+                v.strokeColor(rgba(*led, g.second));
+                v.strokeWidth(g.first);
+                v.stroke();
+            }
+            v.lineCap(NanoVG::BUTT);
+            v.strokeWidth(k.ringW);
+        }
         v.beginPath();
         v.arc(cx, cy, rr, kKnobA0, av, NanoVG::CW);
-        v.strokeColor(rgba(hot ? mix(k.arc, { 0xff, 0xff, 0xff }, 0.25f) : k.arc));
+        const Rgb arc = led ? *led : k.arc;
+        v.strokeColor(rgba(hot ? mix(arc, { 0xff, 0xff, 0xff }, 0.25f) : arc));
         v.stroke();
     }
     const float rc = size * (0.5f - k.capInset);
