@@ -451,8 +451,12 @@ struct Engine::Impl {
             gB = waveKey ? 1.f : 0.f;
             return;
         }
+        // BLEND's ends are absolute (all strings / all wave): SHIFT and VELO move the blend from
+        // the fader, their reach fading out over the fader's last 5 % at either end
+        const float b = clamp01(p.blend);
+        const float reach = std::min(1.f, 20.f * std::min(b, 1.f - b));
         const float ramp = 1.f - std::exp(-3.f * v.t / std::max(0.01f, p.blendTime));
-        const float w = clamp01(p.blend + p.blendShift * ramp + p.blendVelo * (float(v.velocity) / 127.f - 0.5f));
+        const float w = clamp01(b + reach * (p.blendShift * ramp + p.blendVelo * (float(v.velocity) / 127.f - 0.5f)));
         gA = std::cos(0.5f * kPi * w);
         gB = std::sin(0.5f * kPi * w);
         if (gA < 1e-4f) gA = 0.f;

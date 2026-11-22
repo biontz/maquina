@@ -59,7 +59,7 @@
     "tone": 50,
     "vibrato": 10,
     "vib_delay": 6,
-    "blend": 0,
+    "blend": 5,
     "keys": 0,
     "wave_bank": 1,
     "wave_x": 30,

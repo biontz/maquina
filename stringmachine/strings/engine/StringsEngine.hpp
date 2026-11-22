@@ -9,7 +9,8 @@
 //   in pitch and stereo, an LFO and the envelope moving the position, then a filter per voice:
 //   LP / BP / HP (stmlib's state variable filter) or COMB (a keytracked feedback delay).
 //   Blend: per voice, from BLEND, moved by SHIFT over TIME after the note-on and by velocity;
-//   equal-power. KEYS LAYER plays both; WAVE LOW / WAVE HIGH split the keyboard at C4.
+//   equal-power. BLEND's ends are absolute: fully left all strings, fully right all wave (SHIFT
+//   and VELO fade out over the fader's last 5 % at either end). KEYS LAYER plays both; WAVE LOW / WAVE HIGH split the keyboard at C4.
 //   Mixer: each layer's level and on / off before the blend.
 //   A layer at zero level (or off) for a whole block is not computed.
 //   Effects: ENSEMBLE (string-machine's Solina chorus, digital delays), PHASER, CHORUS or

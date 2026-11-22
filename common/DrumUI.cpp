@@ -4304,7 +4304,9 @@ protected:
         } else if (g.kind == GraphKind::BlendCurve) {
             // the strings (amber) and wave (cyan) levels over a note: from BLEND, moved by SHIFT
             // over TIME (shown over 1.5 x TIME)
-            const float b0 = val(0) / 100.f, b1 = std::clamp(b0 + val(1) / 100.f, 0.f, 1.f);
+            // (the engine's rule: SHIFT fades out over the fader's last 5 % at either end)
+            const float b0 = val(0) / 100.f, reach = std::min(1.f, 20.f * std::min(b0, 1.f - b0));
+            const float b1 = std::clamp(b0 + reach * val(1) / 100.f, 0.f, 1.f);
             const float T = su::logValue(su::kBlendTime, int(val(2))), span = 1.5f * T;
             for (int layer = 0; layer < 2; ++layer) {
                 beginPath();

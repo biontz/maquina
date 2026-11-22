@@ -160,6 +160,21 @@ void layerChecks()
         check(e.blocksA() == 0 && e.blocksB() > 0, "layers: blend 1 = wave", "%llu / %llu blocks",
               (unsigned long long)e.blocksA(), (unsigned long long)e.blocksB());
     }
+    // BLEND's ends are absolute: SHIFT and VELO cannot bring the other layer back
+    for (int end = 0; end < 2; ++end) {
+        Engine e(1);
+        Params p = dry();
+        p.blend = end ? 1.f : 0.f;
+        p.blendShift = end ? -1.f : 1.f;
+        p.blendVelo = 1.f;
+        p.blendTime = 0.05f;
+        e.setParams(p);
+        e.noteOn(60, end ? 10 : 127); // soft (pulls towards the strings) / hard (towards the wave)
+        render(e, 0.5);
+        const bool ok = end ? e.blocksA() == 0 : e.blocksB() == 0;
+        check(ok, end ? "layers: blend 1 + SHIFT -1" : "layers: blend 0 + SHIFT +1", "%llu / %llu blocks",
+              (unsigned long long)e.blocksA(), (unsigned long long)e.blocksB());
+    }
     for (int keys = 1; keys <= 2; ++keys) {
         Engine lo(1), hi(1);
         Params p = dry();
