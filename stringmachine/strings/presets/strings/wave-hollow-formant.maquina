@@ -1,0 +1,27 @@
+# Maquina factory preset
+# design: bank B through the formant filter, a high-pass to thin it
+voice = strings
+name = Hollow Formant
+category = Wave
+tags = modulated
+blend = 100
+blend_shift = 0
+blend_velo = 0
+wave_bank = B
+wave_x = 30
+wave_y = 70
+wave_lfo_rate = 30
+wave_lfo_depth = 50
+wave_unison = 2
+wave_spread = 10
+filter_mode = HP
+filter_cutoff = 50
+filter_reso = 30
+filter_env = 0
+attack = 70
+release = 90
+fx_mode = Formant
+fx_amount = 45
+fx_slow = 20
+fx_fast = 20
+reverb = 40

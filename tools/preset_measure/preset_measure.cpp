@@ -1,6 +1,6 @@
 // preset_measure - render one hit of a voice with given settings through the
 // plugin's engine host (EngineHost for the LXR voices, DredrumHost,
-// PlethoraHost, KlangHost, KlongHost, AcidaHost, Bl101Host; 44140 Hz output, velocity 127,
+// PlethoraHost, KlangHost, KlongHost, AcidaHost, Bl101Host, La50Host, StringsHost; 44140 Hz output, velocity 127,
 // note 60 (held); Klong FX: a click into its input instead of the note; Acida
 // FX / BL-101 FX: a 0.4 s 110 Hz saw at -6 dBFS) and report
 // what it sounds like in numbers, since presets are designed without ears:
@@ -27,6 +27,7 @@
 #include "AcidaHost.hpp"
 #include "Bl101Host.hpp"
 #include "La50Host.hpp"
+#include "StringsHost.hpp"
 #include "ExtraParams.hpp"
 #include "VoiceTables.generated.hpp"
 
@@ -158,6 +159,10 @@ int main(int argc, char** argv)
     }
     if (isLa50(d.voice)) {
         La50Host host(d, 7);
+        return measure(host, d, settings, wav);
+    }
+    if (isStrings(d.voice)) {
+        StringsHost host(d, 7);
         return measure(host, d, settings, wav);
     }
     EngineHost host(d, 7);

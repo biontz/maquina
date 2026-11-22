@@ -1,0 +1,22 @@
+# Maquina factory preset
+# design: bank C at its corner, a fast position LFO, resonant high-pass swept down by the envelope
+voice = strings
+name = Metal Sweep
+category = Experimental
+tags = metallic, modulated
+blend = 100
+blend_shift = 0
+blend_velo = 0
+wave_bank = C
+wave_x = 100
+wave_y = 100
+wave_lfo_rate = 110
+wave_lfo_depth = 80
+wave_env_pos = -80
+filter_mode = HP
+filter_cutoff = 90
+filter_reso = 80
+filter_env = -60
+fx_mode = Phaser
+fx_amount = 80
+reverb = 40

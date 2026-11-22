@@ -1,0 +1,17 @@
+# Maquina factory preset
+# design: the wave layer first, dissolving into cellos over 5 s, a long attack, a big room
+voice = strings
+name = Reverse Bloom
+category = Experimental
+tags = long, soft
+register = 0
+blend = 100
+blend_shift = -100
+blend_time = 110
+blend_velo = 0
+wave_bank = A
+wave_x = 60
+attack = 115
+release = 120
+fx_amount = 60
+reverb = 90

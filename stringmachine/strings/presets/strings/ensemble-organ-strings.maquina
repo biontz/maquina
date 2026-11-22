@@ -1,0 +1,20 @@
+# Maquina factory preset
+# design: the Organ station: equal footages of pulse, fast attack, a quick ensemble
+voice = strings
+name = Organ Strings
+category = Ensemble
+tags = bright, clean
+blend = 0
+blend_shift = 0
+blend_velo = 0
+register = 100
+shape = PWM
+detune = 3
+tone = 50
+vib_depth = 0
+attack = 30
+release = 60
+fx_amount = 90
+fx_slow = 40
+fx_fast = 40
+reverb = 25

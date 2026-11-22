@@ -1,0 +1,19 @@
+# Maquina factory preset
+# design: half strings, half wave, deep vibrato through a moving formant filter
+voice = strings
+name = Formant Ghosts
+category = Experimental
+tags = modulated
+register = 75
+blend = 50
+blend_shift = 0
+blend_velo = 0
+vib_depth = 60
+vib_delay = 0
+wave_bank = B
+wave_y = 80
+fx_mode = Formant
+fx_amount = 60
+fx_slow = 50
+fx_fast = 50
+reverb = 70

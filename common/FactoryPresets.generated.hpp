@@ -712,9 +712,55 @@ static const FactoryPreset k_la50_presets[] = {
     { "Reso Zap", "FX", "bright, short", k_la50_pv15, 21 },
 };
 
-static const PresetValue k_strings_pv0[] = { { 0, 0 } };
+static const PresetValue k_strings_pv0[] = { { 0, 0 }, { 1, 0 }, { 2, 5 }, { 3, 48 }, { 4, 8 }, { 5, 8 }, { 6, 0 }, { 21, 0 }, { 23, 0 }, { 24, 65 }, { 27, 85 }, { 29, 60 }, { 30, 35 } };
+static const PresetValue k_strings_pv1[] = { { 0, 100 }, { 1, 1 }, { 2, 3 }, { 6, 0 }, { 21, 0 }, { 23, 0 }, { 24, 30 }, { 27, 60 }, { 29, 90 }, { 30, 25 }, { 31, 0 }, { 33, 40 }, { 34, 40 } };
+static const PresetValue k_strings_pv2[] = { { 0, 30 }, { 1, 1 }, { 2, 10 }, { 3, 65 }, { 6, 0 }, { 21, 0 }, { 23, 0 }, { 24, 72 }, { 27, 90 }, { 28, 1 }, { 31, 0 }, { 33, 10 }, { 34, 10 } };
+static const PresetValue k_strings_pv3[] = { { 0, 25 }, { 3, 55 }, { 5, 4 }, { 6, 0 }, { 21, 0 }, { 23, 0 }, { 24, 70 }, { 27, 88 }, { 29, 85 }, { 30, 30 }, { 31, 15 }, { 34, 28 } };
+static const PresetValue k_strings_pv4[] = { { 0, 50 }, { 2, 4 }, { 4, 11 }, { 5, 5 }, { 6, 0 }, { 21, 0 }, { 23, 0 }, { 24, 80 }, { 29, 55 }, { 30, 50 }, { 31, 25 } };
+static const PresetValue k_strings_pv5[] = { { 0, 75 }, { 1, 0 }, { 2, 8 }, { 3, 70 }, { 4, 14 }, { 6, 0 }, { 21, 0 }, { 23, 0 }, { 24, 75 }, { 27, 92 }, { 30, 45 }, { 31, 35 } };
+static const PresetValue k_strings_pv6[] = { { 6, 100 }, { 9, 70 }, { 10, 80 }, { 16, 3 }, { 17, 48 }, { 18, 85 }, { 19, 0 }, { 20, 100 }, { 21, 0 }, { 23, 0 }, { 24, 0 }, { 25, 75 }, { 26, 0 }, { 27, 75 }, { 29, 0 }, { 30, 35 } };
+static const PresetValue k_strings_pv7[] = { { 6, 100 }, { 8, 1 }, { 9, 50 }, { 12, 40 }, { 13, 35 }, { 14, 0 }, { 17, 80 }, { 18, 30 }, { 19, 20 }, { 21, 0 }, { 23, 0 }, { 24, 95 }, { 27, 100 }, { 29, 60 }, { 30, 55 }, { 35, 3 }, { 36, 18 } };
+static const PresetValue k_strings_pv8[] = { { 6, 100 }, { 9, 20 }, { 10, 40 }, { 12, 50 }, { 13, 10 }, { 14, 40 }, { 17, 100 }, { 18, 20 }, { 19, 40 }, { 20, 60 }, { 21, 0 }, { 23, 0 }, { 24, 10 }, { 25, 80 }, { 26, 40 }, { 27, 70 }, { 28, 2 }, { 29, 40 }, { 30, 30 }, { 32, 50 } };
+static const PresetValue k_strings_pv9[] = { { 6, 100 }, { 8, 1 }, { 9, 30 }, { 10, 70 }, { 12, 30 }, { 13, 50 }, { 16, 2 }, { 17, 50 }, { 18, 30 }, { 19, 0 }, { 21, 0 }, { 23, 0 }, { 24, 70 }, { 27, 90 }, { 28, 3 }, { 29, 45 }, { 33, 20 }, { 34, 20 }, { 35, 2 }, { 36, 10 } };
+static const PresetValue k_strings_pv10[] = { { 6, 100 }, { 8, 3 }, { 9, 60 }, { 10, 30 }, { 12, 95 }, { 13, 40 }, { 17, 85 }, { 18, 40 }, { 19, 40 }, { 21, 0 }, { 23, 0 }, { 24, 20 }, { 26, 90 }, { 27, 70 }, { 28, 2 }, { 29, 50 }, { 30, 25 }, { 35, 4 }, { 36, 25 } };
+static const PresetValue k_strings_pv11[] = { { 6, 100 }, { 8, 2 }, { 9, 10 }, { 10, 20 }, { 11, -1 }, { 13, 0 }, { 17, 60 }, { 18, 55 }, { 19, 55 }, { 20, 30 }, { 21, 0 }, { 23, 0 }, { 24, 0 }, { 25, 70 }, { 26, 50 }, { 27, 50 }, { 29, 0 }, { 30, 0 }, { 32, 40 }, { 35, 2 }, { 36, 8 } };
+static const PresetValue k_strings_pv12[] = { { 0, 75 }, { 1, 0 }, { 6, 60 }, { 9, 80 }, { 10, 30 }, { 16, 1 }, { 17, 95 }, { 18, 40 }, { 21, -50 }, { 22, 80 }, { 23, 0 }, { 24, 75 }, { 27, 95 }, { 28, 2 }, { 29, 40 }, { 30, 45 } };
+static const PresetValue k_strings_pv13[] = { { 0, 0 }, { 1, 0 }, { 6, 0 }, { 8, 1 }, { 9, 30 }, { 11, 1 }, { 17, 75 }, { 19, 30 }, { 21, 100 }, { 22, 120 }, { 23, 0 }, { 24, 105 }, { 27, 105 }, { 29, 80 }, { 30, 70 }, { 35, 3 }, { 36, 20 } };
+static const PresetValue k_strings_pv14[] = { { 0, 0 } };
+static const PresetValue k_strings_pv15[] = { { 0, 50 }, { 6, 10 }, { 8, 1 }, { 9, 40 }, { 10, 50 }, { 17, 85 }, { 21, 80 }, { 22, 110 }, { 23, 0 }, { 24, 85 }, { 27, 98 }, { 30, 50 }, { 35, 2 } };
+static const PresetValue k_strings_pv16[] = { { 0, 25 }, { 7, 1 }, { 8, 2 }, { 9, 10 }, { 10, 20 }, { 11, -1 }, { 17, 65 }, { 18, 50 }, { 19, 40 }, { 24, 50 }, { 27, 85 }, { 29, 60 }, { 30, 30 }, { 35, 2 }, { 36, 8 } };
+static const PresetValue k_strings_pv17[] = { { 0, 75 }, { 6, 30 }, { 8, 3 }, { 9, 50 }, { 10, 70 }, { 17, 100 }, { 21, 0 }, { 23, 80 }, { 29, 60 }, { 30, 55 }, { 32, 40 }, { 35, 3 }, { 36, 15 } };
+static const PresetValue k_strings_pv18[] = { { 6, 100 }, { 8, 3 }, { 12, 20 }, { 13, 80 }, { 16, 3 }, { 17, 48 }, { 18, 88 }, { 19, 0 }, { 20, 0 }, { 21, 0 }, { 23, 0 }, { 24, 110 }, { 27, 115 }, { 28, 1 }, { 29, 40 }, { 30, 80 }, { 35, 4 }, { 36, 40 } };
+static const PresetValue k_strings_pv19[] = { { 0, 25 }, { 1, 0 }, { 2, 25 }, { 4, 30 }, { 5, 0 }, { 6, 50 }, { 15, 25 }, { 21, 0 }, { 23, 0 }, { 28, 2 }, { 29, 100 }, { 30, 50 }, { 31, 60 }, { 35, 4 }, { 36, 50 } };
+static const PresetValue k_strings_pv20[] = { { 0, 75 }, { 5, 0 }, { 6, 50 }, { 8, 1 }, { 10, 80 }, { 21, 0 }, { 23, 0 }, { 28, 3 }, { 29, 60 }, { 30, 70 }, { 31, 60 }, { 33, 50 }, { 34, 50 } };
+static const PresetValue k_strings_pv21[] = { { 0, 100 }, { 1, 1 }, { 2, 25 }, { 7, 2 }, { 8, 3 }, { 11, 1 }, { 17, 100 }, { 18, 75 }, { 28, 2 }, { 29, 80 }, { 30, 30 }, { 34, 60 } };
+static const PresetValue k_strings_pv22[] = { { 6, 100 }, { 8, 2 }, { 9, 100 }, { 10, 100 }, { 12, 110 }, { 13, 80 }, { 14, -80 }, { 16, 2 }, { 17, 90 }, { 18, 80 }, { 19, -60 }, { 21, 0 }, { 23, 0 }, { 28, 1 }, { 29, 80 } };
+static const PresetValue k_strings_pv23[] = { { 0, 0 }, { 6, 100 }, { 9, 60 }, { 21, -100 }, { 22, 110 }, { 23, 0 }, { 24, 115 }, { 27, 120 }, { 29, 60 }, { 30, 90 } };
 static const FactoryPreset k_strings_presets[] = {
-    { "Glass Orchestra", "Pad", "long, soft, modulated", k_strings_pv0, 0 },
+    { "Cello Section", "Ensemble", "dark, long", k_strings_pv0, 13 },
+    { "Organ Strings", "Ensemble", "bright, clean", k_strings_pv1, 13 },
+    { "Phase Strings", "Ensemble", "modulated", k_strings_pv2, 13 },
+    { "Solina Classic", "Ensemble", "soft, modulated, long", k_strings_pv3, 12 },
+    { "Viola Legato", "Ensemble", "soft, long", k_strings_pv4, 11 },
+    { "Violin Choir", "Ensemble", "bright, modulated", k_strings_pv5, 12 },
+    { "Comb Pluck", "Wave", "pitched, short, metallic", k_strings_pv6, 16 },
+    { "Digital Pad", "Wave", "soft, long, modulated", k_strings_pv7, 17 },
+    { "Glass Keys", "Wave", "bright, pitched", k_strings_pv8, 20 },
+    { "Hollow Formant", "Wave", "modulated", k_strings_pv9, 20 },
+    { "Sweep Lead", "Wave", "bright, modulated", k_strings_pv10, 19 },
+    { "Wave Bass", "Wave", "punchy, dark", k_strings_pv11, 21 },
+    { "Bowed Glass", "Hybrid", "bright, long", k_strings_pv12, 16 },
+    { "Cinematic Swell", "Hybrid", "long, soft, dark", k_strings_pv13, 17 },
+    { "Glass Orchestra", "Hybrid", "long, soft, modulated", k_strings_pv14, 0 },
+    { "Morphing Choir", "Hybrid", "long, modulated", k_strings_pv15, 13 },
+    { "Split Bass Strings", "Hybrid", "punchy", k_strings_pv16, 15 },
+    { "Velocity Shimmer", "Hybrid", "bright, modulated", k_strings_pv17, 13 },
+    { "Comb Drone", "Experimental", "noisy, modulated, long", k_strings_pv18, 18 },
+    { "Detuned Swarm", "Experimental", "noisy, modulated", k_strings_pv19, 15 },
+    { "Formant Ghosts", "Experimental", "modulated", k_strings_pv20, 13 },
+    { "Glitch Organ", "Experimental", "dirty, bright", k_strings_pv21, 12 },
+    { "Metal Sweep", "Experimental", "metallic, modulated", k_strings_pv22, 15 },
+    { "Reverse Bloom", "Experimental", "long, soft", k_strings_pv23, 10 },
 };
 
 struct VoicePresets { const FactoryPreset* presets; uint32_t count; };
@@ -737,7 +783,7 @@ static const VoicePresets k_factory_presets[] = {
     { k_bl101_presets, 64 },
     { k_bl101_fx_presets, 14 },
     { k_la50_presets, 16 },
-    { k_strings_presets, 1 },
+    { k_strings_presets, 24 },
 };
 
 } // namespace maquina

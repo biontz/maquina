@@ -1,0 +1,20 @@
+# Maquina factory preset
+# design: 8' led, saw + pulse, slow attack and long release
+voice = strings
+name = Viola Legato
+category = Ensemble
+tags = soft, long
+blend = 0
+blend_shift = 0
+blend_velo = 0
+register = 50
+shape = Mix
+detune = 4
+tone = 50
+vibrato = 11
+vib_depth = 25
+vib_delay = 5
+attack = 80
+release = 96
+fx_amount = 55
+reverb = 50

@@ -60,7 +60,7 @@ static const VoiceCategories kPresetCategories[] = {
     { "bl101", { "Bass", "Lead", "Poly", "Pad", "Pluck", "Sequence", "Texture", "FX" } },
     { "bl101_fx", { "Chorus", "Delay", "Reverb", "Lo-Fi", "Chain" } },
     { "la50", { "Pad", "Brass", "Bass", "Bell", "Lead", "Keys", "Strings", "FX", "Imported" } },
-    { "strings", { "Strings", "Ensemble", "Organ", "Pad", "Wave", "Hybrid", "Split", "FX" } },
+    { "strings", { "Ensemble", "Wave", "Hybrid", "Experimental" } },
 };
 static const char* const kPresetTags[] = { "short", "long", "punchy", "boomy", "soft", "bright", "dark",
                                            "clean", "dirty", "metallic", "noisy", "pitched", "lo-fi",

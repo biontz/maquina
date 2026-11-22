@@ -1,0 +1,21 @@
+# Maquina factory preset
+# design: pulse strings through a slow phaser
+voice = strings
+name = Phase Strings
+category = Ensemble
+tags = modulated
+blend = 0
+blend_shift = 0
+blend_velo = 0
+register = 30
+shape = PWM
+detune = 10
+tone = 65
+vib_depth = 0
+attack = 72
+release = 90
+fx_mode = Phaser
+fx_amount = 70
+fx_slow = 10
+fx_fast = 10
+reverb = 40

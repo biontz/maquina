@@ -1,0 +1,22 @@
+# Maquina factory preset
+# design: KEYS WAVE LOW: a wavetable bass below C4, the ensemble from C4 up
+voice = strings
+name = Split Bass Strings
+category = Hybrid
+tags = punchy
+keys = Wave Low
+register = 25
+shape = Mix
+wave_bank = C
+wave_x = 10
+wave_y = 20
+wave_octave = -1
+wave_unison = 2
+wave_spread = 8
+filter_cutoff = 65
+filter_reso = 50
+filter_env = 40
+attack = 50
+release = 85
+fx_amount = 60
+reverb = 30

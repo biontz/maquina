@@ -1,0 +1,20 @@
+# Maquina factory preset
+# design: 16' + 8' saws, darker tone, a slow late vibrato
+voice = strings
+name = Cello Section
+category = Ensemble
+tags = dark, long
+blend = 0
+blend_shift = 0
+blend_velo = 0
+register = 0
+shape = Saw
+detune = 5
+tone = 48
+vibrato = 8
+vib_depth = 30
+vib_delay = 8
+attack = 65
+release = 85
+fx_amount = 60
+reverb = 35

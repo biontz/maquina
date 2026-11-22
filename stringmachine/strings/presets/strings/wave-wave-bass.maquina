@@ -1,0 +1,27 @@
+# Maquina factory preset
+# design: bank C an octave down, 2 voices, a resonant low-pass with envelope
+voice = strings
+name = Wave Bass
+category = Wave
+tags = punchy, dark
+blend = 100
+blend_shift = 0
+blend_velo = 0
+wave_bank = C
+wave_x = 10
+wave_y = 20
+wave_octave = -1
+wave_unison = 2
+wave_spread = 8
+wave_lfo_depth = 0
+filter_cutoff = 60
+filter_reso = 55
+filter_env = 55
+filter_keytrack = 30
+attack = 0
+decay = 70
+sustain = 50
+release = 50
+velocity = 40
+fx_amount = 0
+reverb = 0

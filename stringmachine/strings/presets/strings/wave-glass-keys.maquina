@@ -1,0 +1,27 @@
+# Maquina factory preset
+# design: bank A, a plucky envelope that opens the position and the filter, light chorus
+voice = strings
+name = Glass Keys
+category = Wave
+tags = bright, pitched
+blend = 100
+blend_shift = 0
+blend_velo = 0
+wave_bank = A
+wave_x = 20
+wave_y = 40
+wave_lfo_rate = 50
+wave_lfo_depth = 10
+wave_env_pos = 40
+filter_cutoff = 100
+filter_reso = 20
+filter_env = 40
+filter_keytrack = 60
+attack = 10
+decay = 80
+sustain = 40
+release = 70
+velocity = 50
+fx_mode = Chorus
+fx_amount = 40
+reverb = 30

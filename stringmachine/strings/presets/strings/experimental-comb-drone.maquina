@@ -1,0 +1,24 @@
+# Maquina factory preset
+# design: a fixed comb on C4 (keytrack 0) under a swarm of 4 detuned wave voices
+voice = strings
+name = Comb Drone
+category = Experimental
+tags = noisy, modulated, long
+blend = 100
+blend_shift = 0
+blend_velo = 0
+wave_bank = D
+wave_lfo_rate = 20
+wave_lfo_depth = 80
+wave_unison = 4
+wave_spread = 40
+filter_mode = Comb
+filter_cutoff = 48
+filter_reso = 88
+filter_keytrack = 0
+filter_env = 0
+attack = 110
+release = 115
+fx_mode = Phaser
+fx_amount = 40
+reverb = 80

@@ -1,0 +1,23 @@
+# Maquina factory preset
+# design: the comb tuned to the key (cutoff 261 Hz at C4, full keytrack), a short pluck
+voice = strings
+name = Comb Pluck
+category = Wave
+tags = pitched, short, metallic
+blend = 100
+blend_shift = 0
+blend_velo = 0
+wave_bank = A
+wave_x = 70
+wave_y = 80
+filter_mode = Comb
+filter_cutoff = 48
+filter_reso = 85
+filter_env = 0
+filter_keytrack = 100
+attack = 0
+decay = 75
+sustain = 0
+release = 75
+fx_amount = 0
+reverb = 35

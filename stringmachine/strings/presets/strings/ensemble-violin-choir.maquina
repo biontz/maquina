@@ -1,0 +1,20 @@
+# Maquina factory preset
+# design: 4' led, bright tone, quicker vibrato
+voice = strings
+name = Violin Choir
+category = Ensemble
+tags = bright, modulated
+blend = 0
+blend_shift = 0
+blend_velo = 0
+register = 75
+shape = Saw
+detune = 8
+tone = 70
+vibrato = 14
+vib_depth = 35
+vib_delay = 6
+attack = 75
+release = 92
+fx_amount = 70
+reverb = 45

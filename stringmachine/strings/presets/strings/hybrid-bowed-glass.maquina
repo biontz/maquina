@@ -1,0 +1,23 @@
+# Maquina factory preset
+# design: the wave layer first, the violins come in after it
+voice = strings
+name = Bowed Glass
+category = Hybrid
+tags = bright, long
+register = 75
+shape = Saw
+blend = 60
+blend_shift = -50
+blend_time = 80
+blend_velo = 0
+wave_bank = A
+wave_x = 80
+wave_y = 30
+filter_mode = BP
+filter_cutoff = 95
+filter_reso = 40
+fx_mode = Chorus
+fx_amount = 40
+reverb = 45
+attack = 75
+release = 95

@@ -19,7 +19,6 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #pragma GCC diagnostic ignored "-Wsign-compare"
-#pragma GCC diagnostic ignored "-Wclass-memaccess"
 #endif
 #include "plaits/dsp/oscillator/wavetable_oscillator.h"
 #include "plaits/resources.h"
@@ -556,7 +555,7 @@ struct Engine::Impl {
             const int uni = std::clamp(p.unison, 1, kMaxUnison);
             const int16_t* const* maps = waveMaps().map[std::clamp(p.bank, 0, 3)];
             const float base = float(v.note) + 12.f * float(p.octave) + 0.01f * p.layerDetuneCt + bend;
-            const float uGain = 0.2f / std::sqrt(float(uni)); // level with the strings layer (measured)
+            const float uGain = 0.28f / std::sqrt(float(uni)); // level with the strings layer (measured)
             std::fill(bl, bl + n, 0.f);
             std::fill(br, br + n, 0.f);
             for (int u = 0; u < uni; ++u) {
@@ -622,9 +621,9 @@ struct Engine::Impl {
         std::fill(outR, outR + n, 0.f);
         for (Voice& v : voices)
             if (v.active) renderVoice(v, outL, outR, n);
-        for (int i = 0; i < n; ++i) { // 8 voices' headroom
-            outL[i] *= 0.4f;
-            outR[i] *= 0.4f;
+        for (int i = 0; i < n; ++i) { // 8 voices' headroom (a full chord peaks near -3 dBFS)
+            outL[i] *= 0.55f;
+            outR[i] *= 0.55f;
         }
         // the effect slot
         const float amt = clamp01(p.fxAmount);

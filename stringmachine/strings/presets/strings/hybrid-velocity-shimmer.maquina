@@ -1,0 +1,19 @@
+# Maquina factory preset
+# design: harder notes bring in more of the wave layer
+voice = strings
+name = Velocity Shimmer
+category = Hybrid
+tags = bright, modulated
+register = 75
+blend = 30
+blend_shift = 0
+blend_velo = 80
+wave_bank = D
+wave_x = 50
+wave_y = 70
+wave_unison = 3
+wave_spread = 15
+filter_cutoff = 100
+velocity = 40
+fx_amount = 60
+reverb = 55

@@ -1,0 +1,22 @@
+# Maquina factory preset
+# design: the classic ensemble: all three footages, saw + pulse, the Solina chorus deep
+voice = strings
+name = Solina Classic
+category = Ensemble
+tags = soft, modulated, long
+blend = 0
+blend_shift = 0
+blend_velo = 0
+register = 25
+shape = Mix
+detune = 6
+tone = 55
+vib_depth = 15
+vib_delay = 4
+attack = 70
+release = 88
+fx_mode = Ensemble
+fx_amount = 85
+fx_slow = 30
+fx_fast = 28
+reverb = 30

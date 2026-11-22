@@ -94,6 +94,7 @@ tools: engine
 		$(ACIDA_DIR)/plugins/acida/Engine.cpp build/engine/libacida.a \
 		$(BL101_DIR)/plugins/bl101/Engine.cpp build/engine/libbl101.a \
 		$(LA50_DIR)/plugins/la50/Engine.cpp build/engine/liblasynth.a \
+		$(STRINGS_DIR)/plugins/strings/Engine.cpp build/engine/libstrings.a build/engine/libklang.a \
 		-lm -o build/tools/preset_measure
 	$(CC) -O1 -std=gnu11 -Idpf/distrho/src tools/clap_latency_check/clap_latency_check.c \
 		-ldl -o build/tools/clap_latency_check

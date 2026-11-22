@@ -1,0 +1,26 @@
+# Maquina factory preset
+# design: bank D, 4 voices, a fast LFO on the position, a resonant low-pass opened by the envelope
+voice = strings
+name = Sweep Lead
+category = Wave
+tags = bright, modulated
+blend = 100
+blend_shift = 0
+blend_velo = 0
+wave_bank = D
+wave_x = 60
+wave_y = 30
+wave_lfo_rate = 95
+wave_lfo_depth = 40
+wave_unison = 4
+wave_spread = 25
+filter_mode = LP
+filter_cutoff = 85
+filter_reso = 40
+filter_env = 40
+attack = 20
+sustain = 90
+release = 70
+fx_mode = Chorus
+fx_amount = 50
+reverb = 25

@@ -1,0 +1,6 @@
+# Maquina factory preset
+# design: the panel mockup's sound: Viola strings, the wave layer fading in over 2.4 s
+voice = strings
+name = Glass Orchestra
+category = Hybrid
+tags = long, soft, modulated

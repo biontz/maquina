@@ -1,0 +1,23 @@
+# Maquina factory preset
+# design: cellos, then a wave layer an octave up swells in over 7 s
+voice = strings
+name = Cinematic Swell
+category = Hybrid
+tags = long, soft, dark
+register = 0
+shape = Saw
+blend = 0
+blend_shift = 100
+blend_time = 120
+blend_velo = 0
+wave_bank = B
+wave_x = 30
+wave_octave = 1
+wave_unison = 3
+wave_spread = 20
+filter_cutoff = 75
+filter_env = 30
+attack = 105
+release = 105
+fx_amount = 80
+reverb = 70

@@ -1,0 +1,24 @@
+# Maquina factory preset
+# design: bank B, 3 unison voices, a slow position LFO
+voice = strings
+name = Digital Pad
+category = Wave
+tags = soft, long, modulated
+blend = 100
+blend_shift = 0
+blend_velo = 0
+wave_bank = B
+wave_x = 50
+wave_y = 60
+wave_lfo_rate = 40
+wave_lfo_depth = 35
+wave_env_pos = 0
+wave_unison = 3
+wave_spread = 18
+filter_cutoff = 80
+filter_reso = 30
+filter_env = 20
+attack = 95
+release = 100
+fx_amount = 60
+reverb = 55

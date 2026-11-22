@@ -1,0 +1,21 @@
+# Maquina factory preset
+# design: everything detuned: footages, layers, 4 unison voices, fast deep vibrato
+voice = strings
+name = Detuned Swarm
+category = Experimental
+tags = noisy, modulated
+register = 25
+shape = Saw
+detune = 25
+blend = 50
+blend_shift = 0
+blend_velo = 0
+wave_unison = 4
+wave_spread = 50
+layer_detune = 25
+vibrato = 30
+vib_depth = 60
+vib_delay = 0
+fx_mode = Chorus
+fx_amount = 100
+reverb = 50

@@ -1,0 +1,19 @@
+# Maquina factory preset
+# design: KEYS WAVE HIGH: organ below C4, a squealing resonant wave an octave up from C4
+voice = strings
+name = Glitch Organ
+category = Experimental
+tags = dirty, bright
+keys = Wave High
+register = 100
+shape = PWM
+detune = 25
+wave_bank = D
+wave_octave = 1
+filter_mode = LP
+filter_reso = 75
+fx_mode = Chorus
+fx_amount = 80
+fx_fast = 60
+reverb = 30
+filter_cutoff = 100

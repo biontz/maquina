@@ -1,0 +1,22 @@
+# Maquina factory preset
+# design: strings first, the wave layer takes over over 5 s
+voice = strings
+name = Morphing Choir
+category = Hybrid
+tags = long, modulated
+register = 50
+shape = Mix
+blend = 10
+blend_shift = 80
+blend_time = 110
+blend_velo = 0
+wave_bank = B
+wave_x = 40
+wave_y = 50
+wave_unison = 2
+wave_spread = 12
+filter_cutoff = 85
+fx_amount = 70
+reverb = 50
+attack = 85
+release = 98
