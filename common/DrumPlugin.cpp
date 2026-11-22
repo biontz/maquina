@@ -136,11 +136,12 @@ static const char* const kLa50PageNames[8] = { "Patch", "Upper Common", "Upper P
                                                "Lower Common", "Lower Partial 1", "Lower Partial 2", "Mix" };
 static const char* const kLa50PageSymbols[8] = { "patch", "upper", "upper_p1", "upper_p2", "lower", "lower_p1",
                                                  "lower_p2", "mix" };
-// Maquina Strings: 8 groups of 4 + MORE (tools/gen_params.py STRINGS_PAGE_TITLES; Gain is on FX, page 7)
-static const char* const kStringsPageNames[9] = { "Strings", "Vibrato / Blend", "Wave", "Wave Mod", "Filter",
-                                                  "Motion", "Amp", "FX", "More" };
-static const char* const kStringsPageSymbols[9] = { "strings", "vibrato", "wave", "wave_mod", "filter",
-                                                    "motion", "amp", "fx", "more" };
+// Maquina Strings: 8 groups of 4 + MORE + MIXER (tools/gen_params.py STRINGS_PAGE_TITLES; Gain is on FX,
+// page 7)
+static const char* const kStringsPageNames[10] = { "Strings", "Vibrato / Blend", "Wave", "Wave Mod", "Filter",
+                                                   "Motion", "Amp", "FX", "More", "Mixer" };
+static const char* const kStringsPageSymbols[10] = { "strings", "vibrato", "wave", "wave_mod", "filter",
+                                                     "motion", "amp", "fx", "more", "mixer" };
 static bool isDredrum() { return voiceDef().voice == maquina::kDredrumVoice; }
 static bool isPlethora() { return voiceDef().voice == maquina::kPlethoraVoice; }
 static bool isOneiroi() { return maquina::isOneiroi(voiceDef().voice); }
@@ -251,8 +252,8 @@ protected:
             return;
         }
         if (isStrings()) {
-            group.name = kStringsPageNames[page % 9];
-            group.symbol = kStringsPageSymbols[page % 9];
+            group.name = kStringsPageNames[page % 10];
+            group.symbol = kStringsPageSymbols[page % 10];
             return;
         }
         if (isLa50()) {

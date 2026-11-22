@@ -1050,6 +1050,8 @@ static const char* const k_strings_labels_7[] = { "Layer", "Wave Low", "Wave Hig
 static const char* const k_strings_labels_8[] = { "A", "B", "C", "D" };
 static const char* const k_strings_labels_16[] = { "LP", "BP", "HP", "Comb" };
 static const char* const k_strings_labels_28[] = { "Ensemble", "Phaser", "Chorus", "Formant" };
+static const char* const k_strings_labels_37[] = { "Off", "On" };
+static const char* const k_strings_labels_39[] = { "Off", "On" };
 static const VoiceParam k_strings_params[] = {
     { "register", "Register", 0, 0, ParamKind::Int, 0, 0, 100, nullptr, 0, nullptr, 42 },
     { "shape", "Shape", 0, 0, ParamKind::Enum, 0, 0, 2, k_strings_labels_1, 3, nullptr, 2 },
@@ -1088,6 +1090,10 @@ static const VoiceParam k_strings_params[] = {
     { "fx_fast", "FX Fast", 8, 0, ParamKind::Int, 0, 0, 60, nullptr, 0, nullptr, 30 },
     { "wave_unison", "Unison", 8, 0, ParamKind::Int, 1, 0, 3, nullptr, 0, nullptr, 1 },
     { "wave_spread", "Spread", 8, 0, ParamKind::Int, 0, 0, 50, nullptr, 0, nullptr, 12 },
+    { "strings_on", "Strings", 9, 0, ParamKind::Toggle, 0, 0, 1, k_strings_labels_37, 2, nullptr, 1 },
+    { "strings_level", "Str Level", 9, 0, ParamKind::Int, -24, 0, 30, nullptr, 0, nullptr, 0 },
+    { "wave_on", "Wave", 9, 0, ParamKind::Toggle, 0, 0, 1, k_strings_labels_39, 2, nullptr, 1 },
+    { "wave_level", "Wav Level", 9, 0, ParamKind::Int, -24, 0, 30, nullptr, 0, nullptr, 0 },
 };
 
 static const VoiceDef k_voices[] = {

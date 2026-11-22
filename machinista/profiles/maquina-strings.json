@@ -505,6 +505,50 @@
     },
     {
       "index": 42,
+      "symbol": "strings_on",
+      "name": "STRINGS",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    },
+    {
+      "index": 43,
+      "symbol": "strings_level",
+      "name": "STR LEVEL",
+      "default": 0,
+      "min": -24,
+      "max": 6,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 44,
+      "symbol": "wave_on",
+      "name": "WAVE",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
+    },
+    {
+      "index": 45,
+      "symbol": "wave_level",
+      "name": "WAV LEVEL",
+      "default": 0,
+      "min": -24,
+      "max": 6,
+      "integer": true,
+      "toggle": false,
+      "log": false
+    },
+    {
+      "index": 46,
       "symbol": "gain",
       "name": "GAIN",
       "default": 0,
@@ -579,6 +623,19 @@
         "fx_fast",
         "wave_unison",
         "wave_spread"
+      ]
+    },
+    {
+      "title": "MIXER",
+      "controls": [
+        "strings_on",
+        "strings_level",
+        "wave_on",
+        "wave_level",
+        "blend",
+        "keys",
+        "layer_detune",
+        "gain"
       ]
     }
   ],

@@ -159,6 +159,7 @@ bool stringsValueText(const VoiceParam& p, int iv, char* buf, size_t n)
         std::snprintf(buf, n, "%s s", num);
     };
     if (is("detune") || is("layer_detune") || is("wave_spread")) std::snprintf(buf, n, "%d ct", iv);
+    else if (is("strings_level") || is("wave_level")) std::snprintf(buf, n, "%+d dB", iv);
     else if (is("vibrato")) hz(su::vibratoHz(iv));
     else if (is("vib_delay")) { fmtTrim(num, sizeof num, su::vibDelaySeconds(iv), 1); std::snprintf(buf, n, "%s s", num); }
     else if (is("vib_depth") || is("velocity")) { if (iv <= 0) std::snprintf(buf, n, "OFF"); else std::snprintf(buf, n, "%d", iv); }
@@ -379,7 +380,9 @@ struct Ctl {
                           // at ax, ay), RoundSel = round letter buttons at xs[], Stations = REGISTER's
                           // station list (LEDs at ledX, rows from ay, 18.5 px apart), HFader =
                           // horizontal fader (track from ax, bw long, at ay)
-                          Seg, RoundSel, Stations, HFader } look = Plain;
+                          // LedLabel = an on / off switch drawn as an LED (ledX, ay) and its label (left
+                          // of the LED when labelX < 0, else from labelX)
+                          Seg, RoundSel, Stations, HFader, LedLabel } look = Plain;
     // Maquina Strings: the knob ring's LED colour (led = true) and a full-size label on small knobs
     Rgb ledRgb {};
     bool led = false, bigLabel = false;
@@ -1444,6 +1447,7 @@ protected:
             if (y >= y0 && y < y0 + c.bh) setValue(c.param, float(std::min(n - 1, cy * cols + cx)), true);
             return true;
         }
+        case Ctl::LedLabel: setValue(c.param, intOf(int(c.param)) ? 0.f : 1.f, true); return true;
         case Ctl::RoundSel:
             for (int k = 0; k < c.n; ++k)
                 if (std::fabs(x - c.xs[k]) <= 13) { setValue(c.param, float(k), true); return true; }
@@ -1506,6 +1510,15 @@ protected:
         if (!std::strcmp(sym, "filter_reso")) return "Feedback";
         return c.label;
     }
+    // Maquina Strings: a layer's knobs glow only while it is on (strings amber, wave + filter cyan)
+    bool layerLit(Rgb ring) const
+    {
+        if (!maquina::isStrings(voiceDef().voice)) return true;
+        static const int strOn = findParam("strings_on"), waveOn = findParam("wave_on");
+        if (ring.r == 0xf0 && ring.g == 0xa0 && strOn >= 0) return intOf(strOn) != 0;
+        if (ring.r == 0x3f && ring.g == 0xc1 && waveOn >= 0) return intOf(waveOn) != 0;
+        return true;
+    }
     // an 8 px LED (REGISTER's stations, section titles, the blend fader's ends)
     void drawSmallLed(float cx, float cy, bool on, Rgb c)
     {
@@ -1550,7 +1563,8 @@ protected:
         switch (c.look) {
         case Ctl::Plain: { // a knob
             const bool small = c.size < 45 && !c.bigLabel, left = c.labelX > 0;
-            drawKnobStyled(*this, T.knob, c.ax, c.ay, c.size, valueFraction(c.param), hot, c.led ? &c.ledRgb : nullptr);
+            drawKnobStyled(*this, T.knob, c.ax, c.ay, c.size, valueFraction(c.param), hot,
+                           c.led && layerLit(c.ledRgb) ? &c.ledRgb : nullptr);
             label(stringsLabel(c), left ? c.labelX : c.ax, c.labelY, small, left);
             if (c.valueY > 0) value(buf, left ? c.labelX : c.ax, c.valueY, left);
             break;
@@ -1623,6 +1637,20 @@ protected:
                 text(c.ledX + 12, y + 0.5f, t.c_str(), nullptr);
                 textLetterSpacing(0);
             }
+            break;
+        }
+        case Ctl::LedLabel: { // a layer's on / off: its LED lit when on
+            const bool on = intOf(int(c.param)) != 0;
+            drawSmallLed(c.ledX, c.ay, on, c.ledRgb);
+            std::string t = c.label ? c.label : "";
+            for (char& ch : t) ch = char(std::toupper(ch));
+            useFace(*this, "print");
+            fontPx(*this, 11);
+            textLetterSpacing(11 * 0.08f);
+            textAlign((c.labelX < 0 ? ALIGN_RIGHT : ALIGN_LEFT) | ALIGN_MIDDLE);
+            fillColor(col(on ? T.print : Rgb { 0x8d, 0x8d, 0x88 }));
+            text(c.labelX < 0 ? c.ledX - 10 : c.labelX, c.ay + 0.5f, t.c_str(), nullptr);
+            textLetterSpacing(0);
             break;
         }
         case Ctl::HFader: { // the blend fader: dark up to the cap, light after it

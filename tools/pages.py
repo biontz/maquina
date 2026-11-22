@@ -208,6 +208,7 @@ PAGES["strings"] = [
     ("AMP / FX", ["attack", "decay", "sustain", "release", "fx_mode", "fx_amount", "reverb", "gain"]),
     ("VIBRATO / MORE", ["vibrato", "vib_depth", "vib_delay", "velocity", "fx_slow", "fx_fast", "wave_unison",
                         "wave_spread"]),
+    ("MIXER", ["strings_on", "strings_level", "wave_on", "wave_level", "blend", "keys", "layer_detune", "gain"]),
 ]
 
 # Machinista profiles that differ from PAGES: only these pages, and the

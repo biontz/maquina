@@ -4,6 +4,7 @@
 //   pitch       A4 is 440 Hz within 3 cents: strings (Viola), wave layer; 16' (Cello) sounds an
 //               octave down, OCTAVE +1 an octave up
 //   layers      BLEND 0 / 1 computes only that layer; KEYS WAVE LOW / HIGH split at C4
+//   mixer       a layer switched off is silent and not computed; its level scales it
 //   voices      at most 8; a released note ends
 //   vibrato     steady before VIB DELAY, moving after it
 //   fx          every effect mode and the reverb: finite, not silent
@@ -174,6 +175,50 @@ void layerChecks()
                                   : (hiWave && lo.blocksA() > 0 && lo.blocksB() == 0);
         check(ok, keys == 1 ? "layers: KEYS WAVE LOW" : "layers: KEYS WAVE HIGH", "C3 %s, C5 %s",
               loWave ? "wave" : "strings", hiWave ? "wave" : "strings");
+    }
+}
+
+// the mixer: a layer switched off is silent and not computed; its level scales it before the blend
+void mixerChecks()
+{
+    {
+        Engine e(1);
+        Params p = dry();
+        p.blend = 0.f;
+        p.stringsOn = false;
+        e.setParams(p);
+        e.noteOn(60, 100);
+        const std::vector<float> x = render(e, 0.2);
+        check(e.blocksA() == 0 && peakOf(x) == 0.0, "mixer: strings off", "%llu strings blocks, peak %g",
+              (unsigned long long)e.blocksA(), peakOf(x));
+    }
+    {
+        Engine e(1);
+        Params p = dry();
+        p.blend = 1.f;
+        p.waveOn = false;
+        e.setParams(p);
+        e.noteOn(60, 100);
+        const std::vector<float> x = render(e, 0.2);
+        check(e.blocksB() == 0 && peakOf(x) == 0.0, "mixer: wave off", "%llu wave blocks, peak %g",
+              (unsigned long long)e.blocksB(), peakOf(x));
+    }
+    for (int layer = 0; layer < 2; ++layer) {
+        auto rms = [&](float level) {
+            Engine e(1);
+            Params p = dry();
+            p.blend = layer ? 1.f : 0.f;
+            (layer ? p.waveLevel : p.stringsLevel) = level;
+            e.setParams(p);
+            e.noteOn(60, 100);
+            const std::vector<float> x = render(e, 0.5);
+            double s2 = 0;
+            for (size_t i = x.size() / 2; i < x.size(); ++i) s2 += double(x[i]) * x[i];
+            return std::sqrt(s2 / double(x.size() / 2));
+        };
+        const double db = 20.0 * std::log10(rms(std::pow(10.f, -12.f / 20.f)) / rms(1.f));
+        check(std::fabs(db + 12.0) < 0.1, layer ? "mixer: wave level -12 dB" : "mixer: strings level -12 dB",
+              "%+.2f dB", db);
     }
 }
 
@@ -348,6 +393,7 @@ int main()
 {
     pitchChecks();
     layerChecks();
+    mixerChecks();
     voiceChecks();
     vibratoCheck();
     fxChecks();

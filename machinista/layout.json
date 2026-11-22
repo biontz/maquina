@@ -1446,6 +1446,15 @@
           "wave_unison",
           "wave_spread"
         ]
+      },
+      {
+        "title": "MIXER",
+        "controls": [
+          "strings_on",
+          "strings_level",
+          "wave_on",
+          "wave_level"
+        ]
       }
     ]
   }

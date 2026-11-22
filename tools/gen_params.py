@@ -693,7 +693,7 @@ STRINGS_VOICE = 28
 # port groups (LV2 / Zynthian: 8 groups of 4 + MORE; common/DrumPlugin.cpp kStringsPageNames).
 # Page 7 holds the extra Gain (ExtraParams.hpp), so FX is page 7.
 STRINGS_PAGE_TITLES = {0: "STRINGS", 1: "VIBRATO / BLEND", 2: "WAVE", 3: "WAVE MOD", 4: "FILTER", 5: "MOTION",
-                       6: "AMP", 7: "FX", 8: "MORE"}
+                       6: "AMP", 7: "FX", 8: "MORE", 9: "MIXER"}
 # log-mapped parameters (stringmachine/strings/engine/StringsUnits.hpp): lo, default, hi; 127 steps
 # bending at the default (the knee)
 STRINGS_LOG = {"wave_lfo_rate": (0.05, 0.8, 10.0), "filter_cutoff": (20.0, 1800.0, 18000.0),
@@ -764,6 +764,12 @@ def strings_params():
     # the wave layer's unison: voices per note (1 = off) and their detune spread
     p("wave_unison", "Unison", 8, "Int", 1, 3, 1)      # 1 .. 4 voices
     p("wave_spread", "Spread", 8, "Int", 12, 50)       # cents
+    # MIXER: each layer's level before the blend, and on / off (off: not computed; performance
+    # switches like Dredrum's mutes: not in presets, not randomized)
+    p("strings_on", "Strings", 9, "Toggle", 1, 1, labels=["Off", "On"])
+    p("strings_level", "Str Level", 9, "Int", 0, 30, -24)   # dB
+    p("wave_on", "Wave", 9, "Toggle", 1, 1, labels=["Off", "On"])
+    p("wave_level", "Wav Level", 9, "Int", 0, 30, -24)      # dB
     for q in params:
         q.update(par="0", fwmin=0, modtargets=None)
         if len(q["short"]) > MAX_SHORT_NAME:

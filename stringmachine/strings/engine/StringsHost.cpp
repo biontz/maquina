@@ -26,7 +26,8 @@ const char* const kSymbols[] = { "register", "shape", "detune", "tone", "vibrato
                                  "wave_env_pos", "layer_detune", "wave_unison", "wave_spread", "filter_mode",
                                  "filter_cutoff", "filter_reso", "filter_env", "filter_keytrack", "blend",
                                  "blend_shift", "blend_time", "blend_velo", "keys", "attack", "decay", "sustain",
-                                 "release", "velocity", "fx_mode", "fx_amount", "fx_slow", "fx_fast", "reverb" };
+                                 "release", "velocity", "fx_mode", "fx_amount", "fx_slow", "fx_fast", "reverb",
+                                 "strings_on", "strings_level", "wave_on", "wave_level" };
 
 } // namespace
 
@@ -132,6 +133,10 @@ strings::Params StringsHost::engineParams() const
     p.fxSlowHz = su::fxSlowHz(v(kFxSlow));
     p.fxFastHz = su::fxFastHz(v(kFxFast));
     p.reverb = pct(kReverb);
+    p.stringsOn = fIx[kStringsOn] < 0 || v(kStringsOn) != 0;
+    p.waveOn = fIx[kWaveOn] < 0 || v(kWaveOn) != 0;
+    p.stringsLevel = std::pow(10.f, float(v(kStringsLevel)) / 20.f); // dB
+    p.waveLevel = std::pow(10.f, float(v(kWaveLevel)) / 20.f);
     return p;
 }
 

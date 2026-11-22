@@ -448,25 +448,32 @@ void makeStrings(Layout& L)
             knob(kWave[row][k].sym, kWave[row][k].label, 771 + 82 * k, row ? 201 : 110, 46, kStrCyan);
 
     // ---- row 2: BLEND | FILTER
+    // BLEND, the mixer: [● STRINGS] (level) ═══ blend ═══ (level) [WAVE ●]; the LEDs switch the
+    // layers on / off (off: not computed), the levels act before the blend
     title(lx0, lx1, 277, "Blend", false, {});
     {
-        Deco a { Deco::Led, { 48, Y(336), 1, 0 }, "Strings" };
-        a.rgb = kStrAmber;
-        Deco b { Deco::Led, { 446, Y(336), -1, 0 }, "Wave" };
-        b.rgb = kStrCyan;
-        L.decos.push_back(a);
-        L.decos.push_back(b);
+        auto onOff = [&](const char* sym, const char* label, float ledX, float labelX, Box hit, Rgb rgb) {
+            const int p = findParam(sym);
+            if (p < 0) return;
+            Ctl c { uint32_t(p), CtlType::Toggle, label, hit.x, hit.y, hit.w, hit.h };
+            c.ay = Y(318); c.ledX = ledX; c.labelX = labelX; c.ledRgb = rgb; c.look = Ctl::LedLabel;
+            L.ctls.push_back(c);
+        };
+        onOff("strings_on", "Strings", 52, 62, { 44, Y(306), 80, 24 }, kStrAmber);
+        onOff("wave_on", "Wave", 446, -1, { 392, Y(306), 58, 24 }, kStrCyan);
+        knob("strings_level", "Level", 146, 318, 28, kStrAmber);
+        knob("wave_level", "Level", 366, 318, 28, kStrCyan);
         if (const int p = findParam("blend"); p >= 0) {
-            Ctl c { uint32_t(p), CtlType::Knob, nullptr, 120, Y(322), 272, 28 };
-            c.ax = 131; c.ay = Y(336); c.bw = 250; c.look = Ctl::HFader;
+            Ctl c { uint32_t(p), CtlType::Knob, nullptr, 168, Y(304), 176, 28 };
+            c.ax = 176; c.ay = Y(318); c.bw = 160; c.look = Ctl::HFader;
             L.ctls.push_back(c);
         }
     }
-    graph(GraphKind::BlendCurve, { lx0, Y(361), 112, 62 }, "blend", "blend_shift", "blend_time");
-    knob("blend_shift", "Shift", 201, 378, 34, kStrGreen);
-    knob("blend_time", "Time", 273, 378, 34, kStrGreen);
-    knob("blend_velo", "Velo", 343, 378, 34, kStrGreen);
-    knob("layer_detune", "Detune", 413, 378, 34, kStrGreen);
+    graph(GraphKind::BlendCurve, { lx0, Y(383), 112, 62 }, "blend", "blend_shift", "blend_time");
+    knob("blend_shift", "Shift", 201, 400, 34, kStrGreen);
+    knob("blend_time", "Time", 273, 400, 34, kStrGreen);
+    knob("blend_velo", "Velo", 343, 400, 34, kStrGreen);
+    knob("layer_detune", "Detune", 413, 400, 34, kStrGreen);
 
     title(rx0, rx1, 277, "Filter", true, kStrCyan);
     seg("filter_mode", { rx0, Y(311), 236, 30 }, 0, nullptr);

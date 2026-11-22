@@ -128,6 +128,7 @@ static const ClapRemotePage k_strings_remote_pages[] = {
     { "FILTER / BLEND", { "filter_mode", "filter_cutoff", "filter_reso", "filter_env", "filter_keytrack", "blend_shift", "blend_time", "blend_velo" } },
     { "AMP / FX", { "attack", "decay", "sustain", "release", "fx_mode", "fx_amount", "reverb", "gain" } },
     { "VIBRATO / MORE", { "vibrato", "vib_depth", "vib_delay", "velocity", "fx_slow", "fx_fast", "wave_unison", "wave_spread" } },
+    { "MIXER", { "strings_on", "strings_level", "wave_on", "wave_level", "blend", "keys", "layer_detune", "gain" } },
 };
 
 static const ClapRemotePages k_remote_pages[] = {

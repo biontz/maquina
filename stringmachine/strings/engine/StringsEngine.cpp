@@ -436,8 +436,14 @@ struct Engine::Impl {
             }
     }
 
-    // the layers' gains of a voice now (0..1 each)
+    // the layers' gains of a voice now: the blend (or the split) times the mixer's level / on
     void layerGains(const Voice& v, float& gA, float& gB) const
+    {
+        blendGains(v, gA, gB);
+        gA = p.stringsOn ? gA * p.stringsLevel : 0.f;
+        gB = p.waveOn ? gB * p.waveLevel : 0.f;
+    }
+    void blendGains(const Voice& v, float& gA, float& gB) const
     {
         if (p.keys != 0) { // a split: each key plays one layer
             const bool waveKey = p.keys == 1 ? v.note < kSplitKey : v.note >= kSplitKey;

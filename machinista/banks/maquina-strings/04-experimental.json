@@ -43,6 +43,10 @@
     "fx_fast": 30,
     "wave_unison": 4,
     "wave_spread": 40,
+    "strings_on": 1,
+    "strings_level": 0,
+    "wave_on": 1,
+    "wave_level": 0,
     "gain": 0
    }
   },
@@ -86,6 +90,10 @@
     "fx_fast": 30,
     "wave_unison": 4,
     "wave_spread": 50,
+    "strings_on": 1,
+    "strings_level": 0,
+    "wave_on": 1,
+    "wave_level": 0,
     "gain": 0
    }
   },
@@ -129,6 +137,10 @@
     "fx_fast": 50,
     "wave_unison": 1,
     "wave_spread": 12,
+    "strings_on": 1,
+    "strings_level": 0,
+    "wave_on": 1,
+    "wave_level": 0,
     "gain": 0
    }
   },
@@ -172,6 +184,10 @@
     "fx_fast": 60,
     "wave_unison": 1,
     "wave_spread": 12,
+    "strings_on": 1,
+    "strings_level": 0,
+    "wave_on": 1,
+    "wave_level": 0,
     "gain": 0
    }
   },
@@ -215,6 +231,10 @@
     "fx_fast": 30,
     "wave_unison": 1,
     "wave_spread": 12,
+    "strings_on": 1,
+    "strings_level": 0,
+    "wave_on": 1,
+    "wave_level": 0,
     "gain": 0
    }
   },
@@ -258,6 +278,10 @@
     "fx_fast": 30,
     "wave_unison": 1,
     "wave_spread": 12,
+    "strings_on": 1,
+    "strings_level": 0,
+    "wave_on": 1,
+    "wave_level": 0,
     "gain": 0
    }
   }

@@ -10,7 +10,8 @@
 //   LP / BP / HP (stmlib's state variable filter) or COMB (a keytracked feedback delay).
 //   Blend: per voice, from BLEND, moved by SHIFT over TIME after the note-on and by velocity;
 //   equal-power. KEYS LAYER plays both; WAVE LOW / WAVE HIGH split the keyboard at C4.
-//   A layer at zero level for a whole block is not computed.
+//   Mixer: each layer's level and on / off before the blend.
+//   A layer at zero level (or off) for a whole block is not computed.
 //   Effects: ENSEMBLE (string-machine's Solina chorus, digital delays), PHASER, CHORUS or
 //   FORMANT, then a reverb (Rings').
 //
@@ -56,6 +57,9 @@ struct Params {
     int keys = 0;             // 0 layer, 1 wave low, 2 wave high
     // amp
     float attack = 0.42f, decay = 1.2f, sustain = 1, release = 1.8f, velocity = 0; // s, 0..1
+    // mixer: each layer before the blend (off: not computed)
+    bool stringsOn = true, waveOn = true;
+    float stringsLevel = 1, waveLevel = 1; // linear
     // effects
     int fxMode = 0;           // 0 ensemble, 1 phaser, 2 chorus, 3 formant
     float fxAmount = 0.7f, fxSlowHz = 0.6f, fxFastHz = 6, reverb = 0.4f;

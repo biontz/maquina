@@ -87,7 +87,7 @@ private:
     enum Ix { kReg, kShape, kDetune, kTone, kVib, kVibDepth, kVibDelay, kBank, kX, kY, kOctave, kLfoRate,
               kLfoDepth, kEnvPos, kLayerDetune, kUnison, kSpread, kFMode, kCutoff, kReso, kFEnv, kKeytrack,
               kBlend, kShift, kBTime, kBVelo, kKeys, kAttack, kDecay, kSustain, kRelease, kVelocity, kFxMode,
-              kFxAmount, kFxSlow, kFxFast, kReverb, kNumIx };
+              kFxAmount, kFxSlow, kFxFast, kReverb, kStringsOn, kStringsLevel, kWaveOn, kWaveLevel, kNumIx };
     int fIx[kNumIx];
 };
 

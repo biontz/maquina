@@ -86,6 +86,9 @@ int main()
                                  : maquina::isMutable(d.voice) ? p.page == 7 || !std::strcmp(p.symbol, "note_source")
                                  // Acida: the accent threshold (how notes are played)
                                  : maquina::isAcida(d.voice) ? !std::strcmp(p.symbol, "accent_vel")
+                                 // Strings: the layers' on / off switches (performance, as Dredrum's mutes)
+                                 : maquina::isStrings(d.voice) ? p.page == 7 || !std::strcmp(p.symbol, "strings_on") ||
+                                                                     !std::strcmp(p.symbol, "wave_on")
                                  : maquina::hasChannels(d.voice)
                                      ? !std::strcmp(p.symbol, "trig_mode") || std::strstr(p.symbol, "_mute") != nullptr
                                      : p.page == 7;

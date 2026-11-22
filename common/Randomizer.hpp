@@ -59,6 +59,7 @@ static const RandGroup kRandGroups[] = {
     { "samp", "AMP", true, 0, 100, { "attack", "decay", "sustain", "release", "velocity" }, kStringsVoice },
     { "sfx", "FX", true, 0, 100, { "fx_mode", "fx_amount", "fx_slow", "fx_fast", "reverb" }, kStringsVoice },
     { "skeys", "KEYS", true, 0, 100, { "keys", "wave_octave" }, kStringsVoice },
+    { "slevel", "LEVELS", true, 0, 100, { "strings_level", "wave_level" }, kStringsVoice },
     { "osc", "OSC", false, 0, 100,
       { "osc_coarse", "osc_fine", "osc_wave", "osc_pwm", "noise_freq", "noise_mix", "fm_amount", "fm_freq",
         "fm_wave", "fm_mode", "mod1_freq", "mod1_gain", "mod1_wave", "mod2_freq", "mod2_gain", "mod2_wave" } },
