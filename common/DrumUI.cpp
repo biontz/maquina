@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <functional>
 #include <cctype>
+#include <chrono>
 #include <cmath>
 #include <cstdio>
 #include <cstring>
@@ -736,7 +737,9 @@ protected:
         if (index < fValues.size()) {
             if (value != fValues[index] && !fApplying) { // edited elsewhere: keep this sound
                 endRun();
-                if (maquina::isSoundParam(voiceDef(), index)) fPresetDirty = true;
+                // not "edited": the values that follow a restored preset name (a project
+                // loading with the editor open delivers the name first, then the knobs)
+                if (maquina::isSoundParam(voiceDef(), index) && !justRestored()) fPresetDirty = true;
             }
             fValues[index] = value;
             repaint();
@@ -2387,6 +2390,7 @@ protected:
             fRand.fromString(value);
             repaint();
         } else if (!std::strcmp(key, "preset")) { // "name" or "*name" (edited)
+            fPresetStateAt = std::chrono::steady_clock::now();
             fPresetDirty = value[0] == '*';
             fPresetName = value + (fPresetDirty ? 1 : 0);
             fPreset = -1;
@@ -2507,6 +2511,13 @@ protected:
             for (size_t i = 0; i < fPresets.size(); ++i)
                 if (fPresets[i].user) { openEditDialog(int(i)); fDlgEdit = true; break; }
         }
+    }
+
+    // within 1 s of the host restoring the preset name (stateChanged): the knob values
+    // arriving then belong to that preset, not to an edit
+    bool justRestored() const
+    {
+        return std::chrono::steady_clock::now() - fPresetStateAt < std::chrono::seconds(1);
     }
 
     void savePresetState()
@@ -5169,6 +5180,7 @@ private:
     bool fSearchFocus = false;
     int fBrowseHover = -1, fBrowseHoverKind = -1;
     int fListHidden = 0, fListShown = 0, fListFirst = 0, fListLast = 0;
+    std::chrono::steady_clock::time_point fPresetStateAt {}; // the host last restored "preset" (justRestored)
     int fListScroll = 0, fListScrollMax = 0;                    // preset list: first column shown (wheel)
     float fListRect[4] = {};                                    // the list area (for the wheel)
     std::string fListSig;                                       // filter the scroll belongs to
