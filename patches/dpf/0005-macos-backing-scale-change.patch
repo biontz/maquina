@@ -1,0 +1,129 @@
+diff --git a/dgl/src/Window.cpp b/dgl/src/Window.cpp
+index 6f7562e..0d706f2 100644
+--- a/dgl/src/Window.cpp
++++ b/dgl/src/Window.cpp
+@@ -411,6 +411,19 @@ uintptr_t Window::getNativeWindowHandle() const noexcept
+ 
+ double Window::getScaleFactor() const noexcept
+ {
++   #ifdef DISTRHO_OS_MAC
++    // macOS: the backing scale of the screen the view is on right now (it
++    // changes when the window moves between a Retina and a non-Retina screen,
++    // and an embedded view starts with the main screen's before the host
++    // puts it into its window)
++    if (pData->view != nullptr && std::getenv("DPF_SCALE_FACTOR") == nullptr)
++    {
++        const double scaleFactor = puglGetScaleFactor(pData->view);
++
++        if (scaleFactor > 0.0)
++            pData->scaleFactor = scaleFactor;
++    }
++   #endif
+     return pData->scaleFactor;
+ }
+ 
+diff --git a/dgl/src/WindowPrivateData.cpp b/dgl/src/WindowPrivateData.cpp
+index d7a3c93..59f08ea 100644
+--- a/dgl/src/WindowPrivateData.cpp
++++ b/dgl/src/WindowPrivateData.cpp
+@@ -646,6 +646,23 @@ void Window::PrivateData::onPuglConfigure(const uint width, const uint height)
+ 
+     DGL_DBGp("PUGL: onReshape : %d %d\n", width, height);
+ 
++   #ifdef DISTRHO_OS_MAC
++    // macOS: the scale is the backing scale of the screen the view is on, and
++    // it changes when the window moves between a Retina and a non-Retina
++    // screen; pugl already reports sizes and pointer positions in the new
++    // scale, so keep ours in sync (host size conversions, NanoVG pixel ratio)
++    if (view != nullptr && getenv("DPF_SCALE_FACTOR") == nullptr)
++    {
++        const double newScaleFactor = puglGetScaleFactor(view);
++
++        if (newScaleFactor > 0.0 && d_isNotEqual(newScaleFactor, scaleFactor))
++        {
++            scaleFactor = newScaleFactor;
++            self->onScaleFactorChanged(newScaleFactor);
++        }
++    }
++   #endif
++
+    #ifndef DPF_TEST_WINDOW_CPP
+     createContextIfNeeded();
+    #endif
+diff --git a/dgl/src/pugl-upstream/src/mac.m b/dgl/src/pugl-upstream/src/mac.m
+index 977cd7e..3caf0ae 100644
+--- a/dgl/src/pugl-upstream/src/mac.m
++++ b/dgl/src/pugl-upstream/src/mac.m
+@@ -302,11 +302,21 @@ dispatchCurrentChildViewConfiguration(PuglView* const view)
+   size_t                     dragTypeIndex;
+   NSString*                  droppedUriList;
+   bool                       reshaped;
++  double                     lastScaleFactor;
+ }
+ 
+ - (void)dispatchExpose:(NSRect)rect
+ {
+-  const double scaleFactor = [[NSScreen mainScreen] backingScaleFactor];
++  // the screen this view is on, not the main screen: they differ when a
++  // Retina and a non-Retina display are both connected
++  const double scaleFactor = [viewScreen(puglview) backingScaleFactor];
++
++  // a new scale (view put into a window on another screen, or the window
++  // moved there) is a new size in pixels: dispatch a configure first
++  if (scaleFactor != lastScaleFactor) {
++    lastScaleFactor = scaleFactor;
++    reshaped        = true;
++  }
+ 
+   if (reshaped) {
+     if (puglview->impl->window) {
+@@ -362,6 +372,28 @@ dispatchCurrentChildViewConfiguration(PuglView* const view)
+   reshaped = true;
+ }
+ 
++// the window moved to a screen with another backing scale (Retina <-> non-
++// Retina): the size in pixels changed although the size in points did not,
++// so dispatch a new configure with the next expose and redraw everything
++- (void)viewDidChangeBackingProperties
++{
++  [super viewDidChangeBackingProperties];
++  reshaped = true;
++  [self setNeedsDisplay:YES];
++  [puglview->impl->drawView setNeedsDisplay:YES];
++}
++
++// embedded views are created before the host puts them into a window, so
++// their first scale is the main screen's: redraw (and so re-check the scale)
++// once the view is in its window
++- (void)viewDidMoveToWindow
++{
++  [super viewDidMoveToWindow];
++  reshaped = true;
++  [self setNeedsDisplay:YES];
++  [puglview->impl->drawView setNeedsDisplay:YES];
++}
++
+ static uint32_t
+ getModifiers(const NSEvent* const ev)
+ {
+diff --git a/dgl/src/pugl-upstream/src/mac_gl.m b/dgl/src/pugl-upstream/src/mac_gl.m
+index 57dfc41..f487b50 100644
+--- a/dgl/src/pugl-upstream/src/mac_gl.m
++++ b/dgl/src/pugl-upstream/src/mac_gl.m
+@@ -95,6 +95,16 @@ ensureHint(PuglView* const view, const PuglViewHint hint, const int value)
+   [wrapper setReshaped];
+ }
+ 
++- (void)viewDidChangeBackingProperties
++{
++  PuglWrapperView* wrapper = (PuglWrapperView*)[self superview];
++
++  [super viewDidChangeBackingProperties];
++  [[self openGLContext] update];
++  [wrapper setReshaped];
++  [self setNeedsDisplay:YES];
++}
++
+ - (void)drawRect:(NSRect)rect
+ {
+   PuglWrapperView* wrapper = (PuglWrapperView*)[self superview];
