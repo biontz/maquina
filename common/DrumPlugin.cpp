@@ -5,9 +5,14 @@
 // SPDX-License-Identifier: GPL-3.0-only
 #include "DistrhoPlugin.hpp"
 
+#include <algorithm>
+#include <atomic>
+#include <chrono>
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
+#include <thread>
+#include <utility>
 #include <vector>
 
 #if MAQUINA_DREDRUM
@@ -32,6 +37,7 @@
 #include "ExtraParams.hpp"
 #include "Randomizer.hpp"
 #include "FactoryPresets.generated.hpp"
+#include "ProgramMap.hpp"
 #include "VoiceTables.generated.hpp"
 
 #ifndef MAQUINA_VOICE_INDEX
@@ -155,12 +161,38 @@ public:
     // parameters: the voice table, then the extras (ExtraParams.hpp)
     static uint32_t numParams() { return maquina::numAllParams(voiceDef()); }
 
+    // host programs: Init + the factory presets. VST3 hosts send MIDI Program
+    // Change only through this list (as loadProgram()), so it has 128 entries
+    // there: with a bank selected by CC 0/32, every program of the bank is reachable.
+    static uint32_t numPrograms()
+    {
+#ifdef DISTRHO_PLUGIN_TARGET_VST3
+        return std::max<uint32_t>(128u, 1u + factory().count);
+#else
+        return 1u + factory().count;
+#endif
+    }
+
     DrumPlugin()
-        : Plugin(numParams(), 1 + factory().count, 2), // programs: Init + factory presets
-          fEngine(voiceDef(), noiseSeed(this))
+        : Plugin(numParams(), numPrograms(), 2),
+          fEngine(voiceDef(), noiseSeed(this)),
+          fScratch(numParams())
     {
         fEngine.setSampleRate(getSampleRate());
         setLatency(fEngine.latencyFrames());
+        // MIDI Bank Select / Program Change: the preset map, rebuilt by a
+        // background thread when the user library changes (ProgramMap.hpp)
+        fLibSignature = maquina::librarySignature(voiceDef());
+        fMap.store(new maquina::ProgramMap(maquina::buildProgramMap(voiceDef(), factory())));
+        fRescan = std::thread([this] { rescanLoop(); });
+    }
+
+    ~DrumPlugin() override
+    {
+        fQuit.store(true);
+        if (fRescan.joinable()) fRescan.join();
+        delete fMap.load();
+        for (auto& r : fRetired) delete r.first;
     }
 
 protected:
@@ -271,6 +303,14 @@ protected:
         p.groupId = uint32_t(pageGroups().groupOfPage[extraId(index) != UINT32_MAX ? extraPage() : vp.page]);
         p.ranges.def = extraId(index) != UINT32_MAX ? float(vp.def) : fEngine.defaultParam(index);
 
+        if (extraId(index) == maquina::kExtraMidiProgram) { // read-only: the last program loaded
+            p.hints = kParameterIsOutput | kParameterIsInteger;
+            p.ranges.min = -1.f;
+            p.ranges.max = float(2u * maquina::kMidiProgramToggle - 1u);
+            p.ranges.def = -1.f;
+            return;
+        }
+
         switch (vp.kind) {
         case ParamKind::Int:
             p.ranges.min = float(vp.fwMin + vp.offset);
@@ -302,7 +342,13 @@ protected:
 
     void initProgramName(uint32_t index, String& name) override
     {
-        name = index == 0 ? "Init" : factory().presets[index - 1].name;
+        if (index == 0) name = "Init";
+        else if (index <= factory().count) name = factory().presets[index - 1].name;
+        else { // VST3 padding (numPrograms): a program of the selected bank (CC 0/32)
+            char buf[32];
+            std::snprintf(buf, sizeof buf, "Program %u", index);
+            name = buf;
+        }
     }
 
     // State: the editor's randomize levels per section (Randomizer.hpp). Only
@@ -326,23 +372,40 @@ protected:
     {
         if (!std::strcmp(key, "rand_levels"))
             fRandLevels = value;
-        else if (!std::strcmp(key, "preset"))
+        else if (!std::strcmp(key, "preset")) { // the editor chose a preset, or a project is loading
             fPresetName = value;
+            fMidiNameSet.store(false);
+            fProgramOut = -1.f; // "Program": the state's name is the current one again
+        }
     }
 
     String getState(const char* key) const override
     {
         if (!std::strcmp(key, "rand_levels")) return fRandLevels;
-        if (!std::strcmp(key, "preset")) return fPresetName;
+        if (!std::strcmp(key, "preset")) return fMidiNameSet.load() ? String(fMidiName) : fPresetName;
         return String();
     }
 
-    // Init or a factory preset: the sound only; trigger settings stay.
+    // The host's program list. Bank 0 (no CC 0/32 received): Init or a factory
+    // preset, the sound only; trigger settings stay. Another bank: that bank's
+    // program (ProgramMap.hpp), so VST3 hosts' program changes reach every bank.
     void loadProgram(uint32_t index) override
     {
+        const uint32_t msb = fBankMsb, lsb = fBankLsb;
+        if (msb != 0 || lsb != 0) {
+            const maquina::ProgramMap* m = fMap.load(std::memory_order_acquire);
+            if (const maquina::ProgramEntry* e = m && index < 128 ? m->at(msb, lsb, index) : nullptr) {
+                applyEntry(*e, false);
+                fPresetName = e->name.c_str();
+                fMidiNameSet.store(false);
+                noteProgram(msb, lsb, index);
+            }
+            return;
+        }
+        if (index > factory().count) return; // VST3 padding: nothing in bank 0
         std::vector<float> v(numParams());
         for (uint32_t i = 0; i < v.size(); ++i) v[i] = getParameterValue(i);
-        if (index == 0 || index > factory().count)
+        if (index == 0)
             maquina::applyPreset(voiceDef(), nullptr, 0, v.data());
         else {
             const maquina::FactoryPreset& fp = factory().presets[index - 1];
@@ -350,7 +413,12 @@ protected:
         }
         for (uint32_t i = 0; i < v.size(); ++i)
             if (maquina::isSoundParam(voiceDef(), i)) setParameterValue(i, v[i]);
-        fPresetName = index == 0 || index > factory().count ? "Init" : factory().presets[index - 1].name;
+        fPresetName = index == 0 ? "Init" : factory().presets[index - 1].name;
+        fMidiNameSet.store(false);
+        // no "Program" report here: hosts also call this when loading a project (the saved
+        // program, before the parameters and the preset name), and the editor shows the
+        // host's own program changes through programLoaded()
+        fProgramOut = -1.f;
     }
 
     float getParameterValue(uint32_t index) const override
@@ -358,6 +426,8 @@ protected:
         switch (extraId(index)) {
         case maquina::kExtraNotePitch: return fEngine.noteFollowsPitch() ? 1.f : 0.f;
         case maquina::kExtraGain: return fGainDb;
+        case maquina::kExtraMidiPc: return fMidiPc ? 1.f : 0.f;
+        case maquina::kExtraMidiProgram: return fProgramOut;
         default: return fEngine.getParam(index);
         }
     }
@@ -370,6 +440,8 @@ protected:
             fGainDb = std::fmin(std::fmax(std::round(value), -24.f), 12.f);
             fGainTarget = std::pow(10.f, fGainDb / 20.f);
             break;
+        case maquina::kExtraMidiPc: fMidiPc = value >= 0.5f; break;
+        case maquina::kExtraMidiProgram: break; // output
         default: fEngine.setParam(index, value); break;
         }
     }
@@ -412,6 +484,28 @@ protected:
 
         for (uint32_t i = 0; i < midiEventCount; ++i) {
             const MidiEvent& ev = midiEvents[i];
+            // MIDI PC on: Bank Select (CC 0 MSB, CC 32 LSB) and Program Change load
+            // presets (ProgramMap.hpp); they never reach the engine. Detected by the
+            // status byte: DPF's CLAP wrapper gives every MIDI event size 3.
+            if (fMidiPc && ev.size >= 2) {
+                const uint8_t st = ev.data[0] & 0xF0;
+                if (st == 0xC0) {
+                    programChange(ev.data[1] & 0x7F);
+                    continue;
+                }
+                if (st == 0xB0 && ev.size >= 3 && (ev.data[1] == 0 || ev.data[1] == 32)) {
+                    if (ev.data[1] == 0) {
+                        fBankMsb = ev.data[2] & 0x7F;
+                        fBankLsb = 0; // a new MSB starts at its first page
+                    } else {
+                        fBankLsb = ev.data[2] & 0x7F;
+                    }
+                    continue;
+                }
+            }
+#if MAQUINA_MIDI_PC_ONLY
+            continue; // an effect: MIDI is only for Bank Select / Program Change
+#endif
 #if MAQUINA_LA50
             // Maquina LA-50: channels (Separate key modes), channel aftertouch
             if (ev.size == 2 && (ev.data[0] & 0xF0) == 0xD0) {
@@ -452,6 +546,74 @@ protected:
     }
 
 private:
+    // ---- MIDI Bank Select / Program Change (ProgramMap.hpp)
+
+    // a preset's sound parameters (the rest stays, as loadProgram()); notify =
+    // tell the host (requestParameterValueChange) - from run(), not from the
+    // host's own program change. No allocation (fScratch).
+    void applyEntry(const maquina::ProgramEntry& e, bool notify)
+    {
+        const uint32_t n = numParams();
+        for (uint32_t i = 0; i < n; ++i) fScratch[i] = getParameterValue(i);
+        maquina::applyPreset(voiceDef(), e.init ? nullptr : e.values.data(), e.init ? 0u : uint32_t(e.values.size()),
+                             fScratch.data());
+        for (uint32_t i = 0; i < n; ++i) {
+            if (!maquina::isSoundParam(voiceDef(), i)) continue;
+            setParameterValue(i, fScratch[i]);
+#if DISTRHO_PLUGIN_WANT_PARAMETER_VALUE_CHANGE_REQUEST
+            if (notify) requestParameterValueChange(i, fScratch[i]);
+#endif
+        }
+        (void)notify;
+    }
+
+    // the "Program" output (ExtraParams.hpp kExtraMidiProgram), for the editor and the host
+    void noteProgram(uint32_t msb, uint32_t lsb, uint32_t program)
+    {
+        fProgramToggle = !fProgramToggle;
+        fProgramOut = maquina::encodeMidiProgram(msb, lsb, program, fProgramToggle);
+    }
+
+    // MIDI Program Change in run(): the selected bank's program, if there is one
+    void programChange(uint32_t program)
+    {
+        const maquina::ProgramMap* m = fMap.load(std::memory_order_acquire);
+        const maquina::ProgramEntry* e = m ? m->at(fBankMsb, fBankLsb, program) : nullptr;
+        if (!e) return;
+        applyEntry(*e, true);
+        // the preset name for getState(): a fixed buffer, no allocation here
+        std::strncpy(fMidiName, e->name.c_str(), sizeof fMidiName - 1);
+        fMidiName[sizeof fMidiName - 1] = '\0';
+        fMidiNameSet.store(true);
+        noteProgram(fBankMsb, fBankLsb, program);
+    }
+
+    // background thread: every 2 s, rebuild the map if the user library changed;
+    // replaced maps are freed 2 s later (run() only holds one for a block)
+    void rescanLoop()
+    {
+        using Clock = std::chrono::steady_clock;
+        auto next = Clock::now() + std::chrono::seconds(2);
+        while (!fQuit.load()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            const auto now = Clock::now();
+            fRetired.erase(std::remove_if(fRetired.begin(), fRetired.end(),
+                                          [&](const std::pair<const maquina::ProgramMap*, Clock::time_point>& r) {
+                                              if (now - r.second < std::chrono::seconds(2)) return false;
+                                              delete r.first;
+                                              return true;
+                                          }),
+                           fRetired.end());
+            if (now < next) continue;
+            next = now + std::chrono::seconds(2);
+            const uint64_t sig = maquina::librarySignature(voiceDef());
+            if (sig == fLibSignature) continue;
+            fLibSignature = sig;
+            auto* fresh = new maquina::ProgramMap(maquina::buildProgramMap(voiceDef(), factory()));
+            fRetired.emplace_back(fMap.exchange(fresh, std::memory_order_acq_rel), Clock::now());
+        }
+    }
+
     // output gain (ExtraParams.hpp "gain"), ~5 ms smoothing; 0 dB = untouched
     void applyGain(float* l, float* r, uint32_t frames)
     {
@@ -479,6 +641,20 @@ private:
     String fRandLevels { maquina::RandSettings().toString().c_str() };
     String fPresetName { "Init" };
     float fGainDb = 0.f, fGainTarget = 1.f, fGain = 1.f;
+
+    // MIDI Bank Select / Program Change
+    std::vector<float> fScratch;                       // applyEntry()'s values
+    std::atomic<const maquina::ProgramMap*> fMap { nullptr };
+    std::vector<std::pair<const maquina::ProgramMap*, std::chrono::steady_clock::time_point>> fRetired; // rescan thread
+    uint64_t fLibSignature = 0;                        // rescan thread
+    std::atomic<bool> fQuit { false };
+    std::thread fRescan;
+    bool fMidiPc = true;                               // "MIDI PC"
+    uint32_t fBankMsb = 0, fBankLsb = 0;               // CC 0 / CC 32
+    float fProgramOut = -1.f;                          // "Program" output
+    bool fProgramToggle = false;
+    char fMidiName[128] = "Init";                      // the name of a preset loaded by MIDI
+    std::atomic<bool> fMidiNameSet { false };          // ... and that it is the current one
 
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DrumPlugin)
 };

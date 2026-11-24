@@ -24,10 +24,10 @@ EXTRA = os.path.join(COMMON, "ExtraParams.hpp")
 OUT_HPP = os.path.join(COMMON, "RemotePages.generated.hpp")
 VOICES = ["kick", "tom", "snare", "cymbal", "hihat", "dredrum", "plethora", "oneiroi",
           "oneiroi_fx", "klang", "klong", "klong_fx", "acida", "acida_fx", "bl101", "bl101_fx", "la50"]  # order of k_voices / MAQUINA_VOICE_INDEX
-EXTRA_SYMBOLS = {v: {"note_pitch", "gain"} for v in VOICES}
+EXTRA_SYMBOLS = {v: {"note_pitch", "gain", "midi_pc", "midi_program"} for v in VOICES}
 for v in ("dredrum", "plethora", "oneiroi", "oneiroi_fx", "klang", "klong", "klong_fx", "acida", "acida_fx",
           "bl101", "bl101_fx", "la50"):
-    EXTRA_SYMBOLS[v] = {"gain"}  # numExtraParams() == 1
+    EXTRA_SYMBOLS[v] = {"gain", "midi_pc", "midi_program"}  # numExtraParams() == 3
 
 
 def voice_symbols():
@@ -39,7 +39,7 @@ def voice_symbols():
             sys.exit(f"{TABLES}: no parameter table for {voice}")
         out[voice] = set(re.findall(r'^\s*\{ "(\w+)"', m.group(1), re.M)) | EXTRA_SYMBOLS[voice]
     extra = set(re.findall(r'^\s*\{ "(\w+)"', open(EXTRA).read(), re.M))
-    if extra != {"note_pitch", "gain"}:
+    if extra != {"note_pitch", "gain", "midi_pc", "midi_program"}:
         sys.exit(f"{EXTRA}: extra parameters changed ({sorted(extra)}), update EXTRA_SYMBOLS")
     return out
 

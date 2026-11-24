@@ -23,6 +23,8 @@
 #define DISTRHO_PLUGIN_NUM_INPUTS      0
 #define DISTRHO_PLUGIN_NUM_OUTPUTS     2
 #define DISTRHO_PLUGIN_WANT_MIDI_INPUT 1
+// MIDI Bank Select (CC 0/32) + Program Change load presets and tell the host (common/ProgramMap.hpp)
+#define DISTRHO_PLUGIN_WANT_PARAMETER_VALUE_CHANGE_REQUEST 1
 #define DISTRHO_PLUGIN_WANT_PROGRAMS   1
 #define DISTRHO_PLUGIN_WANT_TIMEPOS    1
 #define DISTRHO_PLUGIN_WANT_LATENCY    1

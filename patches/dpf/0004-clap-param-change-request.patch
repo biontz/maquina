@@ -1,0 +1,110 @@
+From: Maquina
+Subject: [PATCH] clap: implement requestParameterValueChange()
+
+The CLAP wrapper's requestParameterValueChange() was a stub. A plugin that
+changes its own input parameters (Maquina: MIDI Program Change loading a
+preset) now reports them at the end of process() as CLAP_EVENT_PARAM_VALUE
+output events, and to the UI through the cached parameter values.
+---
+--- a/distrho/src/DistrhoPluginCLAP.cpp
++++ b/distrho/src/DistrhoPluginCLAP.cpp
+@@ -152,16 +152,19 @@
+         uint numParams;
+         bool* changed;
+         float* values;
++        bool* requested; // Maquina patch: requestParameterValueChange(), sent by flushParameters()
+ 
+         CachedParameters()
+             : numParams(0),
+               changed(nullptr),
+-              values(nullptr) {}
++              values(nullptr),
++              requested(nullptr) {}
+ 
+         ~CachedParameters()
+         {
+             delete[] changed;
+             delete[] values;
++            delete[] requested;
+         }
+ 
+         void setup(const uint numParameters)
+@@ -172,8 +175,10 @@
+             numParams = numParameters;
+             changed = new bool[numParameters];
+             values = new float[numParameters];
++            requested = new bool[numParameters];
+ 
+             std::memset(changed, 0, sizeof(bool)*numParameters);
++            std::memset(requested, 0, sizeof(bool)*numParameters);
+             std::memset(values, 0, sizeof(float)*numParameters);
+         }
+     } fCachedParameters;
+@@ -763,6 +768,9 @@
+                   updateStateValueCallback),
+           fHost(host),
+           fOutputEvents(nullptr),
++         #if DISTRHO_PLUGIN_WANT_PARAMETER_VALUE_CHANGE_REQUEST
++          fParameterChangeRequestPending(false),
++         #endif
+           fResetParameterIndex(UINT32_MAX),
+          #if DISTRHO_PLUGIN_NUM_INPUTS+DISTRHO_PLUGIN_NUM_OUTPUTS != 0
+           fUsingCV(false),
+@@ -1374,6 +1382,29 @@
+                     out->try_push(out, &clapEvent.header);
+                 }
+             }
++
++           #if DISTRHO_PLUGIN_WANT_PARAMETER_VALUE_CHANGE_REQUEST
++            // Maquina patch: input parameters the plugin changed itself
++            if (fParameterChangeRequestPending)
++            {
++                fParameterChangeRequestPending = false;
++
++                for (uint i=0; i<fCachedParameters.numParams; ++i)
++                {
++                    if (! fCachedParameters.requested[i])
++                        continue;
++                    fCachedParameters.requested[i] = false;
++
++                    value = fPlugin.getParameterValue(i);
++                    fCachedParameters.values[i] = value;
++                    fCachedParameters.changed[i] = true;
++
++                    clapEvent.param_id = i;
++                    clapEvent.value = value;
++                    out->try_push(out, &clapEvent.header);
++                }
++            }
++           #endif
+         }
+ 
+        #if DISTRHO_PLUGIN_WANT_LATENCY
+@@ -1890,6 +1921,10 @@
+     // CLAP stuff
+     const clap_host_t* const fHost;
+     const clap_output_events_t* fOutputEvents;
++   #if DISTRHO_PLUGIN_WANT_PARAMETER_VALUE_CHANGE_REQUEST
++    // Maquina patch: requestParameterValueChange() was called since the last flush
++    bool fParameterChangeRequestPending;
++   #endif
+ 
+     uint32_t fResetParameterIndex;
+    #if DISTRHO_PLUGIN_NUM_INPUTS != 0
+@@ -2135,8 +2170,14 @@
+    #endif
+ 
+    #if DISTRHO_PLUGIN_WANT_PARAMETER_VALUE_CHANGE_REQUEST
+-    bool requestParameterValueChange(uint32_t, float)
+-    {
++    // Maquina patch: the plugin changed one of its input parameters itself (e.g. a
++    // MIDI program change); flushParameters() reports it to the host as a
++    // CLAP_EVENT_PARAM_VALUE and to the UI. Audio thread (called from run()).
++    bool requestParameterValueChange(const uint32_t index, float)
++    {
++        DISTRHO_SAFE_ASSERT_UINT2_RETURN(index < fCachedParameters.numParams, index, fCachedParameters.numParams, false);
++        fCachedParameters.requested[index] = true;
++        fParameterChangeRequestPending = true;
+         return true;
+     }
+ 

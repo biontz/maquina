@@ -80,7 +80,10 @@ int main()
             static const char* const kOneiroiPerformance[] = { "loop_record", "loop_source", "loop_clear", "sync" };
             bool oneiroiPerformance = false;
             for (const char* sym : kOneiroiPerformance) oneiroiPerformance |= !std::strcmp(p.symbol, sym);
-            const bool trigger = !std::strcmp(p.symbol, "gain") ? true
+            // gain, MIDI PC, Program (ExtraParams.hpp): mix / MIDI settings and an output, never randomized
+            const bool extra = !std::strcmp(p.symbol, "gain") || !std::strcmp(p.symbol, "midi_pc") ||
+                               !std::strcmp(p.symbol, "midi_program");
+            const bool trigger = extra ? true
                                  : maquina::isOneiroi(d.voice) ? oneiroiPerformance
                                  // Klang / Klong: Output (page 7) and Klong FX's note source
                                  : maquina::isMutable(d.voice) ? p.page == 7 || !std::strcmp(p.symbol, "note_source")
