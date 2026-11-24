@@ -245,6 +245,12 @@ def _la50_off_page():
 
 OFF_PAGE["la50"] = _la50_off_page()
 
+# MIDI PC (On/Off) and Program (an output): on no page, in every voice. Hosts
+# show them generically (e.g. Zynthian in the Mix port group); MIDI Bank Select /
+# Program Change is set up once, not played from an encoder (common/ProgramMap.hpp).
+for _v in PAGES:
+    OFF_PAGE[_v] = (OFF_PAGE.get(_v) or set()) | {"midi_pc", "midi_program"}
+
 
 def clap_pages(voice):
     """PAGES[voice] with the "@" slots dropped and CLAP_FILL[voice] appended to their page."""

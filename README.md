@@ -948,6 +948,37 @@ The LV2 UI is a separate binary, so headless hosts never load it; the Pi build
   Randomizer groups: LFO, VCO, MIXER, VCF, ENV; TUNE, VOICE, DRAW, CHOP and
   LEVEL start locked.
 
+### MIDI Bank Select and Program Change
+
+Every plugin (the FX plugins too) loads presets on **Bank Select** (CC 0 MSB, CC 32 LSB) and
+**Program Change**: the factory presets and your own from `~/.config/maquina/presets/<voice>/`.
+
+| CC 0 (bank) | presets |
+|---|---|
+| 0 | Init + the factory presets: the host's program list (program 0 = Init) |
+| 1 .. n | the n-th category of the preset browser, in its order: the voice's own categories, then yours (`categories.txt`) |
+| n + 1 | User: all your presets |
+
+* **Program** 0-127 = the preset at that place in the bank, in the browser's order (factory presets,
+  then yours by name). A bank with more than 128 presets goes on with **CC 32** = 1, 2 ... (CC 0
+  resets CC 32 to 0, so senders that only send CC 0 work).
+* The browser shows each category's bank number, and **B**ank / **P**rogram of a preset on hover
+  (`B7 P12`, `B17/1 P5` = CC 0 17, CC 32 1, PC 5).
+* Loading by MIDI changes the sound parameters only (as the browser does); the knobs, the host and
+  the preset name in the header follow. The read-only **Program** parameter shows the last program
+  loaded.
+* **MIDI PC** (On by default, not stored in presets) switches it off, e.g. where the host handles
+  Program Change itself.
+* The numbers above are the MIDI values (0-127), as hardware sequencers send them. Many hosts
+  count from 1 on screen: in Bitwig's **MIDI Program Change** device MSB = CC 0 + 1, LSB = CC 32 + 1
+  and Program = PC + 1 (bank 7, program 0 = MSB 8, LSB 1, Program 1). Its **Chain Only** (scoped)
+  mode sends only to the devices in its own chain: switch it off, or put the plugin in that chain.
+* Senders: Bitwig's **MIDI Program Change** device (bank MSB / LSB + program); in Ableton Live
+  the clip's Bank / Program settings or a Max for Live program-change device. VST3 hosts pass
+  Program Change through the plugin's program list (128 entries in the VST3 build) and Bank
+  Select as CC, so the same numbers work there. New presets and category edits are picked up
+  within 2 seconds.
+
 ## Building
 
 Requirements: a C/C++ toolchain, GNU make, `python3`, `clang` (x86 builds use
@@ -1041,6 +1072,12 @@ aarch64 LV2 bundles (`make aarch64`) fit it by design; **not yet tested on a Zyn
   Acoustic ...; `tools/lv2_preset_banks.py` adds the banks after the TTL generator).
 * No native editor on the Pi: the aarch64 build has no LV2 UI, so Zynthian's VNC view
   shows nothing; its own controller pages are the interface.
+* **Program change / user presets**: Zynthian loads LV2 presets itself on Program Change.
+  For your own presets, run `python3 tools/export_user_presets.py` on the desktop (after
+  `make tools`) and copy `build/user-presets/lv2/maquina-user-presets.lv2` to
+  `zynthian-my-data/presets/lv2/`: one bank per category, as in the plugin. The plugin's own
+  [MIDI program change](#midi-bank-select-and-program-change) reads
+  `/root/.config/maquina/presets/<voice>/`; set **MIDI PC** to Off if both would react.
 
 Install: copy `bin-aarch64/Maquina*.lv2` to the Zynthian (e.g.
 `/zynthian/zynthian-my-plugins/lv2`), then in its web configuration: LV2 > "search for new
@@ -1055,6 +1092,11 @@ Controller profiles for [Machinista](https://github.com/photogeen/machinista)
 Factory presets as Machinista banks (one bank per category) are in
 `machinista/banks/maquina-<voice>/`; copy each folder to Machinista's
 `presets/plugin-banks/`.
+The `NN` of `NN-<category>.json` is the MIDI bank (CC 0) of
+[MIDI program change](#midi-bank-select-and-program-change).
+`tools/export_user_presets.py` writes the factory + user banks of each voice
+(`build/user-presets/machinista/`) with the same numbers; copy them over
+`presets/plugin-banks/maquina-<voice>/`.
 
 Maquina Plethora's Machinista profile has channel A only, so its banks hold
 only the factory presets that use channel A alone.

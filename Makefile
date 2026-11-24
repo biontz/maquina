@@ -81,6 +81,7 @@ tools: engine
 		-lm -o build/tools/check_defaults
 	$(CXX) -O2 -std=gnu++17 $(MAQUINA_INCLUDES) tools/check_random/check_random.cpp -o build/tools/check_random
 	$(CXX) -O2 -std=gnu++17 $(MAQUINA_INCLUDES) tools/check_presets/check_presets.cpp -o build/tools/check_presets
+	$(CXX) -O2 -std=gnu++17 $(MAQUINA_INCLUDES) tools/program_map/program_map.cpp -o build/tools/program_map
 	$(CXX) -O2 -std=gnu++17 $(MAQUINA_INCLUDES) $(PLETHORA_INCLUDES) \
 		tools/preset_measure/preset_measure.cpp drum02/engine/EngineHost.cpp build/engine/libmaquinaengine.a \
 		euro-modules/dredrum/engine/DredrumHost.cpp -x c++ euro-modules/dredrum/engine/dredrum_core.c -x none \
@@ -112,6 +113,8 @@ test: all tools
 	build/tools/check_defaults
 	build/tools/check_random
 	build/tools/check_presets
+	build/tools/program_map --check
+	python3 tools/check_program_banks.py
 	@lv2_validate $(wildcard bin/*.lv2/*.ttl) 2>&1 | tools/lv2_validate_filter.sh
 	tools/test_plugins.sh
 	build/tools/clap_latency_check $(wildcard bin/*.clap)

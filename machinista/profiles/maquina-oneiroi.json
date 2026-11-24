@@ -538,6 +538,17 @@
       "integer": true,
       "toggle": false,
       "log": false
+    },
+    {
+      "index": 47,
+      "symbol": "midi_pc",
+      "name": "MIDI PC",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "integer": true,
+      "toggle": true,
+      "log": false
     }
   ],
   "pages": [

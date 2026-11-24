@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <functional>
 #include <cctype>
+#include <chrono>
 #include <cmath>
 #include <cstdio>
 #include <cstring>
@@ -43,6 +44,7 @@
 #include "D50Sysex.hpp"
 #endif
 #include "FactoryPresets.generated.hpp"
+#include "ProgramMap.hpp"
 #include "VoiceTables.generated.hpp"
 
 START_NAMESPACE_DISTRHO
@@ -589,20 +591,7 @@ double desktopScale(double dpfScale)
 
 // ~/.config/maquina (macOS: ~/Library/Application Support/Maquina), no
 // trailing slash; empty if unknown
-std::string configDir()
-{
-#ifdef _WIN32
-    const char* base = std::getenv("APPDATA");
-    return base ? std::string(base) + "\\Maquina" : std::string();
-#elif defined(__APPLE__)
-    if (const char* h = std::getenv("HOME")) return std::string(h) + "/Library/Application Support/Maquina";
-    return std::string();
-#else
-    if (const char* x = std::getenv("XDG_CONFIG_HOME")) return std::string(x) + "/maquina";
-    if (const char* h = std::getenv("HOME")) return std::string(h) + "/.config/maquina";
-    return std::string();
-#endif
-}
+std::string configDir() { return maquina::configDir(); } // common/ProgramMap.hpp, shared with the plugin
 
 void makeDirs(const std::string& path) // mkdir -p
 {
@@ -739,10 +728,18 @@ protected:
     // ------------------------------------------------------------- host side
     void parameterChanged(uint32_t index, float value) override
     {
+        if (index < fValues.size() && maquina::isExtraParam(voiceDef(), index)
+            && maquina::extraIdOf(voiceDef(), index - voiceDef().numParams) == maquina::kExtraMidiProgram) {
+            fValues[index] = value;
+            midiProgramLoaded(value); // after the sound parameters (lower indexes), so not "edited"
+            return;
+        }
         if (index < fValues.size()) {
             if (value != fValues[index] && !fApplying) { // edited elsewhere: keep this sound
                 endRun();
-                if (maquina::isSoundParam(voiceDef(), index)) fPresetDirty = true;
+                // not "edited": the values that follow a restored preset name (a project
+                // loading with the editor open delivers the name first, then the knobs)
+                if (maquina::isSoundParam(voiceDef(), index) && !justRestored()) fPresetDirty = true;
             }
             fValues[index] = value;
             repaint();
@@ -2393,6 +2390,7 @@ protected:
             fRand.fromString(value);
             repaint();
         } else if (!std::strcmp(key, "preset")) { // "name" or "*name" (edited)
+            fPresetStateAt = std::chrono::steady_clock::now();
             fPresetDirty = value[0] == '*';
             fPresetName = value + (fPresetDirty ? 1 : 0);
             fPreset = -1;
@@ -2411,15 +2409,49 @@ protected:
         std::string path; // user presets: the file
     };
 
-    std::string userPresetDir() const
+    std::string userPresetDir() const { return maquina::userPresetDir(voiceDef()); }
+
+    // MIDI Bank Select / Program Change of a browser preset (ProgramMap.hpp): its
+    // category's bank (CC 0; user presets of no listed category: the User bank),
+    // the page (CC 32) and the program (PC) - its place among that bank's presets
+    bool programOf(int idx, int& msb, int& lsb, int& pc) const
     {
-        const std::string base = configDir();
-        if (base.empty()) return base;
-#ifdef _WIN32
-        return base + "\\presets\\" + voiceDef().id;
-#else
-        return base + "/presets/" + voiceDef().id;
-#endif
+        if (idx < 0 || idx >= int(fPresets.size())) return false;
+        const PresetEntry& e = fPresets[size_t(idx)];
+        int bank = -1;
+        for (int c = 0; c < numCats(); ++c)
+            if (fCats[size_t(c)] == e.category) { bank = c + 1; break; }
+        const bool userBank = bank < 0;
+        if (userBank) {
+            if (!e.user) return false;
+            bank = numCats() + 1;
+        }
+        int k = 0;
+        for (int j = 0; j < idx; ++j)
+            if (userBank ? fPresets[size_t(j)].user : fPresets[size_t(j)].category == e.category) ++k;
+        msb = bank;
+        lsb = k / 128;
+        pc = k % 128;
+        return true;
+    }
+
+    // the plugin loaded a preset by MIDI or from the host's program list: show its name
+    void midiProgramLoaded(float value)
+    {
+        uint32_t msb = 0, lsb = 0, pc = 0;
+        if (!maquina::decodeMidiProgram(value, msb, lsb, pc)) return;
+        const maquina::ProgramMap map = maquina::buildProgramMap(voiceDef(), maquina::k_factory_presets[MAQUINA_VOICE_INDEX],
+                                                                 maquina::loadLibrary(voiceDef()),
+                                                                 maquina::loadUserPresets(voiceDef()));
+        const maquina::ProgramEntry* e = map.at(msb, lsb, pc);
+        if (!e) return;
+        endRun();
+        fPresetName = e->name;
+        fPresetDirty = false;
+        fPreset = -1;
+        for (size_t i = 0; i < fPresets.size(); ++i)
+            if (fPresets[i].name == fPresetName) { fPreset = int(i); break; }
+        repaint();
     }
 
     void loadPresetList()
@@ -2464,7 +2496,10 @@ protected:
             }
             closedir(dp);
         }
-        std::sort(user.begin(), user.end(), [](const PresetEntry& a, const PresetEntry& b) { return a.name < b.name; });
+        // by name, then file: the order of the MIDI program map (ProgramMap.hpp loadUserPresets)
+        std::sort(user.begin(), user.end(), [](const PresetEntry& a, const PresetEntry& b) {
+            return a.name != b.name ? a.name < b.name : a.path < b.path;
+        });
         for (auto& e : user) fPresets.push_back(std::move(e));
 #endif
         fPreset = -1;
@@ -2476,6 +2511,13 @@ protected:
             for (size_t i = 0; i < fPresets.size(); ++i)
                 if (fPresets[i].user) { openEditDialog(int(i)); fDlgEdit = true; break; }
         }
+    }
+
+    // within 1 s of the host restoring the preset name (stateChanged): the knob values
+    // arriving then belong to that preset, not to an edit
+    bool justRestored() const
+    {
+        return std::chrono::steady_clock::now() - fPresetStateAt < std::chrono::seconds(1);
     }
 
     void savePresetState()
@@ -2782,6 +2824,16 @@ protected:
                 textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
                 fillColor(on ? col(kBg) : col(kText));
                 text(x + 8, y + h / 2 + 1, label, nullptr);
+                // the category's MIDI bank (CC 0, ProgramMap.hpp); not under the pen / x icons
+                if (i >= 1 && i <= nc + 1 && !(on && i <= nc)) {
+                    char num[8];
+                    std::snprintf(num, sizeof num, "%d", i);
+                    fontSize(9);
+                    textAlign(ALIGN_RIGHT | ALIGN_MIDDLE);
+                    fillColor(on ? col(kBg, 170) : col(kDim));
+                    text(x + w - 6, y + h / 2 + 1, num, nullptr);
+                    textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+                }
                 if (i == nc + 2) star(x + w - kIconW - 2, y, kIconW, h, on ? col(kBg) : col(kAccent), true);  // Rated
                 if (on && i >= 1 && i <= nc) { // pen (rename) and x (delete; red = click again)
                     pen(x + w - 36, y + 1, 16, h - 2, fBrowseHoverKind == 14 ? col(kText) : col(kBg));
@@ -2879,6 +2931,13 @@ protected:
                 fontSize(9);
                 std::string info = maquina::joinTags(e.tags);
                 info = e.category + (info.empty() ? "" : "  " + info);
+                int pMsb = 0, pLsb = 0, pPc = 0;
+                if ((cur || hot) && programOf(i, pMsb, pLsb, pPc)) { // MIDI: CC 0 (/ CC 32) and PC
+                    char bp[32];
+                    if (pLsb) std::snprintf(bp, sizeof bp, "B%d/%d P%d  ", pMsb, pLsb, pPc);
+                    else std::snprintf(bp, sizeof bp, "B%d P%d  ", pMsb, pPc);
+                    info = bp + info;
+                }
                 const float infoW = std::min(textWidth(info.c_str()), (w - iconsW) * 0.45f);
                 textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
                 fillColor(dim);
@@ -3224,31 +3283,10 @@ protected:
     int numCats() const { return int(fCats.size()); }
     const char* saveCatName(int i) const { return i >= 0 && i < numCats() ? fCats[size_t(i)].c_str() : "User"; }
     int numTags() const { return int(fTagList.size()); }
-    std::string catFile() const
-    {
-        const std::string dir = userPresetDir();
-#ifdef _WIN32
-        return dir.empty() ? dir : dir + "\\categories.txt";
-#else
-        return dir.empty() ? dir : dir + "/categories.txt";
-#endif
-    }
+    std::string catFile() const { return maquina::libFile(voiceDef(), "categories.txt"); }
     // hidden.txt in the preset folder: factory presets deleted (or replaced by an edited copy), one name per line
-    std::string hiddenFile() const
-    {
-        const std::string dir = userPresetDir();
-        return dir.empty() ? dir : dir + "/hidden.txt";
-    }
-    void loadHidden()
-    {
-        fHidden.clear();
-        std::ifstream in(hiddenFile());
-        std::string line;
-        while (std::getline(in, line)) {
-            while (!line.empty() && (line.back() == '\r' || line.back() == ' ')) line.pop_back();
-            if (!line.empty()) fHidden.push_back(line);
-        }
-    }
+    std::string hiddenFile() const { return maquina::libFile(voiceDef(), "hidden.txt"); }
+    void loadHidden() { fHidden = maquina::readLines(hiddenFile()); }
     bool hideFactory(const std::string& name)
     {
         const std::string dir = userPresetDir();
@@ -3321,45 +3359,14 @@ protected:
     // categories.txt: "#all" then the full list (older files: the user's own, after the plugin's);
     // tags.txt: the full tag list; labelmap.txt: "cat|tag <TAB> old <TAB> new" renames / deletions
     // applied to the factory presets (user preset files are rewritten instead)
-    std::string libFile(const char* name) const
-    {
-        const std::string dir = userPresetDir();
-        return dir.empty() ? dir : dir + "/" + name;
-    }
-    static std::vector<std::string> readLines(const std::string& path)
-    {
-        std::vector<std::string> v;
-        std::ifstream in(path);
-        std::string line;
-        while (std::getline(in, line)) {
-            while (!line.empty() && (line.back() == '\r' || line.back() == ' ')) line.pop_back();
-            if (!line.empty()) v.push_back(line);
-        }
-        return v;
-    }
+    std::string libFile(const char* name) const { return maquina::libFile(voiceDef(), name); }
+    // the library lists, read the same way the plugin's MIDI program map reads them (ProgramMap.hpp)
     void loadUserCats()
     {
-        fCats.clear();
-        const std::vector<std::string> lines = readLines(catFile());
-        const bool full = !lines.empty() && lines[0] == "#all";
-        if (!full) {
-            const maquina::VoiceCategories* vc = maquina::categoriesOf(voiceDef().id);
-            for (int i = 0; i < numVoiceCats(); ++i) fCats.push_back(vc->names[i]);
-        }
-        for (size_t k = full ? 1 : 0; k < lines.size(); ++k)
-            if (std::find(fCats.begin(), fCats.end(), lines[k]) == fCats.end()) fCats.push_back(lines[k]);
-        fTagList.clear();
-        const std::vector<std::string> tl = readLines(libFile("tags.txt"));
-        if (tl.empty() || tl[0] != "#all")
-            for (int t = 0; t < maquina::kNumPresetTags; ++t) fTagList.push_back(maquina::kPresetTags[t]);
-        for (size_t k = (!tl.empty() && tl[0] == "#all") ? 1 : 0; k < tl.size() && fTagList.size() < 32; ++k)
-            if (std::find(fTagList.begin(), fTagList.end(), tl[k]) == fTagList.end()) fTagList.push_back(tl[k]);
-        fLabelMap.clear();
-        for (const std::string& l : readLines(libFile("labelmap.txt"))) {
-            const size_t t1 = l.find('\t'), t2 = t1 == std::string::npos ? t1 : l.find('\t', t1 + 1);
-            if (t2 == std::string::npos) continue;
-            fLabelMap.push_back({ l.substr(0, t1), l.substr(t1 + 1, t2 - t1 - 1), l.substr(t2 + 1) });
-        }
+        const maquina::PresetLibrary lib = maquina::loadLibrary(voiceDef());
+        fCats = lib.cats;
+        fTagList = lib.tags;
+        fLabelMap = lib.labelMap;
     }
     bool saveUserCats()
     {
@@ -3377,16 +3384,7 @@ protected:
         return bool(out) && bool(tout) && bool(mout);
     }
     // a factory preset's category / tag after the user's renames and deletions ("" = tag deleted)
-    std::string mapLabel(const char* kind, std::string v) const
-    {
-        for (int hop = 0; hop < 16; ++hop) {
-            bool moved = false;
-            for (const auto& m : fLabelMap)
-                if (m.kind == kind && m.from == v) { v = m.to; moved = true; break; }
-            if (!moved || v.empty()) break;
-        }
-        return v;
-    }
+    std::string mapLabel(const char* kind, std::string v) const { return maquina::mapLabel(fLabelMap, kind, std::move(v)); }
     void addLabelMap(const std::string& kind, const std::string& from, const std::string& to)
     {
         fLabelMap.erase(std::remove_if(fLabelMap.begin(), fLabelMap.end(),
@@ -5163,7 +5161,7 @@ private:
     std::vector<std::pair<std::string, int>> fRatings; // "factory:<name>" / "user:<file>" -> 1..5 (ratings.txt)
     std::vector<std::string> fCats;    // the categories, in order (categories.txt)
     std::vector<std::string> fTagList; // the tags (tags.txt; at most 32: bit masks)
-    struct LabelMap { std::string kind, from, to; };
+    using LabelMap = maquina::LabelMap;
     std::vector<LabelMap> fLabelMap;   // renamed / deleted categories and tags, for the factory presets
     bool fCatInput = false;            // the + CATEGORY / rename field is open
     int fCatEditIdx = -1;              // renaming this category (-1: adding one)
@@ -5182,6 +5180,7 @@ private:
     bool fSearchFocus = false;
     int fBrowseHover = -1, fBrowseHoverKind = -1;
     int fListHidden = 0, fListShown = 0, fListFirst = 0, fListLast = 0;
+    std::chrono::steady_clock::time_point fPresetStateAt {}; // the host last restored "preset" (justRestored)
     int fListScroll = 0, fListScrollMax = 0;                    // preset list: first column shown (wheel)
     float fListRect[4] = {};                                    // the list area (for the wheel)
     std::string fListSig;                                       // filter the scroll belongs to
