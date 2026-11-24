@@ -2586,6 +2586,10 @@ protected:
         g.rightX = g.catX + g.catW + 14; g.rightW = g.x + g.w - 10 - g.rightX;
         return g;
     }
+    // category rows that fit above the "+ CATEGORY" row and the footer note
+    int catVisibleRows(const BrowserGeo& g) const { return std::max(4, int((g.h - 30 - 2 * kCatRowH - 44) / kCatRowH)); }
+    int catScrollMax(const BrowserGeo& g) const { return std::max(0, numCats() + 3 - catVisibleRows(g)); }
+    int catScroll(const BrowserGeo& g) const { return std::clamp(fCatScroll, 0, catScrollMax(g)); }
     static constexpr float kCatRowH = 20.f, kListRowH = 19.f, kListColW = 300.f, kListGap = 22.f, kIconW = 18.f, kStarW = 11.f, kRestoreW = 190.f;
 
     // text cut with an ellipsis to fit w
@@ -2654,13 +2658,18 @@ protected:
     {
         const BrowserGeo g = browserGeo();
         const int nc = numCats();
-        if (fBrowseCat >= 1 && fBrowseCat <= nc && !(fCatInput && fCatEditIdx == fBrowseCat - 1)) { // before its row: the icons win
-            fn(7, fBrowseCat - 1, g.catX + g.catW - 18, g.y + 30 + fBrowseCat * kCatRowH + 1, 16, kCatRowH - 4);
-            fn(14, fBrowseCat - 1, g.catX + g.catW - 36, g.y + 30 + fBrowseCat * kCatRowH + 1, 16, kCatRowH - 4);
+        // the category column scrolls (mouse wheel) when it has more rows than fit
+        const int vis = catVisibleRows(g), top = catScroll(g);
+        const int sel = fBrowseCat - top;
+        if (fBrowseCat >= 1 && fBrowseCat <= nc && sel >= 0 && sel < vis
+            && !(fCatInput && fCatEditIdx == fBrowseCat - 1)) { // before its row: the icons win
+            fn(7, fBrowseCat - 1, g.catX + g.catW - 18, g.y + 30 + sel * kCatRowH + 1, 16, kCatRowH - 4);
+            fn(14, fBrowseCat - 1, g.catX + g.catW - 36, g.y + 30 + sel * kCatRowH + 1, 16, kCatRowH - 4);
         }
-        for (int i = 0; i < nc + 3; ++i)
-            fn(0, i, g.catX, g.y + 30 + i * kCatRowH, g.catW, kCatRowH - 2);
-        fn(6, 0, g.catX, g.y + 30 + (nc + 3) * kCatRowH + 6, g.catW, kCatRowH - 2);
+        const int shown = std::min(nc + 3 - top, vis);
+        for (int r = 0; r < shown; ++r)
+            fn(0, top + r, g.catX, g.y + 30 + r * kCatRowH, g.catW, kCatRowH - 2);
+        fn(6, 0, g.catX, g.y + 30 + shown * kCatRowH + 6, g.catW, kCatRowH - 2);
         fn(4, 0, g.x + g.w - 26, g.y + 6, 20, 18);
         if (!fHidden.empty()) fn(13, 0, g.x + g.w - 10 - kRestoreW, g.y + g.h - 30, kRestoreW, 22);
         float ty = g.y + 30;
@@ -2701,10 +2710,19 @@ protected:
             if (presetVisible(fPresets[i])) order.push_back(i);
         if (fBrowseCat == nc + 2) // Rated: best first
             std::stable_sort(order.begin(), order.end(), [&](size_t a, size_t b) { return ratingOf(fPresets[a]) > ratingOf(fPresets[b]); });
+        // the list scrolls by whole columns (mouse wheel); a new filter starts at the top
+        const std::string sig = std::to_string(fBrowseCat) + "|" + std::to_string(fTagMask) + "|" + fSearch;
+        if (sig != fListSig) { fListSig = sig; fListScroll = 0; }
+        const int totalCols = (int(order.size()) + rows - 1) / rows;
+        fListScrollMax = std::max(0, totalCols - cols);
+        fListScroll = std::clamp(fListScroll, 0, fListScrollMax);
+        fListRect[0] = g.rightX; fListRect[1] = ly; fListRect[2] = g.rightW; fListRect[3] = rows * kListRowH;
+        const int skip = fListScroll * rows;
         int n = 0;
         for (size_t i : order) {
-            if (n < rows * cols) {
-                const float rx = g.rightX + (n / rows) * cw, ry = ly + (n % rows) * kListRowH;
+            const int m = n - skip; // position on screen
+            if (m >= 0 && m < rows * cols) {
+                const float rx = g.rightX + (m / rows) * cw, ry = ly + (m % rows) * kListRowH;
                 const float rw = cw - kListGap, ih = kListRowH - 1;
                 fn(12, int(i), rx + rw - kIconW, ry, kIconW, ih); // before its row: the icons win
                 fn(10, int(i), rx + rw - 2 * kIconW, ry, kIconW, ih);
@@ -2714,8 +2732,10 @@ protected:
             }
             ++n;
         }
-        fListHidden = std::max(0, n - rows * cols);
+        fListHidden = std::max(0, n - rows * cols); // more than fit (scrollable)
         fListShown = n;
+        fListFirst = std::min(n, skip + 1);
+        fListLast = std::min(n, skip + rows * cols);
     }
 
     void drawBrowser()
@@ -2730,6 +2750,13 @@ protected:
         textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
         fillColor(col(kDim));
         text(g.catX, g.y + 14, "CATEGORY", nullptr);
+        if (catScrollMax(g) > 0) { // more rows than fit: show which way the wheel goes
+            const int top = catScroll(g);
+            const char* hint = top == 0 ? "scroll v" : top >= catScrollMax(g) ? "scroll ^" : "scroll ^ v";
+            textAlign(ALIGN_RIGHT | ALIGN_MIDDLE);
+            text(g.catX + g.catW, g.y + 14, hint, nullptr);
+            textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+        }
         text(g.rightX, g.y + 14, "PRESETS", nullptr);
         const int nc = numCats();
         const Color kRed(0xe0, 0x5a, 0x4a);
@@ -2915,7 +2942,7 @@ protected:
         if (fListShown == 0 || fListHidden > 0) {
             char buf[64];
             if (fListShown == 0) std::snprintf(buf, sizeof buf, "No presets match.");
-            else std::snprintf(buf, sizeof buf, "+%d more - narrow the filter", fListHidden);
+            else std::snprintf(buf, sizeof buf, "%d-%d of %d - scroll for more", fListFirst, fListLast, fListShown);
             fontSize(10);
             textAlign(ALIGN_RIGHT | ALIGN_MIDDLE);
             fillColor(col(kDim));
@@ -3400,6 +3427,7 @@ protected:
         if (idx < 0) {
             fCats.push_back(n);
             fBrowseCat = numCats(); // the new one
+            fCatScroll = numCats() + 3; // scrolled to the end (clamped when drawn)
         } else { // rename
             const std::string old = fCats[size_t(idx)];
             fCats[size_t(idx)] = n;
@@ -4800,6 +4828,16 @@ protected:
             }
             if (H.save.hit(x, y)) { openSaveDialog(); return true; }
             if (H.init.hit(x, y)) { initPatch(); return true; }
+            // zoom: here, before the browser takes the clicks, so [-]/[+] also work with it open
+            if (H.minus.hit(x, y) || H.plus.hit(x, y)) {
+                const int z = H.minus.hit(x, y) ? std::max(0, fZoom - 1) : std::min(kNumZooms - 1, fZoom + 1);
+                if (z != fZoom) {
+                    fZoom = z;
+                    saveZoom(fZoom);
+                    applyZoom();
+                }
+                return true;
+            }
         }
         if (fBrowser) return ev.button == kMouseButtonLeft && y >= kHeaderH ? browserClick(x, y) : true;
         if (fPopup < 0 && ev.button == kMouseButtonLeft) {
@@ -4862,15 +4900,6 @@ protected:
             }
         }
         if (backBox().hit(x, y)) { doBack(); return true; }
-        if (H.minus.hit(x, y) || H.plus.hit(x, y)) {
-            const int z = H.minus.hit(x, y) ? std::max(0, fZoom - 1) : std::min(kNumZooms - 1, fZoom + 1);
-            if (z != fZoom) {
-                fZoom = z;
-                saveZoom(fZoom);
-                applyZoom();
-            }
-            return true;
-        }
 
         if (layout().la50.used) {
             const bool dblLa = (ev.time - fLastClickTime < 350) && fLastClickParam == UINT32_MAX - 1;
@@ -5026,6 +5055,20 @@ protected:
     {
         const float s = getWidth() / kWidth;
         const float x = float(ev.pos.getX()) / s, y = float(ev.pos.getY()) / s;
+        if (fBrowser && !fSaveDlg) {
+            const BrowserGeo g = browserGeo();
+            if (x >= fListRect[0] && x <= fListRect[0] + fListRect[2] && y >= fListRect[1] && y <= fListRect[1] + fListRect[3]
+                && fListScrollMax > 0) {
+                const int d = ev.delta.getY() > 0 ? -1 : ev.delta.getY() < 0 ? 1 : 0;
+                const int ns = std::clamp(fListScroll + d, 0, fListScrollMax);
+                if (ns != fListScroll) { fListScroll = ns; repaint(); }
+            } else if (x >= g.catX && x <= g.catX + g.catW && y >= g.y + 30 && y <= g.y + g.h && catScrollMax(g) > 0) {
+                const int d = ev.delta.getY() > 0 ? -1 : ev.delta.getY() < 0 ? 1 : 0;
+                const int ns = std::clamp(catScroll(g) + d, 0, catScrollMax(g));
+                if (ns != fCatScroll) { fCatScroll = ns; repaint(); }
+            }
+            return true;
+        }
         if (fSaveDlg || fBrowser) return true;
         if (fPopup >= 0) return false;
         if (randCellAt(x, y) >= 0) return true;
@@ -5114,6 +5157,7 @@ private:
     }
     bool fBrowser = testHook();
     bool fPresetHookDone = false;
+    int fCatScroll = 0;                                         // first category row shown (wheel)
     int fBrowseCat = testHook("edit") ? 1 : 0;                // 0 All, 1..n categories (the plugin's, then the user's), n+1 User, n+2 Rated
     std::vector<std::string> fHidden;  // hidden factory presets (hidden.txt)
     std::vector<std::pair<std::string, int>> fRatings; // "factory:<name>" / "user:<file>" -> 1..5 (ratings.txt)
@@ -5137,7 +5181,10 @@ private:
     std::string fSearch;
     bool fSearchFocus = false;
     int fBrowseHover = -1, fBrowseHoverKind = -1;
-    int fListHidden = 0, fListShown = 0;
+    int fListHidden = 0, fListShown = 0, fListFirst = 0, fListLast = 0;
+    int fListScroll = 0, fListScrollMax = 0;                    // preset list: first column shown (wheel)
+    float fListRect[4] = {};                                    // the list area (for the wheel)
+    std::string fListSig;                                       // filter the scroll belongs to
     bool fSaveDlg = false;
     std::string fSaveName, fSaveMsg;
     bool fSaveError = false;
