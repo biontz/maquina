@@ -40,6 +40,10 @@
 
 #include "ExtraParams.hpp"
 #include "Randomizer.hpp"
+#ifdef DISTRHO_OS_MAC
+#include <objc/message.h>
+#include <objc/runtime.h>
+#endif
 #if MAQUINA_LA50
 #include "D50Sysex.hpp"
 #endif
@@ -650,9 +654,42 @@ void uiConfSet(const char* key, const std::string& value)
     }
 }
 
+// macOS: sizes are in points, the zoom is relative to the size in points (the
+// Retina factor is applied on top, per screen); stored under its own key, as
+// "zoom" used to hold a size in pixels there (zoom=2.00 = 100% on Retina)
+#ifdef DISTRHO_OS_MAC
+constexpr const char* kZoomKey = "zoom_points";
+#else
+constexpr const char* kZoomKey = "zoom";
+#endif
+
+#ifdef DISTRHO_OS_MAC
+// the usable size (points; without menu bar and Dock) of the screen an NSView
+// is on, or of the main screen while it is not in a window yet
+bool screenVisibleSize(uintptr_t nsview, double& w, double& h)
+{
+    using MsgId = id (*)(id, SEL);
+    const id view = reinterpret_cast<id>(nsview);
+    const id win = view ? reinterpret_cast<MsgId>(objc_msgSend)(view, sel_registerName("window")) : nil;
+    id screen = win ? reinterpret_cast<MsgId>(objc_msgSend)(win, sel_registerName("screen")) : nil;
+    if (!screen)
+        screen = reinterpret_cast<MsgId>(objc_msgSend)(reinterpret_cast<id>(objc_getClass("NSScreen")), sel_registerName("mainScreen"));
+    if (!screen) return false;
+    struct Rect { double x, y, width, height; } r; // = NSRect/CGRect on 64-bit (CGFloat = double)
+   #if defined(__x86_64__)
+    reinterpret_cast<void (*)(Rect*, id, SEL)>(objc_msgSend_stret)(&r, screen, sel_registerName("visibleFrame"));
+   #else
+    r = reinterpret_cast<Rect (*)(id, SEL)>(objc_msgSend)(screen, sel_registerName("visibleFrame"));
+   #endif
+    w = r.width;
+    h = r.height;
+    return w > 0 && h > 0;
+}
+#endif
+
 int loadZoom() // -1 if never set
 {
-    const std::string v = uiConfGet("zoom");
+    const std::string v = uiConfGet(kZoomKey);
     const float z = v.empty() ? 0.f : float(std::atof(v.c_str()));
     return z > 0.f ? nearestZoom(z) : -1;
 }
@@ -661,7 +698,7 @@ void saveZoom(int idx)
 {
     char buf[16];
     std::snprintf(buf, sizeof buf, "%.2f", kZooms[idx]);
-    uiConfSet("zoom", buf);
+    uiConfSet(kZoomKey, buf);
 }
 
 // the new look's random drawer: folded (a slim bar) unless the user opened it
@@ -692,10 +729,14 @@ public:
         loadPresetList();
 
         const int saved = loadZoom();
+       #ifdef DISTRHO_OS_MAC
+        fZoom = saved >= 0 ? saved : nearestZoom(1.0); // the Retina factor is in pointScale()
+       #else
         fZoom = saved >= 0 ? saved : nearestZoom(desktopScale(getScaleFactor()));
+       #endif
         fDrawerOpen = loadDrawerOpen();
         fHeight = layoutHeight();
-        setGeometryConstraints(uint(kWidth * 0.75f), uint(fHeight * 0.75f), true);
+        applyConstraints();
         applyZoom();
         // test hook (screenshots): MAQUINA_UI_SIZE=1 prints the window's size in pixels
         if (std::getenv("MAQUINA_UI_SIZE"))
@@ -713,18 +754,86 @@ public:
         saveDrawerOpen(open);
         fRandHover = -1;
         fHeight = layoutHeight();
-        setGeometryConstraints(uint(kWidth * 0.75f), uint(fHeight * 0.75f), true);
+        applyConstraints();
         applyZoom();
         repaint();
     }
 
+    // pixels per point: the screen's backing scale on macOS (2 on Retina, 1 on
+    // most external screens; it changes when the window moves between them),
+    // 1 elsewhere (there the zoom already includes the desktop scale)
+    double pointScale() const
+    {
+       #ifdef DISTRHO_OS_MAC
+        const double s = getScaleFactor();
+        return s > 0.0 ? s : 1.0;
+       #else
+        return 1.0;
+       #endif
+    }
+
+    // pixels per layout unit for drawing and mouse input: from the window's
+    // actual size, width and height, so the whole editor stays visible when
+    // the host or macOS makes the window smaller than the zoom asked for
+    // (e.g. a zoom taller than the screen)
+    float drawScale() const
+    {
+        const float sw = getWidth() / kWidth;
+        const float sh = fHeight > 0.f ? getHeight() / fHeight : sw;
+        return std::min(sw, sh);
+    }
+
+    void applyConstraints()
+    {
+        const double s = pointScale();
+        setGeometryConstraints(uint(kWidth * 0.75f * s), uint(fHeight * 0.75f * s), true);
+    }
+
     void applyZoom()
     {
-        const float z = kZooms[fZoom];
+       #ifdef DISTRHO_OS_MAC
+        // macOS keeps a window on its screen and the host clips a bigger view:
+        // use the largest zoom that fits the screen (title bar included)
+        double sw, sh;
+        if (screenVisibleSize(getWindow().getNativeWindowHandle(), sw, sh))
+            while (fZoom > 0 && (kWidth * kZooms[fZoom] > sw - 16.0 || fHeight * kZooms[fZoom] > sh - 40.0))
+                --fZoom;
+       #endif
+        const double z = kZooms[fZoom] * pointScale();
         setSize(uint(std::lround(kWidth * z)), uint(std::lround(fHeight * z)));
     }
 
 protected:
+    // ------------------------------------------------------- screen changes
+    // macOS: the window moved to a screen with another backing scale. The
+    // size in points stays; the size in pixels follows on the next idle (not
+    // from inside the configure event that reported the change).
+    void uiScaleFactorChanged(double) override
+    {
+       #ifdef DISTRHO_OS_MAC
+        fRescale = true;
+       #endif
+    }
+
+    void uiIdle() override
+    {
+       #ifdef DISTRHO_OS_MAC
+        // a new screen scale, however it came (window moved, or the host put
+        // a new view onto a screen other than the main one): size again
+        const double sc = pointScale();
+        if (sc != fLastScale) {
+            fLastScale = sc;
+            fRescale = true;
+        }
+       #endif
+        if (fRescale) {
+            fRescale = false;
+            applyConstraints();
+            applyZoom();
+            repaint();
+        }
+    }
+
     // ------------------------------------------------------------- host side
     void parameterChanged(uint32_t index, float value) override
     {
@@ -838,7 +947,7 @@ protected:
                 for (size_t i = 0; i < fPresets.size(); ++i)
                     if (!fPresets[i].user && strcasecmp(fPresets[i].name.c_str(), want) == 0) { loadPreset(int(i)); break; }
         }
-        const float s = getWidth() / kWidth;
+        const float s = drawScale();
         scale(s, s);
 
         drawNewLook();
@@ -4767,7 +4876,7 @@ protected:
 
     bool onMouse(const MouseEvent& ev) override
     {
-        const float s = getWidth() / kWidth;
+        const float s = drawScale();
         const float x = float(ev.pos.getX()) / s, y = float(ev.pos.getY()) / s;
 
         if (!ev.press) {
@@ -5000,7 +5109,7 @@ protected:
 
     bool onMotion(const MotionEvent& ev) override
     {
-        const float s = getWidth() / kWidth;
+        const float s = drawScale();
         const float x = float(ev.pos.getX()) / s, y = float(ev.pos.getY()) / s;
         if (fSaveDlg) { dialogHover(x, y); return true; }
         if (fEnvDrag) { la50EnvMotion(x, y); return true; }
@@ -5051,7 +5160,7 @@ protected:
 
     bool onScroll(const ScrollEvent& ev) override
     {
-        const float s = getWidth() / kWidth;
+        const float s = drawScale();
         const float x = float(ev.pos.getX()) / s, y = float(ev.pos.getY()) / s;
         if (fBrowser && !fSaveDlg) {
             const BrowserGeo g = browserGeo();
@@ -5135,6 +5244,12 @@ private:
     float fEnvX = 0, fEnvY = 0, fEnvT0 = 0, fEnvL0 = 0, fEnvH = 1;
     float fPopupAX = 0, fPopupAY = 0; // the popup's place when its control isn't a layout control
     int fZoom = 1;
+   #ifdef DISTRHO_OS_MAC
+    bool fRescale = true; // once on the first idle: the view is in its window (and on its screen) by then
+    double fLastScale = 0.0;
+   #else
+    bool fRescale = false;
+   #endif
 
     maquina::RandSettings fRand;
     int fRangeDrag = -1;          // group * 2 + (0 min / 1 max) being dragged
