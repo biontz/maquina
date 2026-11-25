@@ -62,6 +62,141 @@
     "accent_vel": 100,
     "gain": 0
    }
+  },
+  {
+   "name": "Acida 03 Higher State",
+   "controls": {
+    "tune": 0,
+    "cutoff": 127,
+    "resonance": 95,
+    "env_mod": 64,
+    "decay": 0,
+    "accent": 84,
+    "waveform": 1,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Acida 02 Access",
+   "controls": {
+    "tune": 0,
+    "cutoff": 84,
+    "resonance": 127,
+    "env_mod": 84,
+    "decay": 42,
+    "accent": 25,
+    "waveform": 1,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Acida 05 Acid Tracks (Phuture)",
+   "controls": {
+    "tune": 0,
+    "cutoff": 40,
+    "resonance": 110,
+    "env_mod": 70,
+    "decay": 55,
+    "accent": 100,
+    "waveform": 0,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Acida 07 Acperience 1 (Hard Acid)",
+   "controls": {
+    "tune": 0,
+    "cutoff": 55,
+    "resonance": 127,
+    "env_mod": 110,
+    "decay": 35,
+    "accent": 115,
+    "waveform": 0,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Acida 04 Bwow Classic",
+   "controls": {
+    "tune": 0,
+    "cutoff": 45,
+    "resonance": 127,
+    "env_mod": 45,
+    "decay": 64,
+    "accent": 127,
+    "waveform": 0,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Acida 01 Confusion Pump Panel",
+   "controls": {
+    "tune": 0,
+    "cutoff": 95,
+    "resonance": 84,
+    "env_mod": 84,
+    "decay": 84,
+    "accent": 0,
+    "waveform": 1,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Acida 10 Liquid Acid",
+   "controls": {
+    "tune": 0,
+    "cutoff": 65,
+    "resonance": 75,
+    "env_mod": 55,
+    "decay": 100,
+    "accent": 70,
+    "waveform": 0,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Acida 12 Tuned D Sharp",
+   "controls": {
+    "tune": 3,
+    "cutoff": 40,
+    "resonance": 95,
+    "env_mod": 60,
+    "decay": 45,
+    "accent": 75,
+    "waveform": 0,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  },
+  {
+   "name": "Maquina Acida 01 Line",
+   "controls": {
+    "tune": 0,
+    "cutoff": 35,
+    "resonance": 100,
+    "env_mod": 60,
+    "decay": 45,
+    "accent": 95,
+    "waveform": 0,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
   }
  ]
 }

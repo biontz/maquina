@@ -4,6 +4,21 @@
  "name": "Squelch",
  "patches": [
   {
+   "name": "Acida 08 Squelch",
+   "controls": {
+    "tune": 0,
+    "cutoff": 30,
+    "resonance": 115,
+    "env_mod": 100,
+    "decay": 50,
+    "accent": 100,
+    "waveform": 0,
+    "engine": 0,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  },
+  {
    "name": "Screamer",
    "controls": {
     "tune": 0,

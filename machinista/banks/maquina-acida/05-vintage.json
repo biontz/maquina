@@ -4,6 +4,21 @@
  "name": "Vintage",
  "patches": [
   {
+   "name": "Acida 09 Vintage 15 Snap",
+   "controls": {
+    "tune": 0,
+    "cutoff": 60,
+    "resonance": 100,
+    "env_mod": 75,
+    "decay": 30,
+    "accent": 90,
+    "waveform": 0,
+    "engine": 1,
+    "accent_vel": 100,
+    "gain": 0
+   }
+  },
+  {
    "name": "Vintage Acid",
    "controls": {
     "tune": 0,
