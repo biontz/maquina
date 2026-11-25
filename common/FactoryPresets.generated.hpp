@@ -11,26 +11,31 @@ static const PresetValue k_kick_pv2[] = { { 0, -30 }, { 5, 58 }, { 6, 25 }, { 7,
 static const PresetValue k_kick_pv3[] = { { 0, -31 }, { 5, 65 }, { 6, 20 }, { 7, 70 }, { 8, 40 }, { 9, 3 }, { 10, 10 }, { 11, 10 }, { 12, 1 }, { 17, 2 }, { 18, 20 } };
 static const PresetValue k_kick_pv4[] = { { 0, -26 }, { 2, 1 }, { 5, 30 }, { 7, 20 }, { 9, 85 }, { 17, 3 }, { 18, 110 }, { 19, 60 }, { 23, 50 }, { 34, 100 } };
 static const PresetValue k_kick_pv5[] = { { 0, -27 }, { 2, 1 }, { 5, 26 }, { 6, 40 }, { 7, 16 }, { 8, 20 }, { 9, 75 }, { 17, 2 }, { 18, 90 }, { 19, 70 }, { 34, 85 } };
-static const PresetValue k_kick_pv6[] = { { 0, -28 }, { 5, 25 }, { 6, 25 }, { 7, 20 }, { 8, 25 }, { 9, 60 }, { 17, 2 }, { 18, 50 } };
-static const PresetValue k_kick_pv7[] = { { 0, -28 }, { 5, 25 }, { 6, 25 }, { 7, 25 }, { 8, 25 }, { 9, 45 }, { 17, 2 }, { 18, 55 } };
-static const PresetValue k_kick_pv8[] = { { 0, -28 }, { 5, 25 }, { 6, 25 }, { 7, 25 }, { 8, 25 }, { 9, 45 }, { 17, 2 }, { 18, 80 }, { 20, 100 }, { 21, 70 }, { 22, 5 } };
-static const PresetValue k_kick_pv9[] = { { 0, -28 }, { 5, 30 }, { 6, 30 }, { 7, 35 }, { 8, 30 }, { 9, 50 }, { 10, 10 }, { 11, 40 }, { 12, 1 }, { 17, 2 }, { 18, 70 } };
-static const PresetValue k_kick_pv10[] = { { 0, -24 }, { 5, 20 }, { 6, 35 }, { 7, 12 }, { 9, 25 }, { 17, 5 }, { 18, 80 }, { 19, 100 }, { 20, 70 }, { 21, 10 } };
-static const PresetValue k_kick_pv11[] = { { 0, -25 }, { 5, 38 }, { 7, 14 }, { 9, 30 }, { 13, 15 }, { 15, 4 }, { 16, 1 }, { 17, 10 }, { 18, 70 }, { 19, 90 }, { 20, 95 } };
-static const PresetValue k_kick_pv12[] = { { 0, -27 }, { 4, 7 }, { 5, 28 }, { 6, 25 }, { 7, 22 }, { 8, 25 }, { 9, 30 } };
-static const PresetValue k_kick_pv13[] = { { 0, -32 }, { 5, 66 }, { 6, 60 }, { 7, 30 }, { 8, 20 }, { 9, 30 }, { 17, 2 }, { 18, 30 } };
-static const PresetValue k_kick_pv14[] = { { 0, -35 }, { 5, 66 }, { 6, 65 }, { 7, 35 }, { 9, 20 } };
-static const PresetValue k_kick_pv15[] = { { 0, -32 }, { 5, 40 }, { 7, 15 }, { 9, 30 }, { 20, 60 } };
-static const PresetValue k_kick_pv16[] = { { 0, -26 }, { 5, 25 }, { 7, 15 }, { 9, 55 }, { 13, 80 }, { 14, 7 }, { 15, 3 } };
-static const PresetValue k_kick_pv17[] = { { 0, -27 }, { 5, 28 }, { 7, 18 }, { 9, 50 }, { 13, 45 }, { 14, -10 } };
-static const PresetValue k_kick_pv18[] = { { 0, -28 }, { 5, 25 }, { 6, 25 }, { 7, 25 }, { 8, 25 }, { 9, 45 }, { 13, 45 }, { 14, 10 } };
-static const PresetValue k_kick_pv19[] = { { 0, -31 }, { 5, 55 }, { 6, 55 }, { 7, 22 }, { 9, 40 }, { 20, 90 }, { 23, 70 }, { 31, 110 }, { 34, 120 } };
-static const PresetValue k_kick_pv20[] = { { 0, -24 }, { 2, 3 }, { 5, 35 }, { 7, 22 }, { 9, 90 }, { 20, 75 }, { 23, 110 }, { 31, 105 }, { 34, 127 } };
-static const PresetValue k_kick_pv21[] = { { 0, -24 }, { 2, 3 }, { 5, 30 }, { 6, 20 }, { 7, 20 }, { 9, 90 }, { 20, 75 }, { 23, 110 }, { 31, 105 }, { 34, 70 } };
-static const PresetValue k_kick_pv22[] = { { 0, -27 }, { 5, 25 }, { 7, 16 }, { 9, 60 }, { 33, 75 }, { 34, 90 } };
-static const PresetValue k_kick_pv23[] = { { 0, -28 }, { 5, 30 }, { 7, 15 }, { 9, 35 }, { 20, 60 }, { 33, 95 } };
-static const PresetValue k_kick_pv24[] = { { 0, -12 }, { 5, 40 }, { 7, 45 }, { 8, 60 }, { 9, 127 } };
-static const PresetValue k_kick_pv25[] = { { 5, 55 }, { 6, 55 }, { 24, 90 }, { 26, 40 }, { 28, 1 }, { 30, 1 } };
+static const PresetValue k_kick_pv6[] = { { 0, -27 }, { 5, 24 }, { 6, 25 }, { 7, 16 }, { 8, 25 }, { 9, 60 }, { 17, 2 }, { 18, 55 }, { 19, 70 }, { 34, 0 } };
+static const PresetValue k_kick_pv7[] = { { 0, -28 }, { 5, 14 }, { 6, 20 }, { 7, 10 }, { 8, 25 }, { 9, 70 }, { 18, 90 }, { 19, 85 }, { 34, 0 } };
+static const PresetValue k_kick_pv8[] = { { 0, -28 }, { 5, 25 }, { 6, 25 }, { 7, 20 }, { 8, 25 }, { 9, 60 }, { 17, 2 }, { 18, 50 } };
+static const PresetValue k_kick_pv9[] = { { 0, -28 }, { 5, 25 }, { 6, 25 }, { 7, 25 }, { 8, 25 }, { 9, 45 }, { 17, 2 }, { 18, 55 } };
+static const PresetValue k_kick_pv10[] = { { 0, -28 }, { 5, 25 }, { 6, 25 }, { 7, 25 }, { 8, 25 }, { 9, 45 }, { 17, 2 }, { 18, 80 }, { 20, 100 }, { 21, 70 }, { 22, 5 } };
+static const PresetValue k_kick_pv11[] = { { 0, -28 }, { 5, 30 }, { 6, 30 }, { 7, 35 }, { 8, 30 }, { 9, 50 }, { 10, 10 }, { 11, 40 }, { 12, 1 }, { 17, 2 }, { 18, 70 } };
+static const PresetValue k_kick_pv12[] = { { 0, -24 }, { 5, 20 }, { 6, 35 }, { 7, 12 }, { 9, 25 }, { 17, 5 }, { 18, 80 }, { 19, 100 }, { 20, 70 }, { 21, 10 } };
+static const PresetValue k_kick_pv13[] = { { 0, -25 }, { 5, 38 }, { 7, 14 }, { 9, 30 }, { 13, 15 }, { 15, 4 }, { 16, 1 }, { 17, 10 }, { 18, 70 }, { 19, 90 }, { 20, 95 } };
+static const PresetValue k_kick_pv14[] = { { 0, -27 }, { 4, 7 }, { 5, 28 }, { 6, 25 }, { 7, 22 }, { 8, 25 }, { 9, 30 } };
+static const PresetValue k_kick_pv15[] = { { 0, -31 }, { 5, 60 }, { 6, 60 }, { 7, 38 }, { 8, 20 }, { 9, 100 }, { 17, 2 }, { 18, 35 }, { 19, 60 }, { 34, 0 } };
+static const PresetValue k_kick_pv16[] = { { 0, -32 }, { 5, 66 }, { 6, 60 }, { 7, 30 }, { 8, 20 }, { 9, 30 }, { 17, 2 }, { 18, 30 } };
+static const PresetValue k_kick_pv17[] = { { 0, -35 }, { 5, 66 }, { 6, 65 }, { 7, 35 }, { 9, 20 } };
+static const PresetValue k_kick_pv18[] = { { 0, -32 }, { 5, 40 }, { 7, 15 }, { 9, 30 }, { 20, 60 } };
+static const PresetValue k_kick_pv19[] = { { 0, -26 }, { 5, 25 }, { 7, 15 }, { 9, 55 }, { 13, 80 }, { 14, 7 }, { 15, 3 } };
+static const PresetValue k_kick_pv20[] = { { 0, -27 }, { 5, 28 }, { 7, 18 }, { 9, 50 }, { 13, 45 }, { 14, -10 } };
+static const PresetValue k_kick_pv21[] = { { 0, -27 }, { 5, 17 }, { 6, 30 }, { 7, 11 }, { 8, 25 }, { 9, 65 }, { 13, 95 }, { 14, 10 }, { 17, 2 }, { 18, 60 }, { 19, 75 }, { 34, 0 } };
+static const PresetValue k_kick_pv22[] = { { 0, -28 }, { 5, 25 }, { 6, 25 }, { 7, 25 }, { 8, 25 }, { 9, 45 }, { 13, 45 }, { 14, 10 } };
+static const PresetValue k_kick_pv23[] = { { 0, -31 }, { 5, 55 }, { 6, 55 }, { 7, 22 }, { 9, 40 }, { 20, 90 }, { 23, 70 }, { 31, 110 }, { 34, 120 } };
+static const PresetValue k_kick_pv24[] = { { 0, -24 }, { 2, 3 }, { 5, 35 }, { 7, 22 }, { 9, 90 }, { 20, 75 }, { 23, 110 }, { 31, 105 }, { 34, 127 } };
+static const PresetValue k_kick_pv25[] = { { 0, -27 }, { 5, 26 }, { 6, 25 }, { 7, 16 }, { 8, 25 }, { 9, 60 }, { 17, 2 }, { 18, 55 }, { 19, 70 }, { 20, 90 }, { 23, 40 }, { 34, 30 } };
+static const PresetValue k_kick_pv26[] = { { 0, -24 }, { 2, 3 }, { 5, 30 }, { 6, 20 }, { 7, 20 }, { 9, 90 }, { 20, 75 }, { 23, 110 }, { 31, 105 }, { 34, 70 } };
+static const PresetValue k_kick_pv27[] = { { 0, -27 }, { 5, 25 }, { 7, 16 }, { 9, 60 }, { 33, 75 }, { 34, 90 } };
+static const PresetValue k_kick_pv28[] = { { 0, -28 }, { 5, 30 }, { 7, 15 }, { 9, 35 }, { 20, 60 }, { 33, 95 } };
+static const PresetValue k_kick_pv29[] = { { 0, -12 }, { 5, 40 }, { 7, 45 }, { 8, 60 }, { 9, 127 } };
+static const PresetValue k_kick_pv30[] = { { 5, 55 }, { 6, 55 }, { 24, 90 }, { 26, 40 }, { 28, 1 }, { 30, 1 } };
 static const FactoryPreset k_kick_presets[] = {
     { "808 Long Boom", "808", "long, boomy, clean", k_kick_pv0, 6 },
     { "808 Short Thump", "808", "short, punchy, clean", k_kick_pv1, 6 },
@@ -38,26 +43,31 @@ static const FactoryPreset k_kick_presets[] = {
     { "SOS 808", "808", "long, boomy", k_kick_pv3, 11 },
     { "909 Hard", "909", "punchy, bright, dirty", k_kick_pv4, 10 },
     { "909 Punch", "909", "punchy, short", k_kick_pv5, 11 },
-    { "Maquina Kick 01 Punch", "909", "punchy, clean", k_kick_pv6, 8 },
-    { "Recipe Kick", "909", "punchy, clean", k_kick_pv7, 8 },
-    { "Recipe Peak Click", "909", "punchy, bright", k_kick_pv8, 11 },
-    { "SOS 909", "909", "punchy", k_kick_pv9, 11 },
-    { "Acoustic Felt", "Acoustic", "short, soft, dark", k_kick_pv10, 10 },
-    { "Acoustic Room", "Acoustic", "long, soft", k_kick_pv11, 11 },
-    { "Recipe Soft Kick", "Acoustic", "soft", k_kick_pv12, 7 },
-    { "Maquina Kick 02 Rumble", "Sub", "long, boomy", k_kick_pv13, 8 },
-    { "Sub Drop", "Sub", "long, boomy, clean", k_kick_pv14, 5 },
-    { "Sub Pulse", "Sub", "short, boomy", k_kick_pv15, 5 },
-    { "FM Metal Kick", "FM", "metallic, bright", k_kick_pv16, 7 },
-    { "FM Thump", "FM", "punchy, pitched", k_kick_pv17, 6 },
-    { "Recipe FM Attack", "FM", "punchy, bright", k_kick_pv18, 8 },
-    { "Driven 808", "Distorted", "long, dirty, boomy", k_kick_pv19, 9 },
-    { "Gabber", "Distorted", "dirty, punchy", k_kick_pv20, 9 },
-    { "Maquina Kick 03 Driven", "Distorted", "dirty, punchy", k_kick_pv21, 10 },
-    { "Crunch", "Lo-Fi", "lo-fi, dirty, short", k_kick_pv22, 6 },
-    { "Dusty", "Lo-Fi", "lo-fi, dark, soft", k_kick_pv23, 6 },
-    { "Laser Zap", "FX", "pitched, bright", k_kick_pv24, 5 },
-    { "Wobble", "FX", "modulated, long", k_kick_pv25, 6 },
+    { "Kick Herm 01 Key Locked", "909", "punchy, short, clean", k_kick_pv6, 10 },
+    { "Kick Herm 03 Click Forward", "909", "short, punchy, clean", k_kick_pv7, 9 },
+    { "Maquina Kick 01 Punch", "909", "punchy, clean", k_kick_pv8, 8 },
+    { "Recipe Kick", "909", "punchy, clean", k_kick_pv9, 8 },
+    { "Recipe Peak Click", "909", "punchy, bright", k_kick_pv10, 11 },
+    { "SOS 909", "909", "punchy", k_kick_pv11, 11 },
+    { "Acoustic Felt", "Acoustic", "short, soft, dark", k_kick_pv12, 10 },
+    { "Acoustic Room", "Acoustic", "long, soft", k_kick_pv13, 11 },
+    { "Recipe Soft Kick", "Acoustic", "soft", k_kick_pv14, 7 },
+    { "Kick Herm 04 Sub Drop", "Sub", "boomy, long, clean", k_kick_pv15, 10 },
+    { "Maquina Kick 02 Rumble", "Sub", "long, boomy", k_kick_pv16, 8 },
+    { "Sub Drop", "Sub", "long, boomy, clean", k_kick_pv17, 5 },
+    { "Sub Pulse", "Sub", "short, boomy", k_kick_pv18, 5 },
+    { "FM Metal Kick", "FM", "metallic, bright", k_kick_pv19, 7 },
+    { "FM Thump", "FM", "punchy, pitched", k_kick_pv20, 6 },
+    { "Kick Herm 02 FM Hard", "FM", "punchy, short, bright", k_kick_pv21, 12 },
+    { "Recipe FM Attack", "FM", "punchy, bright", k_kick_pv22, 8 },
+    { "Driven 808", "Distorted", "long, dirty, boomy", k_kick_pv23, 9 },
+    { "Gabber", "Distorted", "dirty, punchy", k_kick_pv24, 9 },
+    { "Kick Herm 05 Light Drive", "Distorted", "soft, dirty", k_kick_pv25, 12 },
+    { "Maquina Kick 03 Driven", "Distorted", "dirty, punchy", k_kick_pv26, 10 },
+    { "Crunch", "Lo-Fi", "lo-fi, dirty, short", k_kick_pv27, 6 },
+    { "Dusty", "Lo-Fi", "lo-fi, dark, soft", k_kick_pv28, 6 },
+    { "Laser Zap", "FX", "pitched, bright", k_kick_pv29, 5 },
+    { "Wobble", "FX", "modulated, long", k_kick_pv30, 6 },
 };
 
 static const PresetValue k_tom_pv0[] = { { 0, -10 }, { 5, 30 }, { 7, 20 }, { 9, 35 } };
@@ -715,7 +725,7 @@ static const FactoryPreset k_la50_presets[] = {
 struct VoicePresets { const FactoryPreset* presets; uint32_t count; };
 // in k_voices order
 static const VoicePresets k_factory_presets[] = {
-    { k_kick_presets, 26 },
+    { k_kick_presets, 31 },
     { k_tom_presets, 17 },
     { k_snare_presets, 22 },
     { k_cymbal_presets, 14 },

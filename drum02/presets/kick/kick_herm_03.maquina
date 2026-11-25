@@ -1,0 +1,19 @@
+# Maquina preset - Hermes kick series
+# click-forward: the transient carries, minimal body - fast Schengen-style
+# 16th patterns; layer over the rumble voice
+voice = kick
+name = Kick Herm 03 Click Forward
+category = 909
+tags = short, punchy, clean
+osc_wave = Sine
+osc_coarse = -28
+amp_attack = 0
+amp_decay = 14
+amp_slope = 20
+pitch_amount = 70
+pitch_decay = 10
+pitch_slope = 25
+trans_wave = Snap
+trans_volume = 90
+trans_freq = 85
+drive = 0

@@ -1,0 +1,21 @@
+# Maquina preset - Hermes kick series
+# lightly driven sine: just enough filter drive to read on a big system,
+# still smooth - the "not too much distortion" one
+voice = kick
+name = Kick Herm 05 Light Drive
+category = Distorted
+tags = soft, dirty
+osc_wave = Sine
+osc_coarse = -27
+amp_attack = 0
+amp_decay = 26
+amp_slope = 25
+pitch_amount = 60
+pitch_decay = 16
+pitch_slope = 25
+trans_wave = Click
+trans_volume = 55
+trans_freq = 70
+filter_freq = 90
+filter_drive = 40
+drive = 30

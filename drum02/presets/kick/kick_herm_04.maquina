@@ -1,0 +1,19 @@
+# Maquina preset - Hermes kick series
+# 808 sub-drop lead (not the rumble layer): deep fast pitch fall, long
+# exponential tail - the kick IS the bass on breakdown intros
+voice = kick
+name = Kick Herm 04 Sub Drop
+category = Sub
+tags = boomy, long, clean
+osc_wave = Sine
+osc_coarse = -31
+amp_attack = 0
+amp_decay = 60
+amp_slope = 60
+pitch_amount = 100
+pitch_decay = 38
+pitch_slope = 20
+trans_wave = Click
+trans_volume = 35
+trans_freq = 60
+drive = 0

@@ -1,0 +1,21 @@
+# Maquina preset - Hermes kick series
+# hard FM kick, tight decay: FM carrier slams the attack, short body -
+# cuts through a fast pattern without swallowing the low end
+voice = kick
+name = Kick Herm 02 FM Hard
+category = FM
+tags = punchy, short, bright
+osc_wave = Sine
+osc_coarse = -27
+fm_amount = 95
+fm_freq = 10
+amp_attack = 0
+amp_decay = 17
+amp_slope = 30
+pitch_amount = 65
+pitch_decay = 11
+pitch_slope = 25
+trans_wave = Click
+trans_volume = 60
+trans_freq = 75
+drive = 0

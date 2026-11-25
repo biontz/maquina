@@ -1,0 +1,19 @@
+# Maquina preset - Hermes kick series
+# clean key-locked punch: sine body ~G territory, no distortion, tuned for
+# ~125-130 BPM techno (kick and bassline share the root)
+voice = kick
+name = Kick Herm 01 Key Locked
+category = 909
+tags = punchy, short, clean
+osc_wave = Sine
+osc_coarse = -27
+amp_attack = 0
+amp_decay = 24
+amp_slope = 25
+pitch_amount = 60
+pitch_decay = 16
+pitch_slope = 25
+trans_wave = Click
+trans_volume = 55
+trans_freq = 70
+drive = 0
